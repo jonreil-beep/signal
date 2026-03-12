@@ -7,6 +7,8 @@ import type { TailoringBriefResult } from "@/types";
 interface TailoringBriefProps {
   profileText: string;
   jobDescription: string;
+  result: TailoringBriefResult | null;
+  onResultChange: (result: TailoringBriefResult) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -69,12 +71,13 @@ function Section({
 export default function TailoringBrief({
   profileText,
   jobDescription,
+  result,
+  onResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
-  const [result, setResult] = useState<TailoringBriefResult | null>(null);
 
   if (!profileText) {
     return (
@@ -111,7 +114,6 @@ export default function TailoringBrief({
   async function handleGenerate() {
     setIsGenerating(true);
     setError("");
-    setResult(null);
     try {
       const response = await fetch("/api/tailor", {
         method: "POST",
@@ -122,7 +124,7 @@ export default function TailoringBrief({
       if (!response.ok) {
         setError(data.error ?? "Failed to generate brief. Please try again.");
       } else {
-        setResult(data as TailoringBriefResult);
+        onResultChange(data as TailoringBriefResult);
       }
     } catch {
       setError("Network error. Check your connection and try again.");

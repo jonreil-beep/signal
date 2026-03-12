@@ -6,7 +6,7 @@ import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
 import LoadingState from "@/components/LoadingState";
-import type { TabId, RoleClusterResult } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult } from "@/types";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
@@ -21,6 +21,8 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
   const [jobDescription, setJobDescription] = useState<string>("");
+  const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
+  const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
 
   function handleProfileConfirmed(text: string) {
     setProfileText(text);
@@ -53,6 +55,18 @@ export default function Home() {
     }
   }
 
+  function handleJobScored(jd: string, result: JobFitResult) {
+    setJobDescription(jd);
+    setJobFitResult(result);
+    setTailoringResult(null); // clear old brief when a new job is scored
+  }
+
+  function handleJobFitReset() {
+    setJobDescription("");
+    setJobFitResult(null);
+    setTailoringResult(null);
+  }
+
   return (
     <div className="min-h-screen bg-slate-50">
 
@@ -73,7 +87,9 @@ export default function Home() {
                 {jobDescription && <span>✓</span>} Job scored
               </span>
               <span className="text-slate-600">·</span>
-              <span className="text-slate-500">Brief</span>
+              <span className={`flex items-center gap-1 ${tailoringResult ? "text-green-400" : "text-slate-500"}`}>
+                {tailoringResult && <span>✓</span>} Brief
+              </span>
             </div>
           )}
         </div>
@@ -86,7 +102,8 @@ export default function Home() {
             {TABS.map((tab) => {
               const isDone =
                 (tab.id === "profile" && !!profileText) ||
-                (tab.id === "job-fit" && !!jobDescription);
+                (tab.id === "job-fit" && !!jobDescription) ||
+                (tab.id === "tailoring-brief" && !!tailoringResult);
               return (
                 <button
                   key={tab.id}
@@ -162,7 +179,18 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && (
-              <RoleClusterResults result={clusterResult} />
+              <>
+                <RoleClusterResults result={clusterResult} />
+                {/* Bottom CTA */}
+                <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                  <button
+                    onClick={() => setActiveTab("job-fit")}
+                    className="inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+                  >
+                    Go to Job Fit →
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -187,7 +215,10 @@ export default function Home() {
                 </div>
                 <JobFitScorer
                   profileText={profileText}
-                  onJobScored={(jd) => setJobDescription(jd)}
+                  result={jobFitResult}
+                  onJobScored={handleJobScored}
+                  onReset={handleJobFitReset}
+                  onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
                 />
               </div>
             )}
@@ -206,6 +237,8 @@ export default function Home() {
             <TailoringBrief
               profileText={profileText}
               jobDescription={jobDescription}
+              result={tailoringResult}
+              onResultChange={setTailoringResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

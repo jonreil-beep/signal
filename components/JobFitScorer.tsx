@@ -6,7 +6,10 @@ import type { JobFitResult } from "@/types";
 
 interface JobFitScorerProps {
   profileText: string;
-  onJobScored: (jobDescription: string) => void;
+  result: JobFitResult | null;
+  onJobScored: (jobDescription: string, result: JobFitResult) => void;
+  onReset: () => void;
+  onGoToTailoringBrief: () => void;
 }
 
 type InputMode = "paste" | "url";
@@ -40,7 +43,7 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, result, onJobScored, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>("");
   const [urlInput, setUrlInput] = useState<string>("");
@@ -48,14 +51,12 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
   const [fetchError, setFetchError] = useState<string>("");
   const [isScoring, setIsScoring] = useState(false);
   const [scoreError, setScoreError] = useState<string>("");
-  const [result, setResult] = useState<JobFitResult | null>(null);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
     setIsFetching(true);
     setFetchError("");
     setJdText("");
-    setResult(null);
     try {
       const response = await fetch("/api/fetch-jd", {
         method: "POST",
@@ -79,7 +80,6 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
     if (!jdText.trim() || !profileText) return;
     setIsScoring(true);
     setScoreError("");
-    setResult(null);
     try {
       const response = await fetch("/api/score-job", {
         method: "POST",
@@ -90,8 +90,7 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
       if (!response.ok) {
         setScoreError(data.error ?? "Scoring failed. Please try again.");
       } else {
-        setResult(data as JobFitResult);
-        onJobScored(jdText.trim());
+        onJobScored(jdText.trim(), data as JobFitResult);
       }
     } catch {
       setScoreError("Network error. Check your connection and try again.");
@@ -105,7 +104,7 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
     setUrlInput("");
     setFetchError("");
     setScoreError("");
-    setResult(null);
+    onReset();
   }
 
   const recStyle = result
@@ -135,7 +134,7 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
           {mode === "paste" && (
             <textarea
               value={jdText}
-              onChange={(e) => { setJdText(e.target.value); setResult(null); }}
+              onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
               className="w-full border border-gray-200 rounded-2xl p-4 text-sm text-gray-900 font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-y placeholder:text-gray-300 transition-shadow"
@@ -306,9 +305,18 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
             </div>
           )}
 
-          <button onClick={handleReset} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-            ← Score a different job
-          </button>
+          {/* Bottom nav CTAs */}
+          <div className="flex items-center justify-between pt-2">
+            <button onClick={handleReset} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              ← Score a different job
+            </button>
+            <button
+              onClick={onGoToTailoringBrief}
+              className="inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+            >
+              Go to Tailoring Brief →
+            </button>
+          </div>
         </div>
       )}
     </div>
