@@ -118,3 +118,41 @@ Rules:
 - What to de-emphasize: 1-3 items, be honest
 - Return only valid JSON, no markdown fences`;
 }
+
+// Outreach message generation prompt
+export function buildOutreachPrompt(
+  outreachAngle: string,
+  resumeText: string,
+  jobDescription: string
+): string {
+  return `You are a senior talent strategist helping a candidate write outreach messages for a specific job.
+
+Outreach angle to use as the hook:
+<outreach_angle>
+${outreachAngle}
+</outreach_angle>
+
+Candidate resume summary (for context):
+<resume>
+${resumeText.slice(0, 1500)}
+</resume>
+
+Job description (first 800 chars for context):
+<job_description>
+${jobDescription.slice(0, 800)}
+</job_description>
+
+Draft two outreach messages. Return this exact JSON structure — nothing else:
+{
+  "email": "Subject: [subject line]\\n\\n[email body — 150–200 words, professional, specific to this role, ends with a clear ask]",
+  "linkedin_message": "[LinkedIn connection request — 280 characters max, warm and specific, references the outreach angle, no generic openers like 'I came across your profile']"
+}
+
+Rules:
+- The email subject line must be specific and intriguing, not generic ("Quick question" is bad)
+- Both messages must reference the outreach angle — it is the core hook
+- Be direct and confident, not groveling
+- Do not use hollow phrases like "I hope this finds you well" or "I'd love to connect"
+- LinkedIn message must be ≤ 280 characters (strictly enforced)
+- Return only valid JSON, no markdown fences`;
+}

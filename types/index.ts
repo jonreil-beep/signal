@@ -1,6 +1,6 @@
 // Shared TypeScript types for Signal
 
-export type TabId = "profile" | "job-fit" | "tailoring-brief";
+export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs";
 
 export interface ParseResumeResponse {
   text: string;
@@ -72,4 +72,18 @@ export interface TailoringBriefResult {
   what_to_deemphasize: DeemphasizeItem[];
   recruiter_concern_to_preempt: RecruiterConcern;
   outreach_angle?: string;
+}
+
+export interface OutreachResult {
+  email: string;
+  linkedin_message: string;
+}
+
+export interface TrackedJob {
+  id: string;
+  label: string;
+  jobDescription: string;
+  jobFitResult: JobFitResult;
+  tailoringResult: TailoringBriefResult | null;
+  scoredAt: Date;
 }

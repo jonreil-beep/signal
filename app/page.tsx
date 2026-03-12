@@ -5,14 +5,24 @@ import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
+import JobTracker from "@/components/JobTracker";
 import LoadingState from "@/components/LoadingState";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, TrackedJob } from "@/types";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
   { id: "job-fit", label: "Job Fit" },
   { id: "tailoring-brief", label: "Tailoring Brief" },
+  { id: "my-jobs", label: "My Jobs" },
 ];
+
+function extractJobTitle(jd: string, fallbackCount: number): string {
+  const firstShortLine = jd
+    .split("\n")
+    .map((l) => l.trim())
+    .find((l) => l.length > 3 && l.length < 80);
+  return firstShortLine ?? `Job #${fallbackCount}`;
+}
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("profile");
@@ -20,9 +30,15 @@ export default function Home() {
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
+
+  // Active job slots (what's currently loaded in Job Fit + Tailoring Brief)
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
+
+  // Job tracker
+  const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
   function handleProfileConfirmed(text: string) {
     setProfileText(text);
@@ -56,15 +72,53 @@ export default function Home() {
   }
 
   function handleJobScored(jd: string, result: JobFitResult) {
+    const id = crypto.randomUUID();
+    const label = extractJobTitle(jd, trackedJobs.length + 1);
+    const newJob: TrackedJob = {
+      id,
+      label,
+      jobDescription: jd,
+      jobFitResult: result,
+      tailoringResult: null,
+      scoredAt: new Date(),
+    };
+    setTrackedJobs((prev) => [...prev, newJob]);
+    setActiveJobId(id);
     setJobDescription(jd);
     setJobFitResult(result);
-    setTailoringResult(null); // clear old brief when a new job is scored
+    setTailoringResult(null);
+  }
+
+  function handleTailoringResult(result: TailoringBriefResult) {
+    setTailoringResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result } : j))
+      );
+    }
   }
 
   function handleJobFitReset() {
     setJobDescription("");
     setJobFitResult(null);
     setTailoringResult(null);
+    setActiveJobId(null);
+  }
+
+  function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
+    setActiveJobId(job.id);
+    setJobDescription(job.jobDescription);
+    setJobFitResult(job.jobFitResult);
+    setTailoringResult(job.tailoringResult);
+    setActiveTab(goTo);
+  }
+
+  function handleRemoveJob(id: string) {
+    setTrackedJobs((prev) => prev.filter((j) => j.id !== id));
+    if (activeJobId === id) {
+      // Don't clear the active view — just disassociate it from the tracker
+      setActiveJobId(null);
+    }
   }
 
   return (
@@ -117,6 +171,11 @@ export default function Home() {
                   {tab.label}
                   {isDone && (
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                  )}
+                  {tab.id === "my-jobs" && trackedJobs.length > 0 && (
+                    <span className="text-xs font-medium bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">
+                      {trackedJobs.length}
+                    </span>
                   )}
                 </button>
               );
@@ -181,7 +240,6 @@ export default function Home() {
             {clusterResult && !isAnalyzing && (
               <>
                 <RoleClusterResults result={clusterResult} />
-                {/* Bottom CTA */}
                 <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
                   <button
                     onClick={() => setActiveTab("job-fit")}
@@ -238,9 +296,26 @@ export default function Home() {
               profileText={profileText}
               jobDescription={jobDescription}
               result={tailoringResult}
-              onResultChange={setTailoringResult}
+              onResultChange={handleTailoringResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
+            />
+          </div>
+        )}
+
+        {/* ── My Jobs tab ── */}
+        {activeTab === "my-jobs" && (
+          <div>
+            <div className="mb-7">
+              <h2 className="text-base font-semibold text-gray-900">My Jobs</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Every job you&apos;ve scored this session. Click any job to reload its fit results or tailoring brief.
+              </p>
+            </div>
+            <JobTracker
+              jobs={trackedJobs}
+              onSelectJob={handleSelectJob}
+              onRemoveJob={handleRemoveJob}
             />
           </div>
         )}

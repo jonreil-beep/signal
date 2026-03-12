@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult } from "@/types";
 
 interface TailoringBriefProps {
   profileText: string;
@@ -78,6 +78,9 @@ export default function TailoringBrief({
 }: TailoringBriefProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
+  const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
+  const [outreachError, setOutreachError] = useState<string>("");
+  const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
 
   if (!profileText) {
     return (
@@ -114,6 +117,7 @@ export default function TailoringBrief({
   async function handleGenerate() {
     setIsGenerating(true);
     setError("");
+    setOutreachResult(null);
     try {
       const response = await fetch("/api/tailor", {
         method: "POST",
@@ -130,6 +134,34 @@ export default function TailoringBrief({
       setError("Network error. Check your connection and try again.");
     } finally {
       setIsGenerating(false);
+    }
+  }
+
+  async function handleGenerateOutreach() {
+    if (!result?.outreach_angle) return;
+    setIsGeneratingOutreach(true);
+    setOutreachError("");
+    setOutreachResult(null);
+    try {
+      const response = await fetch("/api/generate-outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          outreachAngle: result.outreach_angle,
+          resumeText: profileText,
+          jobDescription,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setOutreachError(data.error ?? "Failed to generate outreach messages. Please try again.");
+      } else {
+        setOutreachResult(data as OutreachResult);
+      }
+    } catch {
+      setOutreachError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingOutreach(false);
     }
   }
 
@@ -239,6 +271,52 @@ export default function TailoringBrief({
             >
               <p className="text-sm text-gray-700 leading-relaxed">{result.outreach_angle}</p>
             </Section>
+          )}
+
+          {/* Outreach message generator */}
+          {result.outreach_angle && (
+            <div className="pt-2">
+              {!isGeneratingOutreach && (
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-400">
+                    {outreachResult
+                      ? "Re-draft to refresh the messages."
+                      : "Turn the outreach angle into a ready-to-send email and LinkedIn message."}
+                  </p>
+                  <button
+                    onClick={handleGenerateOutreach}
+                    className="shrink-0 px-5 py-2.5 bg-slate-800 text-white text-sm font-semibold rounded-xl hover:bg-slate-700 transition-colors"
+                  >
+                    {outreachResult ? "Re-draft" : "Draft Outreach Messages"}
+                  </button>
+                </div>
+              )}
+
+              {isGeneratingOutreach && <LoadingState message="Drafting outreach messages…" />}
+
+              {outreachError && !isGeneratingOutreach && (
+                <div className="mt-3 p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
+                  <p className="text-sm text-red-700">{outreachError}</p>
+                  <button onClick={handleGenerateOutreach} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+                    Try again
+                  </button>
+                </div>
+              )}
+
+              {outreachResult && !isGeneratingOutreach && (
+                <div className="mt-4 space-y-3">
+                  <Section title="Cold Email" copyText={outreachResult.email}>
+                    <pre className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-sans">
+                      {outreachResult.email}
+                    </pre>
+                  </Section>
+                  <Section title="LinkedIn Message" copyText={outreachResult.linkedin_message}>
+                    <p className="text-sm text-gray-700 leading-relaxed">{outreachResult.linkedin_message}</p>
+                    <p className="mt-2 text-xs text-gray-400">{outreachResult.linkedin_message.length} / 280 characters</p>
+                  </Section>
+                </div>
+              )}
+            </div>
           )}
         </>
       )}
