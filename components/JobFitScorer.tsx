@@ -11,29 +11,29 @@ interface JobFitScorerProps {
 
 type InputMode = "paste" | "url";
 
-const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  "Apply Now":                  { bg: "bg-green-50",  text: "text-green-800",  border: "border-green-300" },
-  "Apply with Tailoring":       { bg: "bg-blue-50",   text: "text-blue-800",   border: "border-blue-300"  },
-  "Stretch — Proceed Carefully":{ bg: "bg-yellow-50", text: "text-yellow-800", border: "border-yellow-300"},
-  "Skip":                       { bg: "bg-red-50",    text: "text-red-800",    border: "border-red-300"   },
+const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
+  "Apply Now":                  { bg: "bg-green-50",  text: "text-green-700",  ring: "ring-green-200"  },
+  "Apply with Tailoring":       { bg: "bg-blue-50",   text: "text-blue-700",   ring: "ring-blue-200"   },
+  "Stretch — Proceed Carefully":{ bg: "bg-yellow-50", text: "text-yellow-700", ring: "ring-yellow-200" },
+  "Skip":                       { bg: "bg-red-50",    text: "text-red-700",    ring: "ring-red-200"    },
 };
 
-function scoreColor(score: number): string {
+function scoreColor(score: number) {
   if (score >= 7) return "text-green-600";
-  if (score >= 5) return "text-yellow-600";
+  if (score >= 5) return "text-yellow-500";
   return "text-red-500";
 }
 
 function ScoreBar({ score }: { score: number }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full ${score >= 7 ? "bg-green-500" : score >= 5 ? "bg-yellow-400" : "bg-red-400"}`}
+          className={`h-full rounded-full transition-all ${score >= 7 ? "bg-green-400" : score >= 5 ? "bg-yellow-400" : "bg-red-400"}`}
           style={{ width: `${score * 10}%` }}
         />
       </div>
-      <span className={`text-sm font-semibold tabular-nums w-6 text-right ${scoreColor(score)}`}>
+      <span className={`text-sm font-semibold tabular-nums w-5 text-right ${scoreColor(score)}`}>
         {score}
       </span>
     </div>
@@ -56,21 +56,15 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
     setFetchError("");
     setJdText("");
     setResult(null);
-
     try {
       const response = await fetch("/api/fetch-jd", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: urlInput.trim() }),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
-        setFetchError(
-          (data.error ?? "Could not fetch that URL.") +
-            " Paste the job description text instead."
-        );
+        setFetchError((data.error ?? "Could not fetch that URL.") + " Paste the job description text instead.");
       } else {
         setJdText(data.text);
       }
@@ -86,16 +80,13 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
     setIsScoring(true);
     setScoreError("");
     setResult(null);
-
     try {
       const response = await fetch("/api/score-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resumeText: profileText, jobDescription: jdText }),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         setScoreError(data.error ?? "Scoring failed. Please try again.");
       } else {
@@ -117,93 +108,72 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
     setResult(null);
   }
 
-  const recStyle =
-    result && RECOMMENDATION_STYLES[result.recommendation]
-      ? RECOMMENDATION_STYLES[result.recommendation]
-      : { bg: "bg-gray-50", text: "text-gray-800", border: "border-gray-300" };
+  const recStyle = result
+    ? (RECOMMENDATION_STYLES[result.recommendation] ?? { bg: "bg-gray-50", text: "text-gray-700", ring: "ring-gray-200" })
+    : null;
 
   return (
-    <div className="space-y-6">
-      {/* Input section */}
+    <div className="space-y-5">
       {!result && (
         <>
           {/* Mode toggle */}
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
-            <button
-              onClick={() => { setMode("paste"); setFetchError(""); }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                mode === "paste"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Paste JD
-            </button>
-            <button
-              onClick={() => { setMode("url"); setFetchError(""); }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                mode === "url"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Fetch from URL
-            </button>
+          <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+            {(["paste", "url"] as InputMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => { setMode(m); setFetchError(""); }}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  mode === m ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {m === "paste" ? "Paste JD" : "Fetch from URL"}
+              </button>
+            ))}
           </div>
 
           {/* Paste mode */}
           {mode === "paste" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Paste the job description
-              </label>
-              <textarea
-                value={jdText}
-                onChange={(e) => { setJdText(e.target.value); setResult(null); }}
-                placeholder="Paste the full job description here..."
-                rows={14}
-                className="w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-900 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-              />
-            </div>
+            <textarea
+              value={jdText}
+              onChange={(e) => { setJdText(e.target.value); setResult(null); }}
+              placeholder="Paste the full job description here…"
+              rows={14}
+              className="w-full border border-gray-200 rounded-2xl p-4 text-sm text-gray-900 font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-y placeholder:text-gray-300 transition-shadow"
+            />
           )}
 
           {/* URL mode */}
           {mode === "url" && (
             <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Job posting URL
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
-                    placeholder="https://..."
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    onClick={handleFetchUrl}
-                    disabled={!urlInput.trim() || isFetching}
-                    className="px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Fetch
-                  </button>
-                </div>
-                <p className="mt-1.5 text-xs text-gray-500">
-                  Many job boards block automated fetches — paste the text if this fails.
-                </p>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
+                  placeholder="https://…"
+                  className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent transition-shadow"
+                />
+                <button
+                  onClick={handleFetchUrl}
+                  disabled={!urlInput.trim() || isFetching}
+                  className="px-4 py-2.5 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  Fetch
+                </button>
               </div>
+              <p className="text-xs text-gray-400">
+                Many job boards block automated fetches — paste the text if this fails.
+              </p>
 
               {isFetching && <LoadingState message="Fetching job description…" />}
 
               {fetchError && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <div className="p-4 bg-amber-50 rounded-xl ring-1 ring-amber-100">
                   <p className="text-sm text-amber-800">{fetchError}</p>
                   <button
                     onClick={() => { setMode("paste"); setFetchError(""); }}
-                    className="mt-1 text-xs text-amber-700 underline hover:no-underline"
+                    className="mt-1 text-xs text-amber-600 underline hover:no-underline"
                   >
                     Switch to paste mode
                   </button>
@@ -211,34 +181,25 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
               )}
 
               {jdText && !isFetching && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Fetched text — confirm it looks right
-                  </label>
-                  <textarea
-                    value={jdText}
-                    onChange={(e) => setJdText(e.target.value)}
-                    rows={12}
-                    className="w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 font-mono leading-relaxed bg-gray-50 resize-y"
-                  />
-                </div>
+                <textarea
+                  value={jdText}
+                  onChange={(e) => setJdText(e.target.value)}
+                  rows={12}
+                  className="w-full border border-gray-100 rounded-2xl p-4 text-sm text-gray-600 font-mono leading-relaxed bg-gray-50 resize-y"
+                />
               )}
             </div>
           )}
 
-          {/* Score button */}
           {jdText.trim() && !isScoring && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors"
+                className="px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors"
               >
                 Score This Job
               </button>
-              <button
-                onClick={handleReset}
-                className="text-sm text-gray-500 hover:text-gray-700 underline"
-              >
+              <button onClick={handleReset} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
                 Clear
               </button>
             </div>
@@ -247,12 +208,9 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
           {isScoring && <LoadingState message="Scoring job fit — this takes 10–20 seconds…" />}
 
           {scoreError && !isScoring && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
               <p className="text-sm text-red-700">{scoreError}</p>
-              <button
-                onClick={handleScore}
-                className="mt-1 text-xs text-red-600 underline hover:no-underline"
-              >
+              <button onClick={handleScore} className="mt-1 text-xs text-red-500 underline hover:no-underline">
                 Try again
               </button>
             </div>
@@ -261,80 +219,76 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
       )}
 
       {/* Results */}
-      {result && (
-        <div className="space-y-5">
-          {/* Overall score + recommendation */}
-          <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+      {result && recStyle && (
+        <div className="space-y-4">
+
+          {/* Score + recommendation */}
+          <div className="bg-slate-900 rounded-2xl p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
                   Overall Fit
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-5xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
+                  <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
                     {result.overall_fit}
                   </span>
-                  <span className="text-xl text-gray-400 font-light">/10</span>
+                  <span className="text-2xl text-slate-600 font-light">/10</span>
                 </div>
-                <p className="text-sm text-gray-600 mt-2 leading-snug max-w-sm">
+                <p className="text-sm text-slate-400 mt-2 leading-snug max-w-sm">
                   {result.summary}
                 </p>
               </div>
-              <div className={`shrink-0 px-4 py-2 rounded-lg border text-sm font-semibold ${recStyle.bg} ${recStyle.text} ${recStyle.border}`}>
+              <span className={`shrink-0 px-4 py-2 rounded-xl text-sm font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
                 {result.recommendation}
-              </div>
+              </span>
             </div>
           </div>
 
-          {/* Dimension scores */}
-          <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+          {/* Dimensions */}
+          <div className="bg-white rounded-2xl p-5 ring-1 ring-gray-200/80 shadow-sm">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
               Dimension Scores
-            </h3>
+            </p>
             <div className="space-y-4">
-              {(
-                [
-                  ["Functional Fit",  result.dimensions.functional_fit],
-                  ["Seniority Fit",   result.dimensions.seniority_fit],
-                  ["Industry Fit",    result.dimensions.industry_fit],
-                  ["Keyword Overlap", result.dimensions.keyword_overlap],
-                ] as const
-              ).map(([label, dim]) => (
+              {([
+                ["Functional Fit",  result.dimensions.functional_fit],
+                ["Seniority Fit",   result.dimensions.seniority_fit],
+                ["Industry Fit",    result.dimensions.industry_fit],
+                ["Keyword Overlap", result.dimensions.keyword_overlap],
+              ] as const).map(([label, dim]) => (
                 <div key={label}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-700">{label}</span>
-                  </div>
+                  <p className="text-sm font-medium text-gray-700 mb-1.5">{label}</p>
                   <ScoreBar score={dim.score} />
-                  <p className="mt-1 text-xs text-gray-500 leading-snug">{dim.reasoning}</p>
+                  <p className="mt-1.5 text-xs text-gray-400 leading-snug">{dim.reasoning}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* What she has / What's missing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+          {/* What you have / Missing */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="bg-white rounded-2xl p-5 ring-1 ring-gray-200/80 shadow-sm">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
                 What You Have
-              </h3>
+              </p>
               <ul className="space-y-2">
                 {result.what_she_has.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-green-500" />
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-green-400" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+            <div className="bg-white rounded-2xl p-5 ring-1 ring-gray-200/80 shadow-sm">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
                 What&apos;s Missing
-              </h3>
+              </p>
               <ul className="space-y-2">
                 {result.whats_missing.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-red-400" />
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-red-400" />
                     {item}
                   </li>
                 ))}
@@ -344,23 +298,17 @@ export default function JobFitScorer({ profileText, onJobScored }: JobFitScorerP
 
           {/* Recruiter concern */}
           {result.recruiter_concern && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-1">
+            <div className="bg-amber-50 rounded-2xl p-5 ring-1 ring-amber-100">
+              <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1.5">
                 Recruiter Concern Flag
               </p>
               <p className="text-sm text-amber-900">{result.recruiter_concern}</p>
             </div>
           )}
 
-          {/* Score another */}
-          <div className="pt-2">
-            <button
-              onClick={handleReset}
-              className="text-sm text-blue-600 hover:underline font-medium"
-            >
-              ← Score a different job
-            </button>
-          </div>
+          <button onClick={handleReset} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+            ← Score a different job
+          </button>
         </div>
       )}
     </div>

@@ -20,7 +20,6 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
   const [confirmed, setConfirmed] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const activeText = mode === "upload" ? extractedText : pastedText;
 
   async function handleFile(file: File) {
@@ -43,14 +42,8 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
     try {
       const formData = new FormData();
       formData.append("file", file);
-
-      const response = await fetch("/api/parse-resume", {
-        method: "POST",
-        body: formData,
-      });
-
+      const response = await fetch("/api/parse-resume", { method: "POST", body: formData });
       const data = await response.json();
-
       if (!response.ok) {
         setError(data.error ?? "Failed to parse file. Try pasting your resume text directly.");
         setFileName("");
@@ -77,21 +70,6 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
     if (file) handleFile(file);
   }
 
-  function handleDragOver(e: DragEvent<HTMLDivElement>) {
-    e.preventDefault();
-    setIsDragging(true);
-  }
-
-  function handleDragLeave() {
-    setIsDragging(false);
-  }
-
-  function handleConfirm() {
-    if (!activeText.trim()) return;
-    onProfileConfirmed(activeText.trim());
-    setConfirmed(true);
-  }
-
   function handleReset() {
     setExtractedText("");
     setPastedText("");
@@ -101,44 +79,43 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
+  function handleConfirm() {
+    if (!activeText.trim()) return;
+    onProfileConfirmed(activeText.trim());
+    setConfirmed(true);
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Mode toggle */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
-        <button
-          onClick={() => { setMode("upload"); setError(""); }}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-            mode === "upload"
-              ? "bg-white text-gray-900 shadow-sm"
-              : "text-gray-600 hover:text-gray-900"
-          }`}
-        >
-          Upload file
-        </button>
-        <button
-          onClick={() => { setMode("paste"); setError(""); }}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-            mode === "paste"
-              ? "bg-white text-gray-900 shadow-sm"
-              : "text-gray-600 hover:text-gray-900"
-          }`}
-        >
-          Paste text
-        </button>
+      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+        {(["upload", "paste"] as InputMode[]).map((m) => (
+          <button
+            key={m}
+            onClick={() => { setMode(m); setError(""); }}
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              mode === m
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            {m === "upload" ? "Upload file" : "Paste text"}
+          </button>
+        ))}
       </div>
 
-      {/* Upload mode */}
+      {/* Upload zone */}
       {mode === "upload" && (
         <div>
           <div
             onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+            onDragLeave={() => setIsDragging(false)}
             onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-lg p-10 text-center cursor-pointer transition-colors ${
+            className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
               isDragging
-                ? "border-blue-400 bg-blue-50"
-                : "border-gray-300 hover:border-gray-400 bg-gray-50"
+                ? "border-slate-400 bg-slate-50"
+                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
             }`}
           >
             <input
@@ -148,44 +125,35 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
               onChange={handleFileChange}
               className="hidden"
             />
-            <div className="space-y-2">
-              <svg
-                className="mx-auto h-10 w-10 text-gray-400"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium text-blue-600">Click to upload</span> or drag and drop
-              </p>
-              <p className="text-xs text-gray-500">PDF or DOCX, max 4MB</p>
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 16v-8m0 0l-3 3m3-3l3 3M6 20h12a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  <span className="text-blue-600">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-xs text-gray-400 mt-1">PDF or DOCX · max 4MB</p>
+              </div>
             </div>
           </div>
 
-          {isLoading && <LoadingState message="Extracting text from file..." />}
+          {isLoading && <LoadingState message="Extracting text from file…" />}
 
           {error && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+            <div className="mt-3 p-4 bg-red-50 rounded-xl border border-red-100">
               <p className="text-sm text-red-700">{error}</p>
-              <button
-                onClick={handleReset}
-                className="mt-1 text-xs text-red-600 underline hover:no-underline"
-              >
+              <button onClick={handleReset} className="mt-1 text-xs text-red-500 underline hover:no-underline">
                 Try again
               </button>
             </div>
           )}
 
           {fileName && !isLoading && !error && (
-            <p className="mt-2 text-sm text-gray-600">
-              <span className="font-medium">Loaded:</span> {fileName}
+            <p className="mt-2.5 text-sm text-gray-500">
+              <span className="font-medium text-gray-700">{fileName}</span> loaded
             </p>
           )}
         </div>
@@ -194,60 +162,50 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
       {/* Paste mode */}
       {mode === "paste" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Paste your resume text
-          </label>
           <textarea
             value={pastedText}
             onChange={(e) => { setPastedText(e.target.value); setConfirmed(false); }}
-            placeholder="Paste the full text of your resume here..."
+            placeholder="Paste the full text of your resume here…"
             rows={14}
-            className="w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-900 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+            className="w-full border border-gray-200 rounded-2xl p-4 text-sm text-gray-900 font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-y placeholder:text-gray-300 transition-shadow"
           />
         </div>
       )}
 
-      {/* Extracted text preview (upload mode) */}
+      {/* Extracted text preview */}
       {mode === "upload" && extractedText && !isLoading && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Extracted text — confirm it looks right
-          </label>
+          <p className="text-xs font-medium text-gray-500 mb-2">Extracted text — confirm it looks right</p>
           <textarea
             readOnly
             value={extractedText}
             rows={14}
-            className="w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 font-mono leading-relaxed bg-gray-50 resize-y"
+            className="w-full border border-gray-100 rounded-2xl p-4 text-sm text-gray-600 font-mono leading-relaxed bg-gray-50 resize-y"
           />
         </div>
       )}
 
       {/* Confirm button */}
       {activeText.trim() && !isLoading && (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
             onClick={handleConfirm}
             disabled={confirmed}
-            className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               confirmed
                 ? "bg-green-600 text-white cursor-default"
-                : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+                : "bg-slate-900 text-white hover:bg-slate-800"
             }`}
           >
-            {confirmed ? "Profile confirmed" : "Confirm Profile"}
+            {confirmed ? "✓ Profile confirmed" : "Confirm Profile"}
           </button>
 
           {confirmed && (
-            <p className="text-sm text-green-700 font-medium">
-              Profile loaded. Ready to score jobs.
-            </p>
+            <p className="text-sm text-green-700 font-medium">Ready to score jobs.</p>
           )}
 
           {!confirmed && (
-            <button
-              onClick={handleReset}
-              className="text-sm text-gray-500 hover:text-gray-700 underline"
-            >
+            <button onClick={handleReset} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
               Clear
             </button>
           )}
