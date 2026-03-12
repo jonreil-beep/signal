@@ -9,6 +9,8 @@ interface TailoringBriefProps {
   jobDescription: string;
   result: TailoringBriefResult | null;
   onResultChange: (result: TailoringBriefResult) => void;
+  outreachResult: OutreachResult | null;
+  onOutreachResultChange: (result: OutreachResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -73,6 +75,8 @@ export default function TailoringBrief({
   jobDescription,
   result,
   onResultChange,
+  outreachResult,
+  onOutreachResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
@@ -80,7 +84,6 @@ export default function TailoringBrief({
   const [error, setError] = useState<string>("");
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
   const [outreachError, setOutreachError] = useState<string>("");
-  const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
 
   if (!profileText) {
     return (
@@ -117,7 +120,7 @@ export default function TailoringBrief({
   async function handleGenerate() {
     setIsGenerating(true);
     setError("");
-    setOutreachResult(null);
+    onOutreachResultChange(null); // clear stale outreach when re-generating brief
     try {
       const response = await fetch("/api/tailor", {
         method: "POST",
@@ -141,7 +144,7 @@ export default function TailoringBrief({
     if (!result?.outreach_angle) return;
     setIsGeneratingOutreach(true);
     setOutreachError("");
-    setOutreachResult(null);
+    onOutreachResultChange(null);
     try {
       const response = await fetch("/api/generate-outreach", {
         method: "POST",
@@ -156,7 +159,7 @@ export default function TailoringBrief({
       if (!response.ok) {
         setOutreachError(data.error ?? "Failed to generate outreach messages. Please try again.");
       } else {
-        setOutreachResult(data as OutreachResult);
+        onOutreachResultChange(data as OutreachResult);
       }
     } catch {
       setOutreachError("Network error. Check your connection and try again.");

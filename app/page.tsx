@@ -7,7 +7,7 @@ import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
 import LoadingState from "@/components/LoadingState";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, TrackedJob } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, TrackedJob } from "@/types";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
@@ -35,6 +35,7 @@ export default function Home() {
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
+  const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
 
   // Job tracker
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
@@ -80,6 +81,7 @@ export default function Home() {
       jobDescription: jd,
       jobFitResult: result,
       tailoringResult: null,
+      outreachResult: null,
       scoredAt: new Date(),
     };
     setTrackedJobs((prev) => [...prev, newJob]);
@@ -87,13 +89,24 @@ export default function Home() {
     setJobDescription(jd);
     setJobFitResult(result);
     setTailoringResult(null);
+    setOutreachResult(null);
   }
 
   function handleTailoringResult(result: TailoringBriefResult) {
     setTailoringResult(result);
+    setOutreachResult(null); // new brief invalidates old outreach
     if (activeJobId) {
       setTrackedJobs((prev) =>
-        prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result } : j))
+        prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result, outreachResult: null } : j))
+      );
+    }
+  }
+
+  function handleOutreachResult(result: OutreachResult | null) {
+    setOutreachResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, outreachResult: result } : j))
       );
     }
   }
@@ -102,6 +115,7 @@ export default function Home() {
     setJobDescription("");
     setJobFitResult(null);
     setTailoringResult(null);
+    setOutreachResult(null);
     setActiveJobId(null);
   }
 
@@ -110,6 +124,7 @@ export default function Home() {
     setJobDescription(job.jobDescription);
     setJobFitResult(job.jobFitResult);
     setTailoringResult(job.tailoringResult);
+    setOutreachResult(job.outreachResult);
     setActiveTab(goTo);
   }
 
@@ -297,6 +312,8 @@ export default function Home() {
               jobDescription={jobDescription}
               result={tailoringResult}
               onResultChange={handleTailoringResult}
+              outreachResult={outreachResult}
+              onOutreachResultChange={handleOutreachResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

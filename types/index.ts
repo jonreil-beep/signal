@@ -85,5 +85,6 @@ export interface TrackedJob {
   jobDescription: string;
   jobFitResult: JobFitResult;
   tailoringResult: TailoringBriefResult | null;
+  outreachResult: OutreachResult | null;
   scoredAt: Date;
 }
