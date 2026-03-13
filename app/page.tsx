@@ -94,6 +94,9 @@ export default function Home() {
     if (profileRes.data?.resume_text) {
       setProfileText(profileRes.data.resume_text);
     }
+    if (profileRes.data?.cluster_result) {
+      setClusterResult(profileRes.data.cluster_result as RoleClusterResult);
+    }
 
     if (jobsRes.data) {
       const jobs: TrackedJob[] = jobsRes.data.map((row) => ({
@@ -153,7 +156,7 @@ export default function Home() {
     setAnalyzeError("");
     setUpdatingProfile(false);
     if (user) {
-      await supabase.from("profiles").upsert({ id: user.id, resume_text: text, updated_at: new Date().toISOString() });
+      await supabase.from("profiles").upsert({ id: user.id, resume_text: text, cluster_result: null, updated_at: new Date().toISOString() });
     }
   }
 
@@ -173,6 +176,9 @@ export default function Home() {
         setAnalyzeError(data.error ?? "Analysis failed. Please try again.");
       } else {
         setClusterResult(data as RoleClusterResult);
+        if (user) {
+          await supabase.from("profiles").update({ cluster_result: data }).eq("id", user.id);
+        }
       }
     } catch {
       setAnalyzeError("Network error. Check your connection and try again.");
