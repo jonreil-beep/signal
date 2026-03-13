@@ -161,7 +161,7 @@ export default function JobTracker({ jobs, onSelectJob, onRemoveJob, onRenameJob
                 onClick={() => onSelectJob(job, "tailoring-brief")}
                 className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
               >
-                View Brief →
+                View Prep →
               </button>
             </div>
           </div>

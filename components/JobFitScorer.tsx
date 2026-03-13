@@ -315,7 +315,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               onClick={onGoToTailoringBrief}
               className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
             >
-              Go to Tailoring Brief →
+              Go to Prep →
             </button>
           </div>
         </div>
