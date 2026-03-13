@@ -217,9 +217,10 @@ const PHOTO_EXAMPLES = [
     caption: "Clean desk, good light, room to breathe. Negative space is not emptiness — it signals confidence and clarity.",
   },
   {
-    id: "1560250097-0b93528c311a",
+    id: "1507003211169-0a1dd7228f2d",
     label: "The professional",
     caption: "When shooting people, frame them with authority. Composed, not stiff. Confident posture. Never a stock-photo smile.",
+    crop: "faces",
   },
 ];
 
@@ -628,7 +629,7 @@ export default function BrandGuidelines() {
               <div className="rounded-2xl overflow-hidden bg-brand-text/5 ring-1 ring-brand-text/8 mb-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={`https://images.unsplash.com/photo-${photo.id}?w=600&h=400&fit=crop&auto=format&q=80`}
+                  src={`https://images.unsplash.com/photo-${photo.id}?w=600&h=400&fit=crop&crop=${"crop" in photo ? photo.crop : "entropy"}&auto=format&q=80`}
                   alt={photo.label}
                   className="w-full h-48 object-cover"
                   loading="lazy"
