@@ -14,7 +14,7 @@ import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, Outr
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
   { id: "job-fit", label: "Job Fit" },
-  { id: "tailoring-brief", label: "Tailoring Brief" },
+  { id: "tailoring-brief", label: "Prep" },
 ];
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -634,7 +634,7 @@ export default function Home() {
           <div>
             <div className="mb-7">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="text-base font-semibold text-brand-text">Tailoring Brief</h2>
+                <h2 className="text-base font-semibold text-brand-text">Prep</h2>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <span className="text-sm font-medium text-brand-accent truncate">
                     {trackedJobs.find(j => j.id === activeJobId)!.label}
@@ -642,7 +642,7 @@ export default function Home() {
                 )}
               </div>
               <p className="text-sm text-brand-text/50 mt-1">
-                A targeted brief for this job — what to emphasize, what language to mirror, what concern to preempt.
+                Tailoring brief, outreach draft, and resume edits — everything you need to apply with confidence.
               </p>
             </div>
             <TailoringBrief
