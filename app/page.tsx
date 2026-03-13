@@ -155,10 +155,10 @@ export default function Home() {
       {/* Header */}
       <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">Signal</h1>
+          <button onClick={() => setActiveTab("profile")} className="text-left">
+            <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors">SIGNAL</h1>
             <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
-          </div>
+          </button>
           {(profileText || jobDescription) && (
             <div className="hidden sm:flex items-center gap-2 text-xs">
               <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
