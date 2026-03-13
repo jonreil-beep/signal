@@ -11,6 +11,7 @@ import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
+import Link from "next/link";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
@@ -361,6 +362,9 @@ export default function Home() {
                 Sign out
               </button>
             </div>
+            <Link href="/how-it-works" className="mt-6 inline-block text-sm text-white/30 hover:text-white/50 transition-colors">
+              How it works →
+            </Link>
           </div>
         </div>
       );
@@ -407,12 +411,17 @@ export default function Home() {
               {magicLinkError && (
                 <p className="text-sm text-red-400">{magicLinkError}</p>
               )}
-              <button
-                onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
-                className="text-sm text-white/30 hover:text-white/50 transition-colors"
-              >
-                Continue without saving →
-              </button>
+              <div className="flex items-center gap-5">
+                <button
+                  onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
+                  className="text-sm text-white/30 hover:text-white/50 transition-colors"
+                >
+                  Continue without saving →
+                </button>
+                <Link href="/how-it-works" className="text-sm text-white/30 hover:text-white/50 transition-colors">
+                  How it works →
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -462,17 +471,22 @@ export default function Home() {
                 </span>
               </div>
             )}
-            {user && (
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-white/40 hidden sm:block">{user.email}</span>
-                <button
-                  onClick={handleSignOut}
-                  className="text-xs text-white/50 hover:text-white/80 transition-colors"
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-4">
+              <Link href="/how-it-works" className="text-xs text-white/40 hover:text-white/60 transition-colors hidden sm:block">
+                How it works
+              </Link>
+              {user && (
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-white/40 hidden sm:block">{user.email}</span>
+                  <button
+                    onClick={handleSignOut}
+                    className="text-xs text-white/50 hover:text-white/80 transition-colors"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
