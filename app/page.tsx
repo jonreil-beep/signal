@@ -605,7 +605,14 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
+                    {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
+                      <span className="text-sm font-medium text-brand-accent truncate">
+                        {trackedJobs.find(j => j.id === activeJobId)!.label}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-brand-text/50 mt-1">
                     Paste a job description or fetch from URL. Get an honest fit score with clear reasoning.
                   </p>
@@ -626,7 +633,14 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-brand-text">Tailoring Brief</h2>
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="text-base font-semibold text-brand-text">Tailoring Brief</h2>
+                {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
+                  <span className="text-sm font-medium text-brand-accent truncate">
+                    {trackedJobs.find(j => j.id === activeJobId)!.label}
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-brand-text/50 mt-1">
                 A targeted brief for this job — what to emphasize, what language to mirror, what concern to preempt.
               </p>
