@@ -13,6 +13,7 @@ const config: Config = {
           bg:     "#F8F7F4",
           text:   "#1A1A1A",
           accent: "#2E4057",
+          g:      "#C5892D",
         },
         status: {
           apply:   "#2D6A4F",

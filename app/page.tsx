@@ -10,6 +10,7 @@ import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
+import SignalWordmark from "@/components/SignalWordmark";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
@@ -324,7 +325,7 @@ export default function Home() {
         <div className="min-h-screen bg-brand-text flex items-center px-6">
           <div className="max-w-2xl mx-auto w-full py-20">
             <div className="mb-10">
-              <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
+              <h1 className="text-4xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
               <p className="text-sm text-white/40 mt-2">Job search copilot</p>
             </div>
             <p className="text-base text-white/50 leading-relaxed mb-8 max-w-md">
@@ -364,7 +365,7 @@ export default function Home() {
       <div className="min-h-screen bg-brand-text flex items-center px-6">
         <div className="max-w-2xl mx-auto w-full py-20">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
+            <h1 className="text-4xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
             <p className="text-sm text-white/40 mt-2">Job search copilot</p>
           </div>
           <p className="text-xl text-white/70 leading-relaxed mb-3">
@@ -436,7 +437,7 @@ export default function Home() {
       <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <button onClick={() => setShowLanding(true)} className="text-left">
-            <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors">SIGNAL</h1>
+            <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></h1>
             <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
           </button>
           <div className="flex items-center gap-4">
