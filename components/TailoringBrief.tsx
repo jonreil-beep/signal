@@ -99,7 +99,7 @@ function ActionSection({
     <div className="bg-white rounded-2xl ring-1 ring-brand-text/8 shadow-sm overflow-hidden">
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
-        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
+        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text">{title}</p>
         {!isLoading && (
           <button
             onClick={onAction}
