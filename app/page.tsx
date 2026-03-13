@@ -362,7 +362,7 @@ export default function Home() {
                 Sign out
               </button>
             </div>
-            <Link href="/how-it-works" className="mt-6 inline-block text-sm text-white/30 hover:text-white/50 transition-colors">
+            <Link href="/how-it-works" className="mt-6 inline-block text-sm text-white/65 hover:text-white transition-colors underline underline-offset-2 decoration-white/30">
               How it works →
             </Link>
           </div>
@@ -418,7 +418,7 @@ export default function Home() {
                 >
                   Continue without saving →
                 </button>
-                <Link href="/how-it-works" className="text-sm text-white/30 hover:text-white/50 transition-colors">
+                <Link href="/how-it-works" className="text-sm text-white/65 hover:text-white transition-colors underline underline-offset-2 decoration-white/30">
                   How it works →
                 </Link>
               </div>
@@ -472,7 +472,7 @@ export default function Home() {
               </div>
             )}
             <div className="flex items-center gap-4">
-              <Link href="/how-it-works" className="text-xs text-white/40 hover:text-white/60 transition-colors hidden sm:block">
+              <Link href="/how-it-works" className="text-xs text-white/60 hover:text-white/90 transition-colors hidden sm:block">
                 How it works
               </Link>
               {user && (
