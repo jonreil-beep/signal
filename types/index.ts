@@ -1,6 +1,6 @@
 // Shared TypeScript types for Signal
 
-export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs";
+export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs" | "brand";
 
 export interface ParseResumeResponse {
   text: string;

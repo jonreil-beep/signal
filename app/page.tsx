@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
+import BrandGuidelines from "@/components/BrandGuidelines";
 import LoadingState from "@/components/LoadingState";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, TrackedJob } from "@/types";
 
@@ -196,14 +196,18 @@ export default function Home() {
               );
             })}
 
-            {/* Brand guidelines link */}
+            {/* Brand guidelines tab */}
             <div className="ml-auto">
-              <Link
-                href="/brand"
-                className="flex items-center px-4 py-4 text-sm font-medium text-brand-text/30 hover:text-brand-text/60 border-b-2 border-transparent transition-all"
+              <button
+                onClick={() => setActiveTab("brand")}
+                className={`flex items-center px-4 py-4 text-sm font-medium border-b-2 transition-all ${
+                  activeTab === "brand"
+                    ? "border-brand-accent text-brand-accent"
+                    : "border-transparent text-brand-text/30 hover:text-brand-text/60"
+                }`}
               >
                 Brand
-              </Link>
+              </button>
             </div>
           </nav>
         </div>
@@ -345,6 +349,11 @@ export default function Home() {
               onRemoveJob={handleRemoveJob}
             />
           </div>
+        )}
+
+        {/* ── Brand tab ── */}
+        {activeTab === "brand" && (
+          <BrandGuidelines />
         )}
 
       </main>
