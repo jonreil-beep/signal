@@ -40,6 +40,7 @@ export default function Home() {
   const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("profile");
   const [profileText, setProfileText] = useState<string>("");
+  const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
@@ -145,6 +146,7 @@ export default function Home() {
     setProfileText(text);
     setClusterResult(null);
     setAnalyzeError("");
+    setUpdatingProfile(false);
     if (user) {
       await supabase.from("profiles").upsert({ id: user.id, resume_text: text, updated_at: new Date().toISOString() });
     }
@@ -286,6 +288,43 @@ export default function Home() {
 
   // ── Landing screen ──
   if (showLanding) {
+    // Already signed in — show welcome back view
+    if (user) {
+      return (
+        <div className="min-h-screen bg-brand-text flex items-center px-6">
+          <div className="max-w-2xl mx-auto w-full py-20">
+            <div className="mb-12">
+              <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
+              <p className="text-sm text-white/40 mt-2">Job search copilot</p>
+            </div>
+            <p className="text-xl text-white/70 leading-relaxed mb-10">
+              Welcome back{user.email ? `, ${user.email}` : ""}.
+              {trackedJobs.length > 0
+                ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
+                : profileText
+                ? " Your profile is saved and ready."
+                : ""}
+            </p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowLanding(false)}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+              >
+                Back to app →
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="text-sm text-white/40 hover:text-white/60 transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Not signed in — show magic link form
     return (
       <div className="min-h-screen bg-brand-text flex items-center px-6">
         <div className="max-w-2xl mx-auto w-full py-20">
@@ -455,9 +494,42 @@ export default function Home() {
               </p>
             </div>
 
-            <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
+            {/* Resume loaded card — shown when profile exists and not in update mode */}
+            {profileText && !updatingProfile ? (
+              <div className="rounded-2xl border border-brand-text/10 bg-white p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-brand-text">Resume saved</p>
+                    <p className="mt-1.5 text-xs text-brand-text/40 font-mono leading-relaxed line-clamp-3">
+                      {profileText.slice(0, 240)}…
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setUpdatingProfile(true)}
+                    className="shrink-0 text-sm text-brand-accent hover:text-brand-accent/70 font-medium transition-colors"
+                  >
+                    Update
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {updatingProfile && (
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-brand-text/50">Upload or paste a new resume to replace the saved one.</p>
+                    <button
+                      onClick={() => setUpdatingProfile(false)}
+                      className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+                <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
+              </div>
+            )}
 
-            {profileText && !isAnalyzing && (
+            {profileText && !updatingProfile && !isAnalyzing && (
               <div className="mt-6 pt-6 border-t border-brand-text/8">
                 <div className="flex items-center justify-between">
                   <div>
@@ -495,7 +567,7 @@ export default function Home() {
               </div>
             )}
 
-            {clusterResult && !isAnalyzing && (
+            {clusterResult && !isAnalyzing && !updatingProfile && (
               <>
                 <RoleClusterResults result={clusterResult} />
                 <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
