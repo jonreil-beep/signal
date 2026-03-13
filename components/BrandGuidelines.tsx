@@ -1,3 +1,5 @@
+import SignalWordmark from "@/components/SignalWordmark";
+
 // ── Color data ──────────────────────────────────────────────────────────────
 
 const CORE_COLORS = [
@@ -75,6 +77,7 @@ const TYPE_SCALE = [
     tracking: "−0.02em",
     className: "text-[2.25rem] font-bold leading-[1.2] tracking-[-0.02em]",
     sample: "Signal",
+    sampleNode: <SignalWordmark />,
   },
   {
     level: "H1",
@@ -507,7 +510,7 @@ export default function BrandGuidelines() {
               {/* Sample column */}
               <div className="flex-1 min-w-0">
                 <p className={`${entry.className} text-brand-text break-words`}>
-                  {entry.sample}
+                  {"sampleNode" in entry ? entry.sampleNode : entry.sample}
                 </p>
               </div>
             </div>
