@@ -150,6 +150,44 @@ const TYPE_SCALE = [
   },
 ];
 
+// ── Brand house ──────────────────────────────────────────────────────────────
+
+const BRAND_HOUSE = {
+  keyInsight:
+    "Experienced professionals don\u2019t fail at job searching because they lack qualifications. They fail because they apply without clarity \u2014 to the wrong roles, with the wrong positioning, wasting the leverage they\u2019ve spent years building.",
+
+  belief:
+    "The job search is a signal problem. Every application sends signals about your fit, your level, your positioning \u2014 and most candidates don\u2019t know what signals they\u2019re sending. Recruiters pattern-match against invisible templates at speed. The professionals who land great roles aren\u2019t always the most qualified. They\u2019re the ones who understood the template and positioned deliberately against it.",
+
+  purpose:
+    "To turn experienced professionals from reactive applicants into deliberate strategists \u2014 so they pursue fewer roles with more confidence, and land the ones that actually fit.",
+
+  promise:
+    "An honest read, every time. Signal tells you the fit before you invest the time.",
+
+  position:
+    "For experienced professionals who are selective about their next move, Signal is the only job search tool that gives you an honest, specific fit assessment \u2014 not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it. Unlike Indeed or LinkedIn, which optimize for volume and visibility, Signal optimizes for precision.",
+
+  pillars: [
+    {
+      label: "Honest over comfortable",
+      body: "Signal doesn\u2019t tell you you\u2019re doing great. It tells you what\u2019s true: the fit score, the gaps, the recruiter concern. No softening. Truth is the service.",
+    },
+    {
+      label: "Specific over general",
+      body: "Every output is for this job, this profile, this moment \u2014 not \u201ccandidates like you.\u201d The exact language to mirror. The concern to preempt. The strength to lead with.",
+    },
+    {
+      label: "Strategist over applicant",
+      body: "Signal reframes the search from passive (apply, wait, hope) to active (evaluate, position, decide). You\u2019re not a job seeker. You\u2019re a professional choosing where to spend your leverage.",
+    },
+    {
+      label: "Precision over volume",
+      body: "Signal isn\u2019t built to help you apply to more jobs. It\u2019s built to help you apply to the right ones. Fewer applications, better positioned, higher confidence.",
+    },
+  ],
+};
+
 // ── Tone of voice ────────────────────────────────────────────────────────────
 
 const VOICE_PRINCIPLES = [
@@ -231,6 +269,77 @@ export default function BrandGuidelines() {
           Living reference for Signal&apos;s visual and verbal identity. This page is itself built using every token it documents.
         </p>
       </div>
+
+      {/* ── Brand House ── */}
+      <section className="mb-0">
+        <SectionLabel>00 — Brand House</SectionLabel>
+
+        {/* Key Insight */}
+        <div className="mb-4">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Key Insight</p>
+          <div className="bg-white rounded-2xl p-6 ring-1 ring-brand-text/8">
+            <p className="text-[1.125rem] font-normal leading-[1.6] text-brand-text/70 italic">
+              &ldquo;{BRAND_HOUSE.keyInsight}&rdquo;
+            </p>
+          </div>
+        </div>
+
+        {/* Belief */}
+        <div className="mb-4">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Belief</p>
+          <div className="bg-brand-text rounded-2xl p-6">
+            <p className="text-[1rem] font-normal leading-[1.7] text-white/80">
+              {BRAND_HOUSE.belief}
+            </p>
+          </div>
+        </div>
+
+        {/* Purpose + Promise in a 2-col grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Purpose</p>
+            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 h-full">
+              <p className="text-sm font-normal leading-[1.6] text-brand-text/80">{BRAND_HOUSE.purpose}</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Promise</p>
+            <div className="bg-brand-accent rounded-2xl p-5 h-full">
+              <p className="text-sm font-semibold text-white/90 leading-[1.6]">{BRAND_HOUSE.promise}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Position */}
+        <div className="mb-4">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Position</p>
+          <div className="bg-white rounded-2xl p-6 ring-1 ring-brand-text/8">
+            <p className="text-sm font-normal leading-[1.7] text-brand-text/70">{BRAND_HOUSE.position}</p>
+          </div>
+        </div>
+
+        {/* Pillars */}
+        <div>
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Pillars</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {BRAND_HOUSE.pillars.map((pillar, i) => (
+              <div key={i} className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8">
+                <div className="flex items-start gap-3">
+                  <span className="text-[0.8125rem] font-medium tracking-[0.06em] text-status-skip shrink-0 mt-0.5 tabular-nums">
+                    0{i + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-brand-text mb-1.5">{pillar.label}</p>
+                    <p className="text-sm font-normal leading-[1.6] text-brand-text/60">{pillar.body}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Divider />
 
       {/* ── Color Palette ── */}
       <section>
