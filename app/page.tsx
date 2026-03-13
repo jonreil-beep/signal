@@ -6,7 +6,6 @@ import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
-import BrandGuidelines from "@/components/BrandGuidelines";
 import LoadingState from "@/components/LoadingState";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
@@ -210,19 +209,6 @@ export default function Home() {
               );
             })}
 
-            {/* Brand guidelines tab */}
-            <div className="ml-auto">
-              <button
-                onClick={() => setActiveTab("brand")}
-                className={`flex items-center px-4 py-4 text-sm font-medium border-b-2 transition-all ${
-                  activeTab === "brand"
-                    ? "border-brand-accent text-brand-accent"
-                    : "border-transparent text-brand-text/30 hover:text-brand-text/60"
-                }`}
-              >
-                Brand
-              </button>
-            </div>
           </nav>
         </div>
       </div>
@@ -233,6 +219,17 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
+            {!profileText && (
+              <div className="mb-8 pb-8 border-b border-brand-text/8">
+                <p className="text-sm text-brand-text/60 leading-relaxed max-w-2xl">
+                  <span className="font-semibold text-brand-text">Signal</span> is a job search copilot for experienced professionals.
+                  Unlike LinkedIn or Indeed, it doesn&apos;t show you more jobs — it helps you apply to fewer, better ones.
+                  Upload your resume once, then get an honest fit score for every role you&apos;re considering,
+                  a tailoring brief that tells you exactly what to emphasize, and specific resume edits —
+                  all calibrated to your actual background.
+                </p>
+              </div>
+            )}
             <div className="mb-7">
               <h2 className="text-base font-semibold text-brand-text">Your Profile</h2>
               <p className="text-sm text-brand-text/50 mt-1">
@@ -367,10 +364,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Brand tab ── */}
-        {activeTab === "brand" && (
-          <BrandGuidelines />
-        )}
 
       </main>
     </div>
