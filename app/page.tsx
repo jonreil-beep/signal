@@ -458,7 +458,7 @@ export default function Home() {
                 </span>
                 <span className="text-white/20">·</span>
                 <span className={`flex items-center gap-1 ${tailoringResult ? "text-status-apply" : "text-white/30"}`}>
-                  {tailoringResult && <span>✓</span>} Brief
+                  {tailoringResult && <span>✓</span>} Prep
                 </span>
               </div>
             )}
