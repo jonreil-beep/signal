@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
@@ -31,7 +32,7 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
 
-  // Active job slots (what's currently loaded in Job Fit + Tailoring Brief)
+  // Active job slots
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
@@ -94,7 +95,7 @@ export default function Home() {
 
   function handleTailoringResult(result: TailoringBriefResult) {
     setTailoringResult(result);
-    setOutreachResult(null); // new brief invalidates old outreach
+    setOutreachResult(null);
     if (activeJobId) {
       setTrackedJobs((prev) =>
         prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result, outreachResult: null } : j))
@@ -131,32 +132,31 @@ export default function Home() {
   function handleRemoveJob(id: string) {
     setTrackedJobs((prev) => prev.filter((j) => j.id !== id));
     if (activeJobId === id) {
-      // Don't clear the active view — just disassociate it from the tracker
       setActiveJobId(null);
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-brand-bg">
 
       {/* Header */}
-      <header className="bg-slate-900">
+      <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-white tracking-tight">Signal</h1>
-            <p className="text-xs text-slate-400 mt-0.5">Job search copilot</p>
+            <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
           </div>
           {(profileText || jobDescription) && (
             <div className="hidden sm:flex items-center gap-2 text-xs">
-              <span className={`flex items-center gap-1 ${profileText ? "text-green-400" : "text-slate-500"}`}>
+              <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
                 {profileText && <span>✓</span>} Profile
               </span>
-              <span className="text-slate-600">·</span>
-              <span className={`flex items-center gap-1 ${jobDescription ? "text-green-400" : "text-slate-500"}`}>
+              <span className="text-white/20">·</span>
+              <span className={`flex items-center gap-1 ${jobDescription ? "text-status-apply" : "text-white/30"}`}>
                 {jobDescription && <span>✓</span>} Job scored
               </span>
-              <span className="text-slate-600">·</span>
-              <span className={`flex items-center gap-1 ${tailoringResult ? "text-green-400" : "text-slate-500"}`}>
+              <span className="text-white/20">·</span>
+              <span className={`flex items-center gap-1 ${tailoringResult ? "text-status-apply" : "text-white/30"}`}>
                 {tailoringResult && <span>✓</span>} Brief
               </span>
             </div>
@@ -165,9 +165,9 @@ export default function Home() {
       </header>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white border-b border-brand-text/8 shadow-sm">
         <div className="max-w-4xl mx-auto px-6">
-          <nav className="flex" aria-label="Tabs">
+          <nav className="flex items-center" aria-label="Tabs">
             {TABS.map((tab) => {
               const isDone =
                 (tab.id === "profile" && !!profileText) ||
@@ -179,22 +179,32 @@ export default function Home() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all ${
                     activeTab === tab.id
-                      ? "border-slate-900 text-slate-900"
-                      : "border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300"
+                      ? "border-brand-accent text-brand-accent"
+                      : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
                   }`}
                 >
                   {tab.label}
                   {isDone && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
                   )}
                   {tab.id === "my-jobs" && trackedJobs.length > 0 && (
-                    <span className="text-xs font-medium bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">
+                    <span className="text-xs font-medium bg-brand-text/8 text-brand-text/50 px-1.5 py-0.5 rounded-full">
                       {trackedJobs.length}
                     </span>
                   )}
                 </button>
               );
             })}
+
+            {/* Brand guidelines link */}
+            <div className="ml-auto">
+              <Link
+                href="/brand"
+                className="flex items-center px-4 py-4 text-sm font-medium text-brand-text/30 hover:text-brand-text/60 border-b-2 border-transparent transition-all"
+              >
+                Brand
+              </Link>
+            </div>
           </nav>
         </div>
       </div>
@@ -206,8 +216,8 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-gray-900">Your Profile</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="text-base font-semibold text-brand-text">Your Profile</h2>
+              <p className="text-sm text-brand-text/50 mt-1">
                 Upload your resume (PDF or DOCX) or paste the text. This is the foundation for all analysis.
               </p>
             </div>
@@ -215,13 +225,13 @@ export default function Home() {
             <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
 
             {profileText && !isAnalyzing && (
-              <div className="mt-6 pt-6 border-t border-gray-100">
+              <div className="mt-6 pt-6 border-t border-brand-text/8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-brand-text">
                       {clusterResult ? "Analysis complete" : "Ready to analyze"}
                     </p>
-                    <p className="text-sm text-gray-400 mt-0.5">
+                    <p className="text-sm text-brand-text/40 mt-0.5">
                       {clusterResult
                         ? "Re-run anytime to refresh."
                         : "Claude will map your best-fit roles, strengths, and risks."}
@@ -229,7 +239,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={handleAnalyze}
-                    className="shrink-0 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors"
+                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
                   >
                     {clusterResult ? "Re-analyze" : "Analyze My Profile"}
                   </button>
@@ -238,7 +248,7 @@ export default function Home() {
             )}
 
             {isAnalyzing && (
-              <div className="mt-6 pt-6 border-t border-gray-100">
+              <div className="mt-6 pt-6 border-t border-brand-text/8">
                 <LoadingState message="Analyzing your profile — this takes 10–20 seconds…" />
               </div>
             )}
@@ -255,10 +265,10 @@ export default function Home() {
             {clusterResult && !isAnalyzing && (
               <>
                 <RoleClusterResults result={clusterResult} />
-                <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
                   <button
                     onClick={() => setActiveTab("job-fit")}
-                    className="inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
                   >
                     Go to Job Fit →
                   </button>
@@ -281,8 +291,8 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-base font-semibold text-gray-900">Job Fit Scorer</h2>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
+                  <p className="text-sm text-brand-text/50 mt-1">
                     Paste a job description or fetch from URL. Get an honest fit score with clear reasoning.
                   </p>
                 </div>
@@ -302,8 +312,8 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-gray-900">Tailoring Brief</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="text-base font-semibold text-brand-text">Tailoring Brief</h2>
+              <p className="text-sm text-brand-text/50 mt-1">
                 A targeted brief for this job — what to emphasize, what language to mirror, what concern to preempt.
               </p>
             </div>
@@ -324,8 +334,8 @@ export default function Home() {
         {activeTab === "my-jobs" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-gray-900">My Jobs</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="text-base font-semibold text-brand-text">My Jobs</h2>
+              <p className="text-sm text-brand-text/50 mt-1">
                 Every job you&apos;ve scored this session. Click any job to reload its fit results or tailoring brief.
               </p>
             </div>
@@ -355,11 +365,11 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="text-sm font-semibold text-gray-900">{message}</p>
-      <p className="text-sm text-gray-400 mt-1 max-w-xs mx-auto">{sub}</p>
+      <p className="text-sm font-semibold text-brand-text">{message}</p>
+      <p className="text-sm text-brand-text/40 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
       >
         {action} →
       </button>

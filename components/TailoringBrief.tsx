@@ -29,14 +29,14 @@ function CopyButton({ getText }: { getText: () => string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+      className="flex items-center gap-1 text-xs text-brand-text/30 hover:text-brand-text/60 transition-colors"
     >
       {copied ? (
         <>
-          <svg className="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-3.5 h-3.5 text-status-apply" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="text-green-600">Copied</span>
+          <span className="text-status-apply">Copied</span>
         </>
       ) : (
         <>
@@ -60,9 +60,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 ring-1 ring-gray-200/80 shadow-sm">
+    <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{title}</p>
+        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
         <CopyButton getText={() => copyText} />
       </div>
       {children}
@@ -88,11 +88,11 @@ export default function TailoringBrief({
   if (!profileText) {
     return (
       <div className="text-center py-20">
-        <p className="text-sm font-semibold text-gray-900">Profile required</p>
-        <p className="text-sm text-gray-400 mt-1">Upload your resume in the Profile tab first.</p>
+        <p className="text-sm font-semibold text-brand-text">Profile required</p>
+        <p className="text-sm text-brand-text/50 mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
         >
           Go to Profile →
         </button>
@@ -103,13 +103,13 @@ export default function TailoringBrief({
   if (!jobDescription) {
     return (
       <div className="text-center py-20">
-        <p className="text-sm font-semibold text-gray-900">Score a job first</p>
-        <p className="text-sm text-gray-400 mt-1 max-w-xs mx-auto">
+        <p className="text-sm font-semibold text-brand-text">Score a job first</p>
+        <p className="text-sm text-brand-text/50 mt-1 max-w-xs mx-auto">
           Score a job in the Job Fit tab, then come back to generate your tailoring brief.
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-xl hover:bg-slate-800 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -173,12 +173,12 @@ export default function TailoringBrief({
       {/* Generate button */}
       {!isGenerating && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-brand-text/40">
             {result ? "Re-generate to refresh the brief." : "Claude will build a targeted brief for this specific job."}
           </p>
           <button
             onClick={handleGenerate}
-            className="shrink-0 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-slate-800 transition-colors"
+            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
           >
             {result ? "Re-generate" : "Generate Brief"}
           </button>
@@ -205,9 +205,9 @@ export default function TailoringBrief({
           >
             <div className="space-y-3">
               {result.lead_strengths.map((s, i) => (
-                <div key={i} className="border-l-2 border-blue-200 pl-3.5">
-                  <p className="text-sm font-medium text-gray-800">{s.strength}</p>
-                  <p className="text-sm text-gray-400 mt-0.5 italic">{s.framing_language}</p>
+                <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                  <p className="text-sm font-medium text-brand-text">{s.strength}</p>
+                  <p className="text-sm text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
                 </div>
               ))}
             </div>
@@ -221,10 +221,10 @@ export default function TailoringBrief({
             <div className="space-y-3">
               {result.jd_language_to_mirror.map((p, i) => (
                 <div key={i}>
-                  <span className="inline-block bg-slate-50 text-slate-700 text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-slate-200">
+                  <span className="inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
                     &ldquo;{p.phrase}&rdquo;
                   </span>
-                  <p className="mt-1.5 text-xs text-gray-400 leading-snug">{p.context}</p>
+                  <p className="mt-1.5 text-xs text-brand-text/40 leading-snug">{p.context}</p>
                 </div>
               ))}
             </div>
@@ -237,9 +237,9 @@ export default function TailoringBrief({
           >
             <div className="space-y-3">
               {result.what_to_deemphasize.map((d, i) => (
-                <div key={i} className="border-l-2 border-amber-200 pl-3.5">
-                  <p className="text-sm font-medium text-gray-800">{d.item}</p>
-                  <p className="text-sm text-gray-400 mt-0.5">{d.reason}</p>
+                <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
+                  <p className="text-sm font-medium text-brand-text">{d.item}</p>
+                  <p className="text-sm text-brand-text/40 mt-0.5">{d.reason}</p>
                 </div>
               ))}
             </div>
@@ -251,17 +251,17 @@ export default function TailoringBrief({
             copyText={`Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`}
           >
             <div className="space-y-2">
-              <div className="bg-amber-50 rounded-xl p-4 ring-1 ring-amber-100">
-                <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1">
+              <div className="bg-status-tailor/8 rounded-xl p-4 ring-1 ring-status-tailor/20">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
                   Likely concern
                 </p>
-                <p className="text-sm text-amber-900">{result.recruiter_concern_to_preempt.concern}</p>
+                <p className="text-sm text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
               </div>
-              <div className="bg-green-50 rounded-xl p-4 ring-1 ring-green-100">
-                <p className="text-xs font-semibold text-green-600 uppercase tracking-widest mb-1">
+              <div className="bg-status-apply/8 rounded-xl p-4 ring-1 ring-status-apply/20">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-apply mb-1">
                   How to address it
                 </p>
-                <p className="text-sm text-green-900">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                <p className="text-sm text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
               </div>
             </div>
           </Section>
@@ -272,7 +272,7 @@ export default function TailoringBrief({
               title="Outreach Angle"
               copyText={result.outreach_angle}
             >
-              <p className="text-sm text-gray-700 leading-relaxed">{result.outreach_angle}</p>
+              <p className="text-sm text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
             </Section>
           )}
 
@@ -281,14 +281,14 @@ export default function TailoringBrief({
             <div className="pt-2">
               {!isGeneratingOutreach && (
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-brand-text/40">
                     {outreachResult
                       ? "Re-draft to refresh the messages."
                       : "Turn the outreach angle into a ready-to-send email and LinkedIn message."}
                   </p>
                   <button
                     onClick={handleGenerateOutreach}
-                    className="shrink-0 px-5 py-2.5 bg-slate-800 text-white text-sm font-semibold rounded-xl hover:bg-slate-700 transition-colors"
+                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
                   >
                     {outreachResult ? "Re-draft" : "Draft Outreach Messages"}
                   </button>
@@ -309,13 +309,13 @@ export default function TailoringBrief({
               {outreachResult && !isGeneratingOutreach && (
                 <div className="mt-4 space-y-3">
                   <Section title="Cold Email" copyText={outreachResult.email}>
-                    <pre className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-sans">
+                    <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
                       {outreachResult.email}
                     </pre>
                   </Section>
                   <Section title="LinkedIn Message" copyText={outreachResult.linkedin_message}>
-                    <p className="text-sm text-gray-700 leading-relaxed">{outreachResult.linkedin_message}</p>
-                    <p className="mt-2 text-xs text-gray-400">{outreachResult.linkedin_message.length} / 280 characters</p>
+                    <p className="text-sm text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                    <p className="mt-2 text-xs text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
                   </Section>
                 </div>
               )}

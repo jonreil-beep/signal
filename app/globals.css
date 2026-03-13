@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-bg:             #F8F7F4;
+  --color-text:           #1A1A1A;
+  --color-accent:         #2E4057;
+  --color-status-apply:   #2D6A4F;
+  --color-status-tailor:  #A86B2D;
+  --color-status-stretch: #C4622D;
+  --color-status-skip:    #888888;
+}
+
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
