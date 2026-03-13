@@ -1,7 +1,7 @@
 "use client";
 
 // Set this to your Tally form URL — e.g. https://tally.so/r/YOUR_FORM_ID
-const FEEDBACK_URL = "https://tally.so/r/REPLACE_WITH_YOUR_FORM_ID";
+const FEEDBACK_URL = "https://tally.so/r/Bz1MyQ";
 
 export default function FeedbackButton() {
   return (
