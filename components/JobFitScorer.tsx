@@ -245,6 +245,16 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
             </div>
           </div>
 
+          {/* Recruiter concern — shown immediately after overall fit when present */}
+          {result.recruiter_concern && (
+            <div className="bg-status-tailor/8 rounded-2xl p-5 ring-1 ring-status-tailor/20">
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1.5">
+                Recruiter Concern Flag
+              </p>
+              <p className="text-sm text-brand-text/80">{result.recruiter_concern}</p>
+            </div>
+          )}
+
           {/* Dimensions */}
           <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-4">
@@ -295,16 +305,6 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               </ul>
             </div>
           </div>
-
-          {/* Recruiter concern */}
-          {result.recruiter_concern && (
-            <div className="bg-status-tailor/8 rounded-2xl p-5 ring-1 ring-status-tailor/20">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1.5">
-                Recruiter Concern Flag
-              </p>
-              <p className="text-sm text-brand-text/80">{result.recruiter_concern}</p>
-            </div>
-          )}
 
           {/* Bottom nav CTAs */}
           <div className="flex items-center justify-between pt-2">
