@@ -516,7 +516,7 @@ export default function Home() {
               >
                 My Jobs
                 {trackedJobs.length > 0 && (
-                  <span className="text-xs font-medium bg-brand-text/8 text-brand-text/50 px-1.5 py-0.5 rounded-full">
+                  <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-brand-accent/12 text-brand-accent px-1.5 rounded-full">
                     {trackedJobs.length}
                   </span>
                 )}
