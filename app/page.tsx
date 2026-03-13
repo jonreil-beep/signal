@@ -10,7 +10,7 @@ import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, ResumeUpdateResult, TrackedJob } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
@@ -50,6 +50,7 @@ export default function Home() {
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
   const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
+  const [coverLetterResult, setCoverLetterResult] = useState<CoverLetterResult | null>(null);
   const [resumeUpdateResult, setResumeUpdateResult] = useState<ResumeUpdateResult | null>(null);
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
@@ -101,6 +102,7 @@ export default function Home() {
         jobFitResult: row.job_fit_result as JobFitResult,
         tailoringResult: row.tailoring_result as TailoringBriefResult | null,
         outreachResult: row.outreach_result as OutreachResult | null,
+        coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         scoredAt: new Date(row.scored_at as string),
       }));
@@ -115,6 +117,7 @@ export default function Home() {
     setJobFitResult(null);
     setTailoringResult(null);
     setOutreachResult(null);
+    setCoverLetterResult(null);
     setResumeUpdateResult(null);
     setTrackedJobs([]);
     setActiveJobId(null);
@@ -188,6 +191,7 @@ export default function Home() {
       jobFitResult: result,
       tailoringResult: null,
       outreachResult: null,
+      coverLetterResult: null,
       resumeUpdateResult: null,
       scoredAt: new Date(),
     };
@@ -197,6 +201,7 @@ export default function Home() {
     setJobFitResult(result);
     setTailoringResult(null);
     setOutreachResult(null);
+    setCoverLetterResult(null);
     setResumeUpdateResult(null);
 
     if (user) {
@@ -217,12 +222,13 @@ export default function Home() {
   async function handleTailoringResult(result: TailoringBriefResult) {
     setTailoringResult(result);
     setOutreachResult(null);
+    setCoverLetterResult(null);
     if (activeJobId) {
       setTrackedJobs((prev) =>
-        prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result, outreachResult: null } : j))
+        prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result, outreachResult: null, coverLetterResult: null } : j))
       );
       if (user) {
-        await supabase.from("tracked_jobs").update({ tailoring_result: result, outreach_result: null }).eq("id", activeJobId);
+        await supabase.from("tracked_jobs").update({ tailoring_result: result, outreach_result: null, cover_letter_result: null }).eq("id", activeJobId);
       }
     }
   }
@@ -235,6 +241,18 @@ export default function Home() {
       );
       if (user) {
         await supabase.from("tracked_jobs").update({ outreach_result: result }).eq("id", activeJobId);
+      }
+    }
+  }
+
+  async function handleCoverLetterResult(result: CoverLetterResult | null) {
+    setCoverLetterResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, coverLetterResult: result } : j))
+      );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ cover_letter_result: result }).eq("id", activeJobId);
       }
     }
   }
@@ -256,6 +274,7 @@ export default function Home() {
     setJobFitResult(null);
     setTailoringResult(null);
     setOutreachResult(null);
+    setCoverLetterResult(null);
     setResumeUpdateResult(null);
     setActiveJobId(null);
   }
@@ -266,6 +285,7 @@ export default function Home() {
     setJobFitResult(job.jobFitResult);
     setTailoringResult(job.tailoringResult);
     setOutreachResult(job.outreachResult);
+    setCoverLetterResult(job.coverLetterResult);
     setResumeUpdateResult(job.resumeUpdateResult);
     setActiveTab(goTo);
   }
@@ -665,6 +685,8 @@ export default function Home() {
               onResultChange={handleTailoringResult}
               outreachResult={outreachResult}
               onOutreachResultChange={handleOutreachResult}
+              coverLetterResult={coverLetterResult}
+              onCoverLetterResultChange={handleCoverLetterResult}
               resumeUpdateResult={resumeUpdateResult}
               onResumeUpdateResultChange={handleResumeUpdateResult}
               onGoToProfile={() => setActiveTab("profile")}

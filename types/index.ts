@@ -79,6 +79,10 @@ export interface OutreachResult {
   linkedin_message: string;
 }
 
+export interface CoverLetterResult {
+  cover_letter: string;
+}
+
 export interface ResumeBulletUpdate {
   section: string;
   original_paraphrase: string;
@@ -105,5 +109,6 @@ export interface TrackedJob {
   tailoringResult: TailoringBriefResult | null;
   outreachResult: OutreachResult | null;
   resumeUpdateResult: ResumeUpdateResult | null;
+  coverLetterResult: CoverLetterResult | null;
   scoredAt: Date;
 }

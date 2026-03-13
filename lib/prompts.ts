@@ -162,6 +162,40 @@ Rules:
 - Return only valid JSON, no markdown fences`;
 }
 
+// Cover letter generation prompt
+export function buildCoverLetterPrompt(
+  resumeText: string,
+  jobDescription: string,
+  outreachAngle?: string
+): string {
+  return `You are a senior talent strategist helping a candidate write a cover letter for a specific job.
+
+${outreachAngle ? `Outreach angle / hook to lead with:\n<outreach_angle>\n${outreachAngle}\n</outreach_angle>\n\n` : ""}Candidate Resume:
+<resume>
+${resumeText}
+</resume>
+
+Job Description:
+<job_description>
+${jobDescription}
+</job_description>
+
+Write a tailored cover letter. Return this exact JSON structure — nothing else:
+{
+  "cover_letter": "The full cover letter text — 250–400 words, no salutation line, no date or address block. Start directly with the opening paragraph."
+}
+
+Rules:
+- Open with a strong, specific hook${outreachAngle ? " — use the outreach angle provided" : ""}
+- Reference specific role requirements and match them to the candidate's concrete experience
+- Do not use hollow phrases like "I am excited to apply" or "I believe I would be a great fit"
+- Write in first person, professional but not stiff — sounds like a real person, not a template
+- 3–4 paragraphs, each with a clear purpose: hook, proof, differentiation, close
+- Close with a direct and confident ask
+- No generic filler, no bullet recitation — add context and color to what is in the resume
+- Return only valid JSON, no markdown fences`;
+}
+
 // Outreach message generation prompt
 export function buildOutreachPrompt(
   outreachAngle: string,
