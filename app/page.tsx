@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
@@ -24,6 +26,17 @@ function extractJobTitle(jd: string, fallbackCount: number): string {
 }
 
 export default function Home() {
+  const supabase = createClient();
+
+  // ── Auth state ──
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [sendingMagicLink, setSendingMagicLink] = useState(false);
+  const [magicLinkError, setMagicLinkError] = useState("");
+
+  // ── App state ──
   const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("profile");
   const [profileText, setProfileText] = useState<string>("");
@@ -31,21 +44,110 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
 
-  // Active job slots
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
   const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
   const [resumeUpdateResult, setResumeUpdateResult] = useState<ResumeUpdateResult | null>(null);
 
-  // Job tracker
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
-  function handleProfileConfirmed(text: string) {
+  // ── Auth lifecycle ──
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setShowLanding(false);
+        loadUserData(session.user.id);
+      }
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser(session.user);
+        setShowLanding(false);
+        loadUserData(session.user.id);
+      }
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+        setShowLanding(true);
+        clearAppState();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function loadUserData(userId: string) {
+    const [profileRes, jobsRes] = await Promise.all([
+      supabase.from("profiles").select("resume_text").eq("id", userId).single(),
+      supabase.from("tracked_jobs").select("*").eq("user_id", userId).order("scored_at", { ascending: false }),
+    ]);
+
+    if (profileRes.data?.resume_text) {
+      setProfileText(profileRes.data.resume_text);
+    }
+
+    if (jobsRes.data) {
+      const jobs: TrackedJob[] = jobsRes.data.map((row) => ({
+        id: row.id as string,
+        label: row.label as string,
+        jobDescription: row.job_description as string,
+        jobFitResult: row.job_fit_result as JobFitResult,
+        tailoringResult: row.tailoring_result as TailoringBriefResult | null,
+        outreachResult: row.outreach_result as OutreachResult | null,
+        resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
+        scoredAt: new Date(row.scored_at as string),
+      }));
+      setTrackedJobs(jobs);
+    }
+  }
+
+  function clearAppState() {
+    setProfileText("");
+    setClusterResult(null);
+    setJobDescription("");
+    setJobFitResult(null);
+    setTailoringResult(null);
+    setOutreachResult(null);
+    setResumeUpdateResult(null);
+    setTrackedJobs([]);
+    setActiveJobId(null);
+    setActiveTab("profile");
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
+
+  async function handleSendMagicLink() {
+    if (!email.trim()) return;
+    setSendingMagicLink(true);
+    setMagicLinkError("");
+    const origin = window.location.origin;
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: `${origin}/auth/callback` },
+    });
+    setSendingMagicLink(false);
+    if (error) {
+      setMagicLinkError(error.message);
+    } else {
+      setMagicLinkSent(true);
+    }
+  }
+
+  // ── Profile ──
+  async function handleProfileConfirmed(text: string) {
     setProfileText(text);
     setClusterResult(null);
     setAnalyzeError("");
+    if (user) {
+      await supabase.from("profiles").upsert({ id: user.id, resume_text: text, updated_at: new Date().toISOString() });
+    }
   }
 
   async function handleAnalyze() {
@@ -53,7 +155,6 @@ export default function Home() {
     setIsAnalyzing(true);
     setAnalyzeError("");
     setClusterResult(null);
-
     try {
       const response = await fetch("/api/cluster-roles", {
         method: "POST",
@@ -73,7 +174,8 @@ export default function Home() {
     }
   }
 
-  function handleJobScored(jd: string, result: JobFitResult) {
+  // ── Job tracking ──
+  async function handleJobScored(jd: string, result: JobFitResult) {
     const id = crypto.randomUUID();
     const label = extractJobTitle(jd, trackedJobs.length + 1);
     const newJob: TrackedJob = {
@@ -93,33 +195,56 @@ export default function Home() {
     setTailoringResult(null);
     setOutreachResult(null);
     setResumeUpdateResult(null);
+
+    if (user) {
+      await supabase.from("tracked_jobs").insert({
+        id,
+        user_id: user.id,
+        label,
+        job_description: jd,
+        job_fit_result: result,
+        tailoring_result: null,
+        outreach_result: null,
+        resume_update_result: null,
+        scored_at: newJob.scoredAt.toISOString(),
+      });
+    }
   }
 
-  function handleTailoringResult(result: TailoringBriefResult) {
+  async function handleTailoringResult(result: TailoringBriefResult) {
     setTailoringResult(result);
     setOutreachResult(null);
     if (activeJobId) {
       setTrackedJobs((prev) =>
         prev.map((j) => (j.id === activeJobId ? { ...j, tailoringResult: result, outreachResult: null } : j))
       );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ tailoring_result: result, outreach_result: null }).eq("id", activeJobId);
+      }
     }
   }
 
-  function handleOutreachResult(result: OutreachResult | null) {
+  async function handleOutreachResult(result: OutreachResult | null) {
     setOutreachResult(result);
     if (activeJobId) {
       setTrackedJobs((prev) =>
         prev.map((j) => (j.id === activeJobId ? { ...j, outreachResult: result } : j))
       );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ outreach_result: result }).eq("id", activeJobId);
+      }
     }
   }
 
-  function handleResumeUpdateResult(result: ResumeUpdateResult | null) {
+  async function handleResumeUpdateResult(result: ResumeUpdateResult | null) {
     setResumeUpdateResult(result);
     if (activeJobId) {
       setTrackedJobs((prev) =>
         prev.map((j) => (j.id === activeJobId ? { ...j, resumeUpdateResult: result } : j))
       );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ resume_update_result: result }).eq("id", activeJobId);
+      }
     }
   }
 
@@ -142,11 +267,21 @@ export default function Home() {
     setActiveTab(goTo);
   }
 
-  function handleRemoveJob(id: string) {
+  async function handleRemoveJob(id: string) {
     setTrackedJobs((prev) => prev.filter((j) => j.id !== id));
-    if (activeJobId === id) {
-      setActiveJobId(null);
+    if (activeJobId === id) setActiveJobId(null);
+    if (user) {
+      await supabase.from("tracked_jobs").delete().eq("id", id);
     }
+  }
+
+  // ── Auth loading screen ──
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-brand-text flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    );
   }
 
   // ── Landing screen ──
@@ -165,12 +300,52 @@ export default function Home() {
             a tailoring brief that tells you exactly what to emphasize, and specific resume edits —
             all calibrated to your actual background.
           </p>
-          <button
-            onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-          >
-            Start with your resume →
-          </button>
+
+          {!magicLinkSent ? (
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
+                  className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-xl text-base focus:outline-none focus:border-white/50"
+                />
+                <button
+                  onClick={handleSendMagicLink}
+                  disabled={sendingMagicLink || !email.trim()}
+                  className="px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {sendingMagicLink ? "Sending…" : "Send magic link →"}
+                </button>
+              </div>
+              {magicLinkError && (
+                <p className="text-sm text-red-400">{magicLinkError}</p>
+              )}
+              <button
+                onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
+                className="text-sm text-white/30 hover:text-white/50 transition-colors"
+              >
+                Continue without saving →
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-base text-white/80">
+                Check your inbox — we sent a link to <span className="text-white font-medium">{email}</span>.
+              </p>
+              <p className="text-sm text-white/40">
+                Click the link in the email to sign in. It may take a minute to arrive.
+              </p>
+              <button
+                onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
+                className="text-sm text-white/30 hover:text-white/50 transition-colors"
+              >
+                Use a different email
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -187,21 +362,34 @@ export default function Home() {
             <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors">SIGNAL</h1>
             <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
           </button>
-          {(profileText || jobDescription) && (
-            <div className="hidden sm:flex items-center gap-2 text-xs">
-              <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
-                {profileText && <span>✓</span>} Profile
-              </span>
-              <span className="text-white/20">·</span>
-              <span className={`flex items-center gap-1 ${jobDescription ? "text-status-apply" : "text-white/30"}`}>
-                {jobDescription && <span>✓</span>} Job scored
-              </span>
-              <span className="text-white/20">·</span>
-              <span className={`flex items-center gap-1 ${tailoringResult ? "text-status-apply" : "text-white/30"}`}>
-                {tailoringResult && <span>✓</span>} Brief
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-4">
+            {(profileText || jobDescription) && (
+              <div className="hidden sm:flex items-center gap-2 text-xs">
+                <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
+                  {profileText && <span>✓</span>} Profile
+                </span>
+                <span className="text-white/20">·</span>
+                <span className={`flex items-center gap-1 ${jobDescription ? "text-status-apply" : "text-white/30"}`}>
+                  {jobDescription && <span>✓</span>} Job scored
+                </span>
+                <span className="text-white/20">·</span>
+                <span className={`flex items-center gap-1 ${tailoringResult ? "text-status-apply" : "text-white/30"}`}>
+                  {tailoringResult && <span>✓</span>} Brief
+                </span>
+              </div>
+            )}
+            {user && (
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-white/40 hidden sm:block">{user.email}</span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-xs text-white/50 hover:text-white/80 transition-colors"
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -383,7 +571,7 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-base font-semibold text-brand-text">My Jobs</h2>
               <p className="text-sm text-brand-text/50 mt-1">
-                Every job you&apos;ve scored this session. Click any job to reload its fit results or tailoring brief.
+                Every job you&apos;ve scored. Click any job to reload its fit results or tailoring brief.
               </p>
             </div>
             <JobTracker
