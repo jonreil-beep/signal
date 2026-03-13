@@ -79,6 +79,24 @@ export interface OutreachResult {
   linkedin_message: string;
 }
 
+export interface ResumeBulletUpdate {
+  section: string;
+  original_paraphrase: string;
+  suggested_rewrite: string;
+  why: string;
+}
+
+export interface ResumeKeywordSuggestion {
+  keyword: string;
+  suggested_context: string;
+}
+
+export interface ResumeUpdateResult {
+  summary_rewrite: string;
+  bullet_updates: ResumeBulletUpdate[];
+  keywords_to_weave_in: ResumeKeywordSuggestion[];
+}
+
 export interface TrackedJob {
   id: string;
   label: string;
@@ -86,5 +104,6 @@ export interface TrackedJob {
   jobFitResult: JobFitResult;
   tailoringResult: TailoringBriefResult | null;
   outreachResult: OutreachResult | null;
+  resumeUpdateResult: ResumeUpdateResult | null;
   scoredAt: Date;
 }

@@ -119,6 +119,49 @@ Rules:
 - Return only valid JSON, no markdown fences`;
 }
 
+// Resume update suggestions prompt
+export function buildResumeUpdatePrompt(resumeText: string, jobDescription: string): string {
+  return `You are a senior resume strategist helping a candidate tailor their resume for a specific role.
+
+Candidate Resume:
+<resume>
+${resumeText}
+</resume>
+
+Job Description:
+<job_description>
+${jobDescription}
+</job_description>
+
+Return this exact JSON structure — nothing else:
+{
+  "summary_rewrite": "A complete rewrite of their professional summary/headline optimized for this specific role. 2–4 sentences. Must sound like the candidate wrote it, not a template.",
+  "bullet_updates": [
+    {
+      "section": "Section and context (e.g. 'Work Experience — Acme Corp' or 'Professional Summary')",
+      "original_paraphrase": "A brief paraphrase of the existing bullet or text being replaced",
+      "suggested_rewrite": "The new copy-paste ready bullet — starts with a strong action verb, includes metrics where possible, mirrors JD language",
+      "why": "One sentence on why this change strengthens their candidacy for this specific role"
+    }
+  ],
+  "keywords_to_weave_in": [
+    {
+      "keyword": "Exact keyword or phrase from the JD that is missing or underused",
+      "suggested_context": "Where and how to naturally add it (e.g. 'Add to summary' or 'Use in your [Company] bullet about X')"
+    }
+  ]
+}
+
+Rules:
+- summary_rewrite: must feel authentic, written in first-person implied (no "I"), specific to this role
+- bullet_updates: 3–5 rewrites — prioritize experience that maps most directly to this JD
+- Each suggested_rewrite must be a complete, standalone bullet starting with a strong action verb
+- Include metrics or outcomes in rewrites wherever the resume gives you material to work with
+- keywords_to_weave_in: 3–6 phrases from the JD that are absent or underrepresented in the resume
+- Be specific to this candidate and this job — no generic advice
+- Return only valid JSON, no markdown fences`;
+}
+
 // Outreach message generation prompt
 export function buildOutreachPrompt(
   outreachAngle: string,

@@ -8,7 +8,7 @@ import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
 import BrandGuidelines from "@/components/BrandGuidelines";
 import LoadingState from "@/components/LoadingState";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, TrackedJob } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
 const TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
@@ -37,6 +37,7 @@ export default function Home() {
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
   const [tailoringResult, setTailoringResult] = useState<TailoringBriefResult | null>(null);
   const [outreachResult, setOutreachResult] = useState<OutreachResult | null>(null);
+  const [resumeUpdateResult, setResumeUpdateResult] = useState<ResumeUpdateResult | null>(null);
 
   // Job tracker
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
@@ -83,6 +84,7 @@ export default function Home() {
       jobFitResult: result,
       tailoringResult: null,
       outreachResult: null,
+      resumeUpdateResult: null,
       scoredAt: new Date(),
     };
     setTrackedJobs((prev) => [...prev, newJob]);
@@ -91,6 +93,7 @@ export default function Home() {
     setJobFitResult(result);
     setTailoringResult(null);
     setOutreachResult(null);
+    setResumeUpdateResult(null);
   }
 
   function handleTailoringResult(result: TailoringBriefResult) {
@@ -112,11 +115,21 @@ export default function Home() {
     }
   }
 
+  function handleResumeUpdateResult(result: ResumeUpdateResult | null) {
+    setResumeUpdateResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, resumeUpdateResult: result } : j))
+      );
+    }
+  }
+
   function handleJobFitReset() {
     setJobDescription("");
     setJobFitResult(null);
     setTailoringResult(null);
     setOutreachResult(null);
+    setResumeUpdateResult(null);
     setActiveJobId(null);
   }
 
@@ -126,6 +139,7 @@ export default function Home() {
     setJobFitResult(job.jobFitResult);
     setTailoringResult(job.tailoringResult);
     setOutreachResult(job.outreachResult);
+    setResumeUpdateResult(job.resumeUpdateResult);
     setActiveTab(goTo);
   }
 
@@ -328,6 +342,8 @@ export default function Home() {
               onResultChange={handleTailoringResult}
               outreachResult={outreachResult}
               onOutreachResultChange={handleOutreachResult}
+              resumeUpdateResult={resumeUpdateResult}
+              onResumeUpdateResultChange={handleResumeUpdateResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult, OutreachResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult, ResumeUpdateResult } from "@/types";
 
 interface TailoringBriefProps {
   profileText: string;
@@ -11,6 +11,8 @@ interface TailoringBriefProps {
   onResultChange: (result: TailoringBriefResult) => void;
   outreachResult: OutreachResult | null;
   onOutreachResultChange: (result: OutreachResult | null) => void;
+  resumeUpdateResult: ResumeUpdateResult | null;
+  onResumeUpdateResultChange: (result: ResumeUpdateResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -77,6 +79,8 @@ export default function TailoringBrief({
   onResultChange,
   outreachResult,
   onOutreachResultChange,
+  resumeUpdateResult,
+  onResumeUpdateResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
@@ -84,6 +88,8 @@ export default function TailoringBrief({
   const [error, setError] = useState<string>("");
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
   const [outreachError, setOutreachError] = useState<string>("");
+  const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
+  const [resumeUpdateError, setResumeUpdateError] = useState<string>("");
 
   if (!profileText) {
     return (
@@ -165,6 +171,29 @@ export default function TailoringBrief({
       setOutreachError("Network error. Check your connection and try again.");
     } finally {
       setIsGeneratingOutreach(false);
+    }
+  }
+
+  async function handleGenerateResumeUpdates() {
+    setIsGeneratingResumeUpdates(true);
+    setResumeUpdateError("");
+    onResumeUpdateResultChange(null);
+    try {
+      const response = await fetch("/api/suggest-resume-updates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setResumeUpdateError(data.error ?? "Failed to generate resume suggestions. Please try again.");
+      } else {
+        onResumeUpdateResultChange(data as ResumeUpdateResult);
+      }
+    } catch {
+      setResumeUpdateError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingResumeUpdates(false);
     }
   }
 
@@ -321,6 +350,101 @@ export default function TailoringBrief({
               )}
             </div>
           )}
+
+          {/* Resume update suggestions */}
+          <div className="pt-4 border-t border-brand-text/8">
+            {!isGeneratingResumeUpdates && (
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-brand-text/40">
+                  {resumeUpdateResult
+                    ? "Re-generate to refresh resume suggestions."
+                    : "Get specific, copy-paste resume edits tailored to this job."}
+                </p>
+                <button
+                  onClick={handleGenerateResumeUpdates}
+                  className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                >
+                  {resumeUpdateResult ? "Re-generate" : "Suggest Resume Updates"}
+                </button>
+              </div>
+            )}
+
+            {isGeneratingResumeUpdates && <LoadingState message="Generating resume suggestions — this takes 10–20 seconds…" />}
+
+            {resumeUpdateError && !isGeneratingResumeUpdates && (
+              <div className="mt-3 p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
+                <p className="text-sm text-red-700">{resumeUpdateError}</p>
+                <button onClick={handleGenerateResumeUpdates} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {resumeUpdateResult && !isGeneratingResumeUpdates && (
+              <div className="mt-4 space-y-3">
+                {/* Summary rewrite */}
+                <Section
+                  title="Summary Rewrite"
+                  copyText={resumeUpdateResult.summary_rewrite}
+                >
+                  <p className="text-sm text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                </Section>
+
+                {/* Bullet updates */}
+                <Section
+                  title="Resume Bullets to Update"
+                  copyText={resumeUpdateResult.bullet_updates
+                    .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
+                    .join("\n\n")}
+                >
+                  <div className="space-y-4">
+                    {resumeUpdateResult.bullet_updates.map((b, i) => (
+                      <div key={i} className="space-y-2">
+                        <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
+                          {b.section}
+                        </p>
+                        <div className="rounded-xl overflow-hidden ring-1 ring-brand-text/8">
+                          <div className="px-3.5 py-2.5 bg-brand-text/4">
+                            <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
+                            <p className="text-sm text-brand-text/50 italic">{b.original_paraphrase}</p>
+                          </div>
+                          <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1">
+                                <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
+                                <p className="text-sm text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                              </div>
+                              <CopyButton getText={() => b.suggested_rewrite} />
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-xs text-brand-text/40 pl-1">{b.why}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                {/* Keywords to weave in */}
+                <Section
+                  title="Keywords to Weave In"
+                  copyText={resumeUpdateResult.keywords_to_weave_in
+                    .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
+                    .join("\n")}
+                >
+                  <div className="space-y-3">
+                    {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                          {k.keyword}
+                        </span>
+                        <p className="text-sm text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>
