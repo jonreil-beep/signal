@@ -87,7 +87,7 @@ export default function Home() {
 
   async function loadUserData(userId: string) {
     const [profileRes, jobsRes] = await Promise.all([
-      supabase.from("profiles").select("resume_text").eq("id", userId).single(),
+      supabase.from("profiles").select("resume_text, cluster_result").eq("id", userId).single(),
       supabase.from("tracked_jobs").select("*").eq("user_id", userId).order("scored_at", { ascending: false }),
     ]);
 
