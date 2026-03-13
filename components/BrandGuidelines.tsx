@@ -188,6 +188,68 @@ const BRAND_HOUSE = {
   ],
 };
 
+// ── Photography ──────────────────────────────────────────────────────────────
+
+const PHOTO_EXAMPLES = [
+  {
+    id: "1486312338219-ce68d2c6f44d",
+    label: "Individual at work",
+    caption: "Subject mid-task, not mid-pose. Natural light. The work is the subject, not the person's reaction to it.",
+  },
+  {
+    id: "1497366216548-37526070297c",
+    label: "The space",
+    caption: "Environments that imply serious work happens here. Open, light-filled, uncluttered. Architecture as character.",
+  },
+  {
+    id: "1522202176988-66273c2fd55f",
+    label: "The conversation",
+    caption: "Two or three people engaged in real work — not staged collaboration. No exaggerated eye contact or laughter.",
+  },
+  {
+    id: "1454165804606-c3d57bc86b40",
+    label: "Focus on the work",
+    caption: "Detail shots anchor the viewer in real activity. Hands, screen, notebook. Close enough to be specific.",
+  },
+  {
+    id: "1499750310107-5fef28a66643",
+    label: "Minimal setup",
+    caption: "Clean desk, good light, room to breathe. Negative space is not emptiness — it signals confidence and clarity.",
+  },
+  {
+    id: "1560250097-0b93528c311a",
+    label: "The professional",
+    caption: "When shooting people, frame them with authority. Composed, not stiff. Confident posture. Never a stock-photo smile.",
+  },
+];
+
+const PHOTO_DOS_DONTS = [
+  {
+    use:   "Natural light — window, diffused overhead",
+    avoid: "Flash, obvious studio lighting, or harsh shadows",
+  },
+  {
+    use:   "Subject mid-task: typing, reviewing, thinking",
+    avoid: "Subject posing for or smiling directly at the camera",
+  },
+  {
+    use:   "Clean, uncluttered desk with breathing room",
+    avoid: "Cluttered \u201cpersonality\u201d desk shots or motivational accessories",
+  },
+  {
+    use:   "Two people in candid, purposeful discussion",
+    avoid: "Staged \u201ccollaboration\u201d with exaggerated engagement or laughter",
+  },
+  {
+    use:   "Architectural shots that imply serious work happens here",
+    avoid: "Bean bags, ping-pong tables, or \u201cculture\u201d office spaces",
+  },
+  {
+    use:   "Natural, unsaturated color \u2014 true to life",
+    avoid: "Heavy filters, dramatic grading, or Instagram-era moods",
+  },
+];
+
 // ── Tone of voice ────────────────────────────────────────────────────────────
 
 const VOICE_PRINCIPLES = [
@@ -542,6 +604,70 @@ export default function BrandGuidelines() {
               <p className="text-xs font-normal text-brand-text/40 text-right max-w-xs leading-snug">
                 {STATUS_COLORS.find((c) => c.label === badge.label)?.use}
               </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Photography ── */}
+      <section>
+        <SectionLabel>05 — Photography</SectionLabel>
+        <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
+          Real, Direct, Unposed
+        </h2>
+        <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-8 max-w-2xl">
+          Signal photography looks like McKinsey&apos;s editorial library, not a HR deck. Real professionals in real moments. Clean light, generous space, zero performance. Mix people and their environments.
+        </p>
+
+        {/* Photo grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+          {PHOTO_EXAMPLES.map((photo) => (
+            <div key={photo.id} className="group">
+              <div className="rounded-2xl overflow-hidden bg-brand-text/5 ring-1 ring-brand-text/8 mb-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://images.unsplash.com/photo-${photo.id}?w=600&h=400&fit=crop&auto=format&q=80`}
+                  alt={photo.label}
+                  className="w-full h-48 object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <p className="text-sm font-semibold text-brand-text mb-1">{photo.label}</p>
+              <p className="text-xs font-normal leading-[1.5] text-brand-text/50">{photo.caption}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Do / Don't table */}
+        <h3 className="text-[1.25rem] font-semibold leading-[1.3] text-brand-text mb-6">
+          Photography Do&apos;s and Don&apos;ts
+        </h3>
+        <div className="rounded-2xl overflow-hidden ring-1 ring-brand-text/8">
+          <div className="grid grid-cols-2 bg-brand-text">
+            <div className="px-5 py-3 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">Use</p>
+            </div>
+            <div className="px-5 py-3 border-l border-white/10 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-status-stretch shrink-0" />
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">Avoid</p>
+            </div>
+          </div>
+          {PHOTO_DOS_DONTS.map((row, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-2 bg-white ${i < PHOTO_DOS_DONTS.length - 1 ? "border-b border-brand-text/6" : ""}`}
+            >
+              <div className="px-5 py-4 flex items-start gap-2.5">
+                <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
+                <p className="text-sm font-normal leading-[1.6] text-brand-text/80">{row.use}</p>
+              </div>
+              <div className="px-5 py-4 border-l border-brand-text/6 flex items-start gap-2.5">
+                <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                <p className="text-sm font-normal leading-[1.6] text-brand-text/50 italic">{row.avoid}</p>
+              </div>
             </div>
           ))}
         </div>
