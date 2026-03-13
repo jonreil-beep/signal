@@ -9,11 +9,10 @@ import JobTracker from "@/components/JobTracker";
 import LoadingState from "@/components/LoadingState";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
-const TABS: { id: TabId; label: string }[] = [
+const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "profile", label: "Profile" },
   { id: "job-fit", label: "Job Fit" },
   { id: "tailoring-brief", label: "Tailoring Brief" },
-  { id: "my-jobs", label: "My Jobs" },
 ];
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -25,6 +24,7 @@ function extractJobTitle(jd: string, fallbackCount: number): string {
 }
 
 export default function Home() {
+  const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("profile");
   const [profileText, setProfileText] = useState<string>("");
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
@@ -149,13 +149,41 @@ export default function Home() {
     }
   }
 
+  // ── Landing screen ──
+  if (showLanding) {
+    return (
+      <div className="min-h-screen bg-brand-text flex items-center px-6">
+        <div className="max-w-2xl mx-auto w-full py-20">
+          <div className="mb-12">
+            <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
+            <p className="text-sm text-white/40 mt-2">Job search copilot</p>
+          </div>
+          <p className="text-xl text-white/70 leading-relaxed mb-10">
+            Signal is a job search copilot for experienced professionals.
+            Unlike LinkedIn or Indeed, it doesn&apos;t show you more jobs — it helps you apply to fewer, better ones.
+            Upload your resume once, then get an honest fit score for every role you&apos;re considering,
+            a tailoring brief that tells you exactly what to emphasize, and specific resume edits —
+            all calibrated to your actual background.
+          </p>
+          <button
+            onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+          >
+            Start with your resume →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── App shell ──
   return (
     <div className="min-h-screen bg-brand-bg">
 
       {/* Header */}
       <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
-          <button onClick={() => setActiveTab("profile")} className="text-left">
+          <button onClick={() => setShowLanding(true)} className="text-left">
             <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors">SIGNAL</h1>
             <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
           </button>
@@ -181,7 +209,7 @@ export default function Home() {
       <div className="bg-white border-b border-brand-text/8 shadow-sm">
         <div className="max-w-4xl mx-auto px-6">
           <nav className="flex items-center" aria-label="Tabs">
-            {TABS.map((tab) => {
+            {MAIN_TABS.map((tab) => {
               const isDone =
                 (tab.id === "profile" && !!profileText) ||
                 (tab.id === "job-fit" && !!jobDescription) ||
@@ -200,15 +228,28 @@ export default function Home() {
                   {isDone && (
                     <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
                   )}
-                  {tab.id === "my-jobs" && trackedJobs.length > 0 && (
-                    <span className="text-xs font-medium bg-brand-text/8 text-brand-text/50 px-1.5 py-0.5 rounded-full">
-                      {trackedJobs.length}
-                    </span>
-                  )}
                 </button>
               );
             })}
 
+            {/* My Jobs — right-aligned */}
+            <div className="ml-auto">
+              <button
+                onClick={() => setActiveTab("my-jobs")}
+                className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all ${
+                  activeTab === "my-jobs"
+                    ? "border-brand-accent text-brand-accent"
+                    : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
+                }`}
+              >
+                My Jobs
+                {trackedJobs.length > 0 && (
+                  <span className="text-xs font-medium bg-brand-text/8 text-brand-text/50 px-1.5 py-0.5 rounded-full">
+                    {trackedJobs.length}
+                  </span>
+                )}
+              </button>
+            </div>
           </nav>
         </div>
       </div>
@@ -219,17 +260,6 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
-            {!profileText && (
-              <div className="mb-10 pb-10 border-b border-brand-text/8">
-                <p className="text-xl text-brand-text/70 leading-relaxed max-w-2xl">
-                  <span className="font-semibold text-brand-text">Signal</span> is a job search copilot for experienced professionals.
-                  Unlike LinkedIn or Indeed, it doesn&apos;t show you more jobs — it helps you apply to fewer, better ones.
-                  Upload your resume once, then get an honest fit score for every role you&apos;re considering,
-                  a tailoring brief that tells you exactly what to emphasize, and specific resume edits —
-                  all calibrated to your actual background.
-                </p>
-              </div>
-            )}
             <div className="mb-7">
               <h2 className="text-base font-semibold text-brand-text">Your Profile</h2>
               <p className="text-sm text-brand-text/50 mt-1">
@@ -363,7 +393,6 @@ export default function Home() {
             />
           </div>
         )}
-
 
       </main>
     </div>
