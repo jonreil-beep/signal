@@ -269,6 +269,15 @@ export default function Home() {
     setActiveTab(goTo);
   }
 
+  async function handleRenameJob(id: string, newLabel: string) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === id ? { ...j, label: newLabel } : j))
+    );
+    if (user) {
+      await supabase.from("tracked_jobs").update({ label: newLabel }).eq("id", id);
+    }
+  }
+
   async function handleRemoveJob(id: string) {
     setTrackedJobs((prev) => prev.filter((j) => j.id !== id));
     if (activeJobId === id) setActiveJobId(null);
@@ -650,6 +659,7 @@ export default function Home() {
               jobs={trackedJobs}
               onSelectJob={handleSelectJob}
               onRemoveJob={handleRemoveJob}
+              onRenameJob={handleRenameJob}
             />
           </div>
         )}
