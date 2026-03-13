@@ -323,11 +323,16 @@ export default function Home() {
       return (
         <div className="min-h-screen bg-brand-text flex items-center px-6">
           <div className="max-w-2xl mx-auto w-full py-20">
-            <div className="mb-12">
+            <div className="mb-10">
               <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
               <p className="text-sm text-white/40 mt-2">Job search copilot</p>
             </div>
-            <p className="text-xl text-white/70 leading-relaxed mb-10">
+            <p className="text-base text-white/50 leading-relaxed mb-8 max-w-md">
+              Most job applications fail before anyone reads them — wrong fit, generic framing,
+              nothing that makes the candidate stick. Signal helps you apply to fewer roles,
+              better prepared for each one.
+            </p>
+            <p className="text-xl text-white/80 leading-relaxed mb-10">
               Welcome back{user.email ? `, ${user.email}` : ""}.
               {trackedJobs.length > 0
                 ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
@@ -362,12 +367,15 @@ export default function Home() {
             <h1 className="text-4xl font-bold text-white tracking-tight">SIGNAL</h1>
             <p className="text-sm text-white/40 mt-2">Job search copilot</p>
           </div>
-          <p className="text-xl text-white/70 leading-relaxed mb-10">
-            Signal is a job search copilot for experienced professionals.
-            Unlike LinkedIn or Indeed, it doesn&apos;t show you more jobs — it helps you apply to fewer, better ones.
-            Upload your resume once, then get an honest fit score for every role you&apos;re considering,
-            a tailoring brief that tells you exactly what to emphasize, and specific resume edits —
-            all calibrated to your actual background.
+          <p className="text-xl text-white/70 leading-relaxed mb-3">
+            Most job applications fail before anyone reads them — wrong fit, generic framing,
+            nothing that makes the candidate stick.
+          </p>
+          <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
+            Signal is a copilot for experienced professionals who want to apply to fewer, better-fit roles —
+            and show up fully prepared for each one. Upload your resume once. Get an honest fit score,
+            a tailoring brief that tells you exactly what to emphasize, and resume edits calibrated
+            to your actual background.
           </p>
 
           {!magicLinkSent ? (
