@@ -21,7 +21,6 @@ interface TailoringBriefProps {
 
 function CopyButton({ getText }: { getText: () => string }) {
   const [copied, setCopied] = useState(false);
-
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(getText());
@@ -29,7 +28,6 @@ function CopyButton({ getText }: { getText: () => string }) {
       setTimeout(() => setCopied(false), 2000);
     } catch { /* silently fail */ }
   }
-
   return (
     <button
       onClick={handleCopy}
@@ -54,6 +52,7 @@ function CopyButton({ getText }: { getText: () => string }) {
   );
 }
 
+// Used for brief result cards (Lead Strengths, JD Language, etc.)
 function Section({
   title,
   copyText,
@@ -74,14 +73,78 @@ function Section({
   );
 }
 
-function SectionDivider({ label }: { label: string }) {
+// Used for the three generate-on-demand sections (Resume, Cover Letter, Outreach)
+function ActionSection({
+  title,
+  description,
+  buttonLabel,
+  onAction,
+  isLoading,
+  loadingMessage,
+  hasResult,
+  error,
+  children,
+}: {
+  title: string;
+  description: string;
+  buttonLabel: string;
+  onAction: () => void;
+  isLoading: boolean;
+  loadingMessage: string;
+  hasResult: boolean;
+  error: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <div className="flex items-center gap-3 pt-2">
-      <div className="flex-1 h-px bg-brand-text/8" />
-      <span className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/25 shrink-0">
-        {label}
-      </span>
-      <div className="flex-1 h-px bg-brand-text/8" />
+    <div className="bg-white rounded-2xl ring-1 ring-brand-text/8 shadow-sm overflow-hidden">
+      {/* Header row */}
+      <div className="flex items-center justify-between px-5 py-4">
+        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
+        {!isLoading && (
+          <button
+            onClick={onAction}
+            className="shrink-0 text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+          >
+            {hasResult ? "Re-generate →" : `${buttonLabel} →`}
+          </button>
+        )}
+      </div>
+
+      {/* Body */}
+      {!hasResult && !isLoading && !error && (
+        <p className="px-5 pb-4 -mt-1 text-sm text-brand-text/40">{description}</p>
+      )}
+
+      {isLoading && (
+        <div className="px-5 pb-5">
+          <LoadingState message={loadingMessage} />
+        </div>
+      )}
+
+      {error && !isLoading && (
+        <div className="px-5 pb-4 -mt-1">
+          <p className="text-sm text-red-700">{error}</p>
+          <button onClick={onAction} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+            Try again
+          </button>
+        </div>
+      )}
+
+      {hasResult && !isLoading && (
+        <div className="border-t border-brand-text/8 px-5 py-5 space-y-6">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Sub-section heading used inside ActionSection result areas
+function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
+  return (
+    <div className="flex items-center justify-between mb-3">
+      <p className="text-xs font-medium tracking-[0.06em] uppercase text-brand-text/30">{label}</p>
+      {copyText !== undefined && <CopyButton getText={() => copyText} />}
     </div>
   );
 }
@@ -179,7 +242,7 @@ export default function TailoringBrief({
       if (!response.ok) {
         setResumeUpdateError(data.error ?? "Failed to generate resume suggestions. Please try again.");
       } else {
-        onResumeUpdateResultChange(data as import("@/types").ResumeUpdateResult);
+        onResumeUpdateResultChange(data as ResumeUpdateResult);
       }
     } catch {
       setResumeUpdateError("Network error. Check your connection and try again.");
@@ -245,6 +308,7 @@ export default function TailoringBrief({
 
   return (
     <div className="space-y-4">
+
       {/* ── Generate Brief button ── */}
       {!isGenerating && (
         <div className="flex items-center justify-between">
@@ -273,7 +337,7 @@ export default function TailoringBrief({
 
       {result && !isGenerating && (
         <>
-          {/* ── Brief sections ── */}
+          {/* ── Brief result cards ── */}
           <Section
             title="Lead Strengths to Emphasize"
             copyText={result.lead_strengths.map((s) => `• ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
@@ -344,179 +408,129 @@ export default function TailoringBrief({
             </Section>
           )}
 
-          {/* ── Resume Updates ── */}
-          <SectionDivider label="Resume" />
+          {/* ── Resume Updates action card ── */}
+          <ActionSection
+            title="Resume Updates"
+            description="Get specific, copy-paste resume edits tailored to this job."
+            buttonLabel="Suggest Updates"
+            onAction={handleGenerateResumeUpdates}
+            isLoading={isGeneratingResumeUpdates}
+            loadingMessage="Generating resume suggestions — this takes 10–20 seconds…"
+            hasResult={!!resumeUpdateResult}
+            error={resumeUpdateError}
+          >
+            {resumeUpdateResult && (
+              <>
+                <div>
+                  <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
+                  <p className="text-sm text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                </div>
 
-          {!isGeneratingResumeUpdates && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-brand-text/40">
-                {resumeUpdateResult
-                  ? "Re-generate to refresh resume suggestions."
-                  : "Get specific, copy-paste resume edits tailored to this job."}
-              </p>
-              <button
-                onClick={handleGenerateResumeUpdates}
-                className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-              >
-                {resumeUpdateResult ? "Re-generate" : "Suggest Resume Updates"}
-              </button>
-            </div>
-          )}
-
-          {isGeneratingResumeUpdates && <LoadingState message="Generating resume suggestions — this takes 10–20 seconds…" />}
-
-          {resumeUpdateError && !isGeneratingResumeUpdates && (
-            <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-              <p className="text-sm text-red-700">{resumeUpdateError}</p>
-              <button onClick={handleGenerateResumeUpdates} className="mt-1 text-xs text-red-500 underline hover:no-underline">
-                Try again
-              </button>
-            </div>
-          )}
-
-          {resumeUpdateResult && !isGeneratingResumeUpdates && (
-            <div className="space-y-3">
-              <Section title="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite}>
-                <p className="text-sm text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
-              </Section>
-
-              <Section
-                title="Resume Bullets to Update"
-                copyText={resumeUpdateResult.bullet_updates
-                  .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
-                  .join("\n\n")}
-              >
-                <div className="space-y-4">
-                  {resumeUpdateResult.bullet_updates.map((b, i) => (
-                    <div key={i} className="space-y-2">
-                      <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
-                        {b.section}
-                      </p>
-                      <div className="rounded-xl overflow-hidden ring-1 ring-brand-text/8">
-                        <div className="px-3.5 py-2.5 bg-brand-text/4">
-                          <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
-                          <p className="text-sm text-brand-text/50 italic">{b.original_paraphrase}</p>
-                        </div>
-                        <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
-                              <p className="text-sm text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading
+                    label="Resume Bullets to Update"
+                    copyText={resumeUpdateResult.bullet_updates
+                      .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
+                      .join("\n\n")}
+                  />
+                  <div className="space-y-4">
+                    {resumeUpdateResult.bullet_updates.map((b, i) => (
+                      <div key={i} className="space-y-2">
+                        <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
+                          {b.section}
+                        </p>
+                        <div className="rounded-xl overflow-hidden ring-1 ring-brand-text/8">
+                          <div className="px-3.5 py-2.5 bg-brand-text/4">
+                            <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
+                            <p className="text-sm text-brand-text/50 italic">{b.original_paraphrase}</p>
+                          </div>
+                          <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1">
+                                <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
+                                <p className="text-sm text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                              </div>
+                              <CopyButton getText={() => b.suggested_rewrite} />
                             </div>
-                            <CopyButton getText={() => b.suggested_rewrite} />
                           </div>
                         </div>
+                        <p className="text-xs text-brand-text/40 pl-1">{b.why}</p>
                       </div>
-                      <p className="text-xs text-brand-text/40 pl-1">{b.why}</p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </Section>
 
-              <Section
-                title="Keywords to Weave In"
-                copyText={resumeUpdateResult.keywords_to_weave_in
-                  .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
-                  .join("\n")}
-              >
-                <div className="space-y-3">
-                  {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                        {k.keyword}
-                      </span>
-                      <p className="text-sm text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
-                    </div>
-                  ))}
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading
+                    label="Keywords to Weave In"
+                    copyText={resumeUpdateResult.keywords_to_weave_in
+                      .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
+                      .join("\n")}
+                  />
+                  <div className="space-y-3">
+                    {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                          {k.keyword}
+                        </span>
+                        <p className="text-sm text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </Section>
-            </div>
-          )}
+              </>
+            )}
+          </ActionSection>
 
-          {/* ── Cover Letter ── */}
-          <SectionDivider label="Cover Letter" />
+          {/* ── Cover Letter action card ── */}
+          <ActionSection
+            title="Cover Letter"
+            description="A tailored cover letter built from the brief above."
+            buttonLabel="Draft Cover Letter"
+            onAction={handleGenerateCoverLetter}
+            isLoading={isGeneratingCoverLetter}
+            loadingMessage="Drafting your cover letter…"
+            hasResult={!!coverLetterResult}
+            error={coverLetterError}
+          >
+            {coverLetterResult && (
+              <div>
+                <SubHeading label="Cover Letter" copyText={coverLetterResult.cover_letter} />
+                <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                  {coverLetterResult.cover_letter}
+                </pre>
+              </div>
+            )}
+          </ActionSection>
 
-          {!isGeneratingCoverLetter && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-brand-text/40">
-                {coverLetterResult
-                  ? "Re-draft to refresh the cover letter."
-                  : "A tailored cover letter built from the brief above."}
-              </p>
-              <button
-                onClick={handleGenerateCoverLetter}
-                className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-              >
-                {coverLetterResult ? "Re-draft" : "Draft Cover Letter"}
-              </button>
-            </div>
-          )}
-
-          {isGeneratingCoverLetter && <LoadingState message="Drafting your cover letter…" />}
-
-          {coverLetterError && !isGeneratingCoverLetter && (
-            <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-              <p className="text-sm text-red-700">{coverLetterError}</p>
-              <button onClick={handleGenerateCoverLetter} className="mt-1 text-xs text-red-500 underline hover:no-underline">
-                Try again
-              </button>
-            </div>
-          )}
-
-          {coverLetterResult && !isGeneratingCoverLetter && (
-            <Section title="Cover Letter" copyText={coverLetterResult.cover_letter}>
-              <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                {coverLetterResult.cover_letter}
-              </pre>
-            </Section>
-          )}
-
-          {/* ── Outreach Messages ── */}
+          {/* ── Outreach Messages action card ── */}
           {result.outreach_angle && (
-            <>
-              <SectionDivider label="Outreach" />
-
-              {!isGeneratingOutreach && (
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-brand-text/40">
-                    {outreachResult
-                      ? "Re-draft to refresh the messages."
-                      : "Turn the outreach angle into a ready-to-send email and LinkedIn message."}
-                  </p>
-                  <button
-                    onClick={handleGenerateOutreach}
-                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-                  >
-                    {outreachResult ? "Re-draft" : "Draft Outreach Messages"}
-                  </button>
-                </div>
-              )}
-
-              {isGeneratingOutreach && <LoadingState message="Drafting outreach messages…" />}
-
-              {outreachError && !isGeneratingOutreach && (
-                <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-                  <p className="text-sm text-red-700">{outreachError}</p>
-                  <button onClick={handleGenerateOutreach} className="mt-1 text-xs text-red-500 underline hover:no-underline">
-                    Try again
-                  </button>
-                </div>
-              )}
-
-              {outreachResult && !isGeneratingOutreach && (
-                <div className="space-y-3">
-                  <Section title="Cold Email" copyText={outreachResult.email}>
+            <ActionSection
+              title="Outreach Messages"
+              description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
+              buttonLabel="Draft Messages"
+              onAction={handleGenerateOutreach}
+              isLoading={isGeneratingOutreach}
+              loadingMessage="Drafting outreach messages…"
+              hasResult={!!outreachResult}
+              error={outreachError}
+            >
+              {outreachResult && (
+                <>
+                  <div>
+                    <SubHeading label="Cold Email" copyText={outreachResult.email} />
                     <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
                       {outreachResult.email}
                     </pre>
-                  </Section>
-                  <Section title="LinkedIn Message" copyText={outreachResult.linkedin_message}>
+                  </div>
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
                     <p className="text-sm text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
                     <p className="mt-2 text-xs text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
-                  </Section>
-                </div>
+                  </div>
+                </>
               )}
-            </>
+            </ActionSection>
           )}
         </>
       )}
