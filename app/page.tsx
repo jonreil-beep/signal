@@ -605,18 +605,16 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
-                    {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-                      <span className="text-sm font-medium text-brand-accent truncate">
-                        {trackedJobs.find(j => j.id === activeJobId)!.label}
-                      </span>
-                    )}
-                  </div>
+                  <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
                   <p className="text-sm text-brand-text/50 mt-1">
                     Paste a job description or fetch from URL. Get an honest fit score with clear reasoning.
                   </p>
                 </div>
+                {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
+                  <h3 className="text-2xl font-bold text-brand-text mb-6">
+                    {trackedJobs.find(j => j.id === activeJobId)!.label}
+                  </h3>
+                )}
                 <JobFitScorer
                   profileText={profileText}
                   result={jobFitResult}
@@ -629,22 +627,20 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Tailoring Brief tab ── */}
+        {/* ── Prep tab ── */}
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="text-base font-semibold text-brand-text">Prep</h2>
-                {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-                  <span className="text-sm font-medium text-brand-accent truncate">
-                    {trackedJobs.find(j => j.id === activeJobId)!.label}
-                  </span>
-                )}
-              </div>
+              <h2 className="text-base font-semibold text-brand-text">Prep</h2>
               <p className="text-sm text-brand-text/50 mt-1">
                 Tailoring brief, outreach draft, and resume edits — everything you need to apply with confidence.
               </p>
             </div>
+            {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
+              <h3 className="text-2xl font-bold text-brand-text mb-6">
+                {trackedJobs.find(j => j.id === activeJobId)!.label}
+              </h3>
+            )}
             <TailoringBrief
               profileText={profileText}
               jobDescription={jobDescription}
