@@ -220,8 +220,8 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             {!profileText && (
-              <div className="mb-8 pb-8 border-b border-brand-text/8">
-                <p className="text-sm text-brand-text/60 leading-relaxed max-w-2xl">
+              <div className="mb-10 pb-10 border-b border-brand-text/8">
+                <p className="text-xl text-brand-text/70 leading-relaxed max-w-2xl">
                   <span className="font-semibold text-brand-text">Signal</span> is a job search copilot for experienced professionals.
                   Unlike LinkedIn or Indeed, it doesn&apos;t show you more jobs — it helps you apply to fewer, better ones.
                   Upload your resume once, then get an honest fit score for every role you&apos;re considering,
