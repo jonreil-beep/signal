@@ -295,16 +295,16 @@ export default function BrandGuidelines() {
         </div>
 
         {/* Purpose + Promise in a 2-col grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="flex flex-col">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Purpose</p>
-            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 h-full">
+            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 flex-1">
               <p className="text-sm font-normal leading-[1.6] text-brand-text/80">{BRAND_HOUSE.purpose}</p>
             </div>
           </div>
-          <div>
+          <div className="flex flex-col">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Promise</p>
-            <div className="bg-brand-accent rounded-2xl p-5 h-full">
+            <div className="bg-brand-accent rounded-2xl p-5 flex-1">
               <p className="text-sm font-semibold text-white/90 leading-[1.6]">{BRAND_HOUSE.promise}</p>
             </div>
           </div>
