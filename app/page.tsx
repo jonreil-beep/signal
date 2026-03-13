@@ -8,6 +8,7 @@ import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
 import JobTracker from "@/components/JobTracker";
+import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
@@ -611,9 +612,20 @@ export default function Home() {
                   </p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-                  <h3 className="text-2xl font-bold text-brand-text mb-6">
-                    {trackedJobs.find(j => j.id === activeJobId)!.label}
-                  </h3>
+                  <div className="flex items-center justify-between gap-4 mb-6">
+                    <JobLabelEditor
+                      id={activeJobId}
+                      label={trackedJobs.find(j => j.id === activeJobId)!.label}
+                      onRename={handleRenameJob}
+                      className="text-2xl font-bold"
+                    />
+                    <button
+                      onClick={handleJobFitReset}
+                      className="shrink-0 px-4 py-2 bg-brand-text/8 text-brand-text/60 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors whitespace-nowrap"
+                    >
+                      + Score another job
+                    </button>
+                  </div>
                 )}
                 <JobFitScorer
                   profileText={profileText}
@@ -637,9 +649,14 @@ export default function Home() {
               </p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-              <h3 className="text-2xl font-bold text-brand-text mb-6">
-                {trackedJobs.find(j => j.id === activeJobId)!.label}
-              </h3>
+              <div className="mb-6">
+                <JobLabelEditor
+                  id={activeJobId}
+                  label={trackedJobs.find(j => j.id === activeJobId)!.label}
+                  onRename={handleRenameJob}
+                  className="text-2xl font-bold"
+                />
+              </div>
             )}
             <TailoringBrief
               profileText={profileText}

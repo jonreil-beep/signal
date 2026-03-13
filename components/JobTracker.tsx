@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import type { TrackedJob } from "@/types";
+import JobLabelEditor from "./JobLabelEditor";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
@@ -27,69 +27,6 @@ function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(date));
 }
 
-function JobLabelEditor({
-  id,
-  label,
-  onRename,
-}: {
-  id: string;
-  label: string;
-  onRename: (id: string, newLabel: string) => void;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(label);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (editing) inputRef.current?.select();
-  }, [editing]);
-
-  function commit() {
-    const trimmed = value.trim();
-    if (trimmed && trimmed !== label) {
-      onRename(id, trimmed);
-    } else {
-      setValue(label); // revert if empty or unchanged
-    }
-    setEditing(false);
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") commit();
-    if (e.key === "Escape") { setValue(label); setEditing(false); }
-  }
-
-  if (editing) {
-    return (
-      <input
-        ref={inputRef}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={commit}
-        onKeyDown={handleKeyDown}
-        className="text-sm font-semibold text-brand-text leading-snug bg-transparent border-b border-brand-accent outline-none w-full"
-      />
-    );
-  }
-
-  return (
-    <button
-      onClick={() => setEditing(true)}
-      className="group flex items-center gap-1.5 text-left"
-      title="Click to rename"
-    >
-      <span className="text-sm font-semibold text-brand-text leading-snug">{label}</span>
-      <svg
-        className="w-3 h-3 text-brand-text/20 group-hover:text-brand-text/50 transition-colors shrink-0 mt-px"
-        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-          d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z"
-        />
-      </svg>
-    </button>
-  );
-}
 
 export default function JobTracker({ jobs, onSelectJob, onRemoveJob, onRenameJob }: JobTrackerProps) {
   if (jobs.length === 0) {
