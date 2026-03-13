@@ -481,28 +481,19 @@ export default function Home() {
       <div className="bg-white border-b border-brand-text/8 shadow-sm">
         <div className="max-w-4xl mx-auto px-6">
           <nav className="flex items-center" aria-label="Tabs">
-            {MAIN_TABS.map((tab) => {
-              const isDone =
-                (tab.id === "profile" && !!profileText) ||
-                (tab.id === "job-fit" && !!jobDescription) ||
-                (tab.id === "tailoring-brief" && !!tailoringResult);
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all ${
-                    activeTab === tab.id
-                      ? "border-brand-accent text-brand-accent"
-                      : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
-                  }`}
-                >
-                  {tab.label}
-                  {isDone && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
-                  )}
-                </button>
-              );
-            })}
+            {MAIN_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-5 py-4 text-sm font-medium border-b-2 transition-all ${
+                  activeTab === tab.id
+                    ? "border-brand-accent text-brand-accent"
+                    : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
 
             {/* My Jobs — right-aligned */}
             <div className="ml-auto">
