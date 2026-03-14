@@ -50,15 +50,16 @@ export default function JobTracker({ jobs, onSelectJob, onRemoveJob, onRenameJob
         return (
           <div
             key={job.id}
-            className="bg-white rounded-2xl p-5 shadow"
+            onClick={() => onSelectJob(job, "job-fit")}
+            className="bg-white rounded-2xl p-5 shadow cursor-pointer hover:shadow-md transition-shadow"
           >
             {/* Title row */}
             <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
                 <JobLabelEditor id={job.id} label={job.label} onRename={onRenameJob} />
               </div>
               <button
-                onClick={() => onRemoveJob(job.id)}
+                onClick={(e) => { e.stopPropagation(); onRemoveJob(job.id); }}
                 className="shrink-0 text-brand-text/20 hover:text-brand-text/50 transition-colors text-lg leading-none mt-0.5"
                 aria-label="Remove job"
               >
@@ -81,19 +82,13 @@ export default function JobTracker({ jobs, onSelectJob, onRemoveJob, onRenameJob
               {job.tailoringResult && (
                 <>
                   <span className="text-brand-text/20">·</span>
-                  <span className="text-xs text-status-apply font-medium">Brief ready</span>
+                  <span className="text-xs text-status-apply font-medium">Prep ready</span>
                 </>
               )}
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-3 mt-4">
-              <button
-                onClick={() => onSelectJob(job, "job-fit")}
-                className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
-              >
-                View Fit →
-              </button>
+            {/* Secondary action */}
+            <div className="flex items-center gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
                 className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
