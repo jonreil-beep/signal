@@ -41,14 +41,9 @@ export default function Home() {
 
   // ── App state ──
   const [showLanding, setShowLanding] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabId>(() => {
-    if (typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("signal-active-tab") as TabId | null;
-      const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs"];
-      if (saved && valid.includes(saved)) return saved;
-    }
-    return "profile";
-  });
+  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  // Guards the save effects so they don't overwrite sessionStorage before restoration runs
+  const [sessionRestored, setSessionRestored] = useState(false);
   const [profileText, setProfileText] = useState<string>("");
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
@@ -65,10 +60,33 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
-  // ── Persist active tab across refreshes ──
+  // ── Restore tab + active job from sessionStorage after hydration ──
   useEffect(() => {
+    const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
+    const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs"];
+    if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
+
+    const savedJobId = sessionStorage.getItem("signal-active-job-id");
+    if (savedJobId) setActiveJobId(savedJobId);
+
+    setSessionRestored(true);
+  }, []);
+
+  // ── Persist active tab (only after restoration so we don't clobber saved state) ──
+  useEffect(() => {
+    if (!sessionRestored) return;
     sessionStorage.setItem("signal-active-tab", activeTab);
-  }, [activeTab]);
+  }, [activeTab, sessionRestored]);
+
+  // ── Persist active job id ──
+  useEffect(() => {
+    if (!sessionRestored) return;
+    if (activeJobId) {
+      sessionStorage.setItem("signal-active-job-id", activeJobId);
+    } else {
+      sessionStorage.removeItem("signal-active-job-id");
+    }
+  }, [activeJobId, sessionRestored]);
 
   // ── Auth lifecycle ──
   useEffect(() => {
@@ -124,6 +142,20 @@ export default function Home() {
         scoredAt: new Date(row.scored_at as string),
       }));
       setTrackedJobs(jobs);
+
+      // Restore active job state so refreshing on job-fit / prep keeps the job loaded
+      const savedJobId = sessionStorage.getItem("signal-active-job-id");
+      if (savedJobId) {
+        const job = jobs.find((j) => j.id === savedJobId);
+        if (job) {
+          setJobDescription(job.jobDescription);
+          setJobFitResult(job.jobFitResult);
+          setTailoringResult(job.tailoringResult ?? null);
+          setOutreachResult(job.outreachResult ?? null);
+          setCoverLetterResult(job.coverLetterResult ?? null);
+          setResumeUpdateResult(job.resumeUpdateResult ?? null);
+        }
+      }
     }
   }
 
@@ -140,6 +172,7 @@ export default function Home() {
     setActiveJobId(null);
     setActiveTab("profile");
     sessionStorage.removeItem("signal-active-tab");
+    sessionStorage.removeItem("signal-active-job-id");
   }
 
   async function handleSignOut() {
