@@ -384,7 +384,7 @@ export default function Home() {
             <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
           </div>
           <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
-            Most job applications fail before anyone reads them — wrong fit, generic framing,
+            Most job applications fail before anyone reads them: wrong fit, generic framing,
             nothing that makes the candidate stick.
           </p>
           <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
@@ -431,7 +431,7 @@ export default function Home() {
           ) : (
             <div className="space-y-3">
               <p className="text-base text-white/80">
-                Check your inbox — we sent a link to <span className="text-white font-medium">{email}</span>.
+                Check your inbox. We sent a link to <span className="text-white font-medium">{email}</span>.
               </p>
               <p className="text-sm text-white/40">
                 Click the link in the email to sign in. It may take a minute to arrive.
@@ -580,7 +580,7 @@ export default function Home() {
                     <p className="text-sm text-brand-text/40 mt-0.5">
                       {clusterResult
                         ? "Re-run anytime to refresh."
-                        : "Claude will map your best-fit roles, strengths, and risks."}
+                        : "Signal will map your best-fit roles, strengths, and risks."}
                     </p>
                   </div>
                   <button
@@ -595,7 +595,7 @@ export default function Home() {
 
             {isAnalyzing && (
               <div className="mt-6 pt-6 border-t border-brand-text/8">
-                <LoadingState message="Analyzing your profile — this takes 10–20 seconds…" />
+                <LoadingState message="Analyzing your profile. This takes about 20 seconds..." />
               </div>
             )}
 
@@ -676,7 +676,7 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
               <p className="text-base text-brand-text/50 mt-1">
-                Prep guide, outreach draft, and resume edits — everything you need to apply with confidence.
+                Prep guide, outreach draft, and resume edits. Everything you need to apply with confidence.
               </p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (

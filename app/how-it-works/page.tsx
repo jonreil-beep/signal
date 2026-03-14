@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
             A better way to job search
           </h1>
           <p className="text-2xl text-brand-text/60 leading-relaxed max-w-2xl">
-            Most job applications fail before anyone reads them — wrong fit, generic framing,
+            Most job applications fail before anyone reads them: wrong fit, generic framing,
             nothing that makes the candidate stick. Signal is built to fix that.
           </p>
         </div>
@@ -47,17 +47,17 @@ export default function HowItWorksPage() {
             <Step
               n={1}
               title="Build your profile"
-              body="Upload your resume once. Claude reads your full career history and maps it to best-fit role clusters — the kinds of roles where you're most likely to succeed and stand out."
+              body="Upload your resume once. Signal reads your full career history and maps it to best-fit role clusters: the kinds of roles where you're most likely to succeed and stand out."
             />
             <Step
               n={2}
               title="Score any job"
-              body="Paste a job description. Signal gives you an honest fit score from 1 to 10 with clear reasoning — what aligns with your background, what's a stretch, and whether it's worth applying."
+              body="Paste a job description. Signal gives you an honest fit score from 1 to 10 with clear reasoning: what aligns with your background, what's a stretch, and whether it's worth applying."
             />
             <Step
               n={3}
               title="Prep with precision"
-              body="For jobs worth applying to, get a full prep guide: what to emphasize, what to de-emphasize, outreach messages, a cover letter, and resume edits — all calibrated to your actual background, not a generic template."
+              body="For jobs worth applying to, get a full prep guide: what to emphasize, what to de-emphasize, outreach messages, a cover letter, and resume edits. All calibrated to your actual background, not a generic template."
             />
             <Step
               n={4}
@@ -104,7 +104,7 @@ export default function HowItWorksPage() {
           </h2>
           <div className="bg-brand-text rounded-2xl p-8">
             <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
-              Signal is built for experienced professionals — people with years of real work behind them
+              Signal is built for experienced professionals: people with years of real work behind them
               who are making a deliberate move, not just sending out resumes and hoping for callbacks.
             </p>
             <ul className="space-y-4">

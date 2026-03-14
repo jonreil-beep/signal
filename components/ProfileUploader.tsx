@@ -175,7 +175,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
       {/* Extracted text preview */}
       {mode === "upload" && extractedText && !isLoading && (
         <div>
-          <p className="text-xs font-medium text-brand-text/40 mb-2">Extracted text — confirm it looks right</p>
+          <p className="text-xs font-medium text-brand-text/40 mb-2">Extracted text: confirm it looks right</p>
           <textarea
             readOnly
             value={extractedText}

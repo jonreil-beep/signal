@@ -163,7 +163,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                 </button>
               </div>
               <p className="text-sm text-brand-text/40">
-                Many job boards block automated fetches — paste the text if this fails.
+                Many job boards block automated fetches. Paste the text if this fails.
               </p>
 
               {isFetching && <LoadingState message="Fetching job description…" />}
@@ -205,7 +205,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
             </div>
           )}
 
-          {isScoring && <LoadingState message="Scoring job fit — this takes 10–20 seconds…" />}
+          {isScoring && <LoadingState message="Scoring job fit. This takes about 20 seconds..." />}
 
           {scoreError && !isScoring && (
             <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">

@@ -313,7 +313,7 @@ export default function TailoringBrief({
       {!isGenerating && (
         <div className="flex items-center justify-between">
           <p className="text-base text-brand-text/40">
-            {result ? "Re-generate to refresh." : "Claude will build targeted prep for this specific job."}
+            {result ? "Re-generate to refresh." : "Signal will build targeted prep for this specific job."}
           </p>
           <button
             onClick={handleGenerate}
@@ -324,7 +324,7 @@ export default function TailoringBrief({
         </div>
       )}
 
-      {isGenerating && <LoadingState message="Generating your prep — this takes 10–20 seconds…" />}
+      {isGenerating && <LoadingState message="Generating your prep. This takes about 20 seconds..." />}
 
       {error && !isGenerating && (
         <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
@@ -415,7 +415,7 @@ export default function TailoringBrief({
             buttonLabel="Suggest Updates"
             onAction={handleGenerateResumeUpdates}
             isLoading={isGeneratingResumeUpdates}
-            loadingMessage="Generating resume suggestions — this takes 10–20 seconds…"
+            loadingMessage="Generating resume suggestions. This takes about 20 seconds..."
             hasResult={!!resumeUpdateResult}
             error={resumeUpdateError}
           >
