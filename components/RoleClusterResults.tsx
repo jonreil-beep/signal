@@ -33,7 +33,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
         </p>
         <div className="space-y-2.5">
           {result.role_clusters.map((cluster, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
+            <div key={i} className="bg-white rounded-2xl p-5 shadow">
               <div className="flex items-start justify-between gap-3 mb-2.5">
                 <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
                 <span className={`shrink-0 text-sm font-medium px-2.5 py-1 rounded-full ${CONFIDENCE_STYLES[cluster.confidence]}`}>
@@ -58,7 +58,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
 
       {/* Strengths + Risks */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
+        <div className="bg-white rounded-2xl p-5 shadow">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Core Strengths
           </p>
@@ -72,7 +72,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
           </ul>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
+        <div className="bg-white rounded-2xl p-5 shadow">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Positioning Risks
           </p>

@@ -63,7 +63,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
+    <div className="bg-white rounded-2xl p-5 shadow">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
         <CopyButton getText={() => copyText} />
@@ -96,7 +96,7 @@ function ActionSection({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl ring-1 ring-brand-text/8 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl shadow overflow-hidden">
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text">{title}</p>
@@ -179,7 +179,7 @@ export default function TailoringBrief({
         <p className="text-base text-brand-text/50 mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
         >
           Go to Profile →
         </button>
@@ -196,7 +196,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -317,7 +317,7 @@ export default function TailoringBrief({
           </p>
           <button
             onClick={handleGenerate}
-            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
           >
             {result ? "Re-generate" : "Generate Brief"}
           </button>
@@ -439,7 +439,7 @@ export default function TailoringBrief({
                         <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
                           {b.section}
                         </p>
-                        <div className="rounded-xl overflow-hidden ring-1 ring-brand-text/8">
+                        <div className="rounded-xl overflow-hidden border border-brand-text/8">
                           <div className="px-3.5 py-2.5 bg-brand-text/4">
                             <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
                             <p className="text-base text-brand-text/50 italic">{b.original_paraphrase}</p>

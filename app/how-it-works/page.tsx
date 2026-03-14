@@ -73,21 +73,21 @@ export default function HowItWorksPage() {
             Why it works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+            <div className="bg-white rounded-2xl p-7 shadow">
               <h3 className="text-base font-semibold text-brand-text mb-1.5">Honest signal over flattery</h3>
               <p className="text-base text-brand-text/50 leading-relaxed">
                 Signal won&apos;t tell you a job is a great fit when it isn&apos;t. You get an unvarnished
                 read so you can put effort where it actually counts.
               </p>
             </div>
-            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+            <div className="bg-white rounded-2xl p-7 shadow">
               <h3 className="text-base font-semibold text-brand-text mb-1.5">Specific over generic</h3>
               <p className="text-base text-brand-text/50 leading-relaxed">
                 Every output is based on your actual background. The prep brief for one
                 candidate looks nothing like the brief for another.
               </p>
             </div>
-            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+            <div className="bg-white rounded-2xl p-7 shadow">
               <h3 className="text-base font-semibold text-brand-text mb-1.5">Less volume, more quality</h3>
               <p className="text-base text-brand-text/50 leading-relaxed">
                 Skip roles that aren&apos;t a real fit. Prepare thoroughly for the ones that are.
@@ -127,7 +127,7 @@ export default function HowItWorksPage() {
         <div className="flex flex-col items-start gap-3 pb-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
           >
             Start using Signal →
           </Link>
