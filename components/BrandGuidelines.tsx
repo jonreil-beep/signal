@@ -195,62 +195,63 @@ const BRAND_HOUSE = {
 
 const PHOTO_EXAMPLES = [
   {
-    id: "1486312338219-ce68d2c6f44d",
-    label: "Individual at work",
-    caption: "Subject mid-task, not mid-pose. Natural light. The work is the subject, not the person's reaction to it.",
+    id: "1494790108377-be9c29b29330",
+    label: "The pause",
+    caption: "A person alone, between moments. Not working, not performing. Looking away, looking out, or simply present. The subject is the quality of thought, not the activity.",
+    crop: "faces",
+  },
+  {
+    id: "1499750310107-5fef28a66643",
+    label: "The object at rest",
+    caption: "One thing in generous space. A closed notebook. Coffee cooling. Phone face-down. Objects carry weight when nothing competes with them.",
   },
   {
     id: "1497366216548-37526070297c",
     label: "The space",
-    caption: "Environments that imply serious work happens here. Open, light-filled, uncluttered. Architecture as character.",
-  },
-  {
-    id: "1522202176988-66273c2fd55f",
-    label: "The conversation",
-    caption: "Two or three people engaged in real work — not staged collaboration. No exaggerated eye contact or laughter.",
+    caption: "A real room, not a designed one. Slightly spare, personally lived-in. The kind of place where something important might happen quietly.",
   },
   {
     id: "1454165804606-c3d57bc86b40",
-    label: "Focus on the work",
-    caption: "Detail shots anchor the viewer in real activity. Hands, screen, notebook. Close enough to be specific.",
+    label: "The detail",
+    caption: "Close enough to feel material. Hands, paper, grain, texture. Specificity earns trust. Never a detail shot of a screen.",
   },
   {
-    id: "1499750310107-5fef28a66643",
-    label: "Minimal setup",
-    caption: "Clean desk, good light, room to breathe. Negative space is not emptiness — it signals confidence and clarity.",
+    id: "1558618666-fcd25c85cd64",
+    label: "The light",
+    caption: "Window light or soft outdoor light only. Early morning or late afternoon — the hours that feel like transitions. Light is the mood, not a lighting setup.",
   },
   {
     id: "1507003211169-0a1dd7228f2d",
-    label: "The professional",
-    caption: "When shooting people, frame them with authority. Composed, not stiff. Confident posture. Never a stock-photo smile.",
+    label: "The portrait",
+    caption: "One person, eye contact optional. Caught thinking rather than performing. Frame them with room to exist. No posed confidence, no stock-photo stillness.",
     crop: "faces",
   },
 ];
 
 const PHOTO_DOS_DONTS = [
   {
-    use:   "Natural light — window, diffused overhead",
-    avoid: "Flash, obvious studio lighting, or harsh shadows",
+    use:   "The moment before or after — never during",
+    avoid: "Peak-performance moments: typing, presenting, pointing at whiteboards",
   },
   {
-    use:   "Subject mid-task: typing, reviewing, thinking",
-    avoid: "Subject posing for or smiling directly at the camera",
+    use:   "One subject per frame — person, object, or space",
+    avoid: "Groups, pairs pretending to collaborate, or multi-subject scenes",
   },
   {
-    use:   "Clean, uncluttered desk with breathing room",
-    avoid: "Cluttered \u201cpersonality\u201d desk shots or motivational accessories",
+    use:   "Window light or soft natural outdoor light",
+    avoid: "Screen glow as primary light, flash, or obvious studio setups",
   },
   {
-    use:   "Two people in candid, purposeful discussion",
-    avoid: "Staged \u201ccollaboration\u201d with exaggerated engagement or laughter",
+    use:   "Real, personal spaces — a kitchen table, a quiet room, a doorway",
+    avoid: "Designed office environments, coworking spaces, or anything branded",
   },
   {
-    use:   "Architectural shots that imply serious work happens here",
-    avoid: "Bean bags, ping-pong tables, or \u201cculture\u201d office spaces",
+    use:   "People in private moments of thought — looking away, looking out",
+    avoid: "Eye contact, smiling at camera, or any pose that says \u201cprofessional headshot\u201d",
   },
   {
-    use:   "Natural, unsaturated color \u2014 true to life",
-    avoid: "Heavy filters, dramatic grading, or Instagram-era moods",
+    use:   "Muted, natural color — true to the hour and the light",
+    avoid: "Heavy grading, high contrast, or anything that reads as a mood filter",
   },
 ];
 
@@ -720,10 +721,10 @@ export default function BrandGuidelines() {
       <section>
         <SectionLabel>06 — Photography</SectionLabel>
         <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
-          Real, Direct, Unposed
+          Quiet Intention
         </h2>
         <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8 max-w-2xl">
-          Signal photography looks like McKinsey&apos;s editorial library, not a HR deck. Real professionals in real moments. Clean light, generous space, zero performance. Mix people and their environments.
+          The stillness before something important. Not the meeting — the moment before it. Not the decision — the room where it was made. One subject, natural light, real space. Nothing that could appear in a search for &ldquo;professional.&rdquo;
         </p>
 
         {/* Photo grid */}
