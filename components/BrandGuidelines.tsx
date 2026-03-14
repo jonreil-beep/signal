@@ -195,30 +195,29 @@ const BRAND_HOUSE = {
 
 const PHOTO_EXAMPLES = [
   {
-    id: "1494790108377-be9c29b29330",
+    id: "1484627147104-f5197bcd6651",
     label: "The pause",
-    caption: "A person alone, between moments. Not working, not performing. Looking away, looking out, or simply present. The subject is the quality of thought, not the activity.",
-    crop: "faces",
+    caption: "A person alone, between moments. Back to the camera, looking out. No performance, no activity — just the quality of being present before something begins.",
   },
   {
-    id: "1499750310107-5fef28a66643",
+    id: "1516979187457-637abb4f9353",
     label: "The object at rest",
-    caption: "One thing in generous space. A closed notebook. Coffee cooling. Phone face-down. Objects carry weight when nothing competes with them.",
+    caption: "Objects carry weight when nothing competes with them. A stack of books, a mug, a closed notebook. Generous space around one thing says more than a curated flatlay.",
   },
   {
-    id: "1497366216548-37526070297c",
+    id: "1518780664697-55e3ad937233",
     label: "The space",
-    caption: "A real room, not a designed one. Slightly spare, personally lived-in. The kind of place where something important might happen quietly.",
+    caption: "Real spaces aren't designed for the photo — they accumulate. Find environments with a point of view. The opposite of a WeWork.",
   },
   {
-    id: "1454165804606-c3d57bc86b40",
+    id: "1455390582262-044cdead277a",
     label: "The detail",
-    caption: "Close enough to feel material. Hands, paper, grain, texture. Specificity earns trust. Never a detail shot of a screen.",
+    caption: "Close enough to feel material. Pen on paper, grain, texture, the physical weight of a thing. Specificity earns trust. Never a detail shot of a screen.",
   },
   {
-    id: "1558618666-fcd25c85cd64",
+    id: "1519710164239-da123dc03ef4",
     label: "The light",
-    caption: "Window light or soft outdoor light only. Early morning or late afternoon — the hours that feel like transitions. Light is the mood, not a lighting setup.",
+    caption: "Two windows. An empty chair. A table. The light is the entire subject — everything else exists to hold it. Never a lighting kit, never flash.",
   },
   {
     id: "1438761681033-6461ffad8d80",
