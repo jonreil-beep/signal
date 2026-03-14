@@ -458,28 +458,14 @@ export default function Home() {
             <p className="text-sm text-white/40 mt-0.5">Job search copilot</p>
           </button>
           <div className="flex items-center gap-4">
-            {(profileText || jobDescription) && (
-              <div className="hidden sm:flex items-center gap-2 text-sm">
-                <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
-                  {profileText && <span>✓</span>} Profile
-                </span>
-                <span className="text-white/20">·</span>
-                <span className={`flex items-center gap-1 ${jobDescription ? "text-status-apply" : "text-white/30"}`}>
-                  {jobDescription && <span>✓</span>} Job scored
-                </span>
-                <span className="text-white/20">·</span>
-                <span className={`flex items-center gap-1 ${tailoringResult ? "text-status-apply" : "text-white/30"}`}>
-                  {tailoringResult && <span>✓</span>} Prep
-                </span>
-              </div>
-            )}
-            <div className="flex items-center gap-4">
-              <Link href="/how-it-works" className="text-sm text-white/60 hover:text-white/90 transition-colors hidden sm:block">
-                How it works
-              </Link>
-              {user && (
+            <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
+              How it works
+            </Link>
+            {user && (
+              <>
+                <span className="text-white/15 hidden sm:block">|</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-white/40 hidden sm:block">{user.email}</span>
+                  <span className="text-sm text-white/35 hidden sm:block">{user.email}</span>
                   <button
                     onClick={handleSignOut}
                     className="text-sm text-white/50 hover:text-white/80 transition-colors"
@@ -487,8 +473,8 @@ export default function Home() {
                     Sign out
                   </button>
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
       </header>
