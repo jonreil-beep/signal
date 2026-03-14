@@ -103,7 +103,7 @@ function ActionSection({
         {!isLoading && (
           <button
             onClick={onAction}
-            className="shrink-0 text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+            className="shrink-0 text-base font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
           >
             {hasResult ? "Re-generate →" : `${buttonLabel} →`}
           </button>
@@ -112,7 +112,7 @@ function ActionSection({
 
       {/* Body */}
       {!hasResult && !isLoading && !error && (
-        <p className="px-5 pb-4 -mt-1 text-sm text-brand-text/40">{description}</p>
+        <p className="px-5 pb-4 -mt-1 text-base text-brand-text/40">{description}</p>
       )}
 
       {isLoading && (
@@ -123,8 +123,8 @@ function ActionSection({
 
       {error && !isLoading && (
         <div className="px-5 pb-4 -mt-1">
-          <p className="text-sm text-red-700">{error}</p>
-          <button onClick={onAction} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+          <p className="text-base text-red-700">{error}</p>
+          <button onClick={onAction} className="mt-1 text-sm text-red-500 underline hover:no-underline">
             Try again
           </button>
         </div>
@@ -143,7 +143,7 @@ function ActionSection({
 function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <p className="text-xs font-medium tracking-[0.06em] uppercase text-brand-text/30">{label}</p>
+      <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">{label}</p>
       {copyText !== undefined && <CopyButton getText={() => copyText} />}
     </div>
   );
@@ -175,11 +175,11 @@ export default function TailoringBrief({
   if (!profileText) {
     return (
       <div className="text-center py-20">
-        <p className="text-sm font-semibold text-brand-text">Profile required</p>
-        <p className="text-sm text-brand-text/50 mt-1">Upload your resume in the Profile tab first.</p>
+        <p className="text-base font-semibold text-brand-text">Profile required</p>
+        <p className="text-base text-brand-text/50 mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
         >
           Go to Profile →
         </button>
@@ -190,13 +190,13 @@ export default function TailoringBrief({
   if (!jobDescription) {
     return (
       <div className="text-center py-20">
-        <p className="text-sm font-semibold text-brand-text">Score a job first</p>
-        <p className="text-sm text-brand-text/50 mt-1 max-w-xs mx-auto">
+        <p className="text-base font-semibold text-brand-text">Score a job first</p>
+        <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
           Score a job in the Job Fit tab, then come back to generate your tailoring brief.
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -312,12 +312,12 @@ export default function TailoringBrief({
       {/* ── Generate Brief button ── */}
       {!isGenerating && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-brand-text/40">
+          <p className="text-base text-brand-text/40">
             {result ? "Re-generate to refresh the brief." : "Claude will build a targeted brief for this specific job."}
           </p>
           <button
             onClick={handleGenerate}
-            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
           >
             {result ? "Re-generate" : "Generate Brief"}
           </button>
@@ -328,8 +328,8 @@ export default function TailoringBrief({
 
       {error && !isGenerating && (
         <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-          <p className="text-sm text-red-700">{error}</p>
-          <button onClick={handleGenerate} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+          <p className="text-base text-red-700">{error}</p>
+          <button onClick={handleGenerate} className="mt-1 text-sm text-red-500 underline hover:no-underline">
             Try again
           </button>
         </div>
@@ -345,8 +345,8 @@ export default function TailoringBrief({
             <div className="space-y-3">
               {result.lead_strengths.map((s, i) => (
                 <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                  <p className="text-sm font-medium text-brand-text">{s.strength}</p>
-                  <p className="text-sm text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
+                  <p className="text-base font-medium text-brand-text">{s.strength}</p>
+                  <p className="text-base text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
                 </div>
               ))}
             </div>
@@ -359,10 +359,10 @@ export default function TailoringBrief({
             <div className="space-y-3">
               {result.jd_language_to_mirror.map((p, i) => (
                 <div key={i}>
-                  <span className="inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                  <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
                     &ldquo;{p.phrase}&rdquo;
                   </span>
-                  <p className="mt-1.5 text-xs text-brand-text/40 leading-snug">{p.context}</p>
+                  <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
                 </div>
               ))}
             </div>
@@ -375,8 +375,8 @@ export default function TailoringBrief({
             <div className="space-y-3">
               {result.what_to_deemphasize.map((d, i) => (
                 <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
-                  <p className="text-sm font-medium text-brand-text">{d.item}</p>
-                  <p className="text-sm text-brand-text/40 mt-0.5">{d.reason}</p>
+                  <p className="text-base font-medium text-brand-text">{d.item}</p>
+                  <p className="text-base text-brand-text/40 mt-0.5">{d.reason}</p>
                 </div>
               ))}
             </div>
@@ -391,20 +391,20 @@ export default function TailoringBrief({
                 <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
                   Likely concern
                 </p>
-                <p className="text-sm text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
+                <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
               </div>
               <div className="bg-status-apply/8 rounded-xl p-4 ring-1 ring-status-apply/20">
                 <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-apply mb-1">
                   How to address it
                 </p>
-                <p className="text-sm text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
               </div>
             </div>
           </Section>
 
           {result.outreach_angle && (
             <Section title="Outreach Angle" copyText={result.outreach_angle}>
-              <p className="text-sm text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
+              <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
             </Section>
           )}
 
@@ -423,7 +423,7 @@ export default function TailoringBrief({
               <>
                 <div>
                   <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
-                  <p className="text-sm text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                  <p className="text-base text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
                 </div>
 
                 <div className="border-t border-brand-text/8 pt-6">
@@ -442,19 +442,19 @@ export default function TailoringBrief({
                         <div className="rounded-xl overflow-hidden ring-1 ring-brand-text/8">
                           <div className="px-3.5 py-2.5 bg-brand-text/4">
                             <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
-                            <p className="text-sm text-brand-text/50 italic">{b.original_paraphrase}</p>
+                            <p className="text-base text-brand-text/50 italic">{b.original_paraphrase}</p>
                           </div>
                           <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex-1">
                                 <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
-                                <p className="text-sm text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                                <p className="text-base text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
                               </div>
                               <CopyButton getText={() => b.suggested_rewrite} />
                             </div>
                           </div>
                         </div>
-                        <p className="text-xs text-brand-text/40 pl-1">{b.why}</p>
+                        <p className="text-sm text-brand-text/40 pl-1">{b.why}</p>
                       </div>
                     ))}
                   </div>
@@ -470,10 +470,10 @@ export default function TailoringBrief({
                   <div className="space-y-3">
                     {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-sm font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                        <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
                           {k.keyword}
                         </span>
-                        <p className="text-sm text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                        <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
                       </div>
                     ))}
                   </div>
@@ -496,7 +496,7 @@ export default function TailoringBrief({
             {coverLetterResult && (
               <div>
                 <SubHeading label="Cover Letter" copyText={coverLetterResult.cover_letter} />
-                <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
                   {coverLetterResult.cover_letter}
                 </pre>
               </div>
@@ -519,14 +519,14 @@ export default function TailoringBrief({
                 <>
                   <div>
                     <SubHeading label="Cold Email" copyText={outreachResult.email} />
-                    <pre className="text-sm text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
                       {outreachResult.email}
                     </pre>
                   </div>
                   <div className="border-t border-brand-text/8 pt-6">
                     <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
-                    <p className="text-sm text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
-                    <p className="mt-2 text-xs text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
+                    <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                    <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
                   </div>
                 </>
               )}

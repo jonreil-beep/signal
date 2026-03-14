@@ -122,7 +122,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               <button
                 key={m}
                 onClick={() => { setMode(m); setFetchError(""); }}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-1.5 rounded-lg text-base font-medium transition-all ${
                   mode === m ? "bg-white text-brand-text shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
                 }`}
               >
@@ -138,7 +138,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-brand-text/12 rounded-2xl p-4 text-sm text-brand-text font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent resize-y placeholder:text-brand-text/25 transition-shadow"
+              className="w-full border border-brand-text/12 rounded-2xl p-4 text-base text-brand-text font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent resize-y placeholder:text-brand-text/25 transition-shadow"
             />
           )}
 
@@ -152,17 +152,17 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
                   placeholder="https://…"
-                  className="flex-1 border border-brand-text/12 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
+                  className="flex-1 border border-brand-text/12 rounded-xl px-4 py-2.5 text-base bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
                 />
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-4 py-2.5 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2.5 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Fetch
                 </button>
               </div>
-              <p className="text-xs text-brand-text/40">
+              <p className="text-sm text-brand-text/40">
                 Many job boards block automated fetches — paste the text if this fails.
               </p>
 
@@ -170,10 +170,10 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
 
               {fetchError && (
                 <div className="p-4 bg-status-tailor/8 rounded-xl ring-1 ring-status-tailor/20">
-                  <p className="text-sm text-status-tailor">{fetchError}</p>
+                  <p className="text-base text-status-tailor">{fetchError}</p>
                   <button
                     onClick={() => { setMode("paste"); setFetchError(""); }}
-                    className="mt-1 text-xs text-status-tailor/80 underline hover:no-underline"
+                    className="mt-1 text-sm text-status-tailor/80 underline hover:no-underline"
                   >
                     Switch to paste mode
                   </button>
@@ -185,7 +185,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                   value={jdText}
                   onChange={(e) => setJdText(e.target.value)}
                   rows={12}
-                  className="w-full border border-brand-text/8 rounded-2xl p-4 text-sm text-brand-text/60 font-mono leading-relaxed bg-brand-text/3 resize-y"
+                  className="w-full border border-brand-text/8 rounded-2xl p-4 text-base text-brand-text/60 font-mono leading-relaxed bg-brand-text/3 resize-y"
                 />
               )}
             </div>
@@ -195,11 +195,11 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
             <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
               >
                 Score This Job
               </button>
-              <button onClick={handleReset} className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+              <button onClick={handleReset} className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
                 Clear
               </button>
             </div>
@@ -209,8 +209,8 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
 
           {scoreError && !isScoring && (
             <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-              <p className="text-sm text-red-700">{scoreError}</p>
-              <button onClick={handleScore} className="mt-1 text-xs text-red-500 underline hover:no-underline">
+              <p className="text-base text-red-700">{scoreError}</p>
+              <button onClick={handleScore} className="mt-1 text-sm text-red-500 underline hover:no-underline">
                 Try again
               </button>
             </div>
@@ -235,11 +235,11 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                   </span>
                   <span className="text-2xl text-white/30 font-light">/10</span>
                 </div>
-                <p className="text-sm text-white/50 mt-2 leading-snug max-w-sm">
+                <p className="text-base text-white/50 mt-2 leading-snug max-w-sm">
                   {result.summary}
                 </p>
               </div>
-              <span className={`shrink-0 px-4 py-2 rounded-xl text-sm font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
+              <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
                 {result.recommendation}
               </span>
             </div>
@@ -251,7 +251,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1.5">
                 Recruiter Concern Flag
               </p>
-              <p className="text-sm text-brand-text/80">{result.recruiter_concern}</p>
+              <p className="text-base text-brand-text/80">{result.recruiter_concern}</p>
             </div>
           )}
 
@@ -268,9 +268,9 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                 ["Keyword Overlap", result.dimensions.keyword_overlap],
               ] as const).map(([label, dim]) => (
                 <div key={label}>
-                  <p className="text-sm font-medium text-brand-text/80 mb-1.5">{label}</p>
+                  <p className="text-base font-medium text-brand-text/80 mb-1.5">{label}</p>
                   <ScoreBar score={dim.score} />
-                  <p className="mt-1.5 text-xs text-brand-text/40 leading-snug">{dim.reasoning}</p>
+                  <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{dim.reasoning}</p>
                 </div>
               ))}
             </div>
@@ -284,7 +284,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               </p>
               <ul className="space-y-2">
                 {result.what_she_has.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm text-brand-text/80">
+                  <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
                     <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
                     {item}
                   </li>
@@ -297,7 +297,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               </p>
               <ul className="space-y-2">
                 {result.whats_missing.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm text-brand-text/80">
+                  <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
                     <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
                     {item}
                   </li>
@@ -308,12 +308,12 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
 
           {/* Bottom nav CTAs */}
           <div className="flex items-center justify-between pt-2">
-            <button onClick={handleReset} className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+            <button onClick={handleReset} className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
               ← Score a different job
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
+              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-xl hover:bg-brand-accent/90 transition-colors"
             >
               Go to Prep →
             </button>
