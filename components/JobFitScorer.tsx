@@ -157,7 +157,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-4 py-2.5 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2.5 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Fetch
                 </button>
@@ -195,7 +195,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
             <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
+                className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
               >
                 Score This Job
               </button>
@@ -313,7 +313,7 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
               Go to Prep →
             </button>

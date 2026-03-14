@@ -393,7 +393,7 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowLanding(false)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
               >
                 Back to app →
               </button>
@@ -441,12 +441,12 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-full text-base focus:outline-none focus:border-white/50"
+                  className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-2xl sm:rounded-full text-base focus:outline-none focus:border-white/50"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-6 py-4 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-4 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {sendingMagicLink ? "Sending…" : "Send magic link →"}
                 </button>
@@ -623,7 +623,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={handleAnalyze}
-                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
+                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
                     {clusterResult ? "Re-analyze" : "Analyze My Profile"}
                   </button>
@@ -652,7 +652,7 @@ export default function Home() {
                 <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
                   <button
                     onClick={() => setActiveTab("job-fit")}
-                    className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
+                    className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
                     Go to Job Fit →
                   </button>
@@ -784,7 +784,7 @@ function EmptyState({
       <p className="text-sm text-brand-text/40 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
       >
         {action} →
       </button>

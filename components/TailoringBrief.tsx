@@ -179,7 +179,7 @@ export default function TailoringBrief({
         <p className="text-base text-brand-text/50 mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
         >
           Go to Profile →
         </button>
@@ -196,7 +196,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -317,7 +317,7 @@ export default function TailoringBrief({
           </p>
           <button
             onClick={handleGenerate}
-            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors"
+            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
           >
             {result ? "Re-generate" : "Generate Brief"}
           </button>
