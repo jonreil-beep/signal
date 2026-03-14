@@ -41,7 +41,14 @@ export default function Home() {
 
   // ── App state ──
   const [showLanding, setShowLanding] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [activeTab, setActiveTab] = useState<TabId>(() => {
+    if (typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("signal-active-tab") as TabId | null;
+      const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs"];
+      if (saved && valid.includes(saved)) return saved;
+    }
+    return "profile";
+  });
   const [profileText, setProfileText] = useState<string>("");
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
@@ -70,8 +77,6 @@ export default function Home() {
         setUser(session.user);
         setShowLanding(false);
         loadUserData(session.user.id);
-        const saved = sessionStorage.getItem("signal-active-tab") as TabId | null;
-        if (saved) setActiveTab(saved);
       }
       setAuthLoading(false);
     });
