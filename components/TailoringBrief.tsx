@@ -192,7 +192,7 @@ export default function TailoringBrief({
       <div className="text-center py-20">
         <p className="text-base font-semibold text-brand-text">Score a job first</p>
         <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
-          Score a job in the Job Fit tab, then come back to generate your tailoring brief.
+          Score a job in the Job Fit tab, then come back to generate your prep.
         </p>
         <button
           onClick={onGoToJobFit}
@@ -313,7 +313,7 @@ export default function TailoringBrief({
       {!isGenerating && (
         <div className="flex items-center justify-between">
           <p className="text-base text-brand-text/40">
-            {result ? "Re-generate to refresh the brief." : "Claude will build a targeted brief for this specific job."}
+            {result ? "Re-generate to refresh." : "Claude will build targeted prep for this specific job."}
           </p>
           <button
             onClick={handleGenerate}
@@ -324,7 +324,7 @@ export default function TailoringBrief({
         </div>
       )}
 
-      {isGenerating && <LoadingState message="Generating your tailoring brief — this takes 10–20 seconds…" />}
+      {isGenerating && <LoadingState message="Generating your prep — this takes 10–20 seconds…" />}
 
       {error && !isGenerating && (
         <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">

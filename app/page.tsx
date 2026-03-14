@@ -334,13 +334,8 @@ export default function Home() {
           <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
             <div className="mb-10">
               <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
-              <p className="text-sm text-white/40 mt-2">Job search copilot</p>
+              <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
             </div>
-            <p className="text-lg text-white/50 leading-relaxed mb-8 max-w-md">
-              Most job applications fail before anyone reads them — wrong fit, generic framing,
-              nothing that makes the candidate stick. Signal helps you apply to fewer roles,
-              better prepared for each one.
-            </p>
             <p className="text-2xl text-white/80 leading-relaxed mb-10">
               Welcome back{user.email ? `, ${user.email}` : ""}.
               {trackedJobs.length > 0
@@ -378,7 +373,7 @@ export default function Home() {
         <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
           <div className="mb-12">
             <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
-            <p className="text-sm text-white/40 mt-2">Job search copilot</p>
+            <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
           </div>
           <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
             Most job applications fail before anyone reads them — wrong fit, generic framing,
@@ -455,7 +450,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <button onClick={() => setShowLanding(true)} className="text-left">
             <h1 className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></h1>
-            <p className="text-sm text-white/40 mt-0.5">Job search copilot</p>
+            <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
           </button>
           <div className="flex items-center gap-4">
             <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
@@ -673,7 +668,7 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
               <p className="text-base text-brand-text/50 mt-1">
-                Tailoring brief, outreach draft, and resume edits — everything you need to apply with confidence.
+                Prep guide, outreach draft, and resume edits — everything you need to apply with confidence.
               </p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (

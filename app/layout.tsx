@@ -10,8 +10,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Signal — Job Search Copilot",
-  description: "AI-powered job search copilot for experienced professionals",
+  title: "Signal — Job Search Intelligence",
+  description: "Job search intelligence for experienced professionals — honest fit scoring, targeted prep, and resume guidance.",
 };
 
 export default function RootLayout({

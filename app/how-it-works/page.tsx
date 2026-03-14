@@ -3,7 +3,7 @@ import SignalWordmark from "@/components/SignalWordmark";
 
 export const metadata = {
   title: "How it works — Signal",
-  description: "How Signal helps experienced professionals job search smarter.",
+  description: "How Signal's job search intelligence helps experienced professionals find the right fit and apply with precision.",
 };
 
 export default function HowItWorksPage() {
@@ -17,7 +17,7 @@ export default function HowItWorksPage() {
             <Link href="/" className="text-lg font-bold text-white tracking-tight hover:text-white/90 transition-colors">
               <SignalWordmark />
             </Link>
-            <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
+            <p className="text-xs text-white/40 mt-0.5">Job search intelligence</p>
           </div>
           <Link href="/" className="text-base text-white/40 hover:text-white/70 transition-colors">
             ← Back
@@ -57,7 +57,7 @@ export default function HowItWorksPage() {
             <Step
               n={3}
               title="Prep with precision"
-              body="For jobs worth applying to, get a tailoring brief that tells you exactly what to emphasize. Draft outreach messages, a cover letter, and resume edits — all calibrated to your actual background, not a generic template."
+              body="For jobs worth applying to, get a full prep guide: what to emphasize, what to de-emphasize, outreach messages, a cover letter, and resume edits — all calibrated to your actual background, not a generic template."
             />
             <Step
               n={4}
@@ -83,8 +83,8 @@ export default function HowItWorksPage() {
             <div className="bg-white rounded-2xl p-7 shadow">
               <h3 className="text-base font-semibold text-brand-text mb-1.5">Specific over generic</h3>
               <p className="text-base text-brand-text/50 leading-relaxed">
-                Every output is based on your actual background. The prep brief for one
-                candidate looks nothing like the brief for another.
+                Every output is based on your actual background. The prep for one
+                candidate looks nothing like the prep for another.
               </p>
             </div>
             <div className="bg-white rounded-2xl p-7 shadow">
