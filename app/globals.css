@@ -18,3 +18,25 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@keyframes gradient-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.landing-gradient-spinner {
+  position: absolute;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg at 45% 55%,
+    #1A1A1A   0deg,
+    #1C2535  90deg,
+    #1A1A1A 180deg,
+    #1E1B2C 270deg,
+    #1A1A1A 360deg
+  );
+  animation: gradient-spin 28s linear infinite;
+  pointer-events: none;
+}

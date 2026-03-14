@@ -9,7 +9,7 @@ export default function FeedbackButton() {
       href={FEEDBACK_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 px-4 py-2.5 bg-brand-text text-white text-xs font-medium rounded-full shadow-lg hover:bg-brand-text/80 transition-colors"
+      className="fixed bottom-5 right-5 z-50 px-3 py-1.5 text-xs font-medium text-brand-text/40 hover:text-brand-text/75 border border-brand-text/12 hover:border-brand-text/25 rounded-full transition-all bg-white/70 backdrop-blur-sm"
     >
       Share feedback
     </a>

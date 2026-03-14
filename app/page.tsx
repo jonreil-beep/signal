@@ -329,18 +329,19 @@ export default function Home() {
     // Already signed in — show welcome back view
     if (user) {
       return (
-        <div className="min-h-screen bg-brand-text flex items-center px-6">
-          <div className="max-w-2xl mx-auto w-full py-20">
+        <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
+          <div className="landing-gradient-spinner" aria-hidden="true" />
+          <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
             <div className="mb-10">
-              <h1 className="text-4xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
+              <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
               <p className="text-sm text-white/40 mt-2">Job search copilot</p>
             </div>
-            <p className="text-base text-white/50 leading-relaxed mb-8 max-w-md">
+            <p className="text-lg text-white/50 leading-relaxed mb-8 max-w-md">
               Most job applications fail before anyone reads them — wrong fit, generic framing,
               nothing that makes the candidate stick. Signal helps you apply to fewer roles,
               better prepared for each one.
             </p>
-            <p className="text-xl text-white/80 leading-relaxed mb-10">
+            <p className="text-2xl text-white/80 leading-relaxed mb-10">
               Welcome back{user.email ? `, ${user.email}` : ""}.
               {trackedJobs.length > 0
                 ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
@@ -372,17 +373,18 @@ export default function Home() {
 
     // Not signed in — show magic link form
     return (
-      <div className="min-h-screen bg-brand-text flex items-center px-6">
-        <div className="max-w-2xl mx-auto w-full py-20">
+      <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
+        <div className="landing-gradient-spinner" aria-hidden="true" />
+        <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
           <div className="mb-12">
-            <h1 className="text-4xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
+            <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
             <p className="text-sm text-white/40 mt-2">Job search copilot</p>
           </div>
-          <p className="text-xl text-white/70 leading-relaxed mb-3">
+          <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
             Most job applications fail before anyone reads them — wrong fit, generic framing,
             nothing that makes the candidate stick.
           </p>
-          <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
+          <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
             Signal is a copilot for experienced professionals who want to apply to fewer, better-fit roles —
             and show up fully prepared for each one. Upload your resume once. Get an honest fit score,
             a tailoring brief that tells you exactly what to emphasize, and resume edits calibrated
@@ -403,7 +405,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-4 bg-brand-accent text-white text-base font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {sendingMagicLink ? "Sending…" : "Send magic link →"}
                 </button>
@@ -414,7 +416,7 @@ export default function Home() {
               <div className="flex items-center gap-5">
                 <button
                   onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
-                  className="text-sm text-white/30 hover:text-white/50 transition-colors"
+                  className="text-xs text-white/20 hover:text-white/35 transition-colors"
                 >
                   Continue without saving →
                 </button>
@@ -452,12 +454,12 @@ export default function Home() {
       <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <button onClick={() => setShowLanding(true)} className="text-left">
-            <h1 className="text-lg font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></h1>
-            <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
+            <h1 className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></h1>
+            <p className="text-sm text-white/40 mt-0.5">Job search copilot</p>
           </button>
           <div className="flex items-center gap-4">
             {(profileText || jobDescription) && (
-              <div className="hidden sm:flex items-center gap-2 text-xs">
+              <div className="hidden sm:flex items-center gap-2 text-sm">
                 <span className={`flex items-center gap-1 ${profileText ? "text-status-apply" : "text-white/30"}`}>
                   {profileText && <span>✓</span>} Profile
                 </span>
@@ -472,15 +474,15 @@ export default function Home() {
               </div>
             )}
             <div className="flex items-center gap-4">
-              <Link href="/how-it-works" className="text-xs text-white/60 hover:text-white/90 transition-colors hidden sm:block">
+              <Link href="/how-it-works" className="text-sm text-white/60 hover:text-white/90 transition-colors hidden sm:block">
                 How it works
               </Link>
               {user && (
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-white/40 hidden sm:block">{user.email}</span>
+                  <span className="text-sm text-white/40 hidden sm:block">{user.email}</span>
                   <button
                     onClick={handleSignOut}
-                    className="text-xs text-white/50 hover:text-white/80 transition-colors"
+                    className="text-sm text-white/50 hover:text-white/80 transition-colors"
                   >
                     Sign out
                   </button>
@@ -499,7 +501,7 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-4 text-sm font-medium border-b-2 transition-all ${
+                className={`px-5 py-4 text-base font-medium border-b-2 transition-all ${
                   activeTab === tab.id
                     ? "border-brand-accent text-brand-accent"
                     : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
@@ -513,7 +515,7 @@ export default function Home() {
             <div className="ml-auto">
               <button
                 onClick={() => setActiveTab("my-jobs")}
-                className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all ${
+                className={`flex items-center gap-2 px-5 py-4 text-base font-medium border-b-2 transition-all ${
                   activeTab === "my-jobs"
                     ? "border-brand-accent text-brand-accent"
                     : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
@@ -538,8 +540,8 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-brand-text">Your Profile</h2>
-              <p className="text-sm text-brand-text/50 mt-1">
+              <h2 className="text-lg font-semibold text-brand-text">Your Profile</h2>
+              <p className="text-base text-brand-text/50 mt-1">
                 Upload your resume (PDF or DOCX) or paste the text. This is the foundation for all analysis.
               </p>
             </div>
@@ -549,8 +551,8 @@ export default function Home() {
               <div className="rounded-2xl border border-brand-text/10 bg-white p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-brand-text">Resume saved</p>
-                    <p className="mt-1.5 text-xs text-brand-text/40 font-mono leading-relaxed line-clamp-3">
+                    <p className="text-base font-semibold text-brand-text">Resume saved</p>
+                    <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
                       {profileText.slice(0, 240)}…
                     </p>
                   </div>
@@ -646,8 +648,8 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-base font-semibold text-brand-text">Job Fit Scorer</h2>
-                  <p className="text-sm text-brand-text/50 mt-1">
+                  <h2 className="text-lg font-semibold text-brand-text">Job Fit Scorer</h2>
+                  <p className="text-base text-brand-text/50 mt-1">
                     Paste a job description or fetch from URL. Get an honest fit score with clear reasoning.
                   </p>
                 </div>
@@ -683,8 +685,8 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-brand-text">Prep</h2>
-              <p className="text-sm text-brand-text/50 mt-1">
+              <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
+              <p className="text-base text-brand-text/50 mt-1">
                 Tailoring brief, outreach draft, and resume edits — everything you need to apply with confidence.
               </p>
             </div>

@@ -19,7 +19,7 @@ export default function HowItWorksPage() {
             </Link>
             <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
           </div>
-          <Link href="/" className="text-sm text-white/40 hover:text-white/70 transition-colors">
+          <Link href="/" className="text-base text-white/40 hover:text-white/70 transition-colors">
             ← Back
           </Link>
         </div>
@@ -29,10 +29,10 @@ export default function HowItWorksPage() {
 
         {/* Hero */}
         <div className="mb-16">
-          <h1 className="text-4xl font-bold text-brand-text tracking-tight mb-4">
+          <h1 className="text-5xl font-bold text-brand-text tracking-tight mb-4">
             A better way to job search
           </h1>
-          <p className="text-xl text-brand-text/60 leading-relaxed max-w-2xl">
+          <p className="text-2xl text-brand-text/60 leading-relaxed max-w-2xl">
             Most job applications fail before anyone reads them — wrong fit, generic framing,
             nothing that makes the candidate stick. Signal is built to fix that.
           </p>
@@ -40,7 +40,7 @@ export default function HowItWorksPage() {
 
         {/* How it works */}
         <section className="mb-16">
-          <h2 className="text-xs font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-10">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-10">
             How it works
           </h2>
           <div className="space-y-10">
@@ -69,27 +69,27 @@ export default function HowItWorksPage() {
 
         {/* Why it works */}
         <section className="mb-16">
-          <h2 className="text-xs font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
             Why it works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
-              <h3 className="text-sm font-semibold text-brand-text mb-1.5">Honest signal over flattery</h3>
-              <p className="text-sm text-brand-text/50 leading-relaxed">
+            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+              <h3 className="text-base font-semibold text-brand-text mb-1.5">Honest signal over flattery</h3>
+              <p className="text-base text-brand-text/50 leading-relaxed">
                 Signal won&apos;t tell you a job is a great fit when it isn&apos;t. You get an unvarnished
                 read so you can put effort where it actually counts.
               </p>
             </div>
-            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
-              <h3 className="text-sm font-semibold text-brand-text mb-1.5">Specific over generic</h3>
-              <p className="text-sm text-brand-text/50 leading-relaxed">
+            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+              <h3 className="text-base font-semibold text-brand-text mb-1.5">Specific over generic</h3>
+              <p className="text-base text-brand-text/50 leading-relaxed">
                 Every output is based on your actual background. The prep brief for one
                 candidate looks nothing like the brief for another.
               </p>
             </div>
-            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm">
-              <h3 className="text-sm font-semibold text-brand-text mb-1.5">Less volume, more quality</h3>
-              <p className="text-sm text-brand-text/50 leading-relaxed">
+            <div className="bg-white rounded-2xl p-7 ring-1 ring-brand-text/8 shadow-sm">
+              <h3 className="text-base font-semibold text-brand-text mb-1.5">Less volume, more quality</h3>
+              <p className="text-base text-brand-text/50 leading-relaxed">
                 Skip roles that aren&apos;t a real fit. Prepare thoroughly for the ones that are.
                 Fewer applications, better outcomes.
               </p>
@@ -99,11 +99,11 @@ export default function HowItWorksPage() {
 
         {/* Who it's for */}
         <section className="mb-16">
-          <h2 className="text-xs font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
             Who it&apos;s for
           </h2>
           <div className="bg-brand-text rounded-2xl p-8">
-            <p className="text-white/70 text-base leading-relaxed mb-7 max-w-2xl">
+            <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
               Signal is built for experienced professionals — people with years of real work behind them
               who are making a deliberate move, not just sending out resumes and hoping for callbacks.
             </p>
@@ -114,7 +114,7 @@ export default function HowItWorksPage() {
                 "You find generic job search advice frustrating or too vague",
                 "You're searching actively and want to move faster and smarter",
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-white/60">
+                <li key={item} className="flex items-start gap-3 text-base text-white/60">
                   <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-g" />
                   {item}
                 </li>
@@ -131,7 +131,7 @@ export default function HowItWorksPage() {
           >
             Start using Signal →
           </Link>
-          <p className="text-sm text-brand-text/40">
+          <p className="text-base text-brand-text/40">
             Free to use. No credit card required.
           </p>
         </div>
@@ -148,8 +148,8 @@ function Step({ n, title, body }: { n: number; title: string; body: string }) {
         {n}
       </div>
       <div className="pt-0.5">
-        <h3 className="text-base font-semibold text-brand-text mb-1.5">{title}</h3>
-        <p className="text-sm text-brand-text/55 leading-relaxed max-w-xl">{body}</p>
+        <h3 className="text-lg font-semibold text-brand-text mb-1.5">{title}</h3>
+        <p className="text-base text-brand-text/55 leading-relaxed max-w-xl">{body}</p>
       </div>
     </div>
   );
