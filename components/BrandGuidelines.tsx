@@ -420,7 +420,7 @@ export default function BrandGuidelines() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {CORE_COLORS.map((color) => (
-              <div key={color.hex} className="rounded-2xl overflow-hidden shadow">
+              <div key={color.hex} className="rounded-2xl overflow-hidden shadow bg-white">
                 <div
                   className="h-28 w-full"
                   style={{ backgroundColor: color.hex }}
@@ -451,7 +451,7 @@ export default function BrandGuidelines() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {STATUS_COLORS.map((color) => (
-              <div key={color.hex} className="rounded-2xl overflow-hidden shadow">
+              <div key={color.hex} className="rounded-2xl overflow-hidden shadow bg-white">
                 <div
                   className="h-20 w-full flex items-end px-4 pb-3"
                   style={{ backgroundColor: color.hex }}
