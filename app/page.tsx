@@ -382,7 +382,7 @@ export default function Home() {
           <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
             Signal is built for experienced professionals who want to apply to fewer, better-fit roles —
             and show up fully prepared for each one. Upload your resume once. Get an honest fit score,
-            a tailoring brief that tells you exactly what to emphasize, and resume edits calibrated
+            a targeted prep guide covering exactly what to emphasize, and resume edits calibrated
             to your actual background.
           </p>
 
@@ -704,7 +704,7 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-base font-semibold text-brand-text">My Jobs</h2>
               <p className="text-sm text-brand-text/50 mt-1">
-                Every job you&apos;ve scored. Click any job to reload its fit results or tailoring brief.
+                Every job you&apos;ve scored. Click any job to reload its fit results or prep guide.
               </p>
             </div>
             <JobTracker

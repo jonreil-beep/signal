@@ -420,7 +420,7 @@ export default function BrandGuidelines() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {CORE_COLORS.map((color) => (
-              <div key={color.hex} className={`rounded-2xl overflow-hidden ring-1 ${color.ringClass ?? "ring-brand-text/10"}`}>
+              <div key={color.hex} className="rounded-2xl overflow-hidden shadow">
                 <div
                   className="h-28 w-full"
                   style={{ backgroundColor: color.hex }}
@@ -451,7 +451,7 @@ export default function BrandGuidelines() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {STATUS_COLORS.map((color) => (
-              <div key={color.hex} className="rounded-2xl overflow-hidden ring-1 ring-brand-text/10">
+              <div key={color.hex} className="rounded-2xl overflow-hidden shadow">
                 <div
                   className="h-20 w-full flex items-end px-4 pb-3"
                   style={{ backgroundColor: color.hex }}
@@ -550,7 +550,7 @@ export default function BrandGuidelines() {
         <h3 className="text-[1.25rem] font-semibold leading-[1.3] text-brand-text mb-6">
           Voice examples
         </h3>
-        <div className="rounded-2xl overflow-hidden ring-1 ring-brand-text/8">
+        <div className="rounded-2xl overflow-hidden shadow">
           <div className="grid grid-cols-2 bg-brand-text">
             <div className="px-5 py-3">
               <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">
@@ -730,7 +730,7 @@ export default function BrandGuidelines() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
           {PHOTO_EXAMPLES.map((photo) => (
             <div key={photo.id} className="group">
-              <div className="rounded-2xl overflow-hidden bg-brand-text/5 ring-1 ring-brand-text/8 mb-3">
+              <div className="rounded-2xl overflow-hidden bg-brand-text/5 mb-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://images.unsplash.com/photo-${photo.id}?w=600&h=400&fit=crop&crop=${"crop" in photo ? photo.crop : "entropy"}&auto=format&q=80`}
@@ -749,7 +749,7 @@ export default function BrandGuidelines() {
         <h3 className="text-[1.25rem] font-semibold leading-[1.3] text-brand-text mb-6">
           Photography Do&apos;s and Don&apos;ts
         </h3>
-        <div className="rounded-2xl overflow-hidden ring-1 ring-brand-text/8">
+        <div className="rounded-2xl overflow-hidden shadow">
           <div className="grid grid-cols-2 bg-brand-text">
             <div className="px-5 py-3 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
