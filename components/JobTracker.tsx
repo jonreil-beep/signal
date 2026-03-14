@@ -50,7 +50,7 @@ export default function JobTracker({ jobs, onSelectJob, onRemoveJob, onRenameJob
         return (
           <div
             key={job.id}
-            className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 shadow-sm"
+            className="bg-white rounded-2xl p-5 shadow"
           >
             {/* Title row */}
             <div className="flex items-start justify-between gap-3">
