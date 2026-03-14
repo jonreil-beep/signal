@@ -331,7 +331,7 @@ export default function BrandGuidelines() {
         <h1 className="text-[2.25rem] font-bold leading-[1.2] tracking-[-0.02em] text-brand-text mb-4">
           Signal Brand
         </h1>
-        <p className="text-[1.125rem] font-normal leading-[1.6] text-brand-text/60 max-w-2xl">
+        <p className="text-lg font-normal leading-[1.6] text-brand-text/60 max-w-2xl">
           Living reference for Signal&apos;s visual and verbal identity. This page is itself built using every token it documents.
         </p>
       </div>
@@ -343,8 +343,8 @@ export default function BrandGuidelines() {
         {/* Key Insight */}
         <div className="mb-4">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Key Insight</p>
-          <div className="bg-white rounded-2xl p-6 ring-1 ring-brand-text/8">
-            <p className="text-[1.125rem] font-normal leading-[1.6] text-brand-text/70 italic">
+          <div className="bg-white rounded-2xl p-6 shadow">
+            <p className="text-lg font-normal leading-[1.6] text-brand-text/70 italic">
               &ldquo;{BRAND_HOUSE.keyInsight}&rdquo;
             </p>
           </div>
@@ -354,7 +354,7 @@ export default function BrandGuidelines() {
         <div className="mb-4">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Belief</p>
           <div className="bg-brand-text rounded-2xl p-6">
-            <p className="text-[1rem] font-normal leading-[1.7] text-white/80">
+            <p className="text-base font-normal leading-[1.7] text-white/80">
               {BRAND_HOUSE.belief}
             </p>
           </div>
@@ -364,14 +364,14 @@ export default function BrandGuidelines() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="flex flex-col">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Purpose</p>
-            <div className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8 flex-1">
-              <p className="text-sm font-normal leading-[1.6] text-brand-text/80">{BRAND_HOUSE.purpose}</p>
+            <div className="bg-white rounded-2xl p-5 shadow flex-1">
+              <p className="text-base font-normal leading-[1.6] text-brand-text/80">{BRAND_HOUSE.purpose}</p>
             </div>
           </div>
           <div className="flex flex-col">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Promise</p>
             <div className="bg-brand-accent rounded-2xl p-5 flex-1">
-              <p className="text-sm font-semibold text-white/90 leading-[1.6]">{BRAND_HOUSE.promise}</p>
+              <p className="text-base font-semibold text-white/90 leading-[1.6]">{BRAND_HOUSE.promise}</p>
             </div>
           </div>
         </div>
@@ -379,8 +379,8 @@ export default function BrandGuidelines() {
         {/* Position */}
         <div className="mb-4">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Position</p>
-          <div className="bg-white rounded-2xl p-6 ring-1 ring-brand-text/8">
-            <p className="text-sm font-normal leading-[1.7] text-brand-text/70">{BRAND_HOUSE.position}</p>
+          <div className="bg-white rounded-2xl p-6 shadow">
+            <p className="text-base font-normal leading-[1.7] text-brand-text/70">{BRAND_HOUSE.position}</p>
           </div>
         </div>
 
@@ -389,14 +389,14 @@ export default function BrandGuidelines() {
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Pillars</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {BRAND_HOUSE.pillars.map((pillar, i) => (
-              <div key={i} className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8">
+              <div key={i} className="bg-white rounded-2xl p-5 shadow">
                 <div className="flex items-start gap-3">
                   <span className="text-[0.8125rem] font-medium tracking-[0.06em] text-status-skip shrink-0 mt-0.5 tabular-nums">
                     0{i + 1}
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-brand-text mb-1.5">{pillar.label}</p>
-                    <p className="text-sm font-normal leading-[1.6] text-brand-text/60">{pillar.body}</p>
+                    <p className="text-base font-semibold text-brand-text mb-1.5">{pillar.label}</p>
+                    <p className="text-base font-normal leading-[1.6] text-brand-text/60">{pillar.body}</p>
                   </div>
                 </div>
               </div>
@@ -415,7 +415,7 @@ export default function BrandGuidelines() {
           <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
             Core Palette
           </h2>
-          <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-6">
+          <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-6">
             Three colors do all the structural work. One accent per screen — never competing with status colors.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -427,7 +427,7 @@ export default function BrandGuidelines() {
                 />
                 <div className="bg-white p-4">
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <p className="text-sm font-semibold text-brand-text">{color.name}</p>
+                    <p className="text-base font-semibold text-brand-text">{color.name}</p>
                     <span className="text-[0.8125rem] font-medium tracking-[0.04em] text-brand-text/40 font-mono shrink-0">
                       {color.hex}
                     </span>
@@ -435,7 +435,7 @@ export default function BrandGuidelines() {
                   <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-skip mb-2">
                     {color.role}
                   </p>
-                  <p className="text-xs font-normal leading-[1.5] text-brand-text/50">{color.use}</p>
+                  <p className="text-sm font-normal leading-[1.5] text-brand-text/50">{color.use}</p>
                 </div>
               </div>
             ))}
@@ -446,7 +446,7 @@ export default function BrandGuidelines() {
           <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
             Status Colors
           </h2>
-          <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-6">
+          <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-6">
             Functional only — never decorative. Always pair with the text label; never rely on color alone.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -460,7 +460,7 @@ export default function BrandGuidelines() {
                 </div>
                 <div className="bg-white p-4">
                   <div className="flex items-start justify-between gap-2 mb-1">
-                    <p className="text-sm font-semibold text-brand-text">{color.name}</p>
+                    <p className="text-base font-semibold text-brand-text">{color.name}</p>
                     <span
                       className="text-xs font-medium px-2.5 py-1 rounded-full ring-1"
                       style={{
@@ -472,7 +472,7 @@ export default function BrandGuidelines() {
                       {color.label}
                     </span>
                   </div>
-                  <p className="text-xs font-normal leading-[1.5] text-brand-text/50 mt-2">{color.use}</p>
+                  <p className="text-sm font-normal leading-[1.5] text-brand-text/50 mt-2">{color.use}</p>
                 </div>
               </div>
             ))}
@@ -488,7 +488,7 @@ export default function BrandGuidelines() {
         <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
           DM Sans — Full Scale
         </h2>
-        <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-8">
+        <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8">
           Base 16px · 1.25 modular scale · DM Sans at 400/500/600/700
         </p>
 
@@ -500,7 +500,7 @@ export default function BrandGuidelines() {
             >
               {/* Metadata column */}
               <div className="w-48 shrink-0 pt-1">
-                <p className="text-sm font-semibold text-brand-text">{entry.level}</p>
+                <p className="text-base font-semibold text-brand-text">{entry.level}</p>
                 <p className="text-xs text-brand-text/40 mt-0.5">{entry.sizePx}</p>
                 <p className="text-xs text-brand-text/40">{entry.weight}</p>
                 <p className="text-xs text-brand-text/30 mt-1">
@@ -526,20 +526,20 @@ export default function BrandGuidelines() {
         <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
           The Four Principles
         </h2>
-        <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-8">
+        <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8">
           Signal is a sharp strategy consultant who knows the hiring market cold. It speaks plainly. It names things directly.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           {VOICE_PRINCIPLES.map((p, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 ring-1 ring-brand-text/8">
+            <div key={i} className="bg-white rounded-2xl p-5 shadow">
               <div className="flex items-start gap-3">
                 <span className="text-[0.8125rem] font-medium tracking-[0.06em] text-status-skip shrink-0 mt-0.5">
                   0{i + 1}
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-brand-text mb-1">{p.title}</p>
-                  <p className="text-sm font-normal leading-[1.6] text-brand-text/60">{p.body}</p>
+                  <p className="text-base font-semibold text-brand-text mb-1">{p.title}</p>
+                  <p className="text-base font-normal leading-[1.6] text-brand-text/60">{p.body}</p>
                 </div>
               </div>
             </div>
@@ -569,12 +569,12 @@ export default function BrandGuidelines() {
               className={`grid grid-cols-2 bg-white ${i < VOICE_EXAMPLES.length - 1 ? "border-b border-brand-text/6" : ""}`}
             >
               <div className="px-5 py-4">
-                <p className="text-sm font-normal leading-[1.6] text-brand-text/40 italic">
+                <p className="text-base font-normal leading-[1.6] text-brand-text/40 italic">
                   &ldquo;{ex.avoid}&rdquo;
                 </p>
               </div>
               <div className="px-5 py-4 border-l border-brand-text/6">
-                <p className="text-sm font-normal leading-[1.6] text-brand-text">
+                <p className="text-base font-normal leading-[1.6] text-brand-text">
                   &ldquo;{ex.use}&rdquo;
                 </p>
               </div>
@@ -591,21 +591,21 @@ export default function BrandGuidelines() {
         <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
           Fit Score Recommendations
         </h2>
-        <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-8">
+        <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8">
           Four states. Always rendered with both color and text label — never rely on color alone.
         </p>
 
-        <div className="bg-white rounded-2xl ring-1 ring-brand-text/8 divide-y divide-brand-text/6">
+        <div className="bg-white rounded-2xl shadow divide-y divide-brand-text/6">
           {STATUS_BADGES.map((badge) => (
             <div key={badge.label} className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-4">
                 <span
-                  className={`px-4 py-1.5 rounded-xl text-sm font-semibold ring-1 ${badge.bg} ${badge.text} ${badge.ring}`}
+                  className={`px-4 py-1.5 rounded-xl text-base font-semibold ring-1 ${badge.bg} ${badge.text} ${badge.ring}`}
                 >
                   {badge.label}
                 </span>
               </div>
-              <p className="text-xs font-normal text-brand-text/40 text-right max-w-xs leading-snug">
+              <p className="text-sm font-normal text-brand-text/40 text-right max-w-xs leading-snug">
                 {STATUS_COLORS.find((c) => c.label === badge.label)?.use}
               </p>
             </div>
@@ -615,13 +615,114 @@ export default function BrandGuidelines() {
 
       <Divider />
 
+      {/* ── Buttons ── */}
+      <section>
+        <SectionLabel>05 — Buttons</SectionLabel>
+        <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
+          Button System
+        </h2>
+        <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-10">
+          Primary CTAs are pill-shaped (<code className="text-sm font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">rounded-full</code>). Secondary actions are text-only. Segmented toggles use a soft pill container with a white active state — never pill-shaped themselves, as that would create pills within pills.
+        </p>
+
+        <div className="space-y-10">
+
+          {/* Primary */}
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Primary — Pill CTA</p>
+            <div className="bg-white rounded-2xl p-6 shadow space-y-5">
+              <div className="flex flex-wrap items-center gap-4">
+                <button className="px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors">
+                  Generate Brief
+                </button>
+                <button className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-full hover:bg-brand-accent/90 transition-colors">
+                  Score This Job
+                </button>
+                <button className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-full hover:bg-brand-accent/90 transition-colors">
+                  Go to Prep →
+                </button>
+                <button className="px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-full hover:bg-brand-accent/90 transition-colors">
+                  Small variant
+                </button>
+              </div>
+              <p className="text-sm text-brand-text/40">
+                Use <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">bg-brand-accent text-white rounded-full</code>. Font weight <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-semibold</code> for primary actions, <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-medium</code> for navigation CTAs.
+              </p>
+            </div>
+          </div>
+
+          {/* Disabled */}
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Disabled State</p>
+            <div className="bg-white rounded-2xl p-6 shadow space-y-5">
+              <div className="flex flex-wrap items-center gap-4">
+                <button disabled className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-full opacity-40 cursor-not-allowed">
+                  Score This Job
+                </button>
+                <button disabled className="px-4 py-2.5 bg-brand-accent text-white text-base font-medium rounded-full opacity-40 disabled:opacity-40 disabled:cursor-not-allowed">
+                  Fetch
+                </button>
+              </div>
+              <p className="text-sm text-brand-text/40">
+                Add <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">disabled:opacity-40 disabled:cursor-not-allowed</code> to all primary buttons.
+              </p>
+            </div>
+          </div>
+
+          {/* Secondary / text */}
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Secondary — Text Actions</p>
+            <div className="bg-white rounded-2xl p-6 shadow space-y-5">
+              <div className="flex flex-wrap items-center gap-6">
+                <button className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
+                  ← Score a different job
+                </button>
+                <button className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
+                  Clear
+                </button>
+                <button className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors">
+                  Update
+                </button>
+                <button className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+                  Cancel
+                </button>
+              </div>
+              <p className="text-sm text-brand-text/40">
+                No background, no border. Use <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">text-brand-text/40</code> for neutral actions, <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">text-brand-accent</code> for accent-linked secondary actions.
+              </p>
+            </div>
+          </div>
+
+          {/* Segmented toggle */}
+          <div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Segmented Toggle</p>
+            <div className="bg-white rounded-2xl p-6 shadow space-y-5">
+              <div className="flex gap-1 bg-brand-text/6 rounded-xl p-1 w-fit">
+                <button className="px-4 py-1.5 rounded-lg text-base font-medium bg-white text-brand-text shadow-sm transition-all">
+                  Paste JD
+                </button>
+                <button className="px-4 py-1.5 rounded-lg text-base font-medium text-brand-text/40 hover:text-brand-text/70 transition-all">
+                  Fetch from URL
+                </button>
+              </div>
+              <p className="text-sm text-brand-text/40">
+                Container: <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">bg-brand-text/6 rounded-xl p-1</code>. Active segment: <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">bg-white rounded-lg shadow-sm</code>. Never use <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">rounded-full</code> here.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <Divider />
+
       {/* ── Photography ── */}
       <section>
-        <SectionLabel>05 — Photography</SectionLabel>
+        <SectionLabel>06 — Photography</SectionLabel>
         <h2 className="text-[1.5rem] font-semibold leading-[1.3] tracking-[-0.01em] text-brand-text mb-1">
           Real, Direct, Unposed
         </h2>
-        <p className="text-sm font-normal leading-[1.6] text-brand-text/50 mb-8 max-w-2xl">
+        <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8 max-w-2xl">
           Signal photography looks like McKinsey&apos;s editorial library, not a HR deck. Real professionals in real moments. Clean light, generous space, zero performance. Mix people and their environments.
         </p>
 
@@ -638,8 +739,8 @@ export default function BrandGuidelines() {
                   loading="lazy"
                 />
               </div>
-              <p className="text-sm font-semibold text-brand-text mb-1">{photo.label}</p>
-              <p className="text-xs font-normal leading-[1.5] text-brand-text/50">{photo.caption}</p>
+              <p className="text-base font-semibold text-brand-text mb-1">{photo.label}</p>
+              <p className="text-sm font-normal leading-[1.5] text-brand-text/50">{photo.caption}</p>
             </div>
           ))}
         </div>
@@ -666,11 +767,11 @@ export default function BrandGuidelines() {
             >
               <div className="px-5 py-4 flex items-start gap-2.5">
                 <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
-                <p className="text-sm font-normal leading-[1.6] text-brand-text/80">{row.use}</p>
+                <p className="text-base font-normal leading-[1.6] text-brand-text/80">{row.use}</p>
               </div>
               <div className="px-5 py-4 border-l border-brand-text/6 flex items-start gap-2.5">
                 <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
-                <p className="text-sm font-normal leading-[1.6] text-brand-text/50 italic">{row.avoid}</p>
+                <p className="text-base font-normal leading-[1.6] text-brand-text/50 italic">{row.avoid}</p>
               </div>
             </div>
           ))}
