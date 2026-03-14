@@ -13,7 +13,7 @@ export default function BrandPage() {
             <Link href="/" className="text-lg font-bold text-white tracking-tight hover:text-white/90 transition-colors">
               <SignalWordmark />
             </Link>
-            <p className="text-xs text-white/40 mt-0.5">Job search copilot</p>
+            <p className="text-xs text-white/40 mt-0.5">Job search intelligence</p>
           </div>
           <Link
             href="/"

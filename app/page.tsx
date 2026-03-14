@@ -380,7 +380,7 @@ export default function Home() {
             nothing that makes the candidate stick.
           </p>
           <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
-            Signal is a copilot for experienced professionals who want to apply to fewer, better-fit roles —
+            Signal is built for experienced professionals who want to apply to fewer, better-fit roles —
             and show up fully prepared for each one. Upload your resume once. Get an honest fit score,
             a tailoring brief that tells you exactly what to emphasize, and resume edits calibrated
             to your actual background.
