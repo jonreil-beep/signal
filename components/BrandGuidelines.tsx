@@ -221,10 +221,9 @@ const PHOTO_EXAMPLES = [
     caption: "Window light or soft outdoor light only. Early morning or late afternoon — the hours that feel like transitions. Light is the mood, not a lighting setup.",
   },
   {
-    id: "1507003211169-0a1dd7228f2d",
+    id: "1438761681033-6461ffad8d80",
     label: "The portrait",
     caption: "One person, eye contact optional. Caught thinking rather than performing. Frame them with room to exist. No posed confidence, no stock-photo stillness.",
-    crop: "faces",
   },
 ];
 
