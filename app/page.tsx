@@ -58,6 +58,11 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
+  // ── Persist active tab across refreshes ──
+  useEffect(() => {
+    sessionStorage.setItem("signal-active-tab", activeTab);
+  }, [activeTab]);
+
   // ── Auth lifecycle ──
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -65,6 +70,8 @@ export default function Home() {
         setUser(session.user);
         setShowLanding(false);
         loadUserData(session.user.id);
+        const saved = sessionStorage.getItem("signal-active-tab") as TabId | null;
+        if (saved) setActiveTab(saved);
       }
       setAuthLoading(false);
     });
@@ -127,6 +134,7 @@ export default function Home() {
     setTrackedJobs([]);
     setActiveJobId(null);
     setActiveTab("profile");
+    sessionStorage.removeItem("signal-active-tab");
   }
 
   async function handleSignOut() {
