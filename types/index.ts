@@ -2,6 +2,14 @@
 
 export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs";
 
+export type ApplicationStatus =
+  | "Tracking"
+  | "Applied"
+  | "Phone Screen"
+  | "Interview"
+  | "Offer"
+  | "Rejected";
+
 export interface ParseResumeResponse {
   text: string;
 }
@@ -111,4 +119,5 @@ export interface TrackedJob {
   resumeUpdateResult: ResumeUpdateResult | null;
   coverLetterResult: CoverLetterResult | null;
   scoredAt: Date;
+  applicationStatus: ApplicationStatus;
 }

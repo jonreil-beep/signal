@@ -1,6 +1,6 @@
 "use client";
 
-import type { TrackedJob } from "@/types";
+import type { TrackedJob, ApplicationStatus } from "@/types";
 import JobLabelEditor from "./JobLabelEditor";
 
 interface JobTrackerProps {
@@ -9,9 +9,23 @@ interface JobTrackerProps {
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
+  onStatusChange: (id: string, status: ApplicationStatus) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
+
+const APPLICATION_STATUSES: ApplicationStatus[] = [
+  "Tracking", "Applied", "Phone Screen", "Interview", "Offer", "Rejected",
+];
+
+const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string }> = {
+  "Tracking":     { bg: "bg-brand-text/8",      text: "text-brand-text/50" },
+  "Applied":      { bg: "bg-status-tailor/10",  text: "text-status-tailor" },
+  "Phone Screen": { bg: "bg-status-tailor/10",  text: "text-status-tailor" },
+  "Interview":    { bg: "bg-status-apply/10",   text: "text-status-apply"  },
+  "Offer":        { bg: "bg-status-apply/20",   text: "text-status-apply"  },
+  "Rejected":     { bg: "bg-status-skip/10",    text: "text-status-skip"   },
+};
 
 const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
   "Apply Now":                  { bg: "bg-status-apply/10",   text: "text-status-apply",   ring: "ring-status-apply/25"   },
@@ -31,7 +45,7 @@ function formatDate(date: Date): string {
 }
 
 
-export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
+export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
   if (jobs.length === 0) {
     return (
       <div className="py-4">
@@ -105,6 +119,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
         const recStyle =
           RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
           { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
+        const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
 
         return (
           <div
@@ -146,8 +161,21 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
               )}
             </div>
 
-            {/* Secondary action */}
-            <div className="flex items-center gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
+            {/* Status + secondary action row */}
+            <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
+              <select
+                value={job.applicationStatus}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  onStatusChange(job.id, e.target.value as ApplicationStatus);
+                }}
+                onClick={(e) => e.stopPropagation()}
+                className={`text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none ${statusStyle.bg} ${statusStyle.text}`}
+              >
+                {APPLICATION_STATUSES.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
                 className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"

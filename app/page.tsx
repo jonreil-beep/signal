@@ -12,7 +12,7 @@ import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -158,6 +158,7 @@ export default function Home() {
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         scoredAt: new Date(row.scored_at as string),
+        applicationStatus: (row.application_status as ApplicationStatus) ?? "Tracking",
       }));
       setTrackedJobs(jobs);
 
@@ -294,6 +295,7 @@ export default function Home() {
       coverLetterResult: null,
       resumeUpdateResult: null,
       scoredAt: new Date(),
+      applicationStatus: "Tracking",
     };
     setTrackedJobs((prev) => [...prev, newJob]);
     setActiveJobId(id);
@@ -315,6 +317,7 @@ export default function Home() {
         outreach_result: null,
         resume_update_result: null,
         scored_at: newJob.scoredAt.toISOString(),
+        application_status: "Tracking",
       });
     }
   }
@@ -396,6 +399,15 @@ export default function Home() {
     );
     if (user) {
       await supabase.from("tracked_jobs").update({ label: newLabel }).eq("id", id);
+    }
+  }
+
+  async function handleStatusChange(id: string, status: ApplicationStatus) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === id ? { ...j, applicationStatus: status } : j))
+    );
+    if (user) {
+      await supabase.from("tracked_jobs").update({ application_status: status }).eq("id", id);
     }
   }
 
@@ -852,6 +864,7 @@ export default function Home() {
               onSelectJob={handleSelectJob}
               onRemoveJob={handleRemoveJob}
               onRenameJob={handleRenameJob}
+              onStatusChange={handleStatusChange}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />
