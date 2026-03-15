@@ -61,11 +61,14 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
-  // ── Restore tab + active job from sessionStorage after hydration ──
+  // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
     const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
     const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs"];
     if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
+
+    // Restore guest "dismissed landing" state so refresh doesn't kick them back to landing
+    if (sessionStorage.getItem("signal-show-landing") === "false") setShowLanding(false);
 
     const savedJobId = sessionStorage.getItem("signal-active-job-id");
     if (savedJobId) setActiveJobId(savedJobId);
@@ -78,6 +81,12 @@ export default function Home() {
     if (!sessionRestored) return;
     sessionStorage.setItem("signal-active-tab", activeTab);
   }, [activeTab, sessionRestored]);
+
+  // ── Persist landing visibility — lets guests survive a refresh without returning to landing ──
+  useEffect(() => {
+    if (!sessionRestored) return;
+    sessionStorage.setItem("signal-show-landing", String(showLanding));
+  }, [showLanding, sessionRestored]);
 
   // ── Persist active job id ──
   useEffect(() => {
