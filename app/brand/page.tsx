@@ -10,10 +10,10 @@ export default function BrandPage() {
       <header className="bg-brand-text">
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <div>
-            <Link href="/" className="text-lg font-bold text-white tracking-tight hover:text-white/90 transition-colors">
+            <span className="text-xl font-bold text-white tracking-tight">
               <SignalWordmark />
-            </Link>
-            <p className="text-xs text-white/40 mt-0.5">Job search intelligence</p>
+            </span>
+            <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
           </div>
           <Link
             href="/"
