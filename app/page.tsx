@@ -12,6 +12,7 @@ import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
@@ -572,13 +573,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-brand-bg">
 
-      {/* Header */}
-      <header className="bg-brand-text">
-        <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+      <AppHeader
+        logoSlot={
           <button onClick={() => setShowLanding(true)} className="text-left">
-            <h1 className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></h1>
+            <p className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></p>
             <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
           </button>
+        }
+        rightSlot={
           <div className="flex items-center gap-4">
             <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
               How it works
@@ -598,8 +600,8 @@ export default function Home() {
               </>
             )}
           </div>
-        </div>
-      </header>
+        }
+      />
 
       {/* Tabs */}
       <div className="bg-white border-b border-brand-text/8 shadow-sm">
