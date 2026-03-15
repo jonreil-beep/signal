@@ -103,7 +103,9 @@ export default function Home() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
-        setShowLanding(false);
+        // Do NOT force setShowLanding(false) here — sessionStorage restoration already
+        // handles where the user was (app vs. welcome-back screen). Overriding it here
+        // caused refresh-on-welcome-back to dump users onto the Profile tab.
         loadUserData(session.user.id);
       }
       setAuthLoading(false);
@@ -180,7 +182,7 @@ export default function Home() {
     setResumeUpdateResult(null);
     setTrackedJobs([]);
     setActiveJobId(null);
-    setActiveTab("profile");
+    setActiveTab("my-jobs");
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
   }
@@ -437,9 +439,6 @@ export default function Home() {
                 Sign out
               </button>
             </div>
-            <Link href="/how-it-works" className="mt-6 inline-block text-sm text-white/65 hover:text-white transition-colors underline underline-offset-2 decoration-white/30">
-              How it works →
-            </Link>
           </div>
         </div>
       );
