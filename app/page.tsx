@@ -480,7 +480,7 @@ export default function Home() {
               )}
               <div className="flex items-center gap-5">
                 <button
-                  onClick={() => { setShowLanding(false); setActiveTab("profile"); }}
+                  onClick={() => setShowLanding(false)}
                   className="text-xs text-white/20 hover:text-white/35 transition-colors"
                 >
                   Continue without saving →
@@ -569,6 +569,54 @@ export default function Home() {
           </nav>
         </div>
       </div>
+
+      {/* Save-progress banner — guest users only */}
+      {!user && (
+        <div className="border-b border-brand-text/8 bg-brand-bg">
+          <div className="max-w-4xl mx-auto px-6 py-4">
+            {!magicLinkSent ? (
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-brand-text">Your progress won&apos;t be saved</p>
+                  <p className="text-xs text-brand-text/50 mt-0.5">
+                    Sign up with email to save your resume, job scores, and prep guides across sessions and devices.
+                  </p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
+                    className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent"
+                  />
+                  <button
+                    onClick={handleSendMagicLink}
+                    disabled={sendingMagicLink || !email.trim()}
+                    className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  >
+                    {sendingMagicLink ? "Sending…" : "Save my progress"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm text-brand-text/70">
+                  Check your inbox — we sent a link to <span className="font-medium text-brand-text">{email}</span>.
+                  Click it to sign in and save everything.
+                </p>
+                <button
+                  onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
+                  className="shrink-0 text-xs text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                >
+                  Use different email
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Tab content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
