@@ -284,49 +284,34 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
 
   return (
     <div className="space-y-4">
-      {/* ── Search + sort row ── */}
-      <div className="flex items-center gap-3">
-        <div className="relative flex-1">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-text/30 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-          </svg>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search jobs…"
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-brand-text/10 text-sm text-brand-text placeholder:text-brand-text/30 focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow shadow-sm"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text/30 hover:text-brand-text/60 transition-colors"
-              aria-label="Clear search"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 10 10" stroke="currentColor">
-                <path d="M1 1l8 8M9 1L1 9" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </button>
-          )}
-        </div>
-        {/* Sort toggle */}
-        <div className="flex items-center gap-1 bg-white rounded-xl border border-brand-text/10 shadow-sm p-1 shrink-0">
-          {(["date", "score"] as SortBy[]).map((s) => (
-            <button
-              key={s}
-              onClick={() => setSortBy(s)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
-                sortBy === s ? "bg-brand-text text-white shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
-              }`}
-            >
-              {s === "date" ? "Date" : "Score"}
-            </button>
-          ))}
-        </div>
+      {/* ── Search row ── */}
+      <div className="relative">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-text/30 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+        </svg>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search jobs…"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-brand-text/10 text-sm text-brand-text placeholder:text-brand-text/30 focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow shadow-sm"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text/30 hover:text-brand-text/60 transition-colors"
+            aria-label="Clear search"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 10 10" stroke="currentColor">
+              <path d="M1 1l8 8M9 1L1 9" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+        )}
       </div>
 
-      {/* ── Status filter pills ── */}
-      <div className="flex items-center gap-1.5 flex-wrap">
+      {/* ── Status filter pills + sort toggle ── */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 flex-wrap">
         {(["All", ...APPLICATION_STATUSES] as StatusFilter[]).map((s) => {
           const isActive = statusFilter === s;
           const cfg = s !== "All" ? STATUS_CONFIG[s] : null;
@@ -351,6 +336,21 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
             </button>
           );
         })}
+        </div>
+        {/* Sort toggle */}
+        <div className="flex items-center gap-1 bg-white rounded-xl border border-brand-text/10 shadow-sm p-1 shrink-0">
+          {(["date", "score"] as SortBy[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => setSortBy(s)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                sortBy === s ? "bg-brand-text text-white shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
+              }`}
+            >
+              {s === "date" ? "Date" : "Score"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Result count when filtered ── */}
