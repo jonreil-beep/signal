@@ -135,6 +135,7 @@ export interface TrackedJob {
   coverLetterResult: CoverLetterResult | null;
   interviewPrepResult: InterviewPrepResult | null;
   followUpResult: FollowUpResult | null;
+  deadline: string | null;
   scoredAt: Date;
   applicationStatus: ApplicationStatus;
   notes: string;

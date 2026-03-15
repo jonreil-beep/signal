@@ -12,6 +12,7 @@ interface JobTrackerProps {
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
   onNotesChange: (id: string, notes: string) => void;
+  onDeadlineChange: (id: string, deadline: string | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -46,6 +47,25 @@ function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(date));
 }
 
+function formatDeadlineDate(deadline: string): string {
+  // Parse as local date to avoid UTC offset shifting the day
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(
+    new Date(deadline + "T00:00:00")
+  );
+}
+
+function deadlineUrgency(deadline: string): { textClass: string; label: string } {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(deadline + "T00:00:00");
+  const diffDays = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0)  return { textClass: "text-status-skip",    label: "Overdue" };
+  if (diffDays === 0) return { textClass: "text-status-skip",    label: "Due today" };
+  if (diffDays <= 3)  return { textClass: "text-status-stretch", label: `Due in ${diffDays}d` };
+  if (diffDays <= 7)  return { textClass: "text-status-tailor",  label: `Due ${formatDeadlineDate(deadline)}` };
+  return                     { textClass: "text-brand-text/40",  label: `Due ${formatDeadlineDate(deadline)}` };
+}
 
 interface JobCardProps {
   job: TrackedJob;
@@ -54,12 +74,14 @@ interface JobCardProps {
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
   onNotesChange: (id: string, notes: string) => void;
+  onDeadlineChange: (id: string, deadline: string | null) => void;
 }
 
-function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange }: JobCardProps) {
+function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
   const [showJD, setShowJD] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(job.notes);
+  const [showDeadlineInput, setShowDeadlineInput] = useState(false);
   const recStyle =
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
@@ -102,6 +124,15 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
             <span className="text-xs text-status-apply font-medium">Prep ready</span>
           </>
         )}
+        {job.deadline && (() => {
+          const { textClass, label } = deadlineUrgency(job.deadline);
+          return (
+            <>
+              <span className="text-brand-text/20">·</span>
+              <span className={`text-xs font-medium ${textClass}`}>{label}</span>
+            </>
+          );
+        })()}
         {job.notes && (
           <>
             <span className="text-brand-text/20">·</span>
@@ -112,6 +143,7 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
 
       {/* Status + actions row */}
       <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2">
         <div className="relative inline-flex items-center">
           <select
             value={job.applicationStatus}
@@ -134,6 +166,40 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
             <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
+
+        {/* Deadline control */}
+        {showDeadlineInput ? (
+          <input
+            type="date"
+            defaultValue={job.deadline ?? ""}
+            autoFocus
+            onChange={(e) => {
+              const val = e.target.value || null;
+              onDeadlineChange(job.id, val);
+              setShowDeadlineInput(false);
+            }}
+            onBlur={() => setShowDeadlineInput(false)}
+            className="text-xs border border-brand-text/15 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent"
+          />
+        ) : job.deadline ? (
+          <button
+            onClick={() => onDeadlineChange(job.id, null)}
+            className="flex items-center gap-1 text-xs text-brand-text/35 hover:text-status-skip transition-colors group"
+            title="Clear deadline"
+          >
+            <span>{formatDeadlineDate(job.deadline)}</span>
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity">×</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowDeadlineInput(true)}
+            className="text-xs font-medium text-brand-text/30 hover:text-brand-text/60 transition-colors"
+          >
+            + Deadline
+          </button>
+        )}
+        </div>
+
         <div className="flex items-center gap-4">
           <button
             onClick={(e) => { e.stopPropagation(); setShowNotes((v) => !v); }}
@@ -190,10 +256,10 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
   );
 }
 
-type SortBy = "date" | "score";
+type SortBy = "date" | "score" | "deadline";
 type StatusFilter = ApplicationStatus | "All";
 
-export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
+export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
@@ -269,11 +335,15 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
   const filtered = jobs
     .filter((j) => statusFilter === "All" || j.applicationStatus === statusFilter)
     .filter((j) => !searchQuery.trim() || j.label.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) =>
-      sortBy === "score"
-        ? b.jobFitResult.overall_fit - a.jobFitResult.overall_fit
-        : new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime()
-    );
+    .sort((a, b) => {
+      if (sortBy === "score") return b.jobFitResult.overall_fit - a.jobFitResult.overall_fit;
+      if (sortBy === "deadline") {
+        const aTime = a.deadline ? new Date(a.deadline + "T00:00:00").getTime() : Infinity;
+        const bTime = b.deadline ? new Date(b.deadline + "T00:00:00").getTime() : Infinity;
+        return aTime - bTime;
+      }
+      return new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime();
+    });
 
   const isFiltered = searchQuery.trim() !== "" || statusFilter !== "All";
 
@@ -339,7 +409,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
         </div>
         {/* Sort toggle */}
         <div className="flex items-center gap-1 bg-white rounded-xl border border-brand-text/10 shadow-sm p-1 shrink-0">
-          {(["date", "score"] as SortBy[]).map((s) => (
+          {(["date", "score", "deadline"] as SortBy[]).map((s) => (
             <button
               key={s}
               onClick={() => setSortBy(s)}
@@ -347,7 +417,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
                 sortBy === s ? "bg-brand-text text-white shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
               }`}
             >
-              {s === "date" ? "Date" : "Score"}
+              {s === "date" ? "Date" : s === "score" ? "Score" : "Due"}
             </button>
           ))}
         </div>
@@ -382,6 +452,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
               onRenameJob={onRenameJob}
               onStatusChange={onStatusChange}
               onNotesChange={onNotesChange}
+              onDeadlineChange={onDeadlineChange}
             />
           ))}
         </div>
