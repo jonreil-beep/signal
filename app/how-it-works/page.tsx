@@ -34,23 +34,47 @@ export default function HowItWorksPage() {
             <Step
               n={1}
               title="Build your profile"
-              body="Upload your resume once. Signal reads your full career history and maps it to best-fit role clusters: the kinds of roles where you're most likely to succeed and stand out."
+              body="Upload your resume once (PDF, DOCX, or paste). Signal reads your full career history, maps it to best-fit role clusters, and generates LinkedIn headline variants you can use right away — no reformatting, no manual summarizing."
             />
             <Step
               n={2}
-              title="Score any job"
-              body="Paste a job description. Signal gives you an honest fit score from 1 to 10 with clear reasoning: what aligns with your background, what's a stretch, and whether it's worth applying."
+              title="Score any job honestly"
+              body="Paste a job description or fetch it from a URL. Signal scores your fit from 1 to 10 across four dimensions — functional fit, seniority, industry alignment, and keyword overlap — with clear reasoning on what aligns, what's a stretch, and whether it's worth your time to apply."
             />
             <Step
               n={3}
-              title="Prep with precision"
-              body="For jobs worth applying to, get a full prep guide: what to emphasize, what to de-emphasize, outreach messages, a cover letter, and resume edits. All calibrated to your actual background, not a generic template."
+              title="Prepare for the ones worth pursuing"
+              body="For jobs that score well, build a full prep guide in one click. Signal generates everything you need: what to emphasize and what to downplay, JD language to mirror, a recruiter concern to preempt, tailored resume edits, a cover letter, outreach messages, company research, interview prep questions, and follow-up templates. Export the whole package as a text file to take anywhere."
             />
             <Step
               n={4}
               title="Track your search"
-              body="Every scored job is saved to your account. Come back anytime to pick up where you left off, compare fits across roles, and decide where to focus your energy."
+              body="Every scored job is saved to your account with its full prep guide. Set application deadlines, track status from Tracking through Offer or Rejected, and add notes as the process unfolds. Sort your pipeline by date, fit score, or upcoming deadline."
             />
+          </div>
+        </section>
+
+        {/* What's in a prep guide */}
+        <section className="mb-16">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+            What&apos;s in a prep guide
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { label: "Tailoring brief", detail: "Lead strengths, JD language to mirror, what to de-emphasize, recruiter concern to preempt" },
+              { label: "Resume updates", detail: "Specific bullet rewrites and keywords to add, calibrated to this job description" },
+              { label: "Cover letter", detail: "A full tailored draft — not a template, built from your actual background" },
+              { label: "Outreach messages", detail: "A cold email and LinkedIn message built around a specific hook from your background" },
+              { label: "Company research", detail: "Business overview, culture signals, strategic context, red flags to probe, and smart questions to ask" },
+              { label: "Interview prep", detail: "6–8 likely questions with suggested framing — behavioral, functional, and gap questions specific to you" },
+              { label: "Follow-up templates", detail: "A thank-you note and check-in email ready to send after your interview" },
+              { label: "Export", detail: "Download everything as a formatted text file — one document, ready to reference anywhere" },
+            ].map(({ label, detail }) => (
+              <div key={label} className="bg-white rounded-2xl p-5 shadow">
+                <p className="text-sm font-semibold text-brand-text mb-1">{label}</p>
+                <p className="text-sm text-brand-text/50 leading-relaxed">{detail}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -102,7 +126,7 @@ export default function HowItWorksPage() {
                 "You're searching actively and want to move faster and smarter",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-base text-white/60">
-                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-g" />
+                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-accent/60" />
                   {item}
                 </li>
               ))}
