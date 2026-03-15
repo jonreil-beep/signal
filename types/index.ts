@@ -109,6 +109,16 @@ export interface ResumeUpdateResult {
   keywords_to_weave_in: ResumeKeywordSuggestion[];
 }
 
+export interface InterviewQuestion {
+  question: string;
+  why_likely: string;
+  suggested_approach: string;
+}
+
+export interface InterviewPrepResult {
+  questions: InterviewQuestion[];
+}
+
 export interface TrackedJob {
   id: string;
   label: string;
@@ -118,6 +128,7 @@ export interface TrackedJob {
   outreachResult: OutreachResult | null;
   resumeUpdateResult: ResumeUpdateResult | null;
   coverLetterResult: CoverLetterResult | null;
+  interviewPrepResult: InterviewPrepResult | null;
   scoredAt: Date;
   applicationStatus: ApplicationStatus;
 }

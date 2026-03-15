@@ -208,6 +208,41 @@ Rules:
 - Return only valid JSON, no markdown fences`;
 }
 
+// Interview prep prompt
+export function buildInterviewPrepPrompt(resumeText: string, jobDescription: string): string {
+  return `You are a senior interview coach preparing a candidate for a specific role.
+
+Candidate Resume:
+<resume>
+${resumeText}
+</resume>
+
+Job Description:
+<job_description>
+${jobDescription}
+</job_description>
+
+Return this exact JSON structure — nothing else:
+{
+  "questions": [
+    {
+      "question": "The interview question, phrased exactly as an interviewer would ask it",
+      "why_likely": "One sentence on why this question is likely for this specific role and candidate",
+      "suggested_approach": "2-3 sentences on how this candidate should frame their answer, referencing their specific background"
+    }
+  ]
+}
+
+Rules:
+- Return 6-8 questions
+- Mix question types: 2 behavioral, 2 role-specific technical/functional, 1 "tell me about yourself" calibrated to this role, 1-2 gap/concern questions based on where the candidate is a stretch
+- Every question must be calibrated to BOTH the job description AND this candidate's specific background — no generic questions
+- suggested_approach must reference the candidate's actual experience, not generic advice
+- Gap questions should address the most likely recruiter hesitation from the job fit
+- Do not use filler phrases like "Great question" or "That's a good point" in the suggested approach
+- Return only valid JSON, no markdown fences`;
+}
+
 // Outreach message generation prompt
 export function buildOutreachPrompt(
   outreachAngle: string,

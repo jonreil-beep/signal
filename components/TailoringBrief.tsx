@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult } from "@/types";
 
 interface TailoringBriefProps {
   profileText: string;
@@ -15,6 +15,8 @@ interface TailoringBriefProps {
   onCoverLetterResultChange: (result: CoverLetterResult | null) => void;
   resumeUpdateResult: ResumeUpdateResult | null;
   onResumeUpdateResultChange: (result: ResumeUpdateResult | null) => void;
+  interviewPrepResult: InterviewPrepResult | null;
+  onInterviewPrepResultChange: (result: InterviewPrepResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -160,6 +162,8 @@ export default function TailoringBrief({
   onCoverLetterResultChange,
   resumeUpdateResult,
   onResumeUpdateResultChange,
+  interviewPrepResult,
+  onInterviewPrepResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
@@ -171,6 +175,8 @@ export default function TailoringBrief({
   const [coverLetterError, setCoverLetterError] = useState<string>("");
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
   const [outreachError, setOutreachError] = useState<string>("");
+  const [isGeneratingInterviewPrep, setIsGeneratingInterviewPrep] = useState(false);
+  const [interviewPrepError, setInterviewPrepError] = useState<string>("");
 
   if (!profileText) {
     return (
@@ -303,6 +309,29 @@ export default function TailoringBrief({
       setOutreachError("Network error. Check your connection and try again.");
     } finally {
       setIsGeneratingOutreach(false);
+    }
+  }
+
+  async function handleGenerateInterviewPrep() {
+    setIsGeneratingInterviewPrep(true);
+    setInterviewPrepError("");
+    onInterviewPrepResultChange(null);
+    try {
+      const response = await fetch("/api/interview-prep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setInterviewPrepError(data.error ?? "Failed to generate interview questions. Please try again.");
+      } else {
+        onInterviewPrepResultChange(data as InterviewPrepResult);
+      }
+    } catch {
+      setInterviewPrepError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingInterviewPrep(false);
     }
   }
 
@@ -532,6 +561,40 @@ export default function TailoringBrief({
               )}
             </ActionSection>
           )}
+
+          {/* ── Interview Prep action card ── */}
+          <ActionSection
+            title="Interview Prep"
+            description="Likely questions for this role, calibrated to your background — with suggested framing for each."
+            buttonLabel="Generate Questions"
+            onAction={handleGenerateInterviewPrep}
+            isLoading={isGeneratingInterviewPrep}
+            loadingMessage="Generating interview questions…"
+            hasResult={!!interviewPrepResult}
+            error={interviewPrepError}
+          >
+            {interviewPrepResult && (
+              <div className="space-y-8">
+                {interviewPrepResult.questions.map((q, i) => (
+                  <div key={i} className="space-y-3">
+                    <p className="text-base font-semibold text-brand-text">{q.question}</p>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
+                        Why likely
+                      </p>
+                      <p className="text-base text-brand-text/60">{q.why_likely}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
+                        Suggested approach
+                      </p>
+                      <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ActionSection>
         </>
       )}
     </div>
