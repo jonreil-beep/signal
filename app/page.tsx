@@ -163,6 +163,7 @@ export default function Home() {
         interviewPrepResult: row.interview_prep_result as InterviewPrepResult | null,
         scoredAt: new Date(row.scored_at as string),
         applicationStatus: (row.application_status as ApplicationStatus) ?? "Tracking",
+        notes: (row.notes as string) ?? "",
       }));
       setTrackedJobs(jobs);
 
@@ -304,6 +305,7 @@ export default function Home() {
       interviewPrepResult: null,
       scoredAt: new Date(),
       applicationStatus: "Tracking",
+      notes: "",
     };
     setTrackedJobs((prev) => [...prev, newJob]);
     setActiveJobId(id);
@@ -432,6 +434,15 @@ export default function Home() {
     );
     if (user) {
       await supabase.from("tracked_jobs").update({ application_status: status }).eq("id", id);
+    }
+  }
+
+  async function handleNotesChange(id: string, notes: string) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === id ? { ...j, notes } : j))
+    );
+    if (user) {
+      await supabase.from("tracked_jobs").update({ notes }).eq("id", id);
     }
   }
 
@@ -892,6 +903,7 @@ export default function Home() {
               onRemoveJob={handleRemoveJob}
               onRenameJob={handleRenameJob}
               onStatusChange={handleStatusChange}
+              onNotesChange={handleNotesChange}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

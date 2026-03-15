@@ -11,6 +11,7 @@ interface JobTrackerProps {
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
+  onNotesChange: (id: string, notes: string) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -52,10 +53,13 @@ interface JobCardProps {
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
+  onNotesChange: (id: string, notes: string) => void;
 }
 
-function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }: JobCardProps) {
+function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange }: JobCardProps) {
   const [showJD, setShowJD] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notesValue, setNotesValue] = useState(job.notes);
   const recStyle =
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
@@ -98,6 +102,12 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }:
             <span className="text-xs text-status-apply font-medium">Prep ready</span>
           </>
         )}
+        {job.notes && (
+          <>
+            <span className="text-brand-text/20">·</span>
+            <span className="text-xs text-brand-text/40">Has notes</span>
+          </>
+        )}
       </div>
 
       {/* Status + actions row */}
@@ -126,6 +136,12 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }:
         </div>
         <div className="flex items-center gap-4">
           <button
+            onClick={(e) => { e.stopPropagation(); setShowNotes((v) => !v); }}
+            className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
+          >
+            {showNotes ? "Hide Notes" : "Notes"}
+          </button>
+          <button
             onClick={(e) => { e.stopPropagation(); setShowJD((v) => !v); }}
             className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
           >
@@ -139,6 +155,23 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }:
           </button>
         </div>
       </div>
+
+      {/* Expandable Notes */}
+      {showNotes && (
+        <div className="mt-4 pt-4 border-t border-brand-text/8" onClick={(e) => e.stopPropagation()}>
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">
+            Notes
+          </p>
+          <textarea
+            value={notesValue}
+            onChange={(e) => setNotesValue(e.target.value)}
+            onBlur={() => onNotesChange(job.id, notesValue)}
+            placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
+            rows={3}
+            className="w-full rounded-xl bg-brand-text/3 border border-brand-text/8 px-3.5 py-3 text-sm text-brand-text/80 placeholder:text-brand-text/25 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
+          />
+        </div>
+      )}
 
       {/* Expandable JD */}
       {showJD && (
@@ -157,7 +190,7 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }:
   );
 }
 
-export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
+export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
   if (jobs.length === 0) {
     return (
       <div className="py-4">
@@ -235,6 +268,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
           onRemoveJob={onRemoveJob}
           onRenameJob={onRenameJob}
           onStatusChange={onStatusChange}
+          onNotesChange={onNotesChange}
         />
       ))}
     </div>

@@ -131,4 +131,5 @@ export interface TrackedJob {
   interviewPrepResult: InterviewPrepResult | null;
   scoredAt: Date;
   applicationStatus: ApplicationStatus;
+  notes: string;
 }
