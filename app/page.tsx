@@ -42,7 +42,7 @@ export default function Home() {
 
   // ── App state ──
   const [showLanding, setShowLanding] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [activeTab, setActiveTab] = useState<TabId>("my-jobs");
   // Guards the save effects so they don't overwrite sessionStorage before restoration runs
   const [sessionRestored, setSessionRestored] = useState(false);
   const [profileText, setProfileText] = useState<string>("");
@@ -577,9 +577,13 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">Your Profile</h2>
+              <h2 className="text-lg font-semibold text-brand-text">
+                {profileText ? "Your Profile" : "Step 1 — Add your profile"}
+              </h2>
               <p className="text-base text-brand-text/50 mt-1">
-                Upload your resume (PDF or DOCX) or paste the text. This is the foundation for all analysis.
+                {profileText
+                  ? "Your resume is saved. Update it any time and your scores will reflect the change."
+                  : "Upload your resume (PDF or DOCX) or paste the text. Signal uses this as the foundation for every fit score and prep guide."}
               </p>
             </div>
 
@@ -767,9 +771,12 @@ export default function Home() {
             </div>
             <JobTracker
               jobs={trackedJobs}
+              hasProfile={!!profileText}
               onSelectJob={handleSelectJob}
               onRemoveJob={handleRemoveJob}
               onRenameJob={handleRenameJob}
+              onGoToProfile={() => setActiveTab("profile")}
+              onGoToJobFit={() => setActiveTab("job-fit")}
             />
           </div>
         )}
