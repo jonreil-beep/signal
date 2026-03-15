@@ -13,7 +13,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, TrackedJob, ApplicationStatus } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -60,6 +60,7 @@ export default function Home() {
   const [resumeUpdateResult, setResumeUpdateResult] = useState<ResumeUpdateResult | null>(null);
 
   const [interviewPrepResult, setInterviewPrepResult] = useState<InterviewPrepResult | null>(null);
+  const [followUpResult, setFollowUpResult] = useState<FollowUpResult | null>(null);
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
@@ -161,6 +162,7 @@ export default function Home() {
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         interviewPrepResult: row.interview_prep_result as InterviewPrepResult | null,
+        followUpResult: row.follow_up_result as FollowUpResult | null,
         scoredAt: new Date(row.scored_at as string),
         applicationStatus: (row.application_status as ApplicationStatus) ?? "Tracking",
         notes: (row.notes as string) ?? "",
@@ -179,6 +181,7 @@ export default function Home() {
           setCoverLetterResult(job.coverLetterResult ?? null);
           setResumeUpdateResult(job.resumeUpdateResult ?? null);
           setInterviewPrepResult(job.interviewPrepResult ?? null);
+          setFollowUpResult(job.followUpResult ?? null);
         }
       }
     }
@@ -194,6 +197,7 @@ export default function Home() {
     setCoverLetterResult(null);
     setResumeUpdateResult(null);
     setInterviewPrepResult(null);
+    setFollowUpResult(null);
     setTrackedJobs([]);
     setActiveJobId(null);
     setActiveTab("my-jobs");
@@ -273,18 +277,19 @@ export default function Home() {
     setJobFitResult(result);
     setTailoringResult(null);
     setInterviewPrepResult(null);
+    setFollowUpResult(null);
     if (activeJobId) {
       setTrackedJobs((prev) =>
         prev.map((j) =>
           j.id === activeJobId
-            ? { ...j, jobFitResult: result, tailoringResult: null, outreachResult: null, coverLetterResult: null, resumeUpdateResult: null, interviewPrepResult: null }
+            ? { ...j, jobFitResult: result, tailoringResult: null, outreachResult: null, coverLetterResult: null, resumeUpdateResult: null, interviewPrepResult: null, followUpResult: null }
             : j
         )
       );
       if (user) {
         await supabase
           .from("tracked_jobs")
-          .update({ job_fit_result: result, tailoring_result: null, outreach_result: null, cover_letter_result: null, resume_update_result: null, interview_prep_result: null })
+          .update({ job_fit_result: result, tailoring_result: null, outreach_result: null, cover_letter_result: null, resume_update_result: null, interview_prep_result: null, follow_up_result: null })
           .eq("id", activeJobId);
       }
     }
@@ -303,6 +308,7 @@ export default function Home() {
       coverLetterResult: null,
       resumeUpdateResult: null,
       interviewPrepResult: null,
+      followUpResult: null,
       scoredAt: new Date(),
       applicationStatus: "Tracking",
       notes: "",
@@ -316,6 +322,7 @@ export default function Home() {
     setCoverLetterResult(null);
     setResumeUpdateResult(null);
     setInterviewPrepResult(null);
+    setFollowUpResult(null);
 
     if (user) {
       await supabase.from("tracked_jobs").insert({
@@ -396,6 +403,18 @@ export default function Home() {
     }
   }
 
+  async function handleFollowUpResult(result: FollowUpResult | null) {
+    setFollowUpResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, followUpResult: result } : j))
+      );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ follow_up_result: result }).eq("id", activeJobId);
+      }
+    }
+  }
+
   function handleJobFitReset() {
     setJobDescription("");
     setJobFitResult(null);
@@ -404,6 +423,7 @@ export default function Home() {
     setCoverLetterResult(null);
     setResumeUpdateResult(null);
     setInterviewPrepResult(null);
+    setFollowUpResult(null);
     setActiveJobId(null);
   }
 
@@ -416,6 +436,7 @@ export default function Home() {
     setCoverLetterResult(job.coverLetterResult);
     setResumeUpdateResult(job.resumeUpdateResult);
     setInterviewPrepResult(job.interviewPrepResult);
+    setFollowUpResult(job.followUpResult);
     setActiveTab(goTo);
   }
 
@@ -879,6 +900,8 @@ export default function Home() {
               onResumeUpdateResultChange={handleResumeUpdateResult}
               interviewPrepResult={interviewPrepResult}
               onInterviewPrepResultChange={handleInterviewPrepResult}
+              followUpResult={followUpResult}
+              onFollowUpResultChange={handleFollowUpResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

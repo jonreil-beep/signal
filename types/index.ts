@@ -119,6 +119,11 @@ export interface InterviewPrepResult {
   questions: InterviewQuestion[];
 }
 
+export interface FollowUpResult {
+  thank_you_note: string;
+  check_in_email: string;
+}
+
 export interface TrackedJob {
   id: string;
   label: string;
@@ -129,6 +134,7 @@ export interface TrackedJob {
   resumeUpdateResult: ResumeUpdateResult | null;
   coverLetterResult: CoverLetterResult | null;
   interviewPrepResult: InterviewPrepResult | null;
+  followUpResult: FollowUpResult | null;
   scoredAt: Date;
   applicationStatus: ApplicationStatus;
   notes: string;

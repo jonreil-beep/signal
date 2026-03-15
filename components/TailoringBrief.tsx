@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult } from "@/types";
 
 interface TailoringBriefProps {
   profileText: string;
@@ -17,6 +17,8 @@ interface TailoringBriefProps {
   onResumeUpdateResultChange: (result: ResumeUpdateResult | null) => void;
   interviewPrepResult: InterviewPrepResult | null;
   onInterviewPrepResultChange: (result: InterviewPrepResult | null) => void;
+  followUpResult: FollowUpResult | null;
+  onFollowUpResultChange: (result: FollowUpResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -164,6 +166,8 @@ export default function TailoringBrief({
   onResumeUpdateResultChange,
   interviewPrepResult,
   onInterviewPrepResultChange,
+  followUpResult,
+  onFollowUpResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
@@ -177,6 +181,8 @@ export default function TailoringBrief({
   const [outreachError, setOutreachError] = useState<string>("");
   const [isGeneratingInterviewPrep, setIsGeneratingInterviewPrep] = useState(false);
   const [interviewPrepError, setInterviewPrepError] = useState<string>("");
+  const [isGeneratingFollowUp, setIsGeneratingFollowUp] = useState(false);
+  const [followUpError, setFollowUpError] = useState<string>("");
 
   if (!profileText) {
     return (
@@ -332,6 +338,29 @@ export default function TailoringBrief({
       setInterviewPrepError("Network error. Check your connection and try again.");
     } finally {
       setIsGeneratingInterviewPrep(false);
+    }
+  }
+
+  async function handleGenerateFollowUp() {
+    setIsGeneratingFollowUp(true);
+    setFollowUpError("");
+    onFollowUpResultChange(null);
+    try {
+      const response = await fetch("/api/follow-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setFollowUpError(data.error ?? "Failed to generate follow-up templates. Please try again.");
+      } else {
+        onFollowUpResultChange(data as FollowUpResult);
+      }
+    } catch {
+      setFollowUpError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingFollowUp(false);
     }
   }
 
@@ -593,6 +622,35 @@ export default function TailoringBrief({
                   </div>
                 ))}
               </div>
+            )}
+          </ActionSection>
+
+          {/* ── Follow-Up Templates action card ── */}
+          <ActionSection
+            title="Follow-Up Templates"
+            description="A thank-you note and check-in email tailored to this role — ready to send after your interview."
+            buttonLabel="Generate Templates"
+            onAction={handleGenerateFollowUp}
+            isLoading={isGeneratingFollowUp}
+            loadingMessage="Drafting follow-up templates…"
+            hasResult={!!followUpResult}
+            error={followUpError}
+          >
+            {followUpResult && (
+              <>
+                <div>
+                  <SubHeading label="Thank-You Note" copyText={followUpResult.thank_you_note} />
+                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                    {followUpResult.thank_you_note}
+                  </pre>
+                </div>
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading label="Check-In Email" copyText={followUpResult.check_in_email} />
+                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                    {followUpResult.check_in_email}
+                  </pre>
+                </div>
+              </>
             )}
           </ActionSection>
         </>

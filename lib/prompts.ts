@@ -244,6 +244,35 @@ Rules:
 - Return only valid JSON, no markdown fences`;
 }
 
+// Follow-up templates prompt
+export function buildFollowUpPrompt(resumeText: string, jobDescription: string): string {
+  return `You are a senior career coach helping a candidate write post-interview follow-up messages for a specific role.
+
+Candidate Resume:
+<resume>
+${resumeText.slice(0, 2000)}
+</resume>
+
+Job Description:
+<job_description>
+${jobDescription.slice(0, 1000)}
+</job_description>
+
+Draft two follow-up messages tailored to this candidate and role. Return this exact JSON structure — nothing else:
+{
+  "thank_you_note": "A thank-you note to send within 24 hours of an interview — 100–150 words. References something specific from the interview (use a plausible placeholder like '[topic discussed]' if no specifics are known), reinforces one concrete reason why the candidate is a strong fit, and closes with a direct but warm next step.",
+  "check_in_email": "A follow-up check-in email to send 1–2 weeks after the interview if no response — 80–120 words. References the role and interview, reaffirms interest with one specific detail, and asks clearly about timing without being pushy."
+}
+
+Rules:
+- Both messages must be written in first person and feel like a real person wrote them, not a template
+- Do not use hollow openers like "I hope this email finds you well" or "I wanted to follow up"
+- thank_you_note: mention a specific detail from the role or conversation — use '[the conversation about X]' as a bracket placeholder if needed
+- check_in_email: be direct, warm, and brief — no groveling, no over-explaining
+- Avoid AI-typical language and corporate filler
+- Return only valid JSON, no markdown fences`;
+}
+
 // Outreach message generation prompt
 export function buildOutreachPrompt(
   outreachAngle: string,
