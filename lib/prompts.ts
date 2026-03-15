@@ -244,6 +244,46 @@ Rules:
 - Return only valid JSON, no markdown fences`;
 }
 
+// Company research prompt
+export function buildCompanyResearchPrompt(jobDescription: string): string {
+  return `You are a senior career advisor helping a candidate research a company before applying or interviewing.
+
+Job Description:
+<job_description>
+${jobDescription.slice(0, 2000)}
+</job_description>
+
+Based on the job description and your training knowledge, research this company. Return this exact JSON structure — nothing else:
+{
+  "company_name": "The company's full name as it appears in the JD",
+  "business_overview": "2-3 sentences: what the company does, their market or customer base, and their approximate size or stage (startup, mid-size, enterprise, public, etc.)",
+  "culture_signals": [
+    "Specific signal about working there — pace, structure, values, team dynamics",
+    "Another signal"
+  ],
+  "strategic_context": "1-2 sentences on the company's current trajectory — growth phase, market position, recent moves, or competitive pressures",
+  "red_flags_to_probe": [
+    "A concern worth probing in interviews — e.g. high turnover, recent layoffs, unclear roadmap, leadership instability. Frame as something to investigate, not a verdict.",
+    "Another flag if relevant"
+  ],
+  "smart_questions_to_ask": [
+    {
+      "question": "A specific, researched question to ask in the interview that signals preparation",
+      "why": "What this question reveals or why it's worth asking"
+    }
+  ],
+  "caveat": "Optional: include ONLY if you have limited data on this company — e.g. 'This appears to be a smaller or newer company with limited public information. Verify details on LinkedIn, Glassdoor, and their website before interviews.' Otherwise omit this field entirely."
+}
+
+Rules:
+- If you don't know the company well, be honest in business_overview rather than fabricating details
+- culture_signals: 2-4 bullets, based on what you know OR inferred from the JD tone and requirements
+- red_flags_to_probe: 1-3 items — be honest but not alarmist. If you have no concerns, return an empty array.
+- smart_questions_to_ask: 3-4 questions — must be specific to this company, not generic interview questions
+- caveat: only include when genuinely uncertain about the company — omit it for well-known organizations
+- Return only valid JSON, no markdown fences`;
+}
+
 // Follow-up templates prompt
 export function buildFollowUpPrompt(resumeText: string, jobDescription: string): string {
   return `You are a senior career coach helping a candidate write post-interview follow-up messages for a specific role.

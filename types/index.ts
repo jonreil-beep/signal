@@ -124,6 +124,21 @@ export interface FollowUpResult {
   check_in_email: string;
 }
 
+export interface CompanyResearchQuestion {
+  question: string;
+  why: string;
+}
+
+export interface CompanyResearchResult {
+  company_name: string;
+  business_overview: string;
+  culture_signals: string[];
+  strategic_context: string;
+  red_flags_to_probe: string[];
+  smart_questions_to_ask: CompanyResearchQuestion[];
+  caveat?: string;
+}
+
 export interface TrackedJob {
   id: string;
   label: string;
@@ -135,6 +150,7 @@ export interface TrackedJob {
   coverLetterResult: CoverLetterResult | null;
   interviewPrepResult: InterviewPrepResult | null;
   followUpResult: FollowUpResult | null;
+  companyResearchResult: CompanyResearchResult | null;
   deadline: string | null;
   scoredAt: Date;
   applicationStatus: ApplicationStatus;

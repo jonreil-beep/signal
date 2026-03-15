@@ -13,7 +13,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, TrackedJob, ApplicationStatus } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -61,6 +61,7 @@ export default function Home() {
 
   const [interviewPrepResult, setInterviewPrepResult] = useState<InterviewPrepResult | null>(null);
   const [followUpResult, setFollowUpResult] = useState<FollowUpResult | null>(null);
+  const [companyResearchResult, setCompanyResearchResult] = useState<CompanyResearchResult | null>(null);
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
@@ -163,6 +164,7 @@ export default function Home() {
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         interviewPrepResult: row.interview_prep_result as InterviewPrepResult | null,
         followUpResult: row.follow_up_result as FollowUpResult | null,
+        companyResearchResult: row.company_research_result as CompanyResearchResult | null,
         deadline: (row.deadline as string) ?? null,
         scoredAt: new Date(row.scored_at as string),
         applicationStatus: (row.application_status as ApplicationStatus) ?? "Tracking",
@@ -183,6 +185,7 @@ export default function Home() {
           setResumeUpdateResult(job.resumeUpdateResult ?? null);
           setInterviewPrepResult(job.interviewPrepResult ?? null);
           setFollowUpResult(job.followUpResult ?? null);
+          setCompanyResearchResult(job.companyResearchResult ?? null);
         }
       }
     }
@@ -199,6 +202,7 @@ export default function Home() {
     setResumeUpdateResult(null);
     setInterviewPrepResult(null);
     setFollowUpResult(null);
+    setCompanyResearchResult(null);
     setTrackedJobs([]);
     setActiveJobId(null);
     setActiveTab("my-jobs");
@@ -310,6 +314,7 @@ export default function Home() {
       resumeUpdateResult: null,
       interviewPrepResult: null,
       followUpResult: null,
+      companyResearchResult: null,
       deadline: null,
       scoredAt: new Date(),
       applicationStatus: "Tracking",
@@ -417,6 +422,18 @@ export default function Home() {
     }
   }
 
+  async function handleCompanyResearchResult(result: CompanyResearchResult | null) {
+    setCompanyResearchResult(result);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) => (j.id === activeJobId ? { ...j, companyResearchResult: result } : j))
+      );
+      if (user) {
+        await supabase.from("tracked_jobs").update({ company_research_result: result }).eq("id", activeJobId);
+      }
+    }
+  }
+
   async function handleDeadlineChange(id: string, deadline: string | null) {
     setTrackedJobs((prev) =>
       prev.map((j) => (j.id === id ? { ...j, deadline } : j))
@@ -435,6 +452,7 @@ export default function Home() {
     setResumeUpdateResult(null);
     setInterviewPrepResult(null);
     setFollowUpResult(null);
+    setCompanyResearchResult(null);
     setActiveJobId(null);
   }
 
@@ -448,6 +466,7 @@ export default function Home() {
     setResumeUpdateResult(job.resumeUpdateResult);
     setInterviewPrepResult(job.interviewPrepResult);
     setFollowUpResult(job.followUpResult);
+    setCompanyResearchResult(job.companyResearchResult);
     setActiveTab(goTo);
   }
 
@@ -913,6 +932,8 @@ export default function Home() {
               onInterviewPrepResultChange={handleInterviewPrepResult}
               followUpResult={followUpResult}
               onFollowUpResultChange={handleFollowUpResult}
+              companyResearchResult={companyResearchResult}
+              onCompanyResearchResultChange={handleCompanyResearchResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
             />

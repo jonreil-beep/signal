@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult } from "@/types";
 
 interface TailoringBriefProps {
   profileText: string;
@@ -19,6 +19,8 @@ interface TailoringBriefProps {
   onInterviewPrepResultChange: (result: InterviewPrepResult | null) => void;
   followUpResult: FollowUpResult | null;
   onFollowUpResultChange: (result: FollowUpResult | null) => void;
+  companyResearchResult: CompanyResearchResult | null;
+  onCompanyResearchResultChange: (result: CompanyResearchResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
 }
@@ -168,6 +170,8 @@ export default function TailoringBrief({
   onInterviewPrepResultChange,
   followUpResult,
   onFollowUpResultChange,
+  companyResearchResult,
+  onCompanyResearchResultChange,
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
@@ -183,6 +187,8 @@ export default function TailoringBrief({
   const [interviewPrepError, setInterviewPrepError] = useState<string>("");
   const [isGeneratingFollowUp, setIsGeneratingFollowUp] = useState(false);
   const [followUpError, setFollowUpError] = useState<string>("");
+  const [isGeneratingCompanyResearch, setIsGeneratingCompanyResearch] = useState(false);
+  const [companyResearchError, setCompanyResearchError] = useState<string>("");
 
   if (!profileText) {
     return (
@@ -341,6 +347,29 @@ export default function TailoringBrief({
     }
   }
 
+  async function handleGenerateCompanyResearch() {
+    setIsGeneratingCompanyResearch(true);
+    setCompanyResearchError("");
+    onCompanyResearchResultChange(null);
+    try {
+      const response = await fetch("/api/company-research", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobDescription }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setCompanyResearchError(data.error ?? "Failed to research company. Please try again.");
+      } else {
+        onCompanyResearchResultChange(data as CompanyResearchResult);
+      }
+    } catch {
+      setCompanyResearchError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingCompanyResearch(false);
+    }
+  }
+
   async function handleGenerateFollowUp() {
     setIsGeneratingFollowUp(true);
     setFollowUpError("");
@@ -392,6 +421,81 @@ export default function TailoringBrief({
           </button>
         </div>
       )}
+
+      {/* ── Company Research — available as soon as a JD is loaded ── */}
+      <ActionSection
+        title="Company Research"
+        description="What Signal knows about this company — culture signals, strategic context, and smart questions to ask."
+        buttonLabel="Research Company"
+        onAction={handleGenerateCompanyResearch}
+        isLoading={isGeneratingCompanyResearch}
+        loadingMessage="Researching the company…"
+        hasResult={!!companyResearchResult}
+        error={companyResearchError}
+      >
+        {companyResearchResult && (
+          <>
+            <div>
+              <p className="text-base font-semibold text-brand-text mb-1">{companyResearchResult.company_name}</p>
+              <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.business_overview}</p>
+            </div>
+
+            {companyResearchResult.caveat && (
+              <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
+                <p className="text-sm text-status-stretch leading-snug">{companyResearchResult.caveat}</p>
+              </div>
+            )}
+
+            <div className="border-t border-brand-text/8 pt-6">
+              <SubHeading label="Culture Signals" />
+              <ul className="space-y-1.5">
+                {companyResearchResult.culture_signals.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
+                    <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="border-t border-brand-text/8 pt-6">
+              <SubHeading label="Strategic Context" />
+              <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.strategic_context}</p>
+            </div>
+
+            {companyResearchResult.red_flags_to_probe.length > 0 && (
+              <div className="border-t border-brand-text/8 pt-6">
+                <SubHeading label="Red Flags to Probe" />
+                <ul className="space-y-1.5">
+                  {companyResearchResult.red_flags_to_probe.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-base text-status-stretch">
+                      <span className="mt-1.5 w-1 h-1 rounded-full bg-status-stretch/50 shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="border-t border-brand-text/8 pt-6">
+              <SubHeading
+                label="Smart Questions to Ask"
+                copyText={companyResearchResult.smart_questions_to_ask
+                  .map((q) => `Q: ${q.question}\nWhy: ${q.why}`)
+                  .join("\n\n")}
+              />
+              <div className="space-y-4">
+                {companyResearchResult.smart_questions_to_ask.map((q, i) => (
+                  <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                    <p className="text-base font-medium text-brand-text">{q.question}</p>
+                    <p className="text-sm text-brand-text/40 mt-0.5">{q.why}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </ActionSection>
 
       {result && !isGenerating && (
         <>
