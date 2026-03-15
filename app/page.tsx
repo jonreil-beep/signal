@@ -478,16 +478,19 @@ export default function Home() {
               {magicLinkError && (
                 <p className="text-sm text-red-400">{magicLinkError}</p>
               )}
-              <div className="flex items-center gap-5">
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  href="/how-it-works"
+                  className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-sm font-medium rounded-2xl sm:rounded-full hover:border-white/40 hover:bg-white/5 transition-colors"
+                >
+                  How Signal works →
+                </Link>
                 <button
                   onClick={() => setShowLanding(false)}
-                  className="text-xs text-white/20 hover:text-white/35 transition-colors"
+                  className="text-sm text-white/30 hover:text-white/50 transition-colors"
                 >
-                  Continue without saving →
+                  Try without signing up
                 </button>
-                <Link href="/how-it-works" className="text-sm text-white/65 hover:text-white transition-colors underline underline-offset-2 decoration-white/30">
-                  How it works →
-                </Link>
               </div>
             </div>
           ) : (
