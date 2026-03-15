@@ -831,7 +831,9 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-base font-semibold text-brand-text">My Jobs</h2>
               <p className="text-sm text-brand-text/50 mt-1">
-                Every job you&apos;ve scored. Click any job to reload its fit results or prep guide.
+                {trackedJobs.length > 0
+                  ? "Every job you\u2019ve scored. Click any job to reload its fit results or prep guide."
+                  : "Follow the steps below to score your first job and build your prep guide."}
               </p>
             </div>
             <JobTracker
