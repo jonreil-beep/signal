@@ -731,7 +731,7 @@ export default function Home() {
                 <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
                   <button
                     onClick={() => setActiveTab("job-fit")}
-                    className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
                     Go to Job Fit →
                   </button>
@@ -829,8 +829,8 @@ export default function Home() {
         {activeTab === "my-jobs" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-base font-semibold text-brand-text">My Jobs</h2>
-              <p className="text-sm text-brand-text/50 mt-1">
+              <h2 className="text-lg font-semibold text-brand-text">My Jobs</h2>
+              <p className="text-base text-brand-text/50 mt-1">
                 {trackedJobs.length > 0
                   ? "Every job you\u2019ve scored. Click any job to reload its fit results or prep guide."
                   : "Follow the steps below to score your first job and build your prep guide."}

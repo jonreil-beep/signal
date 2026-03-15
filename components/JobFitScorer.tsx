@@ -166,7 +166,7 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
               <button
                 key={m}
                 onClick={() => { setMode(m); setFetchError(""); }}
-                className={`px-4 py-1.5 rounded-lg text-base font-medium transition-all ${
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   mode === m ? "bg-white text-brand-text shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
                 }`}
               >
@@ -401,7 +401,7 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
               Go to Prep →
             </button>

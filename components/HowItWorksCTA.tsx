@@ -48,7 +48,7 @@ export default function HowItWorksCTA() {
       <div className="flex flex-col items-start gap-3 pb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-8 py-4 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
         >
           Go to app →
         </Link>
