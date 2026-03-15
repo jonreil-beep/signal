@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import LoadingState from "./LoadingState";
 import type { JobFitResult } from "@/types";
 
@@ -57,6 +57,7 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
   const [dismissedItems, setDismissedItems] = useState<string[]>([]);
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
+  const rescoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -116,20 +117,26 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
   }
 
   function handleDismissItem(item: string) {
-    setDismissedItems((prev) => [...prev, item]);
+    setDismissedItems((prev) => {
+      const next = [...prev, item];
+      // Debounce: clear any pending rescore and schedule a new one
+      if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
+      rescoreTimer.current = setTimeout(() => triggerRescore(next), 1200);
+      return next;
+    });
     setRescoreError("");
   }
 
-  async function handleRescore() {
+  async function triggerRescore(dismissed: string[]) {
     const jd = jdText.trim() || jobDescription;
-    if (!jd || !profileText || dismissedItems.length === 0) return;
+    if (!jd || !profileText || dismissed.length === 0) return;
     setIsRescoring(true);
     setRescoreError("");
     try {
       const response = await fetch("/api/score-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, dismissedItems }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, dismissedItems: dismissed }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -358,34 +365,27 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
                 </ul>
               )}
 
-              {/* Re-score controls */}
-              {dismissedItems.length > 0 && !isRescoring && (
+              {/* Re-score status */}
+              {(dismissedItems.length > 0 || isRescoring) && (
                 <div className="mt-4 pt-4 border-t border-brand-text/8">
-                  <p className="text-sm text-brand-text/40 mb-3">
-                    {dismissedItems.length} item{dismissedItems.length > 1 ? "s" : ""} dismissed. Re-score to update your fit assessment and prep.
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={handleRescore}
-                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                    >
-                      Re-score with corrections
-                    </button>
-                    <button
-                      onClick={() => setDismissedItems([])}
-                      className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
-                    >
-                      Undo
-                    </button>
-                  </div>
-                  {rescoreError && (
-                    <p className="mt-2 text-sm text-status-stretch">{rescoreError}</p>
+                  {isRescoring ? (
+                    <LoadingState message="Updating your score with corrections..." />
+                  ) : (
+                    <p className="text-sm text-brand-text/40">
+                      Updating score{dismissedItems.length > 1 ? ` (${dismissedItems.length} corrections)` : ""}…
+                    </p>
                   )}
-                </div>
-              )}
-              {isRescoring && (
-                <div className="mt-4 pt-4 border-t border-brand-text/8">
-                  <LoadingState message="Re-scoring with your corrections..." />
+                  {rescoreError && !isRescoring && (
+                    <div className="flex items-center gap-3 mt-2">
+                      <p className="text-sm text-status-stretch">{rescoreError}</p>
+                      <button
+                        onClick={() => triggerRescore(dismissedItems)}
+                        className="text-sm text-brand-accent hover:text-brand-accent/70 transition-colors"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
