@@ -866,11 +866,11 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="text-sm font-semibold text-brand-text">{message}</p>
-      <p className="text-sm text-brand-text/40 mt-1 max-w-xs mx-auto">{sub}</p>
+      <p className="text-base font-semibold text-brand-text">{message}</p>
+      <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
       >
         {action} →
       </button>
