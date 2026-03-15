@@ -102,19 +102,28 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }:
 
       {/* Status + actions row */}
       <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
-        <select
-          value={job.applicationStatus}
-          onChange={(e) => {
-            e.stopPropagation();
-            onStatusChange(job.id, e.target.value as ApplicationStatus);
-          }}
-          onClick={(e) => e.stopPropagation()}
-          className={`text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none ${statusStyle.bg} ${statusStyle.text}`}
-        >
-          {APPLICATION_STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        <div className="relative inline-flex items-center">
+          <select
+            value={job.applicationStatus}
+            onChange={(e) => {
+              e.stopPropagation();
+              onStatusChange(job.id, e.target.value as ApplicationStatus);
+            }}
+            onClick={(e) => e.stopPropagation()}
+            className={`text-xs font-medium pl-2.5 pr-6 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none transition-opacity hover:opacity-75 ${statusStyle.bg} ${statusStyle.text}`}
+          >
+            {APPLICATION_STATUSES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <svg
+            className={`absolute right-2 w-2.5 h-2.5 pointer-events-none shrink-0 ${statusStyle.text}`}
+            viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
         <div className="flex items-center gap-4">
           <button
             onClick={(e) => { e.stopPropagation(); setShowJD((v) => !v); }}
