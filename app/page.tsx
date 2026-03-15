@@ -114,7 +114,13 @@ export default function Home() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session?.user) {
         setUser(session.user);
-        setShowLanding(false);
+        // Only push into the app if the user wasn't intentionally on the welcome-back
+        // screen. SIGNED_IN fires on token refreshes too (not just fresh sign-ins), so
+        // blindly calling setShowLanding(false) here caused refreshes from the
+        // welcome-back screen to drop the user into the app.
+        if (sessionStorage.getItem("signal-show-landing") !== "true") {
+          setShowLanding(false);
+        }
         loadUserData(session.user.id);
       }
       if (event === "SIGNED_OUT") {
