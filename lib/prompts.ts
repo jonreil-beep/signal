@@ -351,3 +351,36 @@ Rules:
 - Avoid AI-sounding phrases and corporate filler: write like a real person sending a real message, not a template
 - Return only valid JSON, no markdown fences`;
 }
+
+// LinkedIn headline optimizer prompt
+export function buildLinkedInHeadlinePrompt(resumeText: string): string {
+  return `You are a senior personal branding strategist who writes LinkedIn headlines for senior professionals.
+
+Candidate Resume:
+<resume>
+${resumeText.slice(0, 3000)}
+</resume>
+
+Generate 4–5 LinkedIn headline variants for this person. Each should take a distinctly different positioning angle — not just minor wording variations. Return this exact JSON structure — nothing else:
+{
+  "headlines": [
+    {
+      "text": "The complete headline — 220 characters max, ready to paste directly into LinkedIn",
+      "angle": "The positioning strategy this headline takes (e.g. 'Leads with industry expertise', 'Operator framing', 'Outcome-first')",
+      "best_for": "When to use this version — what type of opportunity or audience it's optimized for"
+    }
+  ]
+}
+
+Rules:
+- Each headline must be under 220 characters (LinkedIn's limit) — count carefully
+- Each headline must take a genuinely different positioning angle — vary the emphasis, structure, and target audience across all 5
+- Use concrete, specific language — name actual functions, industries, or outcomes from their background
+- Do not use filler words or clichés: never use "results-driven", "passionate", "dynamic", "innovative", "leveraged", "spearheaded", "synergized", "transformative", "game-changing", "thought leader", or "seasoned"
+- Do not start with "I" or use first-person pronouns
+- Use the pipe character | or em dash — to separate elements where helpful, but only when it aids clarity
+- The headline should work for someone scanning a search result — it must be immediately legible
+- angle: one concise phrase naming the strategic framing (not a description of the text itself)
+- best_for: one sentence on the specific opportunity type or audience this variant targets best
+- Return only valid JSON, no markdown fences`;
+}

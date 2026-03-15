@@ -139,6 +139,16 @@ export interface CompanyResearchResult {
   caveat?: string;
 }
 
+export interface LinkedInHeadlineOption {
+  text: string;
+  angle: string;
+  best_for: string;
+}
+
+export interface LinkedInHeadlineResult {
+  headlines: LinkedInHeadlineOption[];
+}
+
 export interface TrackedJob {
   id: string;
   label: string;

@@ -13,7 +13,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, TrackedJob, ApplicationStatus } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -51,6 +51,9 @@ export default function Home() {
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
+  const [headlineResult, setHeadlineResult] = useState<LinkedInHeadlineResult | null>(null);
+  const [isGeneratingHeadlines, setIsGeneratingHeadlines] = useState(false);
+  const [headlineError, setHeadlineError] = useState<string>("");
 
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
@@ -194,6 +197,8 @@ export default function Home() {
   function clearAppState() {
     setProfileText("");
     setClusterResult(null);
+    setHeadlineResult(null);
+    setHeadlineError("");
     setJobDescription("");
     setJobFitResult(null);
     setTailoringResult(null);
@@ -241,6 +246,8 @@ export default function Home() {
     setProfileText(text);
     setClusterResult(null);
     setAnalyzeError("");
+    setHeadlineResult(null);
+    setHeadlineError("");
     setUpdatingProfile(false);
     if (user) {
       await supabase.from("profiles").upsert({ id: user.id, resume_text: text, cluster_result: null, updated_at: new Date().toISOString() });
@@ -271,6 +278,30 @@ export default function Home() {
       setAnalyzeError("Network error. Check your connection and try again.");
     } finally {
       setIsAnalyzing(false);
+    }
+  }
+
+  async function handleGenerateHeadlines() {
+    if (!profileText) return;
+    setIsGeneratingHeadlines(true);
+    setHeadlineError("");
+    setHeadlineResult(null);
+    try {
+      const response = await fetch("/api/linkedin-headline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setHeadlineError(data.error ?? "Failed to generate headlines. Please try again.");
+      } else {
+        setHeadlineResult(data as LinkedInHeadlineResult);
+      }
+    } catch {
+      setHeadlineError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingHeadlines(false);
     }
   }
 
@@ -835,17 +866,61 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && !updatingProfile && (
-              <>
-                <RoleClusterResults result={clusterResult} />
-                <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
-                  <button
-                    onClick={() => setActiveTab("job-fit")}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                  >
-                    Go to Job Fit →
-                  </button>
+              <RoleClusterResults result={clusterResult} />
+            )}
+
+            {/* ── LinkedIn Headline Optimizer ── */}
+            {profileText && !updatingProfile && !isAnalyzing && (
+              <div className="mt-6 pt-6 border-t border-brand-text/8">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-medium text-brand-text">LinkedIn Headline</p>
+                  {!isGeneratingHeadlines && (
+                    <button
+                      onClick={handleGenerateHeadlines}
+                      className="text-base font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+                    >
+                      {headlineResult ? "Regenerate →" : "Generate Variants →"}
+                    </button>
+                  )}
                 </div>
-              </>
+                {!headlineResult && !isGeneratingHeadlines && !headlineError && (
+                  <p className="text-sm text-brand-text/40">
+                    Generate 4–5 headline variants with different positioning angles — ready to paste into LinkedIn.
+                  </p>
+                )}
+                {isGeneratingHeadlines && (
+                  <LoadingState message="Generating headline variants…" />
+                )}
+                {headlineError && !isGeneratingHeadlines && (
+                  <div className="mt-2">
+                    <p className="text-sm text-red-700">{headlineError}</p>
+                    <button
+                      onClick={handleGenerateHeadlines}
+                      className="mt-1 text-xs text-red-500 underline hover:no-underline"
+                    >
+                      Try again
+                    </button>
+                  </div>
+                )}
+                {headlineResult && !isGeneratingHeadlines && (
+                  <div className="mt-4 space-y-4">
+                    {headlineResult.headlines.map((h, i) => (
+                      <HeadlineCard key={i} headline={h} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {clusterResult && !isAnalyzing && !updatingProfile && (
+              <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
+                <button
+                  onClick={() => setActiveTab("job-fit")}
+                  className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                >
+                  Go to Job Fit →
+                </button>
+              </div>
             )}
           </div>
         )}
@@ -993,6 +1068,55 @@ function EmptyState({
       >
         {action} →
       </button>
+    </div>
+  );
+}
+
+function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(headline.text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* silently fail */ }
+  }
+
+  return (
+    <div className="rounded-2xl bg-white p-5 shadow">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-base font-medium text-brand-text leading-snug flex-1">{headline.text}</p>
+        <button
+          onClick={handleCopy}
+          className="shrink-0 flex items-center gap-1 text-xs text-brand-text/30 hover:text-brand-text/60 transition-colors mt-0.5"
+        >
+          {copied ? (
+            <>
+              <svg className="w-3.5 h-3.5 text-status-apply" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-status-apply">Copied</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              Copy
+            </>
+          )}
+        </button>
+      </div>
+      <div className="mt-3 flex items-start gap-4">
+        <p className="text-xs text-brand-text/30">{headline.text.length} chars</p>
+        <div className="flex-1 min-w-0">
+          <span className="inline-block text-xs font-medium text-brand-accent/80 bg-brand-accent/8 px-2 py-0.5 rounded-full ring-1 ring-brand-accent/15 mr-2">
+            {headline.angle}
+          </span>
+        </div>
+      </div>
+      <p className="mt-2 text-sm text-brand-text/40 leading-snug">{headline.best_for}</p>
     </div>
   );
 }
