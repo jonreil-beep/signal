@@ -9,10 +9,11 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    const { resumeText, jobDescription, dismissedItems } = body as {
+    const { resumeText, jobDescription, dismissedItems, previousScore } = body as {
       resumeText?: string;
       jobDescription?: string;
       dismissedItems?: string[];
+      previousScore?: number;
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -29,7 +30,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const prompt = buildJobFitPrompt(
       resumeText.trim(),
       jobDescription.trim(),
-      Array.isArray(dismissedItems) ? dismissedItems : undefined
+      Array.isArray(dismissedItems) ? dismissedItems : undefined,
+      typeof previousScore === "number" ? previousScore : undefined
     );
 
     const message = await anthropic.messages.create({

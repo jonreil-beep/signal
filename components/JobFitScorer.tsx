@@ -136,12 +136,21 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
       const response = await fetch("/api/score-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, dismissedItems: dismissed }),
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: jd,
+          dismissedItems: dismissed,
+          previousScore: result?.overall_fit,
+        }),
       });
-      const data = await response.json();
+      const data = await response.json() as JobFitResult & { error?: string };
       if (!response.ok) {
         setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
       } else {
+        // Safety floor: dismissing gaps can only improve or maintain the score, never lower it
+        if (result && typeof data.overall_fit === "number" && data.overall_fit < result.overall_fit) {
+          data.overall_fit = result.overall_fit;
+        }
         setDismissedItems([]);
         onJobFitUpdated(data as JobFitResult);
       }

@@ -38,11 +38,12 @@ Rules:
 export function buildJobFitPrompt(
   resumeText: string,
   jobDescription: string,
-  dismissedItems?: string[]
+  dismissedItems?: string[],
+  previousScore?: number
 ): string {
   const correctionBlock =
     dismissedItems && dismissedItems.length > 0
-      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications. Do NOT include these in whats_missing under any circumstances:\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
+      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications that were previously marked as missing. This means the candidate is stronger than initially assessed — do NOT include these in whats_missing, and the revised overall_fit score MUST be higher than or equal to ${previousScore ?? 1} (the previous score). Removing gaps can only improve the fit:\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
       : "";
 
   return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description honestly.
