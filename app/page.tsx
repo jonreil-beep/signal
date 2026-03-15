@@ -920,6 +920,7 @@ export default function Home() {
             <TailoringBrief
               profileText={profileText}
               jobDescription={jobDescription}
+              jobLabel={activeJobId ? trackedJobs.find(j => j.id === activeJobId)?.label : undefined}
               result={tailoringResult}
               onResultChange={handleTailoringResult}
               outreachResult={outreachResult}

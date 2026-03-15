@@ -7,6 +7,7 @@ import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpd
 interface TailoringBriefProps {
   profileText: string;
   jobDescription: string;
+  jobLabel?: string;
   result: TailoringBriefResult | null;
   onResultChange: (result: TailoringBriefResult) => void;
   outreachResult: OutreachResult | null;
@@ -158,6 +159,7 @@ function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
 export default function TailoringBrief({
   profileText,
   jobDescription,
+  jobLabel,
   result,
   onResultChange,
   outreachResult,
@@ -370,6 +372,170 @@ export default function TailoringBrief({
     }
   }
 
+  function handleExport() {
+    const lines: string[] = [];
+    const sep = "─".repeat(60);
+    const displayName = companyResearchResult?.company_name ?? jobLabel ?? "Prep Guide";
+
+    lines.push("SIGNAL — PREP GUIDE");
+    lines.push(displayName);
+    lines.push(
+      `Exported ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+    );
+    lines.push("");
+
+    if (companyResearchResult) {
+      lines.push(sep);
+      lines.push("COMPANY RESEARCH");
+      lines.push(sep);
+      lines.push("");
+      lines.push(`Company: ${companyResearchResult.company_name}`);
+      lines.push("");
+      lines.push("Business Overview");
+      lines.push(companyResearchResult.business_overview);
+      lines.push("");
+      if (companyResearchResult.caveat) {
+        lines.push(`Note: ${companyResearchResult.caveat}`);
+        lines.push("");
+      }
+      lines.push("Culture Signals");
+      companyResearchResult.culture_signals.forEach((s) => lines.push(`• ${s}`));
+      lines.push("");
+      lines.push("Strategic Context");
+      lines.push(companyResearchResult.strategic_context);
+      lines.push("");
+      if (companyResearchResult.red_flags_to_probe.length > 0) {
+        lines.push("Red Flags to Probe");
+        companyResearchResult.red_flags_to_probe.forEach((f) => lines.push(`• ${f}`));
+        lines.push("");
+      }
+      lines.push("Smart Questions to Ask");
+      companyResearchResult.smart_questions_to_ask.forEach((q) => {
+        lines.push(`Q: ${q.question}`);
+        lines.push(`   Why: ${q.why}`);
+      });
+      lines.push("");
+    }
+
+    if (result) {
+      lines.push(sep);
+      lines.push("PREP BRIEF");
+      lines.push(sep);
+      lines.push("");
+      lines.push("Lead Strengths to Emphasize");
+      result.lead_strengths.forEach((s) => {
+        lines.push(`• ${s.strength}`);
+        lines.push(`  → ${s.framing_language}`);
+      });
+      lines.push("");
+      lines.push("JD Language to Mirror");
+      result.jd_language_to_mirror.forEach((p) => {
+        lines.push(`"${p.phrase}"`);
+        lines.push(`  ${p.context}`);
+      });
+      lines.push("");
+      lines.push("What to De-emphasize");
+      result.what_to_deemphasize.forEach((d) => {
+        lines.push(`• ${d.item}`);
+        lines.push(`  Reason: ${d.reason}`);
+      });
+      lines.push("");
+      lines.push("Recruiter Concern to Preempt");
+      lines.push(`Concern: ${result.recruiter_concern_to_preempt.concern}`);
+      lines.push(`Response: ${result.recruiter_concern_to_preempt.suggested_response}`);
+      lines.push("");
+      if (result.outreach_angle) {
+        lines.push("Outreach Angle");
+        lines.push(result.outreach_angle);
+        lines.push("");
+      }
+    }
+
+    if (resumeUpdateResult) {
+      lines.push(sep);
+      lines.push("RESUME UPDATES");
+      lines.push(sep);
+      lines.push("");
+      lines.push("Summary Rewrite");
+      lines.push(resumeUpdateResult.summary_rewrite);
+      lines.push("");
+      lines.push("Bullet Updates");
+      resumeUpdateResult.bullet_updates.forEach((b) => {
+        lines.push(`[${b.section}]`);
+        lines.push(`Was: ${b.original_paraphrase}`);
+        lines.push(`Update to: ${b.suggested_rewrite}`);
+        lines.push(`Why: ${b.why}`);
+        lines.push("");
+      });
+      lines.push("Keywords to Weave In");
+      resumeUpdateResult.keywords_to_weave_in.forEach((k) => {
+        lines.push(`"${k.keyword}" — ${k.suggested_context}`);
+      });
+      lines.push("");
+    }
+
+    if (coverLetterResult) {
+      lines.push(sep);
+      lines.push("COVER LETTER");
+      lines.push(sep);
+      lines.push("");
+      lines.push(coverLetterResult.cover_letter);
+      lines.push("");
+    }
+
+    if (outreachResult) {
+      lines.push(sep);
+      lines.push("OUTREACH MESSAGES");
+      lines.push(sep);
+      lines.push("");
+      lines.push("Cold Email");
+      lines.push(outreachResult.email);
+      lines.push("");
+      lines.push("LinkedIn Message");
+      lines.push(outreachResult.linkedin_message);
+      lines.push("");
+    }
+
+    if (interviewPrepResult) {
+      lines.push(sep);
+      lines.push("INTERVIEW PREP");
+      lines.push(sep);
+      lines.push("");
+      interviewPrepResult.questions.forEach((q, i) => {
+        lines.push(`${i + 1}. ${q.question}`);
+        lines.push(`   Why likely: ${q.why_likely}`);
+        lines.push(`   Approach: ${q.suggested_approach}`);
+        lines.push("");
+      });
+    }
+
+    if (followUpResult) {
+      lines.push(sep);
+      lines.push("FOLLOW-UP TEMPLATES");
+      lines.push(sep);
+      lines.push("");
+      lines.push("Thank-You Note");
+      lines.push(followUpResult.thank_you_note);
+      lines.push("");
+      lines.push("Check-In Email");
+      lines.push(followUpResult.check_in_email);
+      lines.push("");
+    }
+
+    const text = lines.join("\n");
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const slug = displayName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    a.href = url;
+    a.download = `signal-${slug}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function handleGenerateFollowUp() {
     setIsGeneratingFollowUp(true);
     setFollowUpError("");
@@ -398,16 +564,29 @@ export default function TailoringBrief({
 
       {/* ── Build Prep Guide button ── */}
       {!isGenerating && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <p className="text-base text-brand-text/40">
             {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
           </p>
-          <button
-            onClick={handleGenerate}
-            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-          >
-            {result ? "Rebuild" : "Build Prep Guide"}
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {result && (
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export
+              </button>
+            )}
+            <button
+              onClick={handleGenerate}
+              className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+            >
+              {result ? "Rebuild" : "Build Prep Guide"}
+            </button>
+          </div>
         </div>
       )}
 
