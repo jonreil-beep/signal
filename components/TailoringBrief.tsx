@@ -338,22 +338,22 @@ export default function TailoringBrief({
   return (
     <div className="space-y-4">
 
-      {/* ── Generate Brief button ── */}
+      {/* ── Build Prep Guide button ── */}
       {!isGenerating && (
         <div className="flex items-center justify-between">
           <p className="text-base text-brand-text/40">
-            {result ? "Re-generate to refresh." : "Signal will build targeted prep for this specific job."}
+            {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
           </p>
           <button
             onClick={handleGenerate}
             className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
           >
-            {result ? "Re-generate" : "Generate Brief"}
+            {result ? "Rebuild" : "Build Prep Guide"}
           </button>
         </div>
       )}
 
-      {isGenerating && <LoadingState message="Generating your prep. This takes about 20 seconds..." />}
+      {isGenerating && <LoadingState message="Building your prep guide. This takes about 20 seconds..." />}
 
       {error && !isGenerating && (
         <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
