@@ -336,9 +336,12 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
               </ul>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
-                What&apos;s Missing
-              </p>
+              <div className="flex items-baseline justify-between gap-2 mb-3">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">
+                  What&apos;s Missing
+                </p>
+                <p className="text-xs text-brand-text/30">Tap × to remove anything that doesn&apos;t apply</p>
+              </div>
               {result.whats_missing.filter((item) => !dismissedItems.includes(item)).length === 0 ? (
                 <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
               ) : (
@@ -354,7 +357,7 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
                         <button
                           onClick={() => handleDismissItem(item)}
                           title="Dismiss — I actually have this"
-                          className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full text-brand-text/20 hover:text-brand-text/60 hover:bg-brand-text/8 transition-colors opacity-0 group-hover:opacity-100"
+                          className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full text-brand-text/25 hover:text-brand-text/60 hover:bg-brand-text/8 transition-colors"
                         >
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                             <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>

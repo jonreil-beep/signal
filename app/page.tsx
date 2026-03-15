@@ -15,8 +15,9 @@ import Link from "next/link";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, TrackedJob } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
-  { id: "profile", label: "Profile" },
-  { id: "job-fit", label: "Job Fit" },
+  { id: "my-jobs",        label: "My Jobs" },
+  { id: "profile",        label: "Profile" },
+  { id: "job-fit",        label: "Job Fit" },
   { id: "tailoring-brief", label: "Prep" },
 ];
 
@@ -551,34 +552,20 @@ export default function Home() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-4 text-base font-medium border-b-2 transition-all ${
+                className={`flex items-center gap-2 px-5 py-4 text-base font-medium border-b-2 transition-all ${
                   activeTab === tab.id
                     ? "border-brand-accent text-brand-accent"
                     : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
                 }`}
               >
                 {tab.label}
-              </button>
-            ))}
-
-            {/* My Jobs — right-aligned */}
-            <div className="ml-auto">
-              <button
-                onClick={() => setActiveTab("my-jobs")}
-                className={`flex items-center gap-2 px-5 py-4 text-base font-medium border-b-2 transition-all ${
-                  activeTab === "my-jobs"
-                    ? "border-brand-accent text-brand-accent"
-                    : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
-                }`}
-              >
-                My Jobs
-                {trackedJobs.length > 0 && (
+                {tab.id === "my-jobs" && trackedJobs.length > 0 && (
                   <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-brand-accent/20 text-brand-accent ring-1 ring-brand-accent/30 px-1.5 rounded-full">
                     {trackedJobs.length}
                   </span>
                 )}
               </button>
-            </div>
+            ))}
           </nav>
         </div>
       </div>
