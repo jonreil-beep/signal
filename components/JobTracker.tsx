@@ -76,20 +76,20 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
         {/* CTA */}
         {!hasProfile ? (
           <div className="text-center">
-            <p className="text-sm text-brand-text/40 mb-4">Start by uploading your resume. Everything else follows from there.</p>
+            <p className="text-base text-brand-text/50 mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
               Add your profile
             </button>
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-sm text-brand-text/40 mb-4">Profile saved. Score your first job to get started.</p>
+            <p className="text-base text-brand-text/50 mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
               Score a job
             </button>

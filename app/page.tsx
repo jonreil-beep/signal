@@ -500,7 +500,7 @@ export default function Home() {
                   How Signal works →
                 </Link>
                 <button
-                  onClick={() => setShowLanding(false)}
+                  onClick={() => { setShowLanding(false); setActiveTab("my-jobs"); }}
                   className="text-sm text-white/30 hover:text-white/50 transition-colors"
                 >
                   Try without signing up
