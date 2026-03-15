@@ -6,8 +6,10 @@ import type { JobFitResult } from "@/types";
 
 interface JobFitScorerProps {
   profileText: string;
+  jobDescription: string;
   result: JobFitResult | null;
   onJobScored: (jobDescription: string, result: JobFitResult) => void;
+  onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
   onGoToTailoringBrief: () => void;
 }
@@ -44,7 +46,7 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function JobFitScorer({ profileText, result, onJobScored, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, result, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>("");
   const [urlInput, setUrlInput] = useState<string>("");
@@ -52,6 +54,9 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
   const [fetchError, setFetchError] = useState<string>("");
   const [isScoring, setIsScoring] = useState(false);
   const [scoreError, setScoreError] = useState<string>("");
+  const [dismissedItems, setDismissedItems] = useState<string[]>([]);
+  const [isRescoring, setIsRescoring] = useState(false);
+  const [rescoreError, setRescoreError] = useState<string>("");
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -105,7 +110,39 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
     setUrlInput("");
     setFetchError("");
     setScoreError("");
+    setDismissedItems([]);
+    setRescoreError("");
     onReset();
+  }
+
+  function handleDismissItem(item: string) {
+    setDismissedItems((prev) => [...prev, item]);
+    setRescoreError("");
+  }
+
+  async function handleRescore() {
+    const jd = jdText.trim() || jobDescription;
+    if (!jd || !profileText || dismissedItems.length === 0) return;
+    setIsRescoring(true);
+    setRescoreError("");
+    try {
+      const response = await fetch("/api/score-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, dismissedItems }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
+      } else {
+        setDismissedItems([]);
+        onJobFitUpdated(data as JobFitResult);
+      }
+    } catch {
+      setRescoreError("Network error. Check your connection and try again.");
+    } finally {
+      setIsRescoring(false);
+    }
   }
 
   const recStyle = result
@@ -295,14 +332,62 @@ export default function JobFitScorer({ profileText, result, onJobScored, onReset
               <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
                 What&apos;s Missing
               </p>
-              <ul className="space-y-2">
-                {result.whats_missing.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
-                    <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              {result.whats_missing.filter((item) => !dismissedItems.includes(item)).length === 0 ? (
+                <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {result.whats_missing
+                    .filter((item) => !dismissedItems.includes(item))
+                    .map((item, i) => (
+                      <li key={i} className="flex items-start justify-between gap-2 group">
+                        <div className="flex items-start gap-2.5 text-base text-brand-text/80">
+                          <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                          {item}
+                        </div>
+                        <button
+                          onClick={() => handleDismissItem(item)}
+                          title="Dismiss — I actually have this"
+                          className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full text-brand-text/20 hover:text-brand-text/60 hover:bg-brand-text/8 transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                          </svg>
+                        </button>
+                      </li>
+                    ))}
+                </ul>
+              )}
+
+              {/* Re-score controls */}
+              {dismissedItems.length > 0 && !isRescoring && (
+                <div className="mt-4 pt-4 border-t border-brand-text/8">
+                  <p className="text-sm text-brand-text/40 mb-3">
+                    {dismissedItems.length} item{dismissedItems.length > 1 ? "s" : ""} dismissed. Re-score to update your fit assessment and prep.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleRescore}
+                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                    >
+                      Re-score with corrections
+                    </button>
+                    <button
+                      onClick={() => setDismissedItems([])}
+                      className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                    >
+                      Undo
+                    </button>
+                  </div>
+                  {rescoreError && (
+                    <p className="mt-2 text-sm text-status-stretch">{rescoreError}</p>
+                  )}
+                </div>
+              )}
+              {isRescoring && (
+                <div className="mt-4 pt-4 border-t border-brand-text/8">
+                  <LoadingState message="Re-scoring with your corrections..." />
+                </div>
+              )}
             </div>
           </div>
 

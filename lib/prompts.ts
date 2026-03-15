@@ -35,7 +35,16 @@ Rules:
 }
 
 // Session 3: Job fit scoring prompt
-export function buildJobFitPrompt(resumeText: string, jobDescription: string): string {
+export function buildJobFitPrompt(
+  resumeText: string,
+  jobDescription: string,
+  dismissedItems?: string[]
+): string {
+  const correctionBlock =
+    dismissedItems && dismissedItems.length > 0
+      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications. Do NOT include these in whats_missing under any circumstances:\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
+      : "";
+
   return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description honestly.
 
 Candidate Resume:
@@ -47,7 +56,7 @@ Job Description:
 <job_description>
 ${jobDescription}
 </job_description>
-
+${correctionBlock}
 Return this exact JSON structure — nothing else:
 {
   "overall_fit": <integer 1-10>,

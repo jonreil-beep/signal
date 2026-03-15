@@ -235,6 +235,29 @@ export default function Home() {
   }
 
   // ── Job tracking ──
+
+  // Called when user dismisses false-positive "What's Missing" items and re-scores.
+  // Updates the existing tracked job in place rather than creating a new one.
+  async function handleJobFitUpdated(result: JobFitResult) {
+    setJobFitResult(result);
+    setTailoringResult(null);
+    if (activeJobId) {
+      setTrackedJobs((prev) =>
+        prev.map((j) =>
+          j.id === activeJobId
+            ? { ...j, jobFitResult: result, tailoringResult: null, outreachResult: null, coverLetterResult: null, resumeUpdateResult: null }
+            : j
+        )
+      );
+      if (user) {
+        await supabase
+          .from("tracked_jobs")
+          .update({ job_fit_result: result, tailoring_result: null, outreach_result: null, cover_letter_result: null, resume_update_result: null })
+          .eq("id", activeJobId);
+      }
+    }
+  }
+
   async function handleJobScored(jd: string, result: JobFitResult) {
     const id = crypto.randomUUID();
     const label = extractJobTitle(jd, trackedJobs.length + 1);
@@ -698,8 +721,10 @@ export default function Home() {
                 )}
                 <JobFitScorer
                   profileText={profileText}
+                  jobDescription={jobDescription}
                   result={jobFitResult}
                   onJobScored={handleJobScored}
+                  onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}
                   onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
                 />
