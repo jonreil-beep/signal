@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { TrackedJob, ApplicationStatus } from "@/types";
 import JobLabelEditor from "./JobLabelEditor";
 
@@ -44,6 +45,108 @@ function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(date));
 }
 
+
+interface JobCardProps {
+  job: TrackedJob;
+  onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
+  onRemoveJob: (id: string) => void;
+  onRenameJob: (id: string, newLabel: string) => void;
+  onStatusChange: (id: string, status: ApplicationStatus) => void;
+}
+
+function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange }: JobCardProps) {
+  const [showJD, setShowJD] = useState(false);
+  const recStyle =
+    RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
+    { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
+  const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
+
+  return (
+    <div
+      onClick={() => onSelectJob(job, "job-fit")}
+      className="bg-white rounded-2xl p-5 shadow cursor-pointer hover:shadow-md transition-shadow"
+    >
+      {/* Title row */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
+          <JobLabelEditor id={job.id} label={job.label} onRename={onRenameJob} />
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); onRemoveJob(job.id); }}
+          className="shrink-0 text-brand-text/20 hover:text-brand-text/50 transition-colors text-lg leading-none mt-0.5"
+          aria-label="Remove job"
+        >
+          ×
+        </button>
+      </div>
+
+      {/* Score + recommendation + date */}
+      <div className="flex items-center gap-2 mt-2 flex-wrap">
+        <span className={`text-xl font-bold tabular-nums ${scoreColor(job.jobFitResult.overall_fit)}`}>
+          {job.jobFitResult.overall_fit}
+          <span className="text-sm font-normal text-brand-text/40">/10</span>
+        </span>
+        <span className="text-brand-text/20">·</span>
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-full ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
+          {job.jobFitResult.recommendation}
+        </span>
+        <span className="text-brand-text/20">·</span>
+        <span className="text-xs text-brand-text/40">{formatDate(job.scoredAt)}</span>
+        {job.tailoringResult && (
+          <>
+            <span className="text-brand-text/20">·</span>
+            <span className="text-xs text-status-apply font-medium">Prep ready</span>
+          </>
+        )}
+      </div>
+
+      {/* Status + actions row */}
+      <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
+        <select
+          value={job.applicationStatus}
+          onChange={(e) => {
+            e.stopPropagation();
+            onStatusChange(job.id, e.target.value as ApplicationStatus);
+          }}
+          onClick={(e) => e.stopPropagation()}
+          className={`text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none ${statusStyle.bg} ${statusStyle.text}`}
+        >
+          {APPLICATION_STATUSES.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowJD((v) => !v); }}
+            className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
+          >
+            {showJD ? "Hide JD" : "View JD"}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onSelectJob(job, "tailoring-brief"); }}
+            className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+          >
+            View Prep →
+          </button>
+        </div>
+      </div>
+
+      {/* Expandable JD */}
+      {showJD && (
+        <div className="mt-4 pt-4 border-t border-brand-text/8" onClick={(e) => e.stopPropagation()}>
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">
+            Job Description
+          </p>
+          <div className="max-h-56 overflow-y-auto rounded-xl bg-brand-text/3 p-3.5">
+            <pre className="text-xs text-brand-text/60 whitespace-pre-wrap font-mono leading-relaxed">
+              {job.jobDescription}
+            </pre>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
   if (jobs.length === 0) {
@@ -115,77 +218,16 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
 
   return (
     <div className="space-y-3">
-      {jobs.map((job) => {
-        const recStyle =
-          RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
-          { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
-        const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
-
-        return (
-          <div
-            key={job.id}
-            onClick={() => onSelectJob(job, "job-fit")}
-            className="bg-white rounded-2xl p-5 shadow cursor-pointer hover:shadow-md transition-shadow"
-          >
-            {/* Title row */}
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
-                <JobLabelEditor id={job.id} label={job.label} onRename={onRenameJob} />
-              </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); onRemoveJob(job.id); }}
-                className="shrink-0 text-brand-text/20 hover:text-brand-text/50 transition-colors text-lg leading-none mt-0.5"
-                aria-label="Remove job"
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Score + recommendation + date */}
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              <span className={`text-xl font-bold tabular-nums ${scoreColor(job.jobFitResult.overall_fit)}`}>
-                {job.jobFitResult.overall_fit}
-                <span className="text-sm font-normal text-brand-text/40">/10</span>
-              </span>
-              <span className="text-brand-text/20">·</span>
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
-                {job.jobFitResult.recommendation}
-              </span>
-              <span className="text-brand-text/20">·</span>
-              <span className="text-xs text-brand-text/40">{formatDate(job.scoredAt)}</span>
-              {job.tailoringResult && (
-                <>
-                  <span className="text-brand-text/20">·</span>
-                  <span className="text-xs text-status-apply font-medium">Prep ready</span>
-                </>
-              )}
-            </div>
-
-            {/* Status + secondary action row */}
-            <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
-              <select
-                value={job.applicationStatus}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  onStatusChange(job.id, e.target.value as ApplicationStatus);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className={`text-xs font-medium px-2.5 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none ${statusStyle.bg} ${statusStyle.text}`}
-              >
-                {APPLICATION_STATUSES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-              <button
-                onClick={() => onSelectJob(job, "tailoring-brief")}
-                className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
-              >
-                View Prep →
-              </button>
-            </div>
-          </div>
-        );
-      })}
+      {jobs.map((job) => (
+        <JobCard
+          key={job.id}
+          job={job}
+          onSelectJob={onSelectJob}
+          onRemoveJob={onRemoveJob}
+          onRenameJob={onRenameJob}
+          onStatusChange={onStatusChange}
+        />
+      ))}
     </div>
   );
 }
