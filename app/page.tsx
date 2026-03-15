@@ -208,7 +208,12 @@ export default function Home() {
     });
     setSendingMagicLink(false);
     if (error) {
-      setMagicLinkError(error.message);
+      const msg = error.message.toLowerCase();
+      if (msg.includes("rate") || msg.includes("too many")) {
+        setMagicLinkError("Too many sign-in emails sent to this address. Please wait a few minutes, then try again or use a different email.");
+      } else {
+        setMagicLinkError("Something went wrong sending the email. Please try again.");
+      }
     } else {
       setMagicLinkSent(true);
     }
@@ -599,22 +604,27 @@ export default function Home() {
                     Sign up with email to save your resume, job scores, and prep guides across sessions and devices.
                   </p>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                    className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent"
-                  />
-                  <button
-                    onClick={handleSendMagicLink}
-                    disabled={sendingMagicLink || !email.trim()}
-                    className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                  >
-                    {sendingMagicLink ? "Sending…" : "Save my progress"}
-                  </button>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
+                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent"
+                    />
+                    <button
+                      onClick={handleSendMagicLink}
+                      disabled={sendingMagicLink || !email.trim()}
+                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {sendingMagicLink ? "Sending…" : "Save my progress"}
+                    </button>
+                  </div>
+                  {magicLinkError && (
+                    <p className="text-xs text-red-500 max-w-xs">{magicLinkError}</p>
+                  )}
                 </div>
               </div>
             ) : (
