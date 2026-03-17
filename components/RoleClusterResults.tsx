@@ -107,14 +107,22 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
             Positioning Risks
           </p>
           <ul className="space-y-4">
-            {result.positioning_risks.map((r, i) => (
-              <li key={i}>
-                <p className="text-base text-brand-text/80 leading-snug">{r.risk}</p>
-                <p className="text-sm text-brand-accent mt-1 leading-snug">
-                  ↳ {r.what_to_do}
-                </p>
-              </li>
-            ))}
+            {result.positioning_risks.map((r, i) => {
+              // Support legacy format where risks were plain strings
+              const isLegacy = typeof r === "string";
+              const riskText = isLegacy ? (r as unknown as string) : r.risk;
+              const actionText = isLegacy ? null : r.what_to_do;
+              return (
+                <li key={i}>
+                  <p className="text-base text-brand-text/80 leading-snug">{riskText}</p>
+                  {actionText && (
+                    <p className="text-sm text-brand-accent mt-1 leading-snug">
+                      ↳ {actionText}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

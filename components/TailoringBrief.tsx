@@ -174,6 +174,27 @@ function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
   );
 }
 
+// Handles data saved before the provenance schema change (overview/red_flags/questions → new shape)
+type LegacyCompanyResearch = CompanyResearchResult & {
+  overview?: string;
+  red_flags?: string[];
+  questions?: { question: string; why?: string }[];
+};
+function normalizeCompanyResearch(raw: CompanyResearchResult): CompanyResearchResult {
+  const r = raw as LegacyCompanyResearch;
+  return {
+    ...raw,
+    what_we_know: raw.what_we_know ?? { summary: r.overview ?? "", sources: "Prior knowledge" },
+    what_we_re_reading: raw.what_we_re_reading ?? [],
+    red_flags_to_probe: raw.red_flags_to_probe ?? (r.red_flags ?? []).map((f) => ({ flag: f, how_to_probe: "" })),
+    questions_to_test: raw.questions_to_test ?? (r.questions ?? []).map((q) => ({
+      question: q.question,
+      what_youre_probing: q.why ?? "",
+    })),
+    culture_signals: raw.culture_signals ?? [],
+  };
+}
+
 export default function TailoringBrief({
   profileText,
   jobDescription,
@@ -210,6 +231,9 @@ export default function TailoringBrief({
   const [followUpError, setFollowUpError] = useState<string>("");
   const [isGeneratingCompanyResearch, setIsGeneratingCompanyResearch] = useState(false);
   const [companyResearchError, setCompanyResearchError] = useState<string>("");
+
+  // Normalize legacy company research data to current schema shape
+  const cr = companyResearchResult ? normalizeCompanyResearch(companyResearchResult) : null;
 
   if (!profileText) {
     return (
@@ -395,7 +419,7 @@ export default function TailoringBrief({
   function handleExport() {
     const lines: string[] = [];
     const sep = "─".repeat(60);
-    const displayName = companyResearchResult?.company_name ?? jobLabel ?? "Prep Guide";
+    const displayName = cr?.company_name ?? jobLabel ?? "Prep Guide";
 
     lines.push("SIGNAL — PREP GUIDE");
     lines.push(displayName);
@@ -404,39 +428,39 @@ export default function TailoringBrief({
     );
     lines.push("");
 
-    if (companyResearchResult) {
+    if (cr) {
       lines.push(sep);
       lines.push("COMPANY RESEARCH");
       lines.push(sep);
       lines.push("");
-      lines.push(`Company: ${companyResearchResult.company_name}`);
-      lines.push(`Source confidence: ${companyResearchResult.what_we_know.sources}`);
+      lines.push(`Company: ${cr.company_name}`);
+      lines.push(`Source confidence: ${cr.what_we_know.sources}`);
       lines.push("");
       lines.push("What We Know");
-      lines.push(companyResearchResult.what_we_know.summary);
+      lines.push(cr.what_we_know.summary);
       lines.push("");
-      if (companyResearchResult.caveat) {
-        lines.push(`Note: ${companyResearchResult.caveat}`);
+      if (cr.caveat) {
+        lines.push(`Note: ${cr.caveat}`);
         lines.push("");
       }
-      if (companyResearchResult.what_we_re_reading.length > 0) {
+      if (cr.what_we_re_reading.length > 0) {
         lines.push("What We're Reading (Interpretation)");
-        companyResearchResult.what_we_re_reading.forEach((s) => lines.push(`• ${s}`));
+        cr.what_we_re_reading.forEach((s) => lines.push(`• ${s}`));
         lines.push("");
       }
       lines.push("Culture Signals");
-      companyResearchResult.culture_signals.forEach((s) => lines.push(`• ${s}`));
+      cr.culture_signals.forEach((s) => lines.push(`• ${s}`));
       lines.push("");
-      if (companyResearchResult.red_flags_to_probe.length > 0) {
+      if (cr.red_flags_to_probe.length > 0) {
         lines.push("Worth Probing");
-        companyResearchResult.red_flags_to_probe.forEach((f) => {
+        cr.red_flags_to_probe.forEach((f) => {
           lines.push(`• ${f.flag}`);
           lines.push(`  How to probe: ${f.how_to_probe}`);
         });
         lines.push("");
       }
       lines.push("Questions to Test");
-      companyResearchResult.questions_to_test.forEach((q) => {
+      cr.questions_to_test.forEach((q) => {
         lines.push(`Q: ${q.question}`);
         lines.push(`   Probing: ${q.what_youre_probing}`);
       });
@@ -783,28 +807,28 @@ export default function TailoringBrief({
           hasResult={!!companyResearchResult}
           error={companyResearchError}
         >
-          {companyResearchResult && (
+          {cr && (
             <>
               {/* ── What we know ── */}
               <div>
                 <div className="flex items-center justify-between gap-3 mb-2">
-                  <p className="text-base font-semibold text-brand-text">{companyResearchResult.company_name}</p>
+                  <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
                   <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
-                    {companyResearchResult.what_we_know.sources}
+                    {cr.what_we_know.sources}
                   </span>
                 </div>
-                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.what_we_know.summary}</p>
+                <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
               </div>
 
               {/* Limited data caveat */}
-              {companyResearchResult.caveat && (
+              {cr.caveat && (
                 <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
-                  <p className="text-sm text-status-stretch leading-snug">{companyResearchResult.caveat}</p>
+                  <p className="text-sm text-status-stretch leading-snug">{cr.caveat}</p>
                 </div>
               )}
 
               {/* ── What we're reading ── */}
-              {companyResearchResult.what_we_re_reading.length > 0 && (
+              {cr.what_we_re_reading.length > 0 && (
                 <div className="border-t border-brand-text/8 pt-6">
                   <div className="flex items-center gap-2 mb-3">
                     <SubHeading label="What We're Reading" />
@@ -813,7 +837,7 @@ export default function TailoringBrief({
                     </span>
                   </div>
                   <ul className="space-y-2">
-                    {companyResearchResult.what_we_re_reading.map((item, i) => (
+                    {cr.what_we_re_reading.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
                         <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
                         {item}
@@ -824,11 +848,11 @@ export default function TailoringBrief({
               )}
 
               {/* ── Culture signals ── */}
-              {companyResearchResult.culture_signals.length > 0 && (
+              {cr.culture_signals.length > 0 && (
                 <div className="border-t border-brand-text/8 pt-6">
                   <SubHeading label="Culture Signals" />
                   <ul className="space-y-1.5">
-                    {companyResearchResult.culture_signals.map((s, i) => (
+                    {cr.culture_signals.map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
                         <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
                         {s}
@@ -839,11 +863,11 @@ export default function TailoringBrief({
               )}
 
               {/* ── Red flags ── */}
-              {companyResearchResult.red_flags_to_probe.length > 0 && (
+              {cr.red_flags_to_probe.length > 0 && (
                 <div className="border-t border-brand-text/8 pt-6">
                   <SubHeading label="Worth Probing" />
                   <div className="space-y-3">
-                    {companyResearchResult.red_flags_to_probe.map((f, i) => (
+                    {cr.red_flags_to_probe.map((f, i) => (
                       <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
                         <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
                         <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
@@ -857,12 +881,12 @@ export default function TailoringBrief({
               <div className="border-t border-brand-text/8 pt-6">
                 <SubHeading
                   label="Questions to Test"
-                  copyText={companyResearchResult.questions_to_test
+                  copyText={cr.questions_to_test
                     .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
                     .join("\n\n")}
                 />
                 <div className="space-y-4">
-                  {companyResearchResult.questions_to_test.map((q, i) => (
+                  {cr.questions_to_test.map((q, i) => (
                     <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
                       <p className="text-base font-medium text-brand-text">{q.question}</p>
                       <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
