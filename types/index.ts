@@ -53,6 +53,8 @@ export interface DimensionScore {
   reasoning: string;
 }
 
+export type MismatchType = "title" | "comp" | "scope" | "domain" | "functional";
+
 export interface JobFitResult {
   overall_fit: number;
   summary: string;
@@ -62,10 +64,11 @@ export interface JobFitResult {
     industry_fit: DimensionScore;
     keyword_overlap: DimensionScore;
   };
+  mismatch_types: MismatchType[]; // what kind of gap is driving a lower score
   what_she_has: string[];
   whats_missing: string[];
   recommendation: "Apply Now" | "Apply with Tailoring" | "Stretch — Proceed Carefully" | "Skip";
-  recruiter_concern?: string;
+  recruiter_concern: string; // required — "None identified" if no concern
 }
 
 export interface LeadStrength {

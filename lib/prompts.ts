@@ -98,14 +98,23 @@ Return this exact JSON structure — nothing else:
     "industry_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
     "keyword_overlap": { "score": <1-10>, "reasoning": "Brief explanation" }
   },
+  "mismatch_types": ["title" | "comp" | "scope" | "domain" | "functional"],
   "what_she_has": ["specific match from resume to JD", "..."],
   "whats_missing": ["specific gap or ambiguity hiring team will notice", "..."],
   "recommendation": "Apply Now | Apply with Tailoring | Stretch — Proceed Carefully | Skip",
-  "recruiter_concern": "Optional: most likely red flag, or null"
+  "recruiter_concern": "The most likely red flag a recruiter would raise — be specific. Use 'None identified' only if there is genuinely no concern."
 }
 
 Rules:
 - Be decisive on the recommendation — don't hedge it
+- mismatch_types: only include types that actually apply. Can be an empty array for strong fits.
+  - "title": candidate's title/level is mismatched (overqualified or underqualified by title)
+  - "comp": likely compensation expectation gap based on seniority
+  - "scope": role is materially narrower or broader than candidate's experience
+  - "domain": wrong industry or sector — market may not see the skills as transferable
+  - "functional": wrong function or core skillset — not just a gap but a different job type
+- If overall_fit is below 7, mismatch_types should be non-empty — identify what's driving the gap
+- recruiter_concern: required, never null. A sharp, specific concern — not a softened generality
 - Use "likely" and "appears to" when drawing inferences from the JD rather than stating facts
 - 'What's missing' must be honest and specific, not softened
 - Scores below 5 are valid and sometimes correct

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import LoadingState from "./LoadingState";
-import type { JobFitResult } from "@/types";
+import type { JobFitResult, MismatchType } from "@/types";
 
 interface JobFitScorerProps {
   profileText: string;
@@ -21,6 +21,14 @@ const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: st
   "Apply with Tailoring":       { bg: "bg-status-tailor/10",  text: "text-status-tailor",  ring: "ring-status-tailor/25"  },
   "Stretch — Proceed Carefully":{ bg: "bg-status-stretch/10", text: "text-status-stretch", ring: "ring-status-stretch/25" },
   "Skip":                       { bg: "bg-status-skip/10",    text: "text-status-skip",    ring: "ring-status-skip/25"    },
+};
+
+const MISMATCH_LABELS: Record<MismatchType, string> = {
+  title:      "Title mismatch",
+  comp:       "Comp gap likely",
+  scope:      "Scope mismatch",
+  domain:     "Domain mismatch",
+  functional: "Functional mismatch",
 };
 
 function scoreColor(score: number) {
@@ -291,6 +299,16 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
                 <p className="text-base text-white/50 mt-2 leading-snug max-w-sm">
                   {result.summary}
                 </p>
+                {/* Mismatch type pills */}
+                {result.mismatch_types?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {result.mismatch_types.map((t) => (
+                      <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
+                        {MISMATCH_LABELS[t]}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
                 {result.recommendation}
@@ -309,25 +327,41 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
           )}
 
           {/* Dimensions */}
-          <div className="bg-white rounded-2xl p-5 shadow">
-            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-4">
-              Dimension Scores
-            </p>
-            <div className="space-y-4">
-              {([
-                ["Functional Fit",  result.dimensions.functional_fit],
-                ["Seniority Fit",   result.dimensions.seniority_fit],
-                ["Industry Fit",    result.dimensions.industry_fit],
-                ["Keyword Overlap", result.dimensions.keyword_overlap],
-              ] as const).map(([label, dim]) => (
-                <div key={label}>
-                  <p className="text-base font-medium text-brand-text/80 mb-1.5">{label}</p>
-                  <ScoreBar score={dim.score} />
-                  <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{dim.reasoning}</p>
+          {(() => {
+            const dims = [
+              ["Functional Fit",  result.dimensions.functional_fit],
+              ["Seniority Fit",   result.dimensions.seniority_fit],
+              ["Industry Fit",    result.dimensions.industry_fit],
+              ["Keyword Overlap", result.dimensions.keyword_overlap],
+            ] as const;
+            const lowestScore = Math.min(...dims.map(([, d]) => d.score));
+            return (
+              <div className="bg-white rounded-2xl p-5 shadow">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-4">
+                  What Drove This Score
+                </p>
+                <div className="space-y-4">
+                  {dims.map(([label, dim]) => {
+                    const isWeakest = dim.score === lowestScore;
+                    return (
+                      <div key={label} className={isWeakest ? "rounded-xl bg-status-stretch/5 ring-1 ring-status-stretch/15 p-3 -mx-3" : ""}>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <p className={`text-base font-medium ${isWeakest ? "text-brand-text" : "text-brand-text/80"}`}>{label}</p>
+                          {isWeakest && (
+                            <span className="text-[0.65rem] font-semibold uppercase tracking-[0.07em] text-status-stretch">
+                              Pulling score down
+                            </span>
+                          )}
+                        </div>
+                        <ScoreBar score={dim.score} />
+                        <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{dim.reasoning}</p>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })()}
 
           {/* What you have / Missing */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
