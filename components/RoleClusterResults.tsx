@@ -113,13 +113,16 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
               const riskText = isLegacy ? (r as unknown as string) : r.risk;
               const actionText = isLegacy ? null : r.what_to_do;
               return (
-                <li key={i}>
-                  <p className="text-base text-brand-text/80 leading-snug">{riskText}</p>
-                  {actionText && (
-                    <p className="text-sm text-brand-accent mt-1 leading-snug">
-                      ↳ {actionText}
-                    </p>
-                  )}
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                  <div>
+                    <p className="text-base text-brand-text/80 leading-snug">{riskText}</p>
+                    {actionText && (
+                      <p className="text-sm text-brand-accent mt-1 leading-snug">
+                        ↳ {actionText}
+                      </p>
+                    )}
+                  </div>
                 </li>
               );
             })}
