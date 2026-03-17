@@ -63,6 +63,12 @@ export default function Home() {
   const [profileText, setProfileText] = useState<string>("");
   const [writingSample, setWritingSample] = useState<string>("");
   const [pivotTarget, setPivotTarget] = useState<string>("");
+  const [resumeSource, setResumeSource] = useState<"paste" | "file" | null>(null);
+  const [resumeFileName, setResumeFileName] = useState<string>("");
+  const [savedProfileSnapshot, setSavedProfileSnapshot] = useState<{
+    resumeText: string; writingSample: string; pivotTarget: string;
+  } | null>(null);
+  const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -141,6 +147,69 @@ export default function Home() {
     }
   }, [profileUpdatedAt, sessionRestored]);
 
+  // ── localStorage: load profile fields, snapshot, and JD on mount ──
+  useEffect(() => {
+    try {
+      const savedProfile = localStorage.getItem("signal_profile");
+      if (savedProfile) {
+        const p = JSON.parse(savedProfile) as {
+          resumeText?: string | null;
+          writingSample?: string;
+          pivotTarget?: string;
+          fromFile?: boolean;
+          fileName?: string;
+        };
+        if (p.writingSample) setWritingSample(p.writingSample);
+        if (p.pivotTarget) setPivotTarget(p.pivotTarget);
+        if (!p.fromFile && p.resumeText) {
+          setProfileText(p.resumeText);
+          setResumeSource("paste");
+        } else if (p.fromFile) {
+          setResumeSource("file");
+          setResumeFileName(p.fileName ?? "");
+        }
+      }
+      const savedSnapshot = localStorage.getItem("signal_profile_snapshot");
+      if (savedSnapshot) setSavedProfileSnapshot(JSON.parse(savedSnapshot));
+      const savedJD = localStorage.getItem("signal_jd");
+      if (savedJD) {
+        const j = JSON.parse(savedJD) as { jobDescription?: string };
+        if (j.jobDescription) setJobDescription(j.jobDescription);
+      }
+    } catch { /* ignore parse errors */ }
+    setLocalStorageLoaded(true);
+  }, []);
+
+  // ── localStorage: persist profile fields when they change ──
+  useEffect(() => {
+    if (!localStorageLoaded) return;
+    try {
+      localStorage.setItem("signal_profile", JSON.stringify({
+        resumeText: resumeSource !== "file" ? profileText : null,
+        writingSample,
+        pivotTarget,
+        fromFile: resumeSource === "file",
+        fileName: resumeFileName,
+      }));
+    } catch { /* ignore quota errors */ }
+  }, [profileText, writingSample, pivotTarget, resumeSource, resumeFileName, localStorageLoaded]);
+
+  // ── localStorage: persist JD field when it changes ──
+  useEffect(() => {
+    if (!localStorageLoaded) return;
+    try {
+      localStorage.setItem("signal_jd", JSON.stringify({ jobDescription }));
+    } catch { /* ignore quota errors */ }
+  }, [jobDescription, localStorageLoaded]);
+
+  // ── Initialize snapshot when a cluster result exists but no saved snapshot ──
+  // Covers the case where the user refreshed and localStorage snapshot was cleared
+  useEffect(() => {
+    if (!localStorageLoaded || !clusterResult || savedProfileSnapshot || !profileText) return;
+    setSavedProfileSnapshot({ resumeText: profileText, writingSample, pivotTarget });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clusterResult, localStorageLoaded]);
+
   // ── Handle browser back/forward navigation ──
   useEffect(() => {
     function handlePopState(event: PopStateEvent) {
@@ -198,6 +267,7 @@ export default function Home() {
 
     if (profileRes.data?.resume_text) {
       setProfileText(profileRes.data.resume_text);
+      setResumeSource("paste"); // text from Supabase is treated as pasted (safe to persist)
     }
     if (profileRes.data?.cluster_result) {
       setClusterResult(profileRes.data.cluster_result as RoleClusterResult);
@@ -246,6 +316,9 @@ export default function Home() {
     setProfileText("");
     setWritingSample("");
     setPivotTarget("");
+    setResumeSource(null);
+    setResumeFileName("");
+    setSavedProfileSnapshot(null);
     setClusterResult(null);
     setHeadlineResult(null);
     setHeadlineError("");
@@ -265,6 +338,9 @@ export default function Home() {
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
     sessionStorage.removeItem("signal-profile-updated-at");
+    localStorage.removeItem("signal_profile");
+    localStorage.removeItem("signal_profile_snapshot");
+    localStorage.removeItem("signal_jd");
   }
 
   async function handleSignOut() {
@@ -294,12 +370,17 @@ export default function Home() {
   }
 
   // ── Profile ──
-  async function handleProfileConfirmed(text: string) {
+  async function handleProfileConfirmed(text: string, source: "paste" | "file", fileName?: string) {
     // If a profile already exists and there are scored jobs, mark as updated so job cards show staleness
     if (profileText && trackedJobs.length > 0) {
       setProfileUpdatedAt(new Date());
     }
     setProfileText(text);
+    setResumeSource(source);
+    setResumeFileName(fileName ?? "");
+    // Resume text changed — clear snapshot so button shows "Analyze Profile" ready state
+    setSavedProfileSnapshot(null);
+    localStorage.removeItem("signal_profile_snapshot");
     setClusterResult(null);
     setAnalyzeError("");
     setHeadlineResult(null);
@@ -326,6 +407,9 @@ export default function Home() {
         setAnalyzeError(data.error ?? "Analysis failed. Please try again.");
       } else {
         setClusterResult(data as RoleClusterResult);
+        const snapshot = { resumeText: profileText, writingSample, pivotTarget };
+        setSavedProfileSnapshot(snapshot);
+        try { localStorage.setItem("signal_profile_snapshot", JSON.stringify(snapshot)); } catch { /* ignore */ }
         if (user) {
           await supabase.from("profiles").update({ cluster_result: data }).eq("id", user.id);
         }
@@ -860,10 +944,17 @@ export default function Home() {
               <div className="rounded-2xl bg-white p-5 shadow">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-base font-semibold text-brand-text">Resume saved</p>
+                    <p className="text-base font-semibold text-brand-text">
+                      {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
+                    </p>
                     <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
                       {profileText.slice(0, 240)}…
                     </p>
+                    {!user && resumeSource === "file" && (
+                      <p className="mt-2 text-xs text-brand-text/40">
+                        Uploaded from file — re-upload if you refresh the page.
+                      </p>
+                    )}
                   </div>
                   <button
                     onClick={() => setUpdatingProfile(true)}
@@ -930,28 +1021,46 @@ export default function Home() {
               </div>
             )}
 
-            {profileText && !updatingProfile && !isAnalyzing && (
-              <div className="mt-6 pt-6 border-t border-brand-text/8">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-brand-text">
-                      {clusterResult ? "Analysis complete" : "Ready to analyze"}
-                    </p>
-                    <p className="text-sm text-brand-text/40 mt-0.5">
-                      {clusterResult
-                        ? "Re-run anytime to refresh."
-                        : "Signal will map your best-fit roles, strengths, and risks."}
-                    </p>
+            {profileText && !updatingProfile && !isAnalyzing && (() => {
+              const hasProfileChanges = !!savedProfileSnapshot && (
+                profileText !== savedProfileSnapshot.resumeText ||
+                writingSample !== savedProfileSnapshot.writingSample ||
+                pivotTarget !== savedProfileSnapshot.pivotTarget
+              );
+              const canAnalyze = !savedProfileSnapshot || hasProfileChanges;
+              const buttonLabel = hasProfileChanges ? "Update Profile" : "Analyze Profile";
+              const statusLabel = !savedProfileSnapshot
+                ? "Ready to analyze"
+                : hasProfileChanges
+                ? "Profile updated"
+                : "Analysis up to date";
+              const statusSub = !savedProfileSnapshot
+                ? "Signal will map your best-fit roles, strengths, and risks."
+                : hasProfileChanges
+                ? "Click Update Profile to refresh your role analysis."
+                : "Re-run anytime to refresh.";
+              return (
+                <div className="mt-6 pt-6 border-t border-brand-text/8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-brand-text">{statusLabel}</p>
+                      <p className="text-sm text-brand-text/40 mt-0.5">{statusSub}</p>
+                    </div>
+                    <button
+                      onClick={canAnalyze ? handleAnalyze : undefined}
+                      disabled={!canAnalyze}
+                      className={`shrink-0 px-5 py-2.5 text-sm font-semibold rounded-2xl sm:rounded-full transition-colors ${
+                        canAnalyze
+                          ? "bg-brand-accent text-white hover:bg-brand-accent/90"
+                          : "bg-brand-text/8 text-brand-text/25 cursor-default"
+                      }`}
+                    >
+                      {buttonLabel}
+                    </button>
                   </div>
-                  <button
-                    onClick={handleAnalyze}
-                    className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                  >
-                    {clusterResult ? "Re-analyze" : "Analyze My Profile"}
-                  </button>
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {isAnalyzing && (
               <div className="mt-6 pt-6 border-t border-brand-text/8">

@@ -4,7 +4,7 @@ import { useState, useRef, ChangeEvent, DragEvent } from "react";
 import LoadingState from "./LoadingState";
 
 interface ProfileUploaderProps {
-  onProfileConfirmed: (text: string) => void;
+  onProfileConfirmed: (text: string, source: "paste" | "file", fileName?: string) => void;
 }
 
 type InputMode = "upload" | "paste";
@@ -81,7 +81,11 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
 
   function handleConfirm() {
     if (!activeText.trim()) return;
-    onProfileConfirmed(activeText.trim());
+    onProfileConfirmed(
+      activeText.trim(),
+      mode === "upload" ? "file" : "paste",
+      mode === "upload" ? fileName : undefined
+    );
     setConfirmed(true);
   }
 
