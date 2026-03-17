@@ -90,6 +90,7 @@ ${jobDescription}
 ${correctionBlock}
 Return this exact JSON structure — nothing else:
 {
+  "job_title": "Exact job title from the posting — e.g. 'Senior Product Manager, Growth'",
   "overall_fit": <integer 1-10>,
   "summary": "One sentence honest assessment",
   "dimensions": {

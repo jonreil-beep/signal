@@ -386,7 +386,7 @@ export default function Home() {
 
   async function handleJobScored(jd: string, result: JobFitResult) {
     const id = crypto.randomUUID();
-    const label = extractJobTitle(jd, trackedJobs.length + 1);
+    const label = result.job_title?.trim() || extractJobTitle(jd, trackedJobs.length + 1);
     const newJob: TrackedJob = {
       id,
       label,

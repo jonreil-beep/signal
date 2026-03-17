@@ -56,6 +56,7 @@ export interface DimensionScore {
 export type MismatchType = "title" | "comp" | "scope" | "domain" | "functional";
 
 export interface JobFitResult {
+  job_title: string; // extracted from JD — e.g. "Senior Product Manager, Growth"
   overall_fit: number;
   summary: string;
   dimensions: {
