@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
 import { buildCompanyResearchPrompt } from "@/lib/prompts";
+import { createClient } from "@/lib/supabase/server";
+import { checkAndLogUsage } from "@/lib/checkUsage";
 import type { CompanyResearchResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -8,6 +10,19 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+    const { allowed } = await checkAndLogUsage(user.id, "/api/company-research");
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You've reached today's limit for company research. Come back tomorrow." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { jobDescription } = body as { jobDescription?: string };
 

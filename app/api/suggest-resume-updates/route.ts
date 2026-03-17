@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
 import { buildResumeUpdatePrompt } from "@/lib/prompts";
+import { createClient } from "@/lib/supabase/server";
+import { checkAndLogUsage } from "@/lib/checkUsage";
 import type { ResumeUpdateResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -8,6 +10,19 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+    const { allowed } = await checkAndLogUsage(user.id, "/api/suggest-resume-updates");
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You've reached today's limit for resume suggestions. Come back tomorrow." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { resumeText, jobDescription } = body as {
       resumeText?: string;

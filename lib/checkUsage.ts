@@ -1,10 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 
 const DAILY_LIMITS: Record<string, number> = {
-  "/api/cluster-roles": 3,
-  "/api/score-job": 10,
-  "/api/tailor": 10,
-  "/api/fetch-jd": 20,
+  "/api/cluster-roles":        3,
+  "/api/score-job":           10,
+  "/api/tailor":              10,
+  "/api/fetch-jd":            20,
+  "/api/generate-cover-letter": 10,
+  "/api/generate-outreach":   10,
+  "/api/interview-prep":      10,
+  "/api/follow-up":           10,
+  "/api/company-research":    10,
+  "/api/suggest-resume-updates": 10,
+  "/api/linkedin-headline":   10,
 };
 
 export async function checkAndLogUsage(
