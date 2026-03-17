@@ -86,7 +86,7 @@ export default function HowItWorksCTA() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          className="flex-1 px-4 py-3 border border-brand-text/15 rounded-2xl sm:rounded-full text-base bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent"
+          className="flex-1 px-4 py-3 border border-brand-text/15 rounded-2xl sm:rounded-full text-base bg-white focus:outline-none"
         />
         <button
           onClick={handleSend}

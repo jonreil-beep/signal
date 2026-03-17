@@ -171,7 +171,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onChange={(e) => { setPastedText(e.target.value); setConfirmed(false); }}
             placeholder="Paste the full text of your resume here…"
             rows={14}
-            className="w-full border border-brand-text/12 rounded-2xl p-4 text-sm text-brand-text font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent resize-y placeholder:text-brand-text/25 transition-shadow"
+            className="w-full border border-brand-text/12 rounded-2xl p-4 text-sm text-brand-text font-mono leading-relaxed bg-white focus:outline-none resize-y placeholder:text-brand-text/25 transition-shadow"
           />
         </div>
       )}

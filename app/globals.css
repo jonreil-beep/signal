@@ -18,6 +18,17 @@
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
   }
+
+  /* Strip all browser-default blue focus outlines globally */
+  *:focus {
+    outline: none;
+  }
+
+  /* Replace with a subtle on-brand outline only for keyboard nav */
+  *:focus-visible {
+    outline: 2px solid rgba(26, 26, 26, 0.2);
+    outline-offset: 2px;
+  }
 }
 
 @keyframes gradient-spin {

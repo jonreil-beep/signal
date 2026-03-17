@@ -292,7 +292,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-brand-text/12 rounded-2xl p-4 text-base text-brand-text font-mono leading-relaxed bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent resize-y placeholder:text-brand-text/25 transition-shadow"
+              className="w-full border border-brand-text/12 rounded-2xl p-4 text-base text-brand-text font-mono leading-relaxed bg-white focus:outline-none resize-y placeholder:text-brand-text/25 transition-shadow"
             />
           )}
 
@@ -306,7 +306,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
                   placeholder="https://…"
-                  className="flex-1 border border-brand-text/12 rounded-xl px-4 py-2.5 text-base bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent transition-shadow"
+                  className="flex-1 border border-brand-text/12 rounded-xl px-4 py-2.5 text-base bg-white focus:outline-none transition-shadow"
                 />
                 <button
                   onClick={handleFetchUrl}
@@ -435,7 +435,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Recruiter concern — shown immediately after overall fit when present */}
           {result.recruiter_concern && (
-            <div className="bg-status-tailor/10 rounded-2xl p-6 ring-2 ring-status-tailor/25 border-l-4 border-status-tailor">
+            <div className="bg-status-tailor/10 rounded-2xl p-6 border border-status-tailor/40">
               <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
                 ⚑ Recruiter Concern to Address
               </p>

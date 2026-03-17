@@ -889,7 +889,7 @@ export default function Home() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent"
+                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none"
                     />
                     <button
                       onClick={handleSendMagicLink}
