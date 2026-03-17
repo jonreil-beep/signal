@@ -1156,6 +1156,7 @@ export default function Home() {
               onCompanyResearchResultChange={handleCompanyResearchResult}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
+              isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
             />
           </div>
         )}

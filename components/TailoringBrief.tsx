@@ -42,6 +42,7 @@ interface TailoringBriefProps {
   onCompanyResearchResultChange: (result: CompanyResearchResult | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
+  isProfileStale?: boolean;
 }
 
 function CopyButton({ getText }: { getText: () => string }) {
@@ -235,6 +236,7 @@ export default function TailoringBrief({
   onCompanyResearchResultChange,
   onGoToProfile,
   onGoToJobFit,
+  isProfileStale,
 }: TailoringBriefProps) {
   const [prepSection, setPrepSection] = useState<PrepSection>("brief");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -702,6 +704,21 @@ export default function TailoringBrief({
           <p className="text-base text-red-700">{error}</p>
           <button onClick={handleGenerate} className="mt-1 text-sm text-red-500 underline hover:no-underline">
             Try again
+          </button>
+        </div>
+      )}
+
+      {/* ── Profile staleness banner ── */}
+      {isProfileStale && result && !isGenerating && (
+        <div className="flex items-center justify-between gap-3 px-4 py-3 bg-amber-50 rounded-xl ring-1 ring-amber-200">
+          <p className="text-sm text-amber-800 leading-snug">
+            Your profile was updated. Re-score this job first, then rebuild your prep guide so everything stays in sync.
+          </p>
+          <button
+            onClick={onGoToJobFit}
+            className="shrink-0 text-sm font-semibold text-amber-700 hover:text-amber-900 transition-colors whitespace-nowrap"
+          >
+            Re-score →
           </button>
         </div>
       )}
