@@ -4,6 +4,18 @@ import { useState } from "react";
 import LoadingState from "./LoadingState";
 import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult } from "@/types";
 
+type PrepSection = "brief" | "company" | "resume" | "cover-letter" | "outreach" | "interview" | "follow-up";
+
+const PREP_SECTIONS: { id: PrepSection; label: string }[] = [
+  { id: "brief", label: "Brief" },
+  { id: "company", label: "Company" },
+  { id: "resume", label: "Resume" },
+  { id: "cover-letter", label: "Cover Letter" },
+  { id: "outreach", label: "Outreach" },
+  { id: "interview", label: "Interview" },
+  { id: "follow-up", label: "Follow-up" },
+];
+
 interface TailoringBriefProps {
   profileText: string;
   jobDescription: string;
@@ -177,6 +189,7 @@ export default function TailoringBrief({
   onGoToProfile,
   onGoToJobFit,
 }: TailoringBriefProps) {
+  const [prepSection, setPrepSection] = useState<PrepSection>("brief");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -227,6 +240,7 @@ export default function TailoringBrief({
   async function handleGenerate() {
     setIsGenerating(true);
     setError("");
+    setPrepSection("brief");
     onOutreachResultChange(null);
     onCoverLetterResultChange(null);
     try {
@@ -559,17 +573,29 @@ export default function TailoringBrief({
     }
   }
 
+  const sectionHasContent: Record<PrepSection, boolean> = {
+    brief: !!result,
+    company: !!companyResearchResult,
+    resume: !!resumeUpdateResult,
+    "cover-letter": !!coverLetterResult,
+    outreach: !!outreachResult,
+    interview: !!interviewPrepResult,
+    "follow-up": !!followUpResult,
+  };
+
+  const hasAnyContent = Object.values(sectionHasContent).some(Boolean);
+
   return (
     <div className="space-y-4">
 
-      {/* ── Build Prep Guide button ── */}
+      {/* ── Header row: description + Export + Build button ── */}
       {!isGenerating && (
         <div className="flex items-center justify-between gap-3">
           <p className="text-base text-brand-text/40">
             {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
           </p>
           <div className="flex items-center gap-2 shrink-0">
-            {result && (
+            {hasAnyContent && (
               <button
                 onClick={handleExport}
                 className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
@@ -601,155 +627,199 @@ export default function TailoringBrief({
         </div>
       )}
 
-      {/* ── Company Research — available as soon as a JD is loaded ── */}
-      <ActionSection
-        title="Company Research"
-        description="What Signal knows about this company — culture signals, strategic context, and smart questions to ask."
-        buttonLabel="Research Company"
-        onAction={handleGenerateCompanyResearch}
-        isLoading={isGeneratingCompanyResearch}
-        loadingMessage="Researching the company…"
-        hasResult={!!companyResearchResult}
-        error={companyResearchError}
-      >
-        {companyResearchResult && (
-          <>
-            <div>
-              <p className="text-base font-semibold text-brand-text mb-1">{companyResearchResult.company_name}</p>
-              <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.business_overview}</p>
-            </div>
+      {/* ── Section pill strip ── */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {PREP_SECTIONS.map((s) => {
+          const isActive = prepSection === s.id;
+          const hasDot = sectionHasContent[s.id];
+          return (
+            <button
+              key={s.id}
+              onClick={() => setPrepSection(s.id)}
+              className={`flex items-center gap-1.5 shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-brand-text text-white"
+                  : "bg-brand-text/6 text-brand-text/60 hover:bg-brand-text/10 hover:text-brand-text/80"
+              }`}
+            >
+              {s.label}
+              {hasDot && (
+                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-white/60" : "bg-brand-accent"}`} />
+              )}
+            </button>
+          );
+        })}
+      </div>
 
-            {companyResearchResult.caveat && (
-              <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
-                <p className="text-sm text-status-stretch leading-snug">{companyResearchResult.caveat}</p>
+      {/* ── Section content ── */}
+
+      {/* Brief */}
+      {prepSection === "brief" && (
+        <div className="space-y-4">
+          {!result && !isGenerating && (
+            <div className="bg-white rounded-2xl p-8 shadow text-center">
+              <p className="text-base font-semibold text-brand-text">No brief yet</p>
+              <p className="text-base text-brand-text/50 mt-1">Hit "Build Prep Guide" to generate your tailored brief.</p>
+            </div>
+          )}
+          {result && !isGenerating && (
+            <>
+              <Section
+                title="Lead Strengths to Emphasize"
+                copyText={result.lead_strengths.map((s) => `• ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
+              >
+                <div className="space-y-3">
+                  {result.lead_strengths.map((s, i) => (
+                    <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                      <p className="text-base font-medium text-brand-text">{s.strength}</p>
+                      <p className="text-base text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+
+              <Section
+                title="JD Language to Mirror"
+                copyText={result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")}
+              >
+                <div className="space-y-3">
+                  {result.jd_language_to_mirror.map((p, i) => (
+                    <div key={i}>
+                      <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                        &ldquo;{p.phrase}&rdquo;
+                      </span>
+                      <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+
+              <Section
+                title="What to De-emphasize"
+                copyText={result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")}
+              >
+                <div className="space-y-3">
+                  {result.what_to_deemphasize.map((d, i) => (
+                    <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
+                      <p className="text-base font-medium text-brand-text">{d.item}</p>
+                      <p className="text-base text-brand-text/40 mt-0.5">{d.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+
+              <Section
+                title="Recruiter Concern to Preempt"
+                copyText={`Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`}
+              >
+                <div className="space-y-2">
+                  <div className="bg-status-tailor/8 rounded-xl p-4 ring-1 ring-status-tailor/20">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
+                      Likely concern
+                    </p>
+                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
+                  </div>
+                  <div className="bg-status-apply/8 rounded-xl p-4 ring-1 ring-status-apply/20">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-apply mb-1">
+                      How to address it
+                    </p>
+                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                  </div>
+                </div>
+              </Section>
+
+              {result.outreach_angle && (
+                <Section title="Outreach Angle" copyText={result.outreach_angle}>
+                  <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
+                </Section>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Company */}
+      {prepSection === "company" && (
+        <ActionSection
+          title="Company Research"
+          description="Culture signals, strategic context, and smart questions to ask — pulled from the job description."
+          buttonLabel="Research Company"
+          onAction={handleGenerateCompanyResearch}
+          isLoading={isGeneratingCompanyResearch}
+          loadingMessage="Researching the company…"
+          hasResult={!!companyResearchResult}
+          error={companyResearchError}
+        >
+          {companyResearchResult && (
+            <>
+              <div>
+                <p className="text-base font-semibold text-brand-text mb-1">{companyResearchResult.company_name}</p>
+                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.business_overview}</p>
               </div>
-            )}
 
-            <div className="border-t border-brand-text/8 pt-6">
-              <SubHeading label="Culture Signals" />
-              <ul className="space-y-1.5">
-                {companyResearchResult.culture_signals.map((s, i) => (
-                  <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
-                    <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {companyResearchResult.caveat && (
+                <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
+                  <p className="text-sm text-status-stretch leading-snug">{companyResearchResult.caveat}</p>
+                </div>
+              )}
 
-            <div className="border-t border-brand-text/8 pt-6">
-              <SubHeading label="Strategic Context" />
-              <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.strategic_context}</p>
-            </div>
-
-            {companyResearchResult.red_flags_to_probe.length > 0 && (
               <div className="border-t border-brand-text/8 pt-6">
-                <SubHeading label="Red Flags to Probe" />
+                <SubHeading label="Culture Signals" />
                 <ul className="space-y-1.5">
-                  {companyResearchResult.red_flags_to_probe.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2 text-base text-status-stretch">
-                      <span className="mt-1.5 w-1 h-1 rounded-full bg-status-stretch/50 shrink-0" />
-                      {f}
+                  {companyResearchResult.culture_signals.map((s, i) => (
+                    <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
+                      <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
+                      {s}
                     </li>
                   ))}
                 </ul>
               </div>
-            )}
 
-            <div className="border-t border-brand-text/8 pt-6">
-              <SubHeading
-                label="Smart Questions to Ask"
-                copyText={companyResearchResult.smart_questions_to_ask
-                  .map((q) => `Q: ${q.question}\nWhy: ${q.why}`)
-                  .join("\n\n")}
-              />
-              <div className="space-y-4">
-                {companyResearchResult.smart_questions_to_ask.map((q, i) => (
-                  <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                    <p className="text-base font-medium text-brand-text">{q.question}</p>
-                    <p className="text-sm text-brand-text/40 mt-0.5">{q.why}</p>
-                  </div>
-                ))}
+              <div className="border-t border-brand-text/8 pt-6">
+                <SubHeading label="Strategic Context" />
+                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.strategic_context}</p>
               </div>
-            </div>
-          </>
-        )}
-      </ActionSection>
 
-      {result && !isGenerating && (
-        <>
-          {/* ── Brief result cards ── */}
-          <Section
-            title="Lead Strengths to Emphasize"
-            copyText={result.lead_strengths.map((s) => `• ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
-          >
-            <div className="space-y-3">
-              {result.lead_strengths.map((s, i) => (
-                <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                  <p className="text-base font-medium text-brand-text">{s.strength}</p>
-                  <p className="text-base text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
+              {companyResearchResult.red_flags_to_probe.length > 0 && (
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading label="Red Flags to Probe" />
+                  <ul className="space-y-1.5">
+                    {companyResearchResult.red_flags_to_probe.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 text-base text-status-stretch">
+                        <span className="mt-1.5 w-1 h-1 rounded-full bg-status-stretch/50 shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
-            </div>
-          </Section>
+              )}
 
-          <Section
-            title="JD Language to Mirror"
-            copyText={result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")}
-          >
-            <div className="space-y-3">
-              {result.jd_language_to_mirror.map((p, i) => (
-                <div key={i}>
-                  <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                    &ldquo;{p.phrase}&rdquo;
-                  </span>
-                  <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
+              <div className="border-t border-brand-text/8 pt-6">
+                <SubHeading
+                  label="Smart Questions to Ask"
+                  copyText={companyResearchResult.smart_questions_to_ask
+                    .map((q) => `Q: ${q.question}\nWhy: ${q.why}`)
+                    .join("\n\n")}
+                />
+                <div className="space-y-4">
+                  {companyResearchResult.smart_questions_to_ask.map((q, i) => (
+                    <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                      <p className="text-base font-medium text-brand-text">{q.question}</p>
+                      <p className="text-sm text-brand-text/40 mt-0.5">{q.why}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </Section>
-
-          <Section
-            title="What to De-emphasize"
-            copyText={result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")}
-          >
-            <div className="space-y-3">
-              {result.what_to_deemphasize.map((d, i) => (
-                <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
-                  <p className="text-base font-medium text-brand-text">{d.item}</p>
-                  <p className="text-base text-brand-text/40 mt-0.5">{d.reason}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          <Section
-            title="Recruiter Concern to Preempt"
-            copyText={`Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`}
-          >
-            <div className="space-y-2">
-              <div className="bg-status-tailor/8 rounded-xl p-4 ring-1 ring-status-tailor/20">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
-                  Likely concern
-                </p>
-                <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
               </div>
-              <div className="bg-status-apply/8 rounded-xl p-4 ring-1 ring-status-apply/20">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-apply mb-1">
-                  How to address it
-                </p>
-                <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
-              </div>
-            </div>
-          </Section>
-
-          {result.outreach_angle && (
-            <Section title="Outreach Angle" copyText={result.outreach_angle}>
-              <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
-            </Section>
+            </>
           )}
+        </ActionSection>
+      )}
 
-          {/* ── Resume Updates action card ── */}
+      {/* Resume */}
+      {prepSection === "resume" && (
+        !result ? (
+          <NeedsBriefPrompt onBuild={handleGenerate} />
+        ) : (
           <ActionSection
             title="Resume Updates"
             description="Get specific, copy-paste resume edits tailored to this job."
@@ -822,8 +892,14 @@ export default function TailoringBrief({
               </>
             )}
           </ActionSection>
+        )
+      )}
 
-          {/* ── Cover Letter action card ── */}
+      {/* Cover Letter */}
+      {prepSection === "cover-letter" && (
+        !result ? (
+          <NeedsBriefPrompt onBuild={handleGenerate} />
+        ) : (
           <ActionSection
             title="Cover Letter"
             description="A tailored cover letter built from the brief above."
@@ -843,38 +919,61 @@ export default function TailoringBrief({
               </div>
             )}
           </ActionSection>
+        )
+      )}
 
-          {/* ── Outreach Messages action card ── */}
-          {result.outreach_angle && (
-            <ActionSection
-              title="Outreach Messages"
-              description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
-              buttonLabel="Draft Messages"
-              onAction={handleGenerateOutreach}
-              isLoading={isGeneratingOutreach}
-              loadingMessage="Drafting outreach messages…"
-              hasResult={!!outreachResult}
-              error={outreachError}
+      {/* Outreach */}
+      {prepSection === "outreach" && (
+        !result ? (
+          <NeedsBriefPrompt onBuild={handleGenerate} />
+        ) : !result.outreach_angle ? (
+          <div className="bg-white rounded-2xl p-8 shadow text-center">
+            <p className="text-base font-semibold text-brand-text">No outreach angle in brief</p>
+            <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
+              The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
+            </p>
+            <button
+              onClick={handleGenerate}
+              className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
-              {outreachResult && (
-                <>
-                  <div>
-                    <SubHeading label="Cold Email" copyText={outreachResult.email} />
-                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                      {outreachResult.email}
-                    </pre>
-                  </div>
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
-                    <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
-                    <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
-                  </div>
-                </>
-              )}
-            </ActionSection>
-          )}
+              Rebuild →
+            </button>
+          </div>
+        ) : (
+          <ActionSection
+            title="Outreach Messages"
+            description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
+            buttonLabel="Draft Messages"
+            onAction={handleGenerateOutreach}
+            isLoading={isGeneratingOutreach}
+            loadingMessage="Drafting outreach messages…"
+            hasResult={!!outreachResult}
+            error={outreachError}
+          >
+            {outreachResult && (
+              <>
+                <div>
+                  <SubHeading label="Cold Email" copyText={outreachResult.email} />
+                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                    {outreachResult.email}
+                  </pre>
+                </div>
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
+                  <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                  <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
+                </div>
+              </>
+            )}
+          </ActionSection>
+        )
+      )}
 
-          {/* ── Interview Prep action card ── */}
+      {/* Interview */}
+      {prepSection === "interview" && (
+        !result ? (
+          <NeedsBriefPrompt onBuild={handleGenerate} />
+        ) : (
           <ActionSection
             title="Interview Prep"
             description="Likely questions for this role, calibrated to your background — with suggested framing for each."
@@ -907,8 +1006,14 @@ export default function TailoringBrief({
               </div>
             )}
           </ActionSection>
+        )
+      )}
 
-          {/* ── Follow-Up Templates action card ── */}
+      {/* Follow-up */}
+      {prepSection === "follow-up" && (
+        !result ? (
+          <NeedsBriefPrompt onBuild={handleGenerate} />
+        ) : (
           <ActionSection
             title="Follow-Up Templates"
             description="A thank-you note and check-in email tailored to this role — ready to send after your interview."
@@ -936,8 +1041,26 @@ export default function TailoringBrief({
               </>
             )}
           </ActionSection>
-        </>
+        )
       )}
+
+    </div>
+  );
+}
+
+function NeedsBriefPrompt({ onBuild }: { onBuild: () => void }) {
+  return (
+    <div className="bg-white rounded-2xl p-8 shadow text-center">
+      <p className="text-base font-semibold text-brand-text">Build the brief first</p>
+      <p className="text-base text-brand-text/50 mt-1">
+        Hit "Build Prep Guide" to generate your tailored brief, then this section will unlock.
+      </p>
+      <button
+        onClick={onBuild}
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+      >
+        Build Prep Guide →
+      </button>
     </div>
   );
 }
