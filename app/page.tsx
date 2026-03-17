@@ -889,9 +889,14 @@ export default function Home() {
 
             {profileText && !updatingProfile && (
               <div className="mt-5">
-                <label className="block text-sm font-medium text-brand-text mb-1.5">
-                  Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
-                </label>
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-brand-text">
+                    Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
+                  </label>
+                  {writingSample.trim() && (
+                    <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                  )}
+                </div>
                 <textarea
                   value={writingSample}
                   onChange={(e) => setWritingSample(e.target.value)}

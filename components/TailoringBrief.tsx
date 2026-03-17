@@ -166,18 +166,26 @@ function ActionSection({
           {children}
           {/* Correction / tone note — shown after a result so user can refine before regenerating */}
           {noteValue !== undefined && onNoteChange && (
-            <div className="border-t border-brand-text/8 pt-4 space-y-1.5">
+            <div className="border-t border-brand-text/8 pt-4 space-y-2">
               <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
                 Anything to correct or adjust?
               </p>
               <textarea
                 value={noteValue}
                 onChange={(e) => onNoteChange(e.target.value)}
-                placeholder='e.g. "Make it more direct" or "I was VP level, not Director" — Claude will use this when you hit Re-generate'
+                placeholder='e.g. "Make it more direct" or "I was VP level, not Director"'
                 maxLength={300}
                 rows={2}
                 className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
               />
+              <div className="flex justify-end">
+                <button
+                  onClick={onAction}
+                  className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+                >
+                  Re-generate →
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -691,18 +699,26 @@ export default function TailoringBrief({
         </div>
           {/* Brief correction note — only shown after first generation so it's contextual */}
           {result && (
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
                 Anything to correct before rebuilding?
               </p>
               <textarea
                 value={briefNote}
                 onChange={(e) => setBriefNote(e.target.value)}
-                placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle" — Claude will use this when you hit Rebuild'
+                placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle"'
                 maxLength={300}
                 rows={2}
                 className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
               />
+              <div className="flex justify-end">
+                <button
+                  onClick={handleGenerate}
+                  className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                >
+                  Rebuild →
+                </button>
+              </div>
             </div>
           )}
         </div>
