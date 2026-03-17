@@ -710,13 +710,11 @@ export default function TailoringBrief({
 
       {/* ── Profile staleness banner ── */}
       {isProfileStale && result && !isGenerating && (
-        <div className="flex items-center justify-between gap-3 px-4 py-3 bg-amber-50 rounded-xl ring-1 ring-amber-200">
-          <p className="text-sm text-amber-800 leading-snug">
-            Your profile was updated. Re-score this job first, then rebuild your prep guide so everything stays in sync.
-          </p>
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
+          <p className="text-sm text-brand-text/70">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
           <button
             onClick={onGoToJobFit}
-            className="shrink-0 text-sm font-semibold text-amber-700 hover:text-amber-900 transition-colors whitespace-nowrap"
+            className="shrink-0 text-sm font-semibold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
           >
             Re-score →
           </button>
