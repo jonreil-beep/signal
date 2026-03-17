@@ -149,11 +149,23 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
 
   return (
     <div className="space-y-5">
-      {/* ── Header ── */}
-      <div>
+      {/* ── Header + Tips ── */}
+      <div className="space-y-3">
         <p className="text-base text-brand-text/50">
-          Ready-to-use search terms for each of your role clusters. Edit them if needed, then search any job board directly.
+          Search terms built from your role clusters — edit to add a city or industry, then search any job board directly.
         </p>
+        <ul className="space-y-1.5">
+          {[
+            { label: "Job boards query", detail: "searches Greenhouse, Lever, and Workday — where most corporate and tech roles live." },
+            { label: "Customize",        detail: "add a city (\"New York\") or industry (\"fintech\") to either query to narrow results." },
+            { label: "Found something?", detail: "paste the full job description into Job Fit for an honest score." },
+          ].map(({ label, detail }) => (
+            <li key={label} className="flex items-baseline gap-1.5 text-sm text-brand-text/50">
+              <span className="shrink-0 font-medium text-brand-text/70">{label}:</span>
+              {detail}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* ── Cluster cards ── */}
@@ -181,23 +193,6 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
             </div>
           );
         })}
-      </div>
-
-      {/* ── Tips ── */}
-      <div className="rounded-xl bg-brand-text/4 px-4 py-3.5 space-y-1">
-        <p className="text-[0.75rem] font-semibold uppercase tracking-[0.06em] text-brand-text/30">Tips</p>
-        <ul className="space-y-1.5 mt-2">
-          {[
-            "Edit the search terms if your profile targets a specific industry or city — add terms like \"fintech\" or \"New York\" to narrow results.",
-            "The job board query searches Greenhouse, Lever, and Workday directly — these are where most tech and corporate roles post.",
-            "Once you find a role, paste the full job description into Job Fit for an accurate score.",
-          ].map((tip, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-brand-text/50">
-              <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/25 shrink-0" />
-              {tip}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
