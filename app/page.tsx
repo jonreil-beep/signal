@@ -947,13 +947,22 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && !updatingProfile && (
-              <div className="mt-8 pt-6 border-t border-brand-text/8 flex justify-end">
-                <button
-                  onClick={() => setActiveTab("job-fit")}
-                  className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                >
-                  Go to Job Fit →
-                </button>
+              <div className="mt-8 pt-6 border-t border-brand-text/8 flex items-center justify-between gap-4">
+                <p className="text-sm text-brand-text/40">Find open roles that match your profile, or paste a job description to score it directly.</p>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => setActiveTab("job-fit")}
+                    className="inline-flex items-center gap-1 px-4 py-2.5 border border-brand-text/15 text-brand-text/60 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/80 transition-colors"
+                  >
+                    Score a job →
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("discover")}
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                  >
+                    Discover jobs →
+                  </button>
+                </div>
               </div>
             )}
           </div>
