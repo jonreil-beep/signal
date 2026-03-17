@@ -212,7 +212,7 @@ function ActionSection({
                 placeholder='e.g. "Make it more direct" or "I was VP level, not Director"'
                 maxLength={300}
                 rows={2}
-                className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+                className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 placeholder:text-brand-text/25 leading-relaxed transition-colors"
               />
               <div className="flex justify-end">
                 <button
@@ -772,7 +772,7 @@ export default function TailoringBrief({
                     placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle"'
                     maxLength={300}
                     rows={2}
-                    className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+                    className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 placeholder:text-brand-text/25 leading-relaxed transition-colors"
                   />
                   <div className="flex justify-end">
                     <button

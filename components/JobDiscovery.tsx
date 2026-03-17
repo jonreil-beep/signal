@@ -89,7 +89,7 @@ function QueryRow({ label, initialQuery }: { label: string; initialQuery: string
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 min-w-0 text-sm text-brand-text/80 bg-brand-text/4 rounded-lg px-3 py-2 ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none"
+          className="flex-1 min-w-0 text-sm text-brand-text/80 bg-brand-text/4 rounded-lg px-3 py-2 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 transition-colors"
         />
         <div className="flex items-center gap-1 shrink-0">
           <CopyButton text={query} />

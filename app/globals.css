@@ -10,6 +10,9 @@
   --color-status-tailor:  #A86B2D;
   --color-status-stretch: #C4622D;
   --color-status-skip:    #888888;
+
+  /* Override Tailwind's default ring color (blue) with on-brand dark */
+  --tw-ring-color: rgba(26, 26, 26, 0.2);
 }
 
 @layer base {

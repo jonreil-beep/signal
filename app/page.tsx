@@ -760,7 +760,7 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-2xl sm:rounded-full text-base focus:outline-none focus:border-white/50"
+                  className="flex-1 px-4 py-3 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-2xl sm:rounded-full text-base focus:outline-none focus:ring-0 focus:border-white/50 transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
@@ -889,7 +889,7 @@ export default function Home() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none"
+                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
                     />
                     <button
                       onClick={handleSendMagicLink}
@@ -996,7 +996,7 @@ export default function Home() {
                   onChange={(e) => setWritingSample(e.target.value)}
                   placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
                   rows={3}
-                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 ring-1 ring-brand-text/10 focus:ring-brand-text/25 outline-none resize-none placeholder:text-brand-text/30 shadow-sm"
+                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
                 />
               </div>
             )}
@@ -1016,7 +1016,7 @@ export default function Home() {
                   onChange={(e) => setPivotTarget(e.target.value)}
                   placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
                   rows={3}
-                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 ring-1 ring-brand-text/10 focus:ring-brand-text/25 outline-none resize-none placeholder:text-brand-text/30 shadow-sm"
+                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
                 />
               </div>
             )}
