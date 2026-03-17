@@ -928,30 +928,34 @@ export default function Home() {
               <RoleClusterResults result={clusterResult} />
             )}
 
-            {/* ── LinkedIn Headline Optimizer ── */}
-            {profileText && !updatingProfile && !isAnalyzing && (
-              <div className="mt-6 pt-6 border-t border-brand-text/8">
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-medium text-brand-text">LinkedIn Headline</p>
+            {/* ── LinkedIn Headline ── */}
+            {clusterResult && !updatingProfile && !isAnalyzing && (
+              <div className="mt-8 pt-6 border-t border-brand-text/8">
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-1">
+                      LinkedIn Headline
+                    </p>
+                    <p className="text-sm text-brand-text/60 leading-snug max-w-sm">
+                      {headlineResult
+                        ? "Pick the angle that fits where you're headed — paste it straight into LinkedIn."
+                        : "Your headline is your first impression. Generate angles calibrated to your career story."}
+                    </p>
+                  </div>
                   {!isGeneratingHeadlines && (
                     <button
                       onClick={handleGenerateHeadlines}
-                      className="text-base font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+                      className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-text/6 text-brand-text text-sm font-medium rounded-xl hover:bg-brand-text/12 transition-colors"
                     >
-                      {headlineResult ? "Regenerate →" : "Generate Variants →"}
+                      {headlineResult ? "Regenerate" : "Try 4 angles →"}
                     </button>
                   )}
                 </div>
-                {!headlineResult && !isGeneratingHeadlines && !headlineError && (
-                  <p className="text-sm text-brand-text/40">
-                    Generate 4–5 headline variants with different positioning angles — ready to paste into LinkedIn.
-                  </p>
-                )}
                 {isGeneratingHeadlines && (
-                  <LoadingState message="Generating headline variants…" />
+                  <LoadingState message="Writing headline angles from your career story…" />
                 )}
                 {headlineError && !isGeneratingHeadlines && (
-                  <div className="mt-2">
+                  <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
                     <p className="text-sm text-red-700">{headlineError}</p>
                     <button
                       onClick={handleGenerateHeadlines}
@@ -962,7 +966,7 @@ export default function Home() {
                   </div>
                 )}
                 {headlineResult && !isGeneratingHeadlines && (
-                  <div className="mt-4 space-y-4">
+                  <div className="mt-2 space-y-3">
                     {headlineResult.headlines.map((h, i) => (
                       <HeadlineCard key={i} headline={h} />
                     ))}
@@ -1179,39 +1183,39 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
   }
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-base font-medium text-brand-text leading-snug flex-1">{headline.text}</p>
-        <button
-          onClick={handleCopy}
-          className="shrink-0 flex items-center gap-1 text-xs text-brand-text/30 hover:text-brand-text/60 transition-colors mt-0.5"
-        >
-          {copied ? (
-            <>
-              <svg className="w-3.5 h-3.5 text-status-apply" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-status-apply">Copied</span>
-            </>
-          ) : (
-            <>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              Copy
-            </>
-          )}
-        </button>
+    <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
+      {/* Angle label + char count */}
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <span className="text-xs font-medium text-brand-accent/80 bg-brand-accent/8 px-2.5 py-0.5 rounded-full ring-1 ring-brand-accent/15">
+          {headline.angle}
+        </span>
+        <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
       </div>
-      <div className="mt-3 flex items-start gap-4">
-        <p className="text-xs text-brand-text/30">{headline.text.length} chars</p>
-        <div className="flex-1 min-w-0">
-          <span className="inline-block text-xs font-medium text-brand-accent/80 bg-brand-accent/8 px-2 py-0.5 rounded-full ring-1 ring-brand-accent/15 mr-2">
-            {headline.angle}
-          </span>
-        </div>
-      </div>
-      <p className="mt-2 text-sm text-brand-text/40 leading-snug">{headline.best_for}</p>
+      {/* Headline text */}
+      <p className="text-base font-semibold text-brand-text leading-snug mb-2">{headline.text}</p>
+      {/* Best for */}
+      <p className="text-sm text-brand-text/45 leading-snug mb-3">{headline.best_for}</p>
+      {/* Copy button */}
+      <button
+        onClick={handleCopy}
+        className="flex items-center gap-1.5 text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+      >
+        {copied ? (
+          <>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Copied
+          </>
+        ) : (
+          <>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy to clipboard
+          </>
+        )}
+      </button>
     </div>
   );
 }
