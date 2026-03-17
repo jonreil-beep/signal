@@ -163,16 +163,16 @@ function ActionSection({
       {hasResult && !isLoading && (
         <div className="border-t border-brand-text/8 px-5 py-5 space-y-6">
           {children}
-          {/* Correction / tone note — shown after a result so user can refine on re-generate */}
+          {/* Correction / tone note — shown after a result so user can refine before regenerating */}
           {noteValue !== undefined && onNoteChange && (
-            <div className="border-t border-brand-text/8 pt-4">
-              <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-2">
-                Correction or note for next re-generate
+            <div className="border-t border-brand-text/8 pt-4 space-y-1.5">
+              <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
+                Anything to correct or adjust?
               </p>
               <textarea
                 value={noteValue}
                 onChange={(e) => onNoteChange(e.target.value)}
-                placeholder='e.g. "Make it more conversational" or "I was VP level, not Director"'
+                placeholder='e.g. "Make it more direct" or "I was VP level, not Director" — Claude will use this when you hit Re-generate'
                 maxLength={300}
                 rows={2}
                 className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
@@ -685,15 +685,22 @@ export default function TailoringBrief({
             </button>
           </div>
         </div>
-          {/* Brief context / correction note */}
-          <textarea
-            value={briefNote}
-            onChange={(e) => setBriefNote(e.target.value)}
-            placeholder='Corrections or context for Claude (optional) — e.g. "I was VP level, not Director" or "Focus on the operational angle"'
-            maxLength={300}
-            rows={2}
-            className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
-          />
+          {/* Brief correction note — only shown after first generation so it's contextual */}
+          {result && (
+            <div className="space-y-1.5">
+              <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
+                Anything to correct before rebuilding?
+              </p>
+              <textarea
+                value={briefNote}
+                onChange={(e) => setBriefNote(e.target.value)}
+                placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle" — Claude will use this when you hit Rebuild'
+                maxLength={300}
+                rows={2}
+                className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+              />
+            </div>
+          )}
         </div>
       )}
 
