@@ -20,10 +20,11 @@ interface JobDiscoveryProps {
 function buildProfileSummary(profileText: string, clusterResult: RoleClusterResult | null): string {
   if (clusterResult) {
     const clusters = clusterResult.role_clusters.map((c) => `${c.name} (${c.confidence})`).join(", ");
-    const strengths = clusterResult.core_strengths.slice(0, 5).join("; ");
-    return `Role clusters: ${clusters}\n\nCore strengths: ${strengths}\n\nResume excerpt:\n${profileText.slice(0, 1200)}`;
+    const strengths = clusterResult.core_strengths.slice(0, 4).join("; ");
+    return `Role clusters: ${clusters}\n\nCore strengths: ${strengths}`;
   }
-  return profileText.slice(0, 3000);
+  // No clusters yet — send a short resume excerpt
+  return profileText.slice(0, 800);
 }
 
 function JobCard({

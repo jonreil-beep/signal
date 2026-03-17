@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 import anthropic from "@/lib/anthropic";
 import { buildJobDiscoveryPrompt, buildSimilarJobsPrompt } from "@/lib/prompts";
 import type { JobDiscoveryResult } from "@/types";
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
+      max_tokens: 2048,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tools: [{ type: "web_search_20250305", name: "web_search" } as any],
       messages: [{ role: "user", content: prompt }],
@@ -89,11 +90,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(result);
   } catch (err) {
     console.error("[discover-jobs] Error:", err);
+
+    // Rate limit — return a clean, user-friendly message
+    if (err instanceof Anthropic.RateLimitError) {
+      return NextResponse.json(
+        { error: "Rate limit reached. Please wait a moment and try again." },
+        { status: 429 }
+      );
+    }
+
+    // Other Anthropic API errors
+    if (err instanceof Anthropic.APIError) {
+      return NextResponse.json(
+        { error: `Search failed (${err.status}). Please try again.` },
+        { status: err.status ?? 500 }
+      );
+    }
+
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: "Something went wrong. Please try again." },
       { status: 500 }
     );
   }
