@@ -88,10 +88,12 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
   const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
-  const isPrepStale =
+  const isScoreStale =
     !!profileUpdatedAt &&
-    !!job.tailoringResult &&
     new Date(job.scoredAt) < profileUpdatedAt;
+  const isPrepStale =
+    isScoreStale &&
+    !!job.tailoringResult;
 
   return (
     <div
@@ -130,7 +132,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             <span className="text-xs text-status-apply font-medium">Prep ready</span>
           </>
         )}
-        {isPrepStale && (
+        {isScoreStale && (
           <>
             <span className="text-brand-text/20">·</span>
             <span className="text-xs text-status-stretch font-medium">Profile updated</span>
@@ -225,7 +227,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
           >
             {showJD ? "Hide JD" : "View JD"}
           </button>
-          {isPrepStale ? (
+          {isScoreStale ? (
             <button
               onClick={(e) => { e.stopPropagation(); onSelectJob(job, "job-fit"); }}
               className="text-sm font-medium text-status-stretch hover:text-status-stretch/70 transition-colors"

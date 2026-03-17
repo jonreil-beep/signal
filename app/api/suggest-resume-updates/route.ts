@@ -24,10 +24,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, writingSample } = body as {
+    const { resumeText, jobDescription, writingSample, pivotTarget } = body as {
       resumeText?: string;
       jobDescription?: string;
       writingSample?: string;
+      pivotTarget?: string;
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Job description is required." }, { status: 400 });
     }
 
-    const prompt = buildResumeUpdatePrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim());
+    const prompt = buildResumeUpdatePrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim(), pivotTarget?.trim());
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",

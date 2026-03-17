@@ -62,6 +62,7 @@ export default function Home() {
   const [sessionRestored, setSessionRestored] = useState(false);
   const [profileText, setProfileText] = useState<string>("");
   const [writingSample, setWritingSample] = useState<string>("");
+  const [pivotTarget, setPivotTarget] = useState<string>("");
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -243,6 +244,8 @@ export default function Home() {
 
   function clearAppState() {
     setProfileText("");
+    setWritingSample("");
+    setPivotTarget("");
     setClusterResult(null);
     setHeadlineResult(null);
     setHeadlineError("");
@@ -343,7 +346,7 @@ export default function Home() {
       const response = await fetch("/api/linkedin-headline", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, writingSample: writingSample || undefined }),
+        body: JSON.stringify({ resumeText: profileText, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -907,6 +910,26 @@ export default function Home() {
               </div>
             )}
 
+            {profileText && !updatingProfile && (
+              <div className="mt-4">
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-brand-text">
+                    Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
+                  </label>
+                  {pivotTarget.trim() && (
+                    <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                  )}
+                </div>
+                <textarea
+                  value={pivotTarget}
+                  onChange={(e) => setPivotTarget(e.target.value)}
+                  placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
+                  rows={3}
+                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 ring-1 ring-brand-text/10 focus:ring-brand-text/25 outline-none resize-none placeholder:text-brand-text/30 shadow-sm"
+                />
+              </div>
+            )}
+
             {profileText && !updatingProfile && !isAnalyzing && (
               <div className="mt-6 pt-6 border-t border-brand-text/8">
                 <div className="flex items-center justify-between">
@@ -1113,6 +1136,7 @@ export default function Home() {
             <TailoringBrief
               profileText={profileText}
               writingSample={writingSample || undefined}
+              pivotTarget={pivotTarget || undefined}
               jobDescription={jobDescription}
               jobLabel={activeJobId ? trackedJobs.find(j => j.id === activeJobId)?.label : undefined}
               result={tailoringResult}
