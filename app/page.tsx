@@ -734,9 +734,9 @@ export default function Home() {
         }
         rightSlot={
           <div className="flex items-center gap-4">
-            <a href="/how-it-works" target="_blank" rel="noopener noreferrer" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
+            <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
               How it works
-            </a>
+            </Link>
             {user && (
               <>
                 <span className="text-white/15 hidden sm:block">|</span>
