@@ -31,19 +31,33 @@ Return this exact JSON structure:
     {
       "name": "Specific role title, level, and function (e.g. 'Corporate Strategy, Director-level')",
       "confidence": "Strong | Moderate | Stretch",
-      "reasoning": "2-3 sentences explaining why this person fits this cluster. Be specific to their background.",
+      "recommendation": "Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First",
+      "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — may differ from what the resume implies. Be honest if the market will read them differently than they see themselves.",
+      "reasoning": "2-3 sentences explaining why this person fits or doesn't fit this cluster. Be specific to their background.",
       "signals": ["specific signal from their resume", "another signal"]
     }
   ],
   "core_strengths": ["specific strength demonstrated across experience", "..."],
-  "positioning_risks": ["honest risk or gap a hiring team would notice", "..."],
+  "positioning_risks": [
+    {
+      "risk": "The actual concern a hiring team would have — be specific, not softened",
+      "what_to_do": "A concrete counter-move: what to say, emphasize, reframe, or preempt"
+    }
+  ],
   "recommended_headline": "A single sentence for LinkedIn or a cover letter opening"
 }
 
 Rules:
 - Return 3-5 role clusters
 - Role names must be specific (e.g. 'Market Research Manager, Consumer Insights') not generic (e.g. 'Research')
-- Positioning risks must be honest gaps, not reframed strengths
+- recommendation must be a decision, not a hedge — pick one of the five options:
+  - "Pursue": strong fit, apply with confidence
+  - "Pursue Selectively": real fit but requires careful targeting (right company size, stage, or sub-function)
+  - "Stretch — Prep Required": possible but will require deliberate work to be competitive
+  - "Avoid": mismatch is too significant to overcome without major repositioning
+  - "Reframe First": the fit is there but how the candidate is currently presenting themselves will get them screened out
+- market_read: be honest if the market will interpret their background differently than they present it
+- positioning_risks: 2-4 risks — each must include a specific counter-move, not just an observation
 - Signals must be direct quotes or close paraphrases from the resume
 - Return only valid JSON, no markdown fences
 

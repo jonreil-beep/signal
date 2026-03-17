@@ -1,6 +1,6 @@
 "use client";
 
-import type { RoleClusterResult, RoleCluster } from "@/types";
+import type { RoleClusterResult, RoleCluster, RoleRecommendation } from "@/types";
 
 interface RoleClusterResultsProps {
   result: RoleClusterResult;
@@ -10,6 +10,14 @@ const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], string> = {
   Strong:   "bg-status-apply/10 text-status-apply ring-1 ring-status-apply/25",
   Moderate: "bg-status-tailor/10 text-status-tailor ring-1 ring-status-tailor/25",
   Stretch:  "bg-status-stretch/10 text-status-stretch ring-1 ring-status-stretch/25",
+};
+
+const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: string }> = {
+  "Pursue":                { pill: "bg-status-apply text-white",                            label: "Pursue" },
+  "Pursue Selectively":    { pill: "bg-status-tailor text-white",                           label: "Pursue Selectively" },
+  "Stretch — Prep Required": { pill: "bg-status-stretch text-white",                        label: "Stretch — Prep Required" },
+  "Avoid":                 { pill: "bg-brand-text/60 text-white",                           label: "Avoid" },
+  "Reframe First":         { pill: "bg-brand-accent text-white",                            label: "Reframe First" },
 };
 
 export default function RoleClusterResults({ result }: RoleClusterResultsProps) {
@@ -32,27 +40,49 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
           Best-Fit Role Clusters
         </p>
         <div className="space-y-2.5">
-          {result.role_clusters.map((cluster, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 shadow">
-              <div className="flex items-start justify-between gap-3 mb-2.5">
-                <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
-                <span className={`shrink-0 text-sm font-medium px-2.5 py-1 rounded-full ${CONFIDENCE_STYLES[cluster.confidence]}`}>
-                  {cluster.confidence}
-                </span>
+          {result.role_clusters.map((cluster, i) => {
+            const rec = cluster.recommendation
+              ? RECOMMENDATION_STYLES[cluster.recommendation]
+              : null;
+            return (
+              <div key={i} className="bg-white rounded-2xl p-5 shadow">
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {rec && (
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rec.pill}`}>
+                        {rec.label}
+                      </span>
+                    )}
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${CONFIDENCE_STYLES[cluster.confidence]}`}>
+                      {cluster.confidence}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Market read */}
+                {cluster.market_read && (
+                  <p className="text-sm text-brand-text/40 italic mb-2.5 leading-snug">
+                    {cluster.market_read}
+                  </p>
+                )}
+
+                <p className="text-base text-brand-text/50 leading-relaxed mb-3">{cluster.reasoning}</p>
+
+                {cluster.signals.length > 0 && (
+                  <ul className="space-y-1.5">
+                    {cluster.signals.map((signal, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-brand-text/40">
+                        <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-brand-text/20" />
+                        {signal}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <p className="text-base text-brand-text/50 leading-relaxed mb-3">{cluster.reasoning}</p>
-              {cluster.signals.length > 0 && (
-                <ul className="space-y-1.5">
-                  {cluster.signals.map((signal, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm text-brand-text/40">
-                      <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-brand-text/20" />
-                      {signal}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -76,11 +106,13 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Positioning Risks
           </p>
-          <ul className="space-y-2">
+          <ul className="space-y-4">
             {result.positioning_risks.map((r, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
-                <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-tailor" />
-                {r}
+              <li key={i}>
+                <p className="text-base text-brand-text/80 leading-snug">{r.risk}</p>
+                <p className="text-sm text-brand-accent mt-1 leading-snug">
+                  ↳ {r.what_to_do}
+                </p>
               </li>
             ))}
           </ul>

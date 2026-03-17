@@ -20,17 +20,31 @@ export interface ParseResumeError {
 
 // Placeholder types for future sessions
 
+export type RoleRecommendation =
+  | "Pursue"
+  | "Pursue Selectively"
+  | "Stretch — Prep Required"
+  | "Avoid"
+  | "Reframe First";
+
 export interface RoleCluster {
   name: string;
   confidence: "Strong" | "Moderate" | "Stretch";
+  recommendation: RoleRecommendation;
+  market_read: string; // how the market is likely to categorize this candidate
   reasoning: string;
   signals: string[];
+}
+
+export interface PositioningRisk {
+  risk: string;
+  what_to_do: string;
 }
 
 export interface RoleClusterResult {
   role_clusters: RoleCluster[];
   core_strengths: string[];
-  positioning_risks: string[];
+  positioning_risks: PositioningRisk[];
   recommended_headline: string;
 }
 
