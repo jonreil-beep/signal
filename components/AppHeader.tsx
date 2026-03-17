@@ -34,7 +34,7 @@ export function LogoLink() {
       <p className="text-xl font-bold text-white tracking-tight group-hover:text-white/80 transition-colors">
         <SignalWordmark />
       </p>
-      <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
+      <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
     </Link>
   );
 }
@@ -48,7 +48,7 @@ export function LogoStatic() {
       <p className="text-xl font-bold text-white tracking-tight">
         <SignalWordmark />
       </p>
-      <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
+      <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
     </div>
   );
 }

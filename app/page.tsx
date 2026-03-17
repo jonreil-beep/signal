@@ -650,17 +650,17 @@ export default function Home() {
         <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
           <div className="mb-12">
             <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
-            <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
+            <p className="text-sm text-white/40 mt-2">Smarter search for experienced professionals</p>
           </div>
           <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
-            Most applications fail before anyone reads them. Wrong fit, generic framing,
-            no real preparation for the objections they'll raise.
+            Most experienced professionals don&apos;t lose opportunities because they lack experience.
+            They lose them because the fit is unclear, the framing is generic, or they spend
+            time on roles that were never a real match.
           </p>
           <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
-            Signal is for experienced professionals with real careers to position — not just a resume to submit.
-            Upload your profile once. Signal maps your positioning, strengths, and gaps.
-            Then score any job against it, get prep calibrated to your specific background,
-            and know exactly how to handle the concerns a recruiter will actually raise.
+            Signal helps you understand how your background is likely to be read, identify the
+            roles worth pursuing, and prepare thoroughly for the ones that matter. Upload your
+            resume once — Signal does the rest.
           </p>
 
           {!magicLinkSent ? (
@@ -729,7 +729,7 @@ export default function Home() {
         logoSlot={
           <button onClick={() => setShowLanding(true)} className="text-left">
             <p className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></p>
-            <p className="text-sm text-white/40 mt-0.5">Job search intelligence</p>
+            <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
           </button>
         }
         rightSlot={
@@ -842,12 +842,12 @@ export default function Home() {
           <div>
             <div className="mb-7">
               <h2 className="text-lg font-semibold text-brand-text">
-                {profileText ? "Your Profile" : "Step 1 — Add your profile"}
+                {profileText ? "Your Profile" : "Step 1 — Clarify your positioning"}
               </h2>
               <p className="text-base text-brand-text/50 mt-1">
                 {profileText
                   ? "Your profile is saved. Every fit score, prep guide, and resume suggestion adapts from it — update it any time."
-                  : "Upload your resume once. Signal reads your positioning, experience, and gaps — then adapts every fit score, prep guide, and resume edit to your specific background."}
+                  : "Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background."}
               </p>
             </div>
 
