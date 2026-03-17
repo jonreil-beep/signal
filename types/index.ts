@@ -1,6 +1,6 @@
 // Shared TypeScript types for Signal
 
-export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs";
+export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs" | "discover";
 
 export type ApplicationStatus =
   | "Tracking"
@@ -147,6 +147,19 @@ export interface LinkedInHeadlineOption {
 
 export interface LinkedInHeadlineResult {
   headlines: LinkedInHeadlineOption[];
+}
+
+export interface DiscoveredJob {
+  title: string;
+  company: string;
+  url: string;
+  snippet: string;
+  why_match: string;
+}
+
+export interface JobDiscoveryResult {
+  jobs: DiscoveredJob[];
+  search_summary: string;
 }
 
 export interface TrackedJob {

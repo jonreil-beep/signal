@@ -7,6 +7,7 @@ import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
 import TailoringBrief from "@/components/TailoringBrief";
+import JobDiscovery from "@/components/JobDiscovery";
 import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
@@ -18,6 +19,7 @@ import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, Outr
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
   { id: "profile",        label: "Profile" },
+  { id: "discover",       label: "Discover" },
   { id: "job-fit",        label: "Job Fit" },
   { id: "tailoring-brief", label: "Prep" },
 ];
@@ -69,10 +71,13 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
 
+  // ── Job Discovery state ──
+  const [findSimilarJD, setFindSimilarJD] = useState<string | null>(null);
+
   // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
     const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
-    const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs"];
+    const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs", "discover"];
     if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
 
     // Restore guest "dismissed landing" state so refresh doesn't kick them back to landing
@@ -485,6 +490,23 @@ export default function Home() {
     setFollowUpResult(null);
     setCompanyResearchResult(null);
     setActiveJobId(null);
+  }
+
+  function handleLoadDiscoveredJob(jdText: string, title: string, company: string) {
+    // Pre-populate Job Fit with the discovered job and navigate there
+    handleJobFitReset();
+    setJobDescription(jdText);
+    // Use "Title — Company" as the initial label (JobFitScorer will handle scoring + tracking)
+    const label = company ? `${title} — ${company}` : title;
+    // Store a hint for the label extractor — just put it in the JD text preamble
+    const labeledJD = `${label}\n\n${jdText}`;
+    setJobDescription(labeledJD);
+    setActiveTab("job-fit");
+  }
+
+  function handleFindSimilar() {
+    setFindSimilarJD(jobDescription);
+    setActiveTab("discover");
   }
 
   function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
@@ -968,9 +990,35 @@ export default function Home() {
                   onReset={handleJobFitReset}
                   onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
                 />
+                {/* Find similar jobs — appears after a job has been scored */}
+                {jobFitResult && (
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={handleFindSimilar}
+                      className="flex items-center gap-1.5 text-sm text-brand-text/40 hover:text-brand-accent transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+                      </svg>
+                      Find similar jobs →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
+        )}
+
+        {/* ── Discover tab ── */}
+        {activeTab === "discover" && (
+          <JobDiscovery
+            profileText={profileText}
+            clusterResult={clusterResult}
+            findSimilarJD={findSimilarJD}
+            onFindSimilarConsumed={() => setFindSimilarJD(null)}
+            onLoadJob={handleLoadDiscoveredJob}
+            onGoToProfile={() => setActiveTab("profile")}
+          />
         )}
 
         {/* ── Prep tab ── */}

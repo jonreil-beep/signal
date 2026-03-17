@@ -384,3 +384,68 @@ Rules:
 - best_for: one sentence on the specific opportunity type or audience this variant targets best
 - Return only valid JSON, no markdown fences`;
 }
+
+// Job discovery prompt — finds open roles matching the candidate's profile
+export function buildJobDiscoveryPrompt(profileSummary: string): string {
+  return `You are a job search assistant helping a senior professional find relevant open positions.
+
+Here is a summary of the candidate's background:
+<profile>
+${profileSummary.slice(0, 3000)}
+</profile>
+
+Search the web for 6–8 currently open job postings that are a strong match for this candidate's background and seniority level. Focus on:
+- Director, Senior Director, VP, or senior individual-contributor roles
+- Company career pages (greenhouse.io, lever.co, workday.com, or company's own careers page)
+- Roles where this candidate's specific mix of skills is genuinely relevant
+
+For each job found, return the exact posting URL, not a search results page.
+
+Return ONLY valid JSON in this exact structure — nothing else:
+{
+  "search_summary": "1–2 sentences on what you searched for and what you found",
+  "jobs": [
+    {
+      "title": "Exact job title",
+      "company": "Company name",
+      "url": "Direct URL to the job posting",
+      "snippet": "1–2 sentence description of the role and what it requires",
+      "why_match": "1–2 sentences on why this specific candidate is a strong fit for this role"
+    }
+  ]
+}`;
+}
+
+// Similar jobs prompt — finds open roles like a specific job the candidate is interested in
+export function buildSimilarJobsPrompt(jobDescription: string, profileSummary: string): string {
+  return `You are a job search assistant. A candidate is interested in a role described below, and you need to find similar open positions at other companies.
+
+Role they're interested in:
+<job>
+${jobDescription.slice(0, 1200)}
+</job>
+
+Candidate's background:
+<profile>
+${profileSummary.slice(0, 1500)}
+</profile>
+
+Search the web for 5–7 similar open job postings at different companies — same seniority level, similar responsibilities, comparable industry. Avoid the same company as the job above.
+
+For each job found, return the exact posting URL, not a search results page.
+
+Return ONLY valid JSON in this exact structure — nothing else:
+{
+  "search_summary": "1–2 sentences on what you searched for and the types of roles you found",
+  "jobs": [
+    {
+      "title": "Exact job title",
+      "company": "Company name",
+      "url": "Direct URL to the job posting",
+      "snippet": "1–2 sentence description of the role",
+      "why_match": "1–2 sentences on why this candidate fits this specific role"
+    }
+  ]
+}`;
+}
+
