@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
 import { buildRoleClusterPrompt } from "@/lib/prompts";
+import { createClient } from "@/lib/supabase/server";
+import { checkAndLogUsage } from "@/lib/checkUsage";
 import type { RoleClusterResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -8,6 +10,25 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const { allowed, remaining } = await checkAndLogUsage(
+      user.id,
+      "/api/cluster-roles"
+    );
+
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You've reached today's limit for profile analysis. Come back tomorrow." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { resumeText } = body as { resumeText?: string };
 
@@ -23,7 +44,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       messages: [{ role: "user", content: prompt }],
     });
 
-    // Extract text content from the response
     const content = message.content[0];
     if (content.type !== "text") {
       return NextResponse.json(
@@ -32,7 +52,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Strip any markdown fences Claude might add despite instructions
     const raw = content.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
 
     let result: RoleClusterResult;
@@ -46,7 +65,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Basic shape validation
     if (!Array.isArray(result.role_clusters) || result.role_clusters.length === 0) {
       return NextResponse.json(
         { error: "Response was missing role clusters. Try again." },
@@ -54,13 +72,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, remaining });
   } catch (err) {
     console.error("[cluster-roles] Error:", err);
     return NextResponse.json(
       {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
+        error: err instanceof Error ? err.message : "Something went wrong. Please try again.",
       },
       { status: 500 }
     );
