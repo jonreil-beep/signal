@@ -11,6 +11,8 @@ interface JobFitScorerProps {
   initialJDText?: string;
   result: JobFitResult | null;
   hasPrepData: boolean;
+  /** Show a "re-score with updated profile" banner on the result view */
+  isProfileStale?: boolean;
   onJobScored: (jobDescription: string, result: JobFitResult) => void;
   onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
@@ -57,7 +59,7 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>(initialJDText ?? "");
   const [urlInput, setUrlInput] = useState<string>("");
@@ -71,6 +73,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   const rescoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showRescoreWarning, setShowRescoreWarning] = useState(false);
   const [pendingDismissed, setPendingDismissed] = useState<string[]>([]);
+  // "dismiss" = re-score after dismissing gaps; "direct" = re-score with updated profile
+  const [pendingRescoreAction, setPendingRescoreAction] = useState<"dismiss" | "direct" | null>(null);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -134,6 +138,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     if (hasPrepData) {
       // Warn the user that re-scoring will clear their existing prep guide
       setPendingDismissed(next);
+      setPendingRescoreAction("dismiss");
       setShowRescoreWarning(true);
       return;
     }
@@ -143,18 +148,57 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     rescoreTimer.current = setTimeout(() => triggerRescore(next), 1200);
   }
 
+  function handleProfileRescore() {
+    if (hasPrepData) {
+      setPendingRescoreAction("direct");
+      setShowRescoreWarning(true);
+      return;
+    }
+    void triggerDirectRescore();
+  }
+
   function confirmRescore() {
-    setDismissedItems(pendingDismissed);
-    setRescoreError("");
     setShowRescoreWarning(false);
-    if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
-    rescoreTimer.current = setTimeout(() => triggerRescore(pendingDismissed), 1200);
-    setPendingDismissed([]);
+    if (pendingRescoreAction === "dismiss") {
+      setDismissedItems(pendingDismissed);
+      setRescoreError("");
+      if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
+      rescoreTimer.current = setTimeout(() => triggerRescore(pendingDismissed), 1200);
+      setPendingDismissed([]);
+    } else if (pendingRescoreAction === "direct") {
+      void triggerDirectRescore();
+    }
+    setPendingRescoreAction(null);
   }
 
   function cancelRescore() {
     setPendingDismissed([]);
+    setPendingRescoreAction(null);
     setShowRescoreWarning(false);
+  }
+
+  async function triggerDirectRescore() {
+    const jd = jdText.trim() || jobDescription;
+    if (!jd || !profileText) return;
+    setIsRescoring(true);
+    setRescoreError("");
+    try {
+      const response = await fetch("/api/score-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription: jd }),
+      });
+      const data = await response.json() as JobFitResult & { error?: string };
+      if (!response.ok) {
+        setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
+      } else {
+        onJobFitUpdated(data as JobFitResult);
+      }
+    } catch {
+      setRescoreError("Network error. Check your connection and try again.");
+    } finally {
+      setIsRescoring(false);
+    }
   }
 
   async function triggerRescore(dismissed: string[]) {
@@ -331,6 +375,19 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
       {/* Results */}
       {result && recStyle && (
         <div className="space-y-4">
+
+          {/* Profile staleness banner */}
+          {isProfileStale && !isRescoring && (
+            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
+              <p className="text-sm text-brand-text/70">Your profile was updated after this score — results may not reflect your current resume.</p>
+              <button
+                onClick={handleProfileRescore}
+                className="shrink-0 text-sm font-semibold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
+              >
+                Re-score →
+              </button>
+            </div>
+          )}
 
           {/* Score + recommendation */}
           <div className="bg-brand-text rounded-2xl p-6">

@@ -586,6 +586,9 @@ export default function Home() {
   }
 
   function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
+    // Push history so the browser back button returns to My Jobs
+    window.history.replaceState({ signalTab: "my-jobs" }, "");
+    window.history.pushState({ signalTab: goTo }, "");
     setActiveJobId(job.id);
     setJobDescription(job.jobDescription);
     setJobFitResult(job.jobFitResult);
@@ -1075,6 +1078,7 @@ export default function Home() {
                   initialJDText={!jobFitResult ? jobDescription : undefined}
                   result={jobFitResult}
                   hasPrepData={!!(tailoringResult || coverLetterResult || outreachResult || resumeUpdateResult || interviewPrepResult || followUpResult)}
+                  isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
                   onJobScored={handleJobScored}
                   onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}
