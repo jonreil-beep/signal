@@ -14,7 +14,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus, DiscoveredJob } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -73,6 +73,7 @@ export default function Home() {
 
   // ── Job Discovery state ──
   const [findSimilarJD, setFindSimilarJD] = useState<string | null>(null);
+  const [discoverJobs, setDiscoverJobs] = useState<DiscoveredJob[]>([]);
 
   // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
@@ -85,6 +86,11 @@ export default function Home() {
 
     const savedJobId = sessionStorage.getItem("signal-active-job-id");
     if (savedJobId) setActiveJobId(savedJobId);
+
+    const savedDiscoverJobs = sessionStorage.getItem("signal-discover-jobs");
+    if (savedDiscoverJobs) {
+      try { setDiscoverJobs(JSON.parse(savedDiscoverJobs)); } catch { /* ignore */ }
+    }
 
     setSessionRestored(true);
   }, []);
@@ -110,6 +116,12 @@ export default function Home() {
       sessionStorage.removeItem("signal-active-job-id");
     }
   }, [activeJobId, sessionRestored]);
+
+  // ── Persist discover jobs ──
+  useEffect(() => {
+    if (!sessionRestored) return;
+    sessionStorage.setItem("signal-discover-jobs", JSON.stringify(discoverJobs));
+  }, [discoverJobs, sessionRestored]);
 
   // ── Auth lifecycle ──
   useEffect(() => {
@@ -1014,6 +1026,8 @@ export default function Home() {
           <JobDiscovery
             profileText={profileText}
             clusterResult={clusterResult}
+            savedJobs={discoverJobs}
+            onJobsChange={setDiscoverJobs}
             findSimilarJD={findSimilarJD}
             onFindSimilarConsumed={() => setFindSimilarJD(null)}
             onLoadJob={handleLoadDiscoveredJob}

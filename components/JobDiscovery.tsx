@@ -2,15 +2,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import LoadingState from "./LoadingState";
-import type { DiscoveredJob, JobDiscoveryResult, RoleClusterResult } from "@/types";
+import type { DiscoveredJob, RoleClusterResult } from "@/types";
 
 interface JobDiscoveryProps {
   profileText: string;
   clusterResult: RoleClusterResult | null;
+  // Persisted jobs list, owned by page.tsx
+  savedJobs: DiscoveredJob[];
+  onJobsChange: (jobs: DiscoveredJob[]) => void;
   // When set, auto-trigger a "find similar" search using this JD
   findSimilarJD: string | null;
   onFindSimilarConsumed: () => void;
-  onLoadJob: (url: string, title: string, company: string) => void;
+  onLoadJob: (jdText: string, title: string, company: string) => void;
   onGoToProfile: () => void;
 }
 
@@ -95,17 +98,22 @@ function JobCard({
 export default function JobDiscovery({
   profileText,
   clusterResult,
+  savedJobs,
+  onJobsChange,
   findSimilarJD,
   onFindSimilarConsumed,
   onLoadJob,
   onGoToProfile,
 }: JobDiscoveryProps) {
-  const [result, setResult] = useState<JobDiscoveryResult | null>(null);
+  // Ephemeral search state — doesn't need to survive tab switches
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
+  const [lastSearchSummary, setLastSearchSummary] = useState("");
   const [mode, setMode] = useState<"profile" | "similar">("profile");
   const [loadingJobUrl, setLoadingJobUrl] = useState<string | null>(null);
   const [loadError, setLoadError] = useState("");
+  // Holds the reference JD for "similar" searches so "Find more" can reuse it
+  const [currentSimilarJD, setCurrentSimilarJD] = useState<string | null>(null);
 
   const prevFindSimilarRef = useRef<string | null>(null);
 
@@ -113,18 +121,28 @@ export default function JobDiscovery({
   useEffect(() => {
     if (findSimilarJD && findSimilarJD !== prevFindSimilarRef.current) {
       prevFindSimilarRef.current = findSimilarJD;
-      handleSearch("similar");
+      setCurrentSimilarJD(findSimilarJD);
+      handleSearch("similar", false, findSimilarJD);
       onFindSimilarConsumed();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [findSimilarJD]);
 
-  async function handleSearch(searchMode: "profile" | "similar" = "profile") {
+  async function handleSearch(
+    searchMode: "profile" | "similar" = "profile",
+    append = false,
+    overrideSimilarJD?: string
+  ) {
+    const similarJD = searchMode === "similar" ? (overrideSimilarJD ?? currentSimilarJD) : null;
+
     setIsSearching(true);
     setSearchError("");
-    setResult(null);
     setMode(searchMode);
     setLoadError("");
+
+    if (!append) {
+      onJobsChange([]);
+    }
 
     const profileSummary = buildProfileSummary(profileText, clusterResult);
 
@@ -134,17 +152,21 @@ export default function JobDiscovery({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           profileSummary,
-          similarToJD: searchMode === "similar" ? findSimilarJD ?? undefined : undefined,
+          similarToJD: similarJD ?? undefined,
         }),
       });
       const data = await response.json();
       if (!response.ok) {
         setSearchError(data.error ?? "Search failed. Please try again.");
+        if (!append) onJobsChange([]);
       } else {
-        setResult(data as JobDiscoveryResult);
+        setLastSearchSummary(data.search_summary ?? "");
+        const newJobs: DiscoveredJob[] = data.jobs ?? [];
+        onJobsChange(append ? [...savedJobs, ...newJobs] : newJobs);
       }
     } catch {
       setSearchError("Network error. Check your connection and try again.");
+      if (!append) onJobsChange([]);
     } finally {
       setIsSearching(false);
     }
@@ -154,7 +176,6 @@ export default function JobDiscovery({
     setLoadingJobUrl(job.url);
     setLoadError("");
     try {
-      // Try to fetch the full JD text from the URL
       const response = await fetch("/api/fetch-jd", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,14 +185,11 @@ export default function JobDiscovery({
       if (response.ok && data.text && data.text.length > 100) {
         onLoadJob(data.text, job.title, job.company);
       } else {
-        // Fallback: use snippet + title as the JD
-        const fallbackJD = `${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`;
-        onLoadJob(fallbackJD, job.title, job.company);
+        // Fallback: use snippet + title
+        onLoadJob(`${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`, job.title, job.company);
       }
     } catch {
-      // Fallback on network error too
-      const fallbackJD = `${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`;
-      onLoadJob(fallbackJD, job.title, job.company);
+      onLoadJob(`${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`, job.title, job.company);
     } finally {
       setLoadingJobUrl(null);
     }
@@ -192,31 +210,33 @@ export default function JobDiscovery({
     );
   }
 
+  const hasJobs = savedJobs.length > 0;
+
   return (
     <div className="space-y-5">
-      {/* Header */}
+      {/* ── Header ── */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-brand-text">
-            {mode === "similar" && result ? "Similar Jobs" : "Job Discovery"}
+            {mode === "similar" && hasJobs ? "Similar Jobs" : "Job Discovery"}
           </h2>
           <p className="text-base text-brand-text/50 mt-1">
-            {mode === "similar" && result
+            {mode === "similar" && hasJobs
               ? "Open roles similar to the job you scored — at other companies."
               : "Signal searches the web for open roles that match your profile."}
           </p>
         </div>
         {!isSearching && (
           <button
-            onClick={() => handleSearch("profile")}
+            onClick={() => handleSearch("profile", false)}
             className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
           >
-            {result && mode === "profile" ? "Search again" : "Find Matching Jobs"}
+            {hasJobs ? "Search again" : "Find Matching Jobs"}
           </button>
         )}
       </div>
 
-      {/* Loading */}
+      {/* ── Loading ── */}
       {isSearching && (
         <LoadingState
           message={
@@ -227,12 +247,12 @@ export default function JobDiscovery({
         />
       )}
 
-      {/* Error */}
+      {/* ── Error ── */}
       {searchError && !isSearching && (
         <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
           <p className="text-base text-red-700">{searchError}</p>
           <button
-            onClick={() => handleSearch(mode)}
+            onClick={() => handleSearch(mode, false)}
             className="mt-1 text-sm text-red-500 underline hover:no-underline"
           >
             Try again
@@ -240,47 +260,62 @@ export default function JobDiscovery({
         </div>
       )}
 
-      {/* Load error */}
+      {/* ── Load error ── */}
       {loadError && (
         <div className="p-3 bg-red-50 rounded-xl ring-1 ring-red-100">
           <p className="text-sm text-red-700">{loadError}</p>
         </div>
       )}
 
-      {/* Results */}
-      {result && !isSearching && (
+      {/* ── Results ── */}
+      {hasJobs && !isSearching && (
         <>
           {/* Search summary */}
-          <div className="flex items-center gap-2 text-sm text-brand-text/40">
-            <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
-            </svg>
-            <span>{result.search_summary}</span>
-          </div>
-
-          {/* Job cards */}
-          {result.jobs.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 shadow text-center">
-              <p className="text-base font-semibold text-brand-text">No matches found</p>
-              <p className="text-base text-brand-text/50 mt-1">Try searching again — results vary with each search.</p>
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {result.jobs.map((job, i) => (
-                <JobCard
-                  key={i}
-                  job={job}
-                  onLoad={handleLoadJob}
-                  isLoading={loadingJobUrl === job.url}
-                />
-              ))}
+          {lastSearchSummary && (
+            <div className="flex items-center gap-2 text-sm text-brand-text/40">
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
+              </svg>
+              <span>{lastSearchSummary}</span>
             </div>
           )}
+
+          {/* Job grid */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {savedJobs.map((job, i) => (
+              <JobCard
+                key={i}
+                job={job}
+                onLoad={handleLoadJob}
+                isLoading={loadingJobUrl === job.url}
+              />
+            ))}
+          </div>
+
+          {/* Find more / Clear */}
+          <div className="flex items-center justify-between pt-2 border-t border-brand-text/8">
+            <button
+              onClick={() => onJobsChange([])}
+              className="text-sm text-brand-text/30 hover:text-brand-text/50 transition-colors"
+            >
+              Clear results
+            </button>
+            <button
+              onClick={() => handleSearch(mode, true)}
+              disabled={isSearching}
+              className="flex items-center gap-1.5 px-5 py-2.5 border border-brand-text/15 text-brand-text/60 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/80 disabled:opacity-50 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Find more
+            </button>
+          </div>
         </>
       )}
 
-      {/* Empty state */}
-      {!result && !isSearching && !searchError && (
+      {/* ── Empty state (no results yet) ── */}
+      {!hasJobs && !isSearching && !searchError && (
         <div className="bg-white rounded-2xl p-10 shadow text-center">
           <div className="w-10 h-10 mx-auto mb-4 rounded-full bg-brand-accent/10 flex items-center justify-center">
             <svg className="w-5 h-5 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -292,7 +327,7 @@ export default function JobDiscovery({
             Signal will use your profile to find open roles that are a genuine fit — across company career pages and job boards.
           </p>
           <button
-            onClick={() => handleSearch("profile")}
+            onClick={() => handleSearch("profile", false)}
             className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
           >
             Find Matching Jobs →
