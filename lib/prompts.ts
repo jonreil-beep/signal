@@ -124,7 +124,7 @@ ${VOICE_RULES}`;
 }
 
 // Session 4: Tailoring brief prompt
-export function buildTailoringPrompt(resumeText: string, jobDescription: string): string {
+export function buildTailoringPrompt(resumeText: string, jobDescription: string, userNote?: string): string {
   return `You are a senior talent strategist preparing a candidate for a specific job application.
 
 Candidate Resume:
@@ -179,7 +179,7 @@ Rules:
 - What to de-emphasize: 1-3 items, be honest
 - Return only valid JSON, no markdown fences
 
-${VOICE_RULES}`;
+${VOICE_RULES}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }
 
 // Resume update suggestions prompt
@@ -232,7 +232,8 @@ ${VOICE_RULES}`;
 export function buildCoverLetterPrompt(
   resumeText: string,
   jobDescription: string,
-  outreachAngle?: string
+  outreachAngle?: string,
+  userNote?: string
 ): string {
   return `You are a senior talent strategist helping a candidate write a cover letter for a specific job.
 
@@ -264,7 +265,7 @@ Rules:
 - Never list more than two things in a row. If you're listing, you're probably not writing.
 - Return only valid JSON, no markdown fences
 
-${VOICE_RULES}`;
+${VOICE_RULES}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }
 
 // Interview prep prompt
@@ -390,7 +391,8 @@ ${VOICE_RULES}`;
 export function buildOutreachPrompt(
   outreachAngle: string,
   resumeText: string,
-  jobDescription: string
+  jobDescription: string,
+  userNote?: string
 ): string {
   return `You are a senior talent strategist helping a candidate write outreach messages for a specific job.
 
@@ -425,7 +427,7 @@ Rules:
 - If the outreach reads like a recruiter template, it has failed — rewrite it with a more specific hook
 - Return only valid JSON, no markdown fences
 
-${VOICE_RULES}`;
+${VOICE_RULES}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }
 
 // LinkedIn headline optimizer prompt

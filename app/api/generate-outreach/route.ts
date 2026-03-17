@@ -9,10 +9,11 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    const { outreachAngle, resumeText, jobDescription } = body as {
+    const { outreachAngle, resumeText, jobDescription, userNote } = body as {
       outreachAngle?: string;
       resumeText?: string;
       jobDescription?: string;
+      userNote?: string;
     };
 
     if (!outreachAngle || typeof outreachAngle !== "string" || outreachAngle.trim().length < 10) {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Job description is required." }, { status: 400 });
     }
 
-    const prompt = buildOutreachPrompt(outreachAngle.trim(), resumeText.trim(), jobDescription.trim());
+    const prompt = buildOutreachPrompt(outreachAngle.trim(), resumeText.trim(), jobDescription.trim(), userNote?.trim());
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",

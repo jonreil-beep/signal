@@ -108,6 +108,8 @@ function ActionSection({
   loadingMessage,
   hasResult,
   error,
+  noteValue,
+  onNoteChange,
   children,
 }: {
   title: string;
@@ -118,6 +120,8 @@ function ActionSection({
   loadingMessage: string;
   hasResult: boolean;
   error: string;
+  noteValue?: string;
+  onNoteChange?: (v: string) => void;
   children?: React.ReactNode;
 }) {
   return (
@@ -158,6 +162,22 @@ function ActionSection({
       {hasResult && !isLoading && (
         <div className="border-t border-brand-text/8 px-5 py-5 space-y-6">
           {children}
+          {/* Correction / tone note — shown after a result so user can refine on re-generate */}
+          {noteValue !== undefined && onNoteChange && (
+            <div className="border-t border-brand-text/8 pt-4">
+              <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-2">
+                Correction or note for next re-generate
+              </p>
+              <textarea
+                value={noteValue}
+                onChange={(e) => onNoteChange(e.target.value)}
+                placeholder='e.g. "Make it more conversational" or "I was VP level, not Director"'
+                maxLength={300}
+                rows={2}
+                className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -232,6 +252,11 @@ export default function TailoringBrief({
   const [isGeneratingCompanyResearch, setIsGeneratingCompanyResearch] = useState(false);
   const [companyResearchError, setCompanyResearchError] = useState<string>("");
 
+  // User correction / tone notes — sent with each (re)generation
+  const [briefNote, setBriefNote] = useState<string>("");
+  const [coverLetterNote, setCoverLetterNote] = useState<string>("");
+  const [outreachNote, setOutreachNote] = useState<string>("");
+
   // Normalize legacy company research data to current schema shape
   const cr = companyResearchResult ? normalizeCompanyResearch(companyResearchResult) : null;
 
@@ -277,7 +302,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, userNote: briefNote || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -327,6 +352,7 @@ export default function TailoringBrief({
           resumeText: profileText,
           jobDescription,
           outreachAngle: result?.outreach_angle,
+          userNote: coverLetterNote || undefined,
         }),
       });
       const data = await response.json();
@@ -355,6 +381,7 @@ export default function TailoringBrief({
           outreachAngle: result.outreach_angle,
           resumeText: profileText,
           jobDescription,
+          userNote: outreachNote || undefined,
         }),
       });
       const data = await response.json();
@@ -631,7 +658,8 @@ export default function TailoringBrief({
 
       {/* ── Header row: description + Export + Build button ── */}
       {!isGenerating && (
-        <div className="flex items-center justify-between gap-3">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
           <p className="text-base text-brand-text/40">
             {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
           </p>
@@ -654,6 +682,16 @@ export default function TailoringBrief({
               {result ? "Rebuild" : "Build Prep Guide"}
             </button>
           </div>
+        </div>
+          {/* Brief context / correction note */}
+          <textarea
+            value={briefNote}
+            onChange={(e) => setBriefNote(e.target.value)}
+            placeholder='Corrections or context for Claude (optional) — e.g. "I was VP level, not Director" or "Focus on the operational angle"'
+            maxLength={300}
+            rows={2}
+            className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+          />
         </div>
       )}
 
@@ -993,6 +1031,8 @@ export default function TailoringBrief({
             loadingMessage="Drafting your cover letter…"
             hasResult={!!coverLetterResult}
             error={coverLetterError}
+            noteValue={coverLetterNote}
+            onNoteChange={setCoverLetterNote}
           >
             {coverLetterResult && (
               <div>
@@ -1033,6 +1073,8 @@ export default function TailoringBrief({
             loadingMessage="Drafting outreach messages…"
             hasResult={!!outreachResult}
             error={outreachError}
+            noteValue={outreachNote}
+            onNoteChange={setOutreachNote}
           >
             {outreachResult && (
               <>

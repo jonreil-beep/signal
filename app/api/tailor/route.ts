@@ -9,9 +9,10 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    const { resumeText, jobDescription } = body as {
+    const { resumeText, jobDescription, userNote } = body as {
       resumeText?: string;
       jobDescription?: string;
+      userNote?: string;
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const prompt = buildTailoringPrompt(resumeText.trim(), jobDescription.trim());
+    const prompt = buildTailoringPrompt(resumeText.trim(), jobDescription.trim(), userNote?.trim());
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",

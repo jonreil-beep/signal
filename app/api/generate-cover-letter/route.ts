@@ -9,10 +9,11 @@ export const maxDuration = 60;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    const { resumeText, jobDescription, outreachAngle } = body as {
+    const { resumeText, jobDescription, outreachAngle, userNote } = body as {
       resumeText?: string;
       jobDescription?: string;
       outreachAngle?: string;
+      userNote?: string;
     };
 
     if (!resumeText || typeof resumeText !== "string") {
@@ -25,7 +26,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const prompt = buildCoverLetterPrompt(
       resumeText.trim(),
       jobDescription.trim(),
-      outreachAngle?.trim()
+      outreachAngle?.trim(),
+      userNote?.trim()
     );
 
     const message = await anthropic.messages.create({
