@@ -126,16 +126,27 @@ export interface FollowUpResult {
 
 export interface CompanyResearchQuestion {
   question: string;
-  why: string;
+  what_youre_probing: string;
+}
+
+export interface CompanyWhatWeKnow {
+  summary: string;
+  sources: string;
+}
+
+export interface CompanyRedFlag {
+  flag: string;
+  how_to_probe: string;
 }
 
 export interface CompanyResearchResult {
   company_name: string;
-  business_overview: string;
-  culture_signals: string[];
-  strategic_context: string;
-  red_flags_to_probe: string[];
-  smart_questions_to_ask: CompanyResearchQuestion[];
+  // Tiered provenance: fact → inference → hypotheses to test
+  what_we_know: CompanyWhatWeKnow;       // reasonably verifiable facts
+  what_we_re_reading: string[];          // inferences from JD / market signals — labeled as interpretation
+  culture_signals: string[];             // inferred from JD tone and requirements
+  red_flags_to_probe: CompanyRedFlag[];  // concerns worth surfacing in interview
+  questions_to_test: CompanyResearchQuestion[]; // hypotheses to test in interview
   caveat?: string;
 }
 

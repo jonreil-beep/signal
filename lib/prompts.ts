@@ -284,35 +284,43 @@ Job Description:
 ${jobDescription.slice(0, 2000)}
 </job_description>
 
-Based on the job description and your training knowledge, research this company. Return this exact JSON structure — nothing else:
+Research this company and return structured JSON with explicit provenance — separating what is known from what is inferred. Return this exact JSON structure — nothing else:
 {
   "company_name": "The company's full name as it appears in the JD",
-  "business_overview": "2-3 sentences: what the company does, their market or customer base, and their approximate size or stage (startup, mid-size, enterprise, public, etc.)",
+  "what_we_know": {
+    "summary": "2-3 sentences of reasonably verifiable facts: what the company does, their market or customer base, approximate size or stage. If you are uncertain about any detail, say so explicitly within the text using 'appears to' or 'likely.' Do not fabricate details.",
+    "sources": "One short phrase indicating confidence level — e.g. 'Well-known public company,' 'Mid-size company with limited public information,' or 'Startup — details inferred from JD'"
+  },
+  "what_we_re_reading": [
+    "An inference or interpretation — drawn from the JD tone, requirements, or known market context. Must be phrased as interpretation, not fact. E.g. 'The emphasis on cross-functional alignment suggests a matrixed org structure' or 'Requiring 3+ years in enterprise SaaS likely signals a complex sales cycle.'",
+    "Another inference — keep to 2-4 total"
+  ],
   "culture_signals": [
-    "Specific signal about working there — pace, structure, values, team dynamics",
+    "A specific signal about working there — pace, structure, values, team dynamics. Inferred from JD language and requirements. Phrase as observation, not fact.",
     "Another signal"
   ],
-  "strategic_context": "1-2 sentences on the company's current trajectory — growth phase, market position, recent moves, or competitive pressures",
   "red_flags_to_probe": [
-    "A concern worth probing in interviews — e.g. high turnover, recent layoffs, unclear roadmap, leadership instability. Frame as something to investigate, not a verdict.",
-    "Another flag if relevant"
-  ],
-  "smart_questions_to_ask": [
     {
-      "question": "A specific, researched question to ask in the interview that signals preparation",
-      "why": "What this question reveals or why it's worth asking"
+      "flag": "A specific concern worth investigating — e.g. 'Three CMOs in four years based on LinkedIn' or 'JD has been reposted multiple times, may signal churn.' Frame as something to investigate, not a verdict.",
+      "how_to_probe": "How to surface this concern in the interview without being adversarial — e.g. 'Ask what success looked like for the last person in this role and why they moved on.'"
     }
   ],
-  "caveat": "Optional: include ONLY if you have limited data on this company — e.g. 'This appears to be a smaller or newer company with limited public information. Verify details on LinkedIn, Glassdoor, and their website before interviews.' Otherwise omit this field entirely."
+  "questions_to_test": [
+    {
+      "question": "A specific question to ask in the interview — tests a hypothesis or surfaces a concern",
+      "what_youre_probing": "The underlying hypothesis or concern this question is designed to test"
+    }
+  ],
+  "caveat": "Optional: include ONLY if you have genuinely limited information — e.g. 'This appears to be a smaller or newer company with limited public data. Verify details on LinkedIn, Glassdoor, and their website before interviews.' Omit entirely for well-known organizations."
 }
 
 Rules:
-- If you don't know the company well, be honest in business_overview rather than fabricating details
-- culture_signals: 2-4 bullets, based on what you know OR inferred from the JD tone and requirements
-- red_flags_to_probe: 1-3 items — be honest but not alarmist. If you have no concerns, return an empty array.
-- smart_questions_to_ask: 3-4 questions — must be specific to this company, not generic interview questions
-- caveat: only include when genuinely uncertain about the company — omit it for well-known organizations
-- culture_signals and strategic_context are inferences unless you can state them as known fact — phrase accordingly
+- what_we_know.summary: only include things you are reasonably confident are accurate. Never fabricate specifics. When uncertain, say "appears to" or "likely."
+- what_we_re_reading: these are interpretations — phrase them as such. Use "suggests," "implies," "may indicate," "likely signals." 2-4 items.
+- culture_signals: 2-4 items — inferred from the JD, not stated as fact
+- red_flags_to_probe: 1-3 items. If you have no genuine concerns, return an empty array — do not manufacture flags.
+- questions_to_test: 3-4 questions — each must test a specific hypothesis, not be a generic "tell me about the culture" question
+- Never present an inference as a verified fact. The distinction is the entire point.
 - Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;

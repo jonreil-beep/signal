@@ -49,9 +49,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (
       typeof result.company_name !== "string" ||
-      typeof result.business_overview !== "string" ||
+      typeof result.what_we_know?.summary !== "string" ||
+      !Array.isArray(result.what_we_re_reading) ||
       !Array.isArray(result.culture_signals) ||
-      !Array.isArray(result.smart_questions_to_ask)
+      !Array.isArray(result.questions_to_test)
     ) {
       return NextResponse.json(
         { error: "Response was missing required fields. Try again." },

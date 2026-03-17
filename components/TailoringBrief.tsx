@@ -404,29 +404,35 @@ export default function TailoringBrief({
       lines.push(sep);
       lines.push("");
       lines.push(`Company: ${companyResearchResult.company_name}`);
+      lines.push(`Source confidence: ${companyResearchResult.what_we_know.sources}`);
       lines.push("");
-      lines.push("Business Overview");
-      lines.push(companyResearchResult.business_overview);
+      lines.push("What We Know");
+      lines.push(companyResearchResult.what_we_know.summary);
       lines.push("");
       if (companyResearchResult.caveat) {
         lines.push(`Note: ${companyResearchResult.caveat}`);
         lines.push("");
       }
+      if (companyResearchResult.what_we_re_reading.length > 0) {
+        lines.push("What We're Reading (Interpretation)");
+        companyResearchResult.what_we_re_reading.forEach((s) => lines.push(`• ${s}`));
+        lines.push("");
+      }
       lines.push("Culture Signals");
       companyResearchResult.culture_signals.forEach((s) => lines.push(`• ${s}`));
       lines.push("");
-      lines.push("Strategic Context");
-      lines.push(companyResearchResult.strategic_context);
-      lines.push("");
       if (companyResearchResult.red_flags_to_probe.length > 0) {
-        lines.push("Red Flags to Probe");
-        companyResearchResult.red_flags_to_probe.forEach((f) => lines.push(`• ${f}`));
+        lines.push("Worth Probing");
+        companyResearchResult.red_flags_to_probe.forEach((f) => {
+          lines.push(`• ${f.flag}`);
+          lines.push(`  How to probe: ${f.how_to_probe}`);
+        });
         lines.push("");
       }
-      lines.push("Smart Questions to Ask");
-      companyResearchResult.smart_questions_to_ask.forEach((q) => {
+      lines.push("Questions to Test");
+      companyResearchResult.questions_to_test.forEach((q) => {
         lines.push(`Q: ${q.question}`);
-        lines.push(`   Why: ${q.why}`);
+        lines.push(`   Probing: ${q.what_youre_probing}`);
       });
       lines.push("");
     }
@@ -738,7 +744,7 @@ export default function TailoringBrief({
       {prepSection === "company" && (
         <ActionSection
           title="Company Research"
-          description="Culture signals, strategic context, and smart questions to ask — pulled from the job description."
+          description="What we know, what we're reading into, and questions to test your hypotheses in the interview."
           buttonLabel="Research Company"
           onAction={handleGenerateCompanyResearch}
           isLoading={isGeneratingCompanyResearch}
@@ -748,60 +754,87 @@ export default function TailoringBrief({
         >
           {companyResearchResult && (
             <>
+              {/* ── What we know ── */}
               <div>
-                <p className="text-base font-semibold text-brand-text mb-1">{companyResearchResult.company_name}</p>
-                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.business_overview}</p>
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <p className="text-base font-semibold text-brand-text">{companyResearchResult.company_name}</p>
+                  <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
+                    {companyResearchResult.what_we_know.sources}
+                  </span>
+                </div>
+                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.what_we_know.summary}</p>
               </div>
 
+              {/* Limited data caveat */}
               {companyResearchResult.caveat && (
                 <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
                   <p className="text-sm text-status-stretch leading-snug">{companyResearchResult.caveat}</p>
                 </div>
               )}
 
-              <div className="border-t border-brand-text/8 pt-6">
-                <SubHeading label="Culture Signals" />
-                <ul className="space-y-1.5">
-                  {companyResearchResult.culture_signals.map((s, i) => (
-                    <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
-                      <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="border-t border-brand-text/8 pt-6">
-                <SubHeading label="Strategic Context" />
-                <p className="text-base text-brand-text/70 leading-relaxed">{companyResearchResult.strategic_context}</p>
-              </div>
-
-              {companyResearchResult.red_flags_to_probe.length > 0 && (
+              {/* ── What we're reading ── */}
+              {companyResearchResult.what_we_re_reading.length > 0 && (
                 <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading label="Red Flags to Probe" />
-                  <ul className="space-y-1.5">
-                    {companyResearchResult.red_flags_to_probe.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-base text-status-stretch">
-                        <span className="mt-1.5 w-1 h-1 rounded-full bg-status-stretch/50 shrink-0" />
-                        {f}
+                  <div className="flex items-center gap-2 mb-3">
+                    <SubHeading label="What We're Reading" />
+                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
+                      Interpretation
+                    </span>
+                  </div>
+                  <ul className="space-y-2">
+                    {companyResearchResult.what_we_re_reading.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
+                        <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
+                        {item}
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
+              {/* ── Culture signals ── */}
+              {companyResearchResult.culture_signals.length > 0 && (
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading label="Culture Signals" />
+                  <ul className="space-y-1.5">
+                    {companyResearchResult.culture_signals.map((s, i) => (
+                      <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
+                        <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* ── Red flags ── */}
+              {companyResearchResult.red_flags_to_probe.length > 0 && (
+                <div className="border-t border-brand-text/8 pt-6">
+                  <SubHeading label="Worth Probing" />
+                  <div className="space-y-3">
+                    {companyResearchResult.red_flags_to_probe.map((f, i) => (
+                      <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
+                        <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
+                        <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Questions to test ── */}
               <div className="border-t border-brand-text/8 pt-6">
                 <SubHeading
-                  label="Smart Questions to Ask"
-                  copyText={companyResearchResult.smart_questions_to_ask
-                    .map((q) => `Q: ${q.question}\nWhy: ${q.why}`)
+                  label="Questions to Test"
+                  copyText={companyResearchResult.questions_to_test
+                    .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
                     .join("\n\n")}
                 />
                 <div className="space-y-4">
-                  {companyResearchResult.smart_questions_to_ask.map((q, i) => (
+                  {companyResearchResult.questions_to_test.map((q, i) => (
                     <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
                       <p className="text-base font-medium text-brand-text">{q.question}</p>
-                      <p className="text-sm text-brand-text/40 mt-0.5">{q.why}</p>
+                      <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
                     </div>
                   ))}
                 </div>
