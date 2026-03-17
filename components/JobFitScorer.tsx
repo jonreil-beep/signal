@@ -7,7 +7,10 @@ import type { JobFitResult, MismatchType } from "@/types";
 interface JobFitScorerProps {
   profileText: string;
   jobDescription: string;
+  /** Pre-seed the JD textarea (e.g. when loading a job from Discover) */
+  initialJDText?: string;
   result: JobFitResult | null;
+  hasPrepData: boolean;
   onJobScored: (jobDescription: string, result: JobFitResult) => void;
   onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
@@ -54,9 +57,9 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function JobFitScorer({ profileText, jobDescription, result, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
-  const [jdText, setJdText] = useState<string>("");
+  const [jdText, setJdText] = useState<string>(initialJDText ?? "");
   const [urlInput, setUrlInput] = useState<string>("");
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string>("");
@@ -66,6 +69,8 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
   const rescoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showRescoreWarning, setShowRescoreWarning] = useState(false);
+  const [pendingDismissed, setPendingDismissed] = useState<string[]>([]);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -125,14 +130,31 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
   }
 
   function handleDismissItem(item: string) {
-    setDismissedItems((prev) => {
-      const next = [...prev, item];
-      // Debounce: clear any pending rescore and schedule a new one
-      if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
-      rescoreTimer.current = setTimeout(() => triggerRescore(next), 1200);
-      return next;
-    });
+    const next = [...dismissedItems, item];
+    if (hasPrepData) {
+      // Warn the user that re-scoring will clear their existing prep guide
+      setPendingDismissed(next);
+      setShowRescoreWarning(true);
+      return;
+    }
+    setDismissedItems(next);
     setRescoreError("");
+    if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
+    rescoreTimer.current = setTimeout(() => triggerRescore(next), 1200);
+  }
+
+  function confirmRescore() {
+    setDismissedItems(pendingDismissed);
+    setRescoreError("");
+    setShowRescoreWarning(false);
+    if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
+    rescoreTimer.current = setTimeout(() => triggerRescore(pendingDismissed), 1200);
+    setPendingDismissed([]);
+  }
+
+  function cancelRescore() {
+    setPendingDismissed([]);
+    setShowRescoreWarning(false);
   }
 
   async function triggerRescore(dismissed: string[]) {
@@ -175,6 +197,33 @@ export default function JobFitScorer({ profileText, jobDescription, result, onJo
 
   return (
     <div className="space-y-5">
+      {/* Re-score warning dialog */}
+      {showRescoreWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full space-y-4">
+            <div>
+              <p className="text-base font-semibold text-brand-text">Re-score this job?</p>
+              <p className="mt-1.5 text-sm text-brand-text/60 leading-relaxed">
+                Re-scoring will clear your existing prep guide for this job — cover letter, outreach, interview questions, and any other prep you&apos;ve built will be removed.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={confirmRescore}
+                className="flex-1 px-4 py-2.5 bg-brand-text text-white text-sm font-semibold rounded-xl hover:bg-brand-text/85 transition-colors"
+              >
+                Re-score
+              </button>
+              <button
+                onClick={cancelRescore}
+                className="flex-1 px-4 py-2.5 bg-brand-text/8 text-brand-text/70 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {!result && (
         <>
           {/* Mode toggle */}

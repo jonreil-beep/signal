@@ -7,6 +7,7 @@ import JobLabelEditor from "./JobLabelEditor";
 interface JobTrackerProps {
   jobs: TrackedJob[];
   hasProfile: boolean;
+  profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
@@ -69,6 +70,7 @@ function deadlineUrgency(deadline: string): { textClass: string; label: string }
 
 interface JobCardProps {
   job: TrackedJob;
+  profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
@@ -77,7 +79,7 @@ interface JobCardProps {
   onDeadlineChange: (id: string, deadline: string | null) => void;
 }
 
-function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
+function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
   const [showJD, setShowJD] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -86,6 +88,10 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
   const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
+  const isPrepStale =
+    !!profileUpdatedAt &&
+    !!job.tailoringResult &&
+    new Date(job.scoredAt) < profileUpdatedAt;
 
   return (
     <div
@@ -122,6 +128,14 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
           <>
             <span className="text-brand-text/20">·</span>
             <span className="text-xs text-status-apply font-medium">Prep ready</span>
+          </>
+        )}
+        {isPrepStale && (
+          <>
+            <span className="text-brand-text/20">·</span>
+            <span className="text-xs text-status-stretch font-medium" title="Your profile was updated after this prep was built — consider re-scoring">
+              Profile updated
+            </span>
           </>
         )}
         {job.deadline && (() => {
@@ -259,7 +273,7 @@ function JobCard({ job, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, o
 type SortBy = "date" | "score" | "deadline";
 type StatusFilter = ApplicationStatus | "All";
 
-export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
+export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
@@ -447,6 +461,7 @@ export default function JobTracker({ jobs, hasProfile, onSelectJob, onRemoveJob,
             <JobCard
               key={job.id}
               job={job}
+              profileUpdatedAt={profileUpdatedAt}
               onSelectJob={onSelectJob}
               onRemoveJob={onRemoveJob}
               onRenameJob={onRenameJob}

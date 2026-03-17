@@ -82,6 +82,7 @@ export default function Home() {
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
+  const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
 
   // ── Job Discovery state ──
   const [findSimilarJD, setFindSimilarJD] = useState<string | null>(null);
@@ -239,6 +240,7 @@ export default function Home() {
     setCompanyResearchResult(null);
     setTrackedJobs([]);
     setActiveJobId(null);
+    setProfileUpdatedAt(null);
     setActiveTab("my-jobs");
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
@@ -272,6 +274,10 @@ export default function Home() {
 
   // ── Profile ──
   async function handleProfileConfirmed(text: string) {
+    // If a profile already exists and there are scored jobs, mark as updated so job cards show staleness
+    if (profileText && trackedJobs.length > 0) {
+      setProfileUpdatedAt(new Date());
+    }
     setProfileText(text);
     setClusterResult(null);
     setAnalyzeError("");
@@ -724,9 +730,9 @@ export default function Home() {
         }
         rightSlot={
           <div className="flex items-center gap-4">
-            <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
+            <a href="/how-it-works" target="_blank" rel="noopener noreferrer" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
               How it works
-            </Link>
+            </a>
             {user && (
               <>
                 <span className="text-white/15 hidden sm:block">|</span>
@@ -1020,7 +1026,9 @@ export default function Home() {
                 <JobFitScorer
                   profileText={profileText}
                   jobDescription={jobDescription}
+                  initialJDText={!jobFitResult ? jobDescription : undefined}
                   result={jobFitResult}
+                  hasPrepData={!!(tailoringResult || coverLetterResult || outreachResult || resumeUpdateResult || interviewPrepResult || followUpResult)}
                   onJobScored={handleJobScored}
                   onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}
@@ -1116,6 +1124,7 @@ export default function Home() {
             <JobTracker
               jobs={trackedJobs}
               hasProfile={!!profileText}
+              profileUpdatedAt={profileUpdatedAt}
               onSelectJob={handleSelectJob}
               onRemoveJob={handleRemoveJob}
               onRenameJob={handleRenameJob}

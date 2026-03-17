@@ -30,11 +30,9 @@ function buildProfileSummary(profileText: string, clusterResult: RoleClusterResu
 function JobCard({
   job,
   onLoad,
-  isLoading,
 }: {
   job: DiscoveredJob;
   onLoad: (job: DiscoveredJob) => void;
-  isLoading: boolean;
 }) {
   const domain = (() => {
     try {
@@ -77,20 +75,9 @@ function JobCard({
       {/* Load button */}
       <button
         onClick={() => onLoad(job)}
-        disabled={isLoading}
-        className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
       >
-        {isLoading ? (
-          <>
-            <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
-            </svg>
-            Fetching job…
-          </>
-        ) : (
-          "Load into Job Fit →"
-        )}
+        Score This Job →
       </button>
     </div>
   );
@@ -111,8 +98,6 @@ export default function JobDiscovery({
   const [searchError, setSearchError] = useState("");
   const [lastSearchSummary, setLastSearchSummary] = useState("");
   const [mode, setMode] = useState<"profile" | "similar">("profile");
-  const [loadingJobUrl, setLoadingJobUrl] = useState<string | null>(null);
-  const [loadError, setLoadError] = useState("");
   // Holds the reference JD for "similar" searches so "Find more" can reuse it
   const [currentSimilarJD, setCurrentSimilarJD] = useState<string | null>(null);
 
@@ -139,7 +124,6 @@ export default function JobDiscovery({
     setIsSearching(true);
     setSearchError("");
     setMode(searchMode);
-    setLoadError("");
 
     if (!append) {
       onJobsChange([]);
@@ -173,27 +157,20 @@ export default function JobDiscovery({
     }
   }
 
-  async function handleLoadJob(job: DiscoveredJob) {
-    setLoadingJobUrl(job.url);
-    setLoadError("");
-    try {
-      const response = await fetch("/api/fetch-jd", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: job.url }),
-      });
-      const data = await response.json();
-      if (response.ok && data.text && data.text.length > 100) {
-        onLoadJob(data.text, job.title, job.company);
-      } else {
-        // Fallback: use snippet + title
-        onLoadJob(`${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`, job.title, job.company);
-      }
-    } catch {
-      onLoadJob(`${job.title} at ${job.company}\n\n${job.snippet}\n\nSource: ${job.url}`, job.title, job.company);
-    } finally {
-      setLoadingJobUrl(null);
-    }
+  function handleLoadJob(job: DiscoveredJob) {
+    // Job board URLs from web search are unreliable (they often point to listing pages,
+    // not the specific posting). Build a structured JD from the metadata we already have.
+    const syntheticJD = [
+      `${job.title} at ${job.company}`,
+      ``,
+      job.snippet,
+      ``,
+      `Why you fit: ${job.why_match}`,
+      ``,
+      `Source: ${job.url}`,
+      `Note: This is a discovery summary. For the full job description, visit the link above and paste the actual JD to get the most accurate scoring.`,
+    ].join("\n");
+    onLoadJob(syntheticJD, job.title, job.company);
   }
 
   if (!profileText) {
@@ -261,13 +238,6 @@ export default function JobDiscovery({
         </div>
       )}
 
-      {/* ── Load error ── */}
-      {loadError && (
-        <div className="p-3 bg-red-50 rounded-xl ring-1 ring-red-100">
-          <p className="text-sm text-red-700">{loadError}</p>
-        </div>
-      )}
-
       {/* ── Results ── */}
       {hasJobs && !isSearching && (
         <>
@@ -288,7 +258,6 @@ export default function JobDiscovery({
                 key={i}
                 job={job}
                 onLoad={handleLoadJob}
-                isLoading={loadingJobUrl === job.url}
               />
             ))}
           </div>
