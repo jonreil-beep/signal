@@ -105,6 +105,12 @@ export default function Home() {
       try { setDiscoverJobs(JSON.parse(savedDiscoverJobs)); } catch { /* ignore */ }
     }
 
+    // Restore a discovered job that was pre-loaded but not yet scored
+    const pendingJD = sessionStorage.getItem("signal-pending-jd");
+    if (pendingJD && !savedJobId) {
+      setJobDescription(pendingJD);
+    }
+
     setSessionRestored(true);
   }, []);
 
@@ -135,6 +141,29 @@ export default function Home() {
     if (!sessionRestored) return;
     sessionStorage.setItem("signal-discover-jobs", JSON.stringify(discoverJobs));
   }, [discoverJobs, sessionRestored]);
+
+  // ── Persist pending JD for unscored discovered jobs so refresh doesn't lose the textarea ──
+  useEffect(() => {
+    if (!sessionRestored) return;
+    if (jobDescription && !activeJobId) {
+      sessionStorage.setItem("signal-pending-jd", jobDescription);
+    } else {
+      sessionStorage.removeItem("signal-pending-jd");
+    }
+  }, [jobDescription, activeJobId, sessionRestored]);
+
+  // ── Handle browser back/forward for Discover → Job Fit navigation ──
+  useEffect(() => {
+    function handlePopState(event: PopStateEvent) {
+      const state = event.state as { signalTab?: string } | null;
+      const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs", "discover"];
+      if (state?.signalTab && valid.includes(state.signalTab as TabId)) {
+        setActiveTab(state.signalTab as TabId);
+      }
+    }
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // ── Auth lifecycle ──
   useEffect(() => {
@@ -244,6 +273,7 @@ export default function Home() {
     setActiveTab("my-jobs");
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
+    sessionStorage.removeItem("signal-pending-jd");
   }
 
   async function handleSignOut() {
@@ -522,15 +552,14 @@ export default function Home() {
     setActiveJobId(null);
   }
 
-  function handleLoadDiscoveredJob(jdText: string, title: string, company: string) {
-    // Pre-populate Job Fit with the discovered job and navigate there
+  function handleLoadDiscoveredJob(jdText: string, _title: string, _company: string) {
+    // Pre-populate Job Fit with the discovered job and navigate there.
+    // The synthetic JD already starts with "Title at Company" — no need to prepend again.
     handleJobFitReset();
     setJobDescription(jdText);
-    // Use "Title — Company" as the initial label (JobFitScorer will handle scoring + tracking)
-    const label = company ? `${title} — ${company}` : title;
-    // Store a hint for the label extractor — just put it in the JD text preamble
-    const labeledJD = `${label}\n\n${jdText}`;
-    setJobDescription(labeledJD);
+    // Push a history entry so the browser back button returns to Discover instead of /how-it-works
+    window.history.replaceState({ signalTab: "discover" }, "");
+    window.history.pushState({ signalTab: "job-fit" }, "");
     setActiveTab("job-fit");
   }
 
