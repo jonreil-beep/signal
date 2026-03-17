@@ -362,6 +362,7 @@ export default function Home() {
   // Called when user dismisses false-positive "What's Missing" items and re-scores.
   // Updates the existing tracked job in place rather than creating a new one.
   async function handleJobFitUpdated(result: JobFitResult) {
+    const rescoreAt = new Date();
     setJobFitResult(result);
     setTailoringResult(null);
     setInterviewPrepResult(null);
@@ -370,14 +371,14 @@ export default function Home() {
       setTrackedJobs((prev) =>
         prev.map((j) =>
           j.id === activeJobId
-            ? { ...j, jobFitResult: result, tailoringResult: null, outreachResult: null, coverLetterResult: null, resumeUpdateResult: null, interviewPrepResult: null, followUpResult: null }
+            ? { ...j, scoredAt: rescoreAt, jobFitResult: result, tailoringResult: null, outreachResult: null, coverLetterResult: null, resumeUpdateResult: null, interviewPrepResult: null, followUpResult: null }
             : j
         )
       );
       if (user) {
         await supabase
           .from("tracked_jobs")
-          .update({ job_fit_result: result, tailoring_result: null, outreach_result: null, cover_letter_result: null, resume_update_result: null, interview_prep_result: null, follow_up_result: null })
+          .update({ scored_at: rescoreAt.toISOString(), job_fit_result: result, tailoring_result: null, outreach_result: null, cover_letter_result: null, resume_update_result: null, interview_prep_result: null, follow_up_result: null })
           .eq("id", activeJobId);
       }
     }

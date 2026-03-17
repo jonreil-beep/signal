@@ -376,6 +376,17 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
       {result && recStyle && (
         <div className="space-y-4">
 
+          {/* Re-scoring in-progress banner — shown at top so it's always visible */}
+          {isRescoring && (
+            <div className="flex items-center gap-3 px-4 py-3 bg-brand-accent/8 rounded-xl ring-1 ring-brand-accent/20">
+              <svg className="animate-spin shrink-0 w-4 h-4 text-brand-accent" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+              </svg>
+              <p className="text-sm text-brand-text/70">Re-scoring against your updated profile…</p>
+            </div>
+          )}
+
           {/* Profile staleness banner */}
           {isProfileStale && !isRescoring && (
             <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
@@ -517,27 +528,16 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 </ul>
               )}
 
-              {/* Re-score status */}
-              {(dismissedItems.length > 0 || isRescoring) && (
-                <div className="mt-4 pt-4 border-t border-brand-text/8">
-                  {isRescoring ? (
-                    <LoadingState message="Updating your score with corrections..." />
-                  ) : (
-                    <p className="text-sm text-brand-text/40">
-                      Updating score{dismissedItems.length > 1 ? ` (${dismissedItems.length} corrections)` : ""}…
-                    </p>
-                  )}
-                  {rescoreError && !isRescoring && (
-                    <div className="flex items-center gap-3 mt-2">
-                      <p className="text-sm text-status-stretch">{rescoreError}</p>
-                      <button
-                        onClick={() => triggerRescore(dismissedItems)}
-                        className="text-sm text-brand-accent hover:text-brand-accent/70 transition-colors"
-                      >
-                        Retry
-                      </button>
-                    </div>
-                  )}
+              {/* Re-score error (bottom of gaps section) */}
+              {rescoreError && !isRescoring && (
+                <div className="mt-4 pt-4 border-t border-brand-text/8 flex items-center gap-3">
+                  <p className="text-sm text-status-stretch">{rescoreError}</p>
+                  <button
+                    onClick={() => triggerRescore(dismissedItems)}
+                    className="text-sm text-brand-accent hover:text-brand-accent/70 transition-colors"
+                  >
+                    Retry
+                  </button>
                 </div>
               )}
             </div>
