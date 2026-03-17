@@ -643,14 +643,14 @@ export default function Home() {
             <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
           </div>
           <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
-            Most job applications fail before anyone reads them: wrong fit, generic framing,
-            nothing that makes the candidate stick.
+            Most applications fail before anyone reads them. Wrong fit, generic framing,
+            no real preparation for the objections they'll raise.
           </p>
           <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
-            Signal is built for experienced professionals who want to apply to fewer, better-fit roles —
-            and show up fully prepared for each one. Upload your resume once. Get an honest fit score,
-            a targeted prep guide covering exactly what to emphasize, and resume edits calibrated
-            to your actual background.
+            Signal is for experienced professionals with real careers to position — not just a resume to submit.
+            Upload your profile once. Signal maps your positioning, strengths, and gaps.
+            Then score any job against it, get prep calibrated to your specific background,
+            and know exactly how to handle the concerns a recruiter will actually raise.
           </p>
 
           {!magicLinkSent ? (
@@ -836,8 +836,8 @@ export default function Home() {
               </h2>
               <p className="text-base text-brand-text/50 mt-1">
                 {profileText
-                  ? "Your resume is saved. Update it any time and your scores will reflect the change."
-                  : "Upload your resume (PDF or DOCX) or paste the text. Signal uses this as the foundation for every fit score and prep guide."}
+                  ? "Your profile is saved. Every fit score, prep guide, and resume suggestion adapts from it — update it any time."
+                  : "Upload your resume once. Signal reads your positioning, experience, and gaps — then adapts every fit score, prep guide, and resume edit to your specific background."}
               </p>
             </div>
 
@@ -963,19 +963,19 @@ export default function Home() {
 
             {clusterResult && !isAnalyzing && !updatingProfile && (
               <div className="mt-8 pt-6 border-t border-brand-text/8 flex items-center justify-between gap-4">
-                <p className="text-sm text-brand-text/40">Find open roles that match your profile, or paste a job description to score it directly.</p>
+                <p className="text-sm text-brand-text/40">Paste a job description to get an honest fit score and full prep guide — calibrated to this profile.</p>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
-                    onClick={() => setActiveTab("job-fit")}
+                    onClick={() => setActiveTab("discover")}
                     className="inline-flex items-center gap-1 px-4 py-2.5 border border-brand-text/15 text-brand-text/60 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/80 transition-colors"
                   >
-                    Score a job →
+                    Discover jobs →
                   </button>
                   <button
-                    onClick={() => setActiveTab("discover")}
+                    onClick={() => setActiveTab("job-fit")}
                     className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
-                    Discover jobs →
+                    Score a job →
                   </button>
                 </div>
               </div>
@@ -996,9 +996,9 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-lg font-semibold text-brand-text">Job Fit Scorer</h2>
+                  <h2 className="text-lg font-semibold text-brand-text">Score a Job</h2>
                   <p className="text-base text-brand-text/50 mt-1">
-                    Paste a job description or fetch from URL. Get an honest fit score with clear reasoning.
+                    Paste or fetch a job description. Signal scores it against your profile — functional fit, seniority, domain, and the specific concern a recruiter will likely raise.
                   </p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
@@ -1065,7 +1065,7 @@ export default function Home() {
             <div className="mb-7">
               <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
               <p className="text-base text-brand-text/50 mt-1">
-                Prep guide, outreach draft, and resume edits. Everything you need to apply with confidence.
+                Your positioning brief, objection handling, resume edits, cover letter, and interview prep — all built from your profile and this specific role.
               </p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
