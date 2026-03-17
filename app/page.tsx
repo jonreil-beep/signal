@@ -105,6 +105,12 @@ export default function Home() {
       try { setDiscoverJobs(JSON.parse(savedDiscoverJobs)); } catch { /* ignore */ }
     }
 
+    // Restore profile staleness timestamp so "Profile updated" indicators survive refresh
+    const savedProfileUpdatedAt = sessionStorage.getItem("signal-profile-updated-at");
+    if (savedProfileUpdatedAt) {
+      setProfileUpdatedAt(new Date(savedProfileUpdatedAt));
+    }
+
     // Restore a discovered job that was pre-loaded but not yet scored
     const pendingJD = sessionStorage.getItem("signal-pending-jd");
     if (pendingJD && !savedJobId) {
@@ -141,6 +147,16 @@ export default function Home() {
     if (!sessionRestored) return;
     sessionStorage.setItem("signal-discover-jobs", JSON.stringify(discoverJobs));
   }, [discoverJobs, sessionRestored]);
+
+  // ── Persist profile staleness timestamp so indicators survive refresh ──
+  useEffect(() => {
+    if (!sessionRestored) return;
+    if (profileUpdatedAt) {
+      sessionStorage.setItem("signal-profile-updated-at", profileUpdatedAt.toISOString());
+    } else {
+      sessionStorage.removeItem("signal-profile-updated-at");
+    }
+  }, [profileUpdatedAt, sessionRestored]);
 
   // ── Persist pending JD for unscored discovered jobs so refresh doesn't lose the textarea ──
   useEffect(() => {
@@ -274,6 +290,7 @@ export default function Home() {
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
     sessionStorage.removeItem("signal-pending-jd");
+    sessionStorage.removeItem("signal-profile-updated-at");
   }
 
   async function handleSignOut() {

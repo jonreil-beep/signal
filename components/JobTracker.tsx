@@ -133,9 +133,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         {isPrepStale && (
           <>
             <span className="text-brand-text/20">·</span>
-            <span className="text-xs text-status-stretch font-medium" title="Your profile was updated after this prep was built — consider re-scoring">
-              Profile updated
-            </span>
+            <span className="text-xs text-status-stretch font-medium">Profile updated</span>
           </>
         )}
         {job.deadline && (() => {
@@ -227,12 +225,21 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
           >
             {showJD ? "Hide JD" : "View JD"}
           </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); onSelectJob(job, "tailoring-brief"); }}
-            className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
-          >
-            View Prep →
-          </button>
+          {isPrepStale ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); onSelectJob(job, "job-fit"); }}
+              className="text-sm font-medium text-status-stretch hover:text-status-stretch/70 transition-colors"
+            >
+              Re-score →
+            </button>
+          ) : (
+            <button
+              onClick={(e) => { e.stopPropagation(); onSelectJob(job, "tailoring-brief"); }}
+              className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+            >
+              View Prep →
+            </button>
+          )}
         </div>
       </div>
 
