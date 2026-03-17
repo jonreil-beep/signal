@@ -98,7 +98,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   return (
     <div
       onClick={() => onSelectJob(job, "job-fit")}
-      className="bg-white rounded-2xl p-5 shadow cursor-pointer hover:shadow-md transition-shadow"
+      className="bg-white rounded-2xl p-6 shadow cursor-pointer hover:shadow-md transition-shadow"
     >
       {/* Title row */}
       <div className="flex items-start justify-between gap-3">
@@ -115,8 +115,8 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
       </div>
 
       {/* Score + recommendation + date */}
-      <div className="flex items-center gap-2 mt-2 flex-wrap">
-        <span className={`text-xl font-bold tabular-nums ${scoreColor(job.jobFitResult.overall_fit)}`}>
+      <div className="flex items-center gap-2 mt-3 flex-wrap">
+        <span className={`text-2xl font-bold tabular-nums ${scoreColor(job.jobFitResult.overall_fit)}`}>
           {job.jobFitResult.overall_fit}
           <span className="text-sm font-normal text-brand-text/40">/10</span>
         </span>
@@ -156,7 +156,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
       </div>
 
       {/* Status + actions row */}
-      <div className="flex items-center justify-between gap-3 mt-4" onClick={(e) => e.stopPropagation()}>
+      <div className="flex items-center justify-between gap-3 mt-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2">
         <div className="relative inline-flex items-center">
           <select
@@ -166,14 +166,14 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
               onStatusChange(job.id, e.target.value as ApplicationStatus);
             }}
             onClick={(e) => e.stopPropagation()}
-            className={`text-xs font-medium pl-2.5 pr-6 py-1 rounded-full cursor-pointer border-0 outline-none appearance-none transition-opacity hover:opacity-75 ${statusStyle.bg} ${statusStyle.text}`}
+            className={`text-sm font-semibold pl-3 pr-7 py-1.5 rounded-full cursor-pointer border-0 outline-none appearance-none transition-all hover:opacity-80 ring-1 ring-inset ring-current/15 ${statusStyle.bg} ${statusStyle.text}`}
           >
             {APPLICATION_STATUSES.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
           <svg
-            className={`absolute right-2 w-2.5 h-2.5 pointer-events-none shrink-0 ${statusStyle.text}`}
+            className={`absolute right-2 w-3 h-3 pointer-events-none shrink-0 ${statusStyle.text}`}
             viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
@@ -207,7 +207,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         ) : (
           <button
             onClick={() => setShowDeadlineInput(true)}
-            className="text-xs font-medium text-brand-text/30 hover:text-brand-text/60 transition-colors"
+            className="text-sm font-medium text-brand-text/45 hover:text-brand-text/70 transition-colors"
           >
             + Deadline
           </button>
@@ -257,7 +257,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-xl bg-brand-text/3 border border-brand-text/8 px-3.5 py-3 text-sm text-brand-text/80 placeholder:text-brand-text/25 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
+            className="w-full rounded-xl bg-brand-text/3 border border-brand-text/8 px-3.5 py-3 text-base text-brand-text/80 placeholder:text-brand-text/25 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
           />
         </div>
       )}
@@ -465,7 +465,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
 
       {/* ── Job cards ── */}
       {filtered.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map((job) => (
             <JobCard
               key={job.id}

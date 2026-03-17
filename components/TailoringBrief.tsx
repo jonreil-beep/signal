@@ -76,6 +76,43 @@ function CopyButton({ getText }: { getText: () => string }) {
   );
 }
 
+function PrimaryCopyButton({ getText, label = "Copy" }: { getText: () => string; label?: string }) {
+  const [copied, setCopied] = useState(false);
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(getText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* silently fail */ }
+  }
+  return (
+    <button
+      onClick={handleCopy}
+      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+        copied
+          ? "bg-status-apply/10 text-status-apply"
+          : "bg-brand-text/8 text-brand-text/60 hover:bg-brand-text/12 hover:text-brand-text/80"
+      }`}
+    >
+      {copied ? (
+        <>
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Copied
+        </>
+      ) : (
+        <>
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          {label}
+        </>
+      )}
+    </button>
+  );
+}
+
 // Used for brief result cards (Lead Strengths, JD Language, etc.)
 function Section({
   title,
@@ -87,7 +124,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow">
+    <div className="bg-white rounded-2xl p-6 shadow">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
         <CopyButton getText={() => copyText} />
@@ -109,6 +146,7 @@ function ActionSection({
   error,
   noteValue,
   onNoteChange,
+  bgClass = "bg-white",
   children,
 }: {
   title: string;
@@ -121,10 +159,11 @@ function ActionSection({
   error: string;
   noteValue?: string;
   onNoteChange?: (v: string) => void;
+  bgClass?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow overflow-hidden">
+    <div className={`${bgClass} rounded-2xl shadow overflow-hidden`}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text">{title}</p>
@@ -247,6 +286,8 @@ export default function TailoringBrief({
   isProfileStale,
 }: TailoringBriefProps) {
   const [appStage, setAppStage] = useState<ApplicationStage>("preparing");
+  const [briefExpanded, setBriefExpanded] = useState(false);
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -667,7 +708,7 @@ export default function TailoringBrief({
   const hasAnyContent = Object.values(sectionHasContent).some(Boolean);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
 
       {/* ── Tagline ── */}
       <p className="text-sm text-brand-text/40">Signal gives you the raw material. You bring the judgment.</p>
@@ -691,7 +732,7 @@ export default function TailoringBrief({
 
       {/* ── Preparing to Apply: Brief + Cover Letter + Outreach + Resume Bullets ── */}
       {appStage === "preparing" && (
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           {/* Header row: description + Export + Build button */}
           {!isGenerating && (
@@ -779,7 +820,18 @@ export default function TailoringBrief({
           )}
 
           {result && !isGenerating && (
-            <>
+            <div className="bg-white rounded-2xl shadow overflow-hidden">
+              <button
+                onClick={() => setBriefExpanded(v => !v)}
+                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-brand-text/2 transition-colors"
+              >
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Prep Brief</p>
+                <span className="text-sm font-medium text-brand-accent shrink-0">
+                  {briefExpanded ? "Hide brief ↑" : "View brief →"}
+                </span>
+              </button>
+              {briefExpanded && (
+              <div className="border-t border-brand-text/8 px-6 py-6 space-y-5">
               {result.honest_take && (
                 <div className="rounded-2xl bg-brand-text px-5 py-4">
                   <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
@@ -868,32 +920,46 @@ export default function TailoringBrief({
                   <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
                 </Section>
               )}
-            </>
+              </div>
+              )}
+            </div>
           )}
 
           {/* Cover Letter — only shown after brief is built */}
           {result && (
-            <ActionSection
-              title="Cover Letter"
-              description="A tailored cover letter built from the brief above."
-              buttonLabel="Draft Cover Letter"
-              onAction={handleGenerateCoverLetter}
-              isLoading={isGeneratingCoverLetter}
-              loadingMessage="Drafting your cover letter…"
-              hasResult={!!coverLetterResult}
-              error={coverLetterError}
-              noteValue={coverLetterNote}
-              onNoteChange={setCoverLetterNote}
-            >
-              {coverLetterResult && (
-                <div>
-                  <SubHeading label="Cover Letter" copyText={coverLetterResult.cover_letter} />
-                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                    {coverLetterResult.cover_letter}
-                  </pre>
+            <>
+              {!coverLetterResult && !isGeneratingCoverLetter && (
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-1 h-4 bg-brand-accent rounded-full" />
+                  <p className="text-xs font-bold uppercase tracking-[0.08em] text-brand-accent">Start here</p>
                 </div>
               )}
-            </ActionSection>
+              <ActionSection
+                title="Cover Letter"
+                description="A tailored cover letter built from the brief above."
+                buttonLabel="Draft Cover Letter"
+                onAction={handleGenerateCoverLetter}
+                isLoading={isGeneratingCoverLetter}
+                loadingMessage="Drafting your cover letter…"
+                hasResult={!!coverLetterResult}
+                error={coverLetterError}
+                noteValue={coverLetterNote}
+                onNoteChange={setCoverLetterNote}
+                bgClass="bg-amber-50/40"
+              >
+                {coverLetterResult && (
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cover Letter</p>
+                      <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
+                    </div>
+                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                      {coverLetterResult.cover_letter}
+                    </pre>
+                  </div>
+                )}
+              </ActionSection>
+            </>
           )}
 
           {/* Outreach — only shown after brief is built */}
@@ -923,17 +989,24 @@ export default function TailoringBrief({
                 error={outreachError}
                 noteValue={outreachNote}
                 onNoteChange={setOutreachNote}
+                bgClass="bg-amber-50/40"
               >
                 {outreachResult && (
                   <>
                     <div>
-                      <SubHeading label="Cold Email" copyText={outreachResult.email} />
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cold Email</p>
+                        <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
+                      </div>
                       <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
                         {outreachResult.email}
                       </pre>
                     </div>
                     <div className="border-t border-brand-text/8 pt-6">
-                      <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">LinkedIn Message</p>
+                        <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
+                      </div>
                       <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
                       <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
                     </div>
@@ -1024,7 +1097,7 @@ export default function TailoringBrief({
 
       {/* ── Applied / Heard Back: Interview Prep + Company Research ── */}
       {appStage === "applied" && (
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           {/* Interview Prep — requires brief */}
           {!result ? (
@@ -1052,22 +1125,41 @@ export default function TailoringBrief({
               error={interviewPrepError}
             >
               {interviewPrepResult && (
-                <div className="space-y-8">
+                <div className="space-y-3">
                   {interviewPrepResult.questions.map((q, i) => (
-                    <div key={i} className="space-y-3">
-                      <p className="text-base font-semibold text-brand-text">{q.question}</p>
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
-                          Why likely
-                        </p>
-                        <p className="text-base text-brand-text/60">{q.why_likely}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
-                          Suggested approach
-                        </p>
-                        <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
-                      </div>
+                    <div key={i} className="rounded-xl ring-1 ring-brand-text/10 overflow-hidden">
+                      <button
+                        onClick={() => setExpandedQuestions(prev => {
+                          const next = new Set(prev);
+                          if (next.has(i)) { next.delete(i); } else { next.add(i); }
+                          return next;
+                        })}
+                        className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-brand-text/2 transition-colors bg-white"
+                      >
+                        <p className="text-base font-semibold text-brand-text pr-4 leading-snug">{q.question}</p>
+                        <svg
+                          className={`shrink-0 w-4 h-4 text-brand-text/30 transition-transform ${expandedQuestions.has(i) ? "rotate-180" : ""}`}
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      {expandedQuestions.has(i) && (
+                        <div className="px-4 pb-4 pt-3 space-y-3 border-t border-brand-text/8 bg-white">
+                          <div>
+                            <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
+                              Why likely
+                            </p>
+                            <p className="text-base text-brand-text/60 leading-relaxed">{q.why_likely}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
+                              Suggested approach
+                            </p>
+                            <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1176,7 +1268,7 @@ export default function TailoringBrief({
 
       {/* ── Post-Interview: Follow-Up ── */}
       {appStage === "post-interview" && (
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           {!result ? (
             <div className="bg-white rounded-2xl p-8 shadow text-center">

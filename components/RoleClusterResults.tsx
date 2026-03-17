@@ -22,14 +22,14 @@ const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: s
 
 export default function RoleClusterResults({ result }: RoleClusterResultsProps) {
   return (
-    <div className="mt-8 space-y-6">
+    <div className="space-y-7">
 
       {/* Headline */}
-      <div className="bg-brand-text rounded-2xl p-5">
-        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
-          Recommended Headline
+      <div className="bg-brand-text rounded-2xl p-7">
+        <p className="text-xs font-bold tracking-[0.1em] uppercase text-white/35 mb-3">
+          Your Recommended LinkedIn Headline
         </p>
-        <p className="text-base text-white font-medium leading-snug">
+        <p className="text-xl text-white font-semibold leading-snug">
           {result.recommended_headline}
         </p>
       </div>
@@ -45,7 +45,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-2xl p-5 shadow">
+              <div key={i} className="bg-white rounded-2xl p-6 shadow">
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-1">
                   <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
@@ -68,12 +68,12 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                   </p>
                 )}
 
-                <p className="text-base text-brand-text/50 leading-relaxed mb-3">{cluster.reasoning}</p>
+                <p className="text-[1.0625rem] text-brand-text/60 leading-[1.7] mb-4">{cluster.reasoning}</p>
 
                 {cluster.signals.length > 0 && (
                   <ul className="space-y-1.5">
                     {cluster.signals.map((signal, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-brand-text/40">
+                      <li key={j} className="flex items-start gap-2 text-base text-brand-text/45">
                         <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-brand-text/20" />
                         {signal}
                       </li>
@@ -88,13 +88,13 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
 
       {/* Strengths + Risks */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-white rounded-2xl p-5 shadow">
+        <div className="bg-white rounded-2xl p-6 shadow">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Core Strengths
           </p>
           <ul className="space-y-2">
             {result.core_strengths.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
+              <li key={i} className="flex items-start gap-2.5 text-[1.0625rem] text-brand-text/80">
                 <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
                 {s}
               </li>
@@ -102,7 +102,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
           </ul>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 shadow">
+        <div className="bg-white rounded-2xl p-6 shadow">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Positioning Risks
           </p>
@@ -116,7 +116,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                 <li key={i} className="flex items-start gap-2.5">
                   <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
                   <div>
-                    <p className="text-base text-brand-text/80 leading-snug">{riskText}</p>
+                    <p className="text-[1.0625rem] text-brand-text/80 leading-relaxed">{riskText}</p>
                     {actionText && (
                       <p className="text-sm text-brand-accent mt-1 leading-snug">
                         ↳ {actionText}

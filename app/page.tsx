@@ -1078,53 +1078,61 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && !updatingProfile && (
-              <RoleClusterResults result={clusterResult} />
+              <div className="mt-10 pt-8 border-t-2 border-brand-text/8">
+                <p className="text-[0.75rem] font-bold tracking-[0.1em] uppercase text-brand-text/30 mb-6">Your Analysis</p>
+                <RoleClusterResults result={clusterResult} />
+              </div>
             )}
 
             {/* ── LinkedIn Headline ── */}
             {clusterResult && !updatingProfile && !isAnalyzing && (
-              <div className="mt-8 pt-6 border-t border-brand-text/8">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-1">
-                      LinkedIn Headline
-                    </p>
-                    <p className="text-sm text-brand-text/60 leading-snug max-w-sm">
-                      {headlineResult
-                        ? "Pick the angle that fits where you're headed — paste it straight into LinkedIn."
-                        : "Your headline is your first impression. Generate angles calibrated to your career story."}
-                    </p>
+              <div className="mt-8 bg-white rounded-2xl shadow overflow-hidden">
+                <div className="px-6 py-5 border-b border-brand-text/8">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-base font-semibold text-brand-text">LinkedIn Headline</p>
+                      <p className="text-sm text-brand-text/50 mt-0.5 leading-snug">
+                        {headlineResult
+                          ? "Pick the angle that fits where you're headed — paste it straight into LinkedIn."
+                          : "Your headline is your first impression. Generate angles calibrated to your career story."}
+                      </p>
+                    </div>
+                    {!isGeneratingHeadlines && (
+                      <button
+                        onClick={handleGenerateHeadlines}
+                        className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                      >
+                        {headlineResult ? "Regenerate" : "Generate →"}
+                      </button>
+                    )}
                   </div>
-                  {!isGeneratingHeadlines && (
-                    <button
-                      onClick={handleGenerateHeadlines}
-                      className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-text/6 text-brand-text text-sm font-medium rounded-xl hover:bg-brand-text/12 transition-colors"
-                    >
-                      {headlineResult ? "Regenerate" : "Try 4 angles →"}
-                    </button>
+                </div>
+                <div className="px-6 py-5">
+                  {isGeneratingHeadlines && (
+                    <LoadingState message="Writing headline angles from your career story…" />
+                  )}
+                  {headlineError && !isGeneratingHeadlines && (
+                    <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
+                      <p className="text-sm text-red-700">{headlineError}</p>
+                      <button
+                        onClick={handleGenerateHeadlines}
+                        className="mt-1 text-xs text-red-500 underline hover:no-underline"
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  )}
+                  {!headlineResult && !isGeneratingHeadlines && !headlineError && (
+                    <p className="text-sm text-brand-text/35 italic">Hit &quot;Generate →&quot; to see 4 positioning angles for your career story.</p>
+                  )}
+                  {headlineResult && !isGeneratingHeadlines && (
+                    <div className="space-y-3">
+                      {headlineResult.headlines.map((h, i) => (
+                        <HeadlineCard key={i} headline={h} />
+                      ))}
+                    </div>
                   )}
                 </div>
-                {isGeneratingHeadlines && (
-                  <LoadingState message="Writing headline angles from your career story…" />
-                )}
-                {headlineError && !isGeneratingHeadlines && (
-                  <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-                    <p className="text-sm text-red-700">{headlineError}</p>
-                    <button
-                      onClick={handleGenerateHeadlines}
-                      className="mt-1 text-xs text-red-500 underline hover:no-underline"
-                    >
-                      Try again
-                    </button>
-                  </div>
-                )}
-                {headlineResult && !isGeneratingHeadlines && (
-                  <div className="mt-2 space-y-3">
-                    {headlineResult.headlines.map((h, i) => (
-                      <HeadlineCard key={i} headline={h} />
-                    ))}
-                  </div>
-                )}
               </div>
             )}
 

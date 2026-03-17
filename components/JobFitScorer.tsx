@@ -374,7 +374,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
       {/* Results */}
       {result && recStyle && (
-        <div className="space-y-4">
+        <div className="space-y-5">
 
           {/* Re-scoring in-progress banner — shown at top so it's always visible */}
           {isRescoring && (
@@ -435,11 +435,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Recruiter concern — shown immediately after overall fit when present */}
           {result.recruiter_concern && (
-            <div className="bg-status-tailor/8 rounded-2xl p-5 ring-1 ring-status-tailor/20">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1.5">
-                Recruiter Concern Flag
+            <div className="bg-status-tailor/10 rounded-2xl p-6 ring-2 ring-status-tailor/25 border-l-4 border-status-tailor">
+              <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
+                ⚑ Recruiter Concern to Address
               </p>
-              <p className="text-base text-brand-text/80">{result.recruiter_concern}</p>
+              <p className="text-[1.0625rem] text-brand-text/85 leading-relaxed">{result.recruiter_concern}</p>
             </div>
           )}
 
@@ -453,7 +453,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             ] as const;
             const lowestScore = Math.min(...dims.map(([, d]) => d.score));
             return (
-              <div className="bg-white rounded-2xl p-5 shadow">
+              <div className="bg-white rounded-2xl p-6 shadow">
                 <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-4">
                   What Drove This Score
                 </p>
@@ -471,7 +471,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                           )}
                         </div>
                         <ScoreBar score={dim.score} />
-                        <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{dim.reasoning}</p>
+                        <p className="mt-1.5 text-base text-brand-text/45 leading-relaxed">{dim.reasoning}</p>
                       </div>
                     );
                   })}
@@ -482,7 +482,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* What you have / Missing */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="bg-white rounded-2xl p-5 shadow">
+            <div className="bg-white rounded-2xl p-6 shadow">
               <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
                 What You Have
               </p>
@@ -495,12 +495,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 ))}
               </ul>
             </div>
-            <div className="bg-white rounded-2xl p-5 shadow">
+            <div className="bg-white rounded-2xl p-6 shadow">
               <div className="flex items-baseline justify-between gap-2 mb-3">
                 <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">
                   What&apos;s Missing
                 </p>
-                <p className="text-xs text-brand-text/30">Tap × to remove anything that doesn&apos;t apply</p>
+                <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply to you? Tap × to remove it and re-score.</p>
               </div>
               {result.whats_missing.filter((item) => !dismissedItems.includes(item)).length === 0 ? (
                 <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
@@ -517,7 +517,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         <button
                           onClick={() => handleDismissItem(item)}
                           title="Dismiss — I actually have this"
-                          className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full text-brand-text/25 hover:text-brand-text/60 hover:bg-brand-text/8 transition-colors"
+                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors text-sm font-medium"
                         >
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                             <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -544,16 +544,18 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           </div>
 
           {/* Bottom nav CTAs */}
-          <div className="flex items-center justify-between pt-2">
-            <button onClick={handleReset} className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
-              ← Score a different job
-            </button>
+          <div className="space-y-3 pt-2">
             <button
               onClick={onGoToTailoringBrief}
-              className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-brand-accent text-white text-base font-semibold rounded-2xl hover:bg-brand-accent/90 transition-colors shadow-sm"
             >
               Go to Prep →
             </button>
+            <div className="flex justify-center">
+              <button onClick={handleReset} className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+                ← Score a different job
+              </button>
+            </div>
           </div>
         </div>
       )}
