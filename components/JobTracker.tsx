@@ -193,7 +193,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
               setShowDeadlineInput(false);
             }}
             onBlur={() => setShowDeadlineInput(false)}
-            className="text-xs border border-brand-text/15 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent"
+            className="text-xs border border-brand-text/15 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent"
           />
         ) : job.deadline ? (
           <button
@@ -257,7 +257,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-xl bg-brand-text/3 border border-brand-text/8 px-3.5 py-3 text-base text-brand-text/80 placeholder:text-brand-text/25 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow"
+            className="w-full rounded-xl bg-brand-text/3 border border-brand-text/8 px-3.5 py-3 text-base text-brand-text/80 placeholder:text-brand-text/25 leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent transition-shadow"
           />
         </div>
       )}
@@ -387,7 +387,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs…"
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-brand-text/10 text-sm text-brand-text placeholder:text-brand-text/30 focus:outline-none focus:ring-2 focus:ring-brand-accent/30 focus:border-transparent transition-shadow shadow-sm"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-brand-text/10 text-sm text-brand-text placeholder:text-brand-text/30 focus:outline-none focus:ring-2 focus:ring-brand-text/15 focus:border-transparent transition-shadow shadow-sm"
         />
         {searchQuery && (
           <button

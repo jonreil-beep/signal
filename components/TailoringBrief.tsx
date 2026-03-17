@@ -945,7 +945,6 @@ export default function TailoringBrief({
                 error={coverLetterError}
                 noteValue={coverLetterNote}
                 onNoteChange={setCoverLetterNote}
-                bgClass="bg-amber-50/40"
               >
                 {coverLetterResult && (
                   <div>
@@ -989,7 +988,6 @@ export default function TailoringBrief({
                 error={outreachError}
                 noteValue={outreachNote}
                 onNoteChange={setOutreachNote}
-                bgClass="bg-amber-50/40"
               >
                 {outreachResult && (
                   <>
