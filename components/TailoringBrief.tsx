@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import LoadingState from "./LoadingState";
-import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult } from "@/types";
+import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, StrengthMatchType } from "@/types";
+
+const MATCH_TYPE_STYLES: Record<StrengthMatchType, string> = {
+  "Direct match":     "bg-status-apply/10 text-status-apply ring-1 ring-status-apply/20",
+  "Strong inference": "bg-status-tailor/10 text-status-tailor ring-1 ring-status-tailor/20",
+  "Reframe":          "bg-status-stretch/10 text-status-stretch ring-1 ring-status-stretch/20",
+};
 
 type PrepSection = "brief" | "company" | "resume" | "cover-letter" | "outreach" | "interview" | "follow-up";
 
@@ -442,9 +448,14 @@ export default function TailoringBrief({
       lines.push("PREP BRIEF");
       lines.push(sep);
       lines.push("");
+      if (result.honest_take) {
+        lines.push("Honest Take");
+        lines.push(result.honest_take);
+        lines.push("");
+      }
       lines.push("Lead Strengths to Emphasize");
       result.lead_strengths.forEach((s) => {
-        lines.push(`• ${s.strength}`);
+        lines.push(`• [${s.match_type ?? ""}] ${s.strength}`);
         lines.push(`  → ${s.framing_language}`);
       });
       lines.push("");
@@ -666,17 +677,37 @@ export default function TailoringBrief({
           )}
           {result && !isGenerating && (
             <>
+              {/* Honest take — unvarnished advisor read */}
+              {result.honest_take && (
+                <div className="rounded-2xl bg-brand-text px-5 py-4">
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
+                    Honest Take
+                  </p>
+                  <p className="text-base text-white/80 leading-snug">{result.honest_take}</p>
+                </div>
+              )}
+
               <Section
                 title="Lead Strengths to Emphasize"
-                copyText={result.lead_strengths.map((s) => `• ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
+                copyText={result.lead_strengths.map((s) => `• [${s.match_type}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
               >
                 <div className="space-y-3">
-                  {result.lead_strengths.map((s, i) => (
-                    <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                      <p className="text-base font-medium text-brand-text">{s.strength}</p>
-                      <p className="text-base text-brand-text/40 mt-0.5 italic">{s.framing_language}</p>
-                    </div>
-                  ))}
+                  {result.lead_strengths.map((s, i) => {
+                    const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
+                    return (
+                      <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="text-base font-medium text-brand-text">{s.strength}</p>
+                          {matchStyle && (
+                            <span className={`shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
+                              {s.match_type}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-base text-brand-text/40 italic leading-snug">{s.framing_language}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </Section>
 

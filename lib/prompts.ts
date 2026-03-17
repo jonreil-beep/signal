@@ -139,10 +139,12 @@ ${jobDescription}
 
 Return this exact JSON structure — nothing else:
 {
+  "honest_take": "One sentence — the thing a candid career advisor would say to this person over coffee. Not in a report. Not softened. If they're a strong fit, say so and why. If they're a stretch or have a real problem, name it plainly. This is the sentence the rest of the brief should be read in the context of.",
   "lead_strengths": [
     {
-      "strength": "Specific part of their background that aligns",
-      "framing_language": "Suggested language they could use to present this"
+      "strength": "Specific part of their background that is relevant to this role",
+      "match_type": "Direct match | Strong inference | Reframe",
+      "framing_language": "How they could present this in an interview or cover letter — in their own voice, not marketing copy"
     }
   ],
   "jd_language_to_mirror": [
@@ -158,16 +160,21 @@ Return this exact JSON structure — nothing else:
     }
   ],
   "recruiter_concern_to_preempt": {
-    "concern": "The most likely hesitation a recruiter would have",
-    "suggested_response": "How to address it proactively in application materials"
+    "concern": "The most likely hesitation a recruiter would have — be specific, not softened",
+    "suggested_response": "How to address it proactively — concrete language they could actually use, not generic advice"
   },
-  "outreach_angle": "Optional: A hook for cold outreach, or null"
+  "outreach_angle": "Optional: A specific hook for cold outreach, or null"
 }
 
 Rules:
-- Lead strengths: 2-4 bullets, specific to this JD
-- framing_language must sound like something a real person would say in an interview — not polished marketing copy
-- Do not mirror JD language so closely that it sounds copied — translate it into natural language where the candidate's voice would be more effective
+- honest_take: write this as if you're the candidate's most trusted advisor, not their cheerleader. If it's good news, say it directly. If it's complicated, say that. One sentence, no hedging.
+- Lead strengths: 2-4 items, specific to this JD
+- match_type indicates how solid the underlying claim is:
+  - "Direct match": explicitly covered in the resume and clearly relevant to the JD
+  - "Strong inference": not explicit in the resume but credibly implied by their experience
+  - "Reframe": it's a stretch — the experience is real but requires deliberate framing to land
+- framing_language must sound like a real person talking in an interview — not polished marketing copy. If it sounds like a LinkedIn summary, rewrite it.
+- Do not mirror JD language so closely it sounds copied — translate it into natural language
 - JD language to mirror: use exact phrases, not paraphrases
 - What to de-emphasize: 1-3 items, be honest
 - Return only valid JSON, no markdown fences

@@ -71,8 +71,11 @@ export interface JobFitResult {
   recruiter_concern: string; // required — "None identified" if no concern
 }
 
+export type StrengthMatchType = "Direct match" | "Strong inference" | "Reframe";
+
 export interface LeadStrength {
   strength: string;
+  match_type: StrengthMatchType; // how solid the underlying claim is
   framing_language: string;
 }
 
@@ -92,6 +95,7 @@ export interface RecruiterConcern {
 }
 
 export interface TailoringBriefResult {
+  honest_take: string; // one unvarnished sentence a career advisor would say — not softened
   lead_strengths: LeadStrength[];
   jd_language_to_mirror: JDPhrase[];
   what_to_deemphasize: DeemphasizeItem[];
