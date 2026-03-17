@@ -34,6 +34,18 @@ function extractJobTitle(jd: string, fallbackCount: number): string {
 
 export default function Home() {
   const supabase = createClient();
+  const [isNewSignup, setIsNewSignup] = useState(false);
+
+  // ── Detect new signup from ?welcome=true param ──
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("welcome") === "true") {
+      setIsNewSignup(true);
+      // Clean the param from the URL without a reload
+      const clean = window.location.pathname;
+      window.history.replaceState({}, "", clean);
+    }
+  }, []);
 
   // ── Auth state ──
   const [user, setUser] = useState<User | null>(null);
@@ -581,7 +593,7 @@ export default function Home() {
 
   // ── Landing screen ──
   if (showLanding) {
-    // Already signed in — show welcome back view
+    // Signed in — show welcome (new) or welcome back (returning) view
     if (user) {
       return (
         <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
@@ -592,19 +604,22 @@ export default function Home() {
               <p className="text-sm text-white/40 mt-2">Job search intelligence</p>
             </div>
             <p className="text-2xl text-white/80 leading-relaxed mb-10">
-              Welcome back{user.email ? `, ${user.email}` : ""}.
-              {trackedJobs.length > 0
-                ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
-                : profileText
-                ? " Your profile is saved and ready."
-                : ""}
+              {isNewSignup
+                ? "You're all set. Signal is ready to help you apply to fewer, better-fit roles — and show up fully prepared for each one."
+                : `Welcome back${user.email ? `, ${user.email}` : ""}.${
+                    trackedJobs.length > 0
+                      ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
+                      : profileText
+                      ? " Your profile is saved and ready."
+                      : ""
+                  }`}
             </p>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowLanding(false)}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
               >
-                Back to app →
+                {isNewSignup ? "Get started →" : "Back to app →"}
               </button>
               <button
                 onClick={handleSignOut}

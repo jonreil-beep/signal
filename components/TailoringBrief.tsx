@@ -573,7 +573,7 @@ export default function TailoringBrief({
     }
   }
 
-  const sectionHasContent: Record<PrepSection, boolean> = {
+  const sectionHasContent = {
     brief: !!result,
     company: !!companyResearchResult,
     resume: !!resumeUpdateResult,
@@ -631,21 +631,17 @@ export default function TailoringBrief({
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         {PREP_SECTIONS.map((s) => {
           const isActive = prepSection === s.id;
-          const hasDot = sectionHasContent[s.id];
           return (
             <button
               key={s.id}
               onClick={() => setPrepSection(s.id)}
-              className={`flex items-center gap-1.5 shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-brand-text text-white"
                   : "bg-brand-text/6 text-brand-text/60 hover:bg-brand-text/10 hover:text-brand-text/80"
               }`}
             >
               {s.label}
-              {hasDot && (
-                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-white/60" : "bg-brand-accent"}`} />
-              )}
             </button>
           );
         })}

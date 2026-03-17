@@ -7,7 +7,16 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { data } = await supabase.auth.exchangeCodeForSession(code);
+
+    // Detect a brand-new signup: created_at within the last 60 seconds
+    const isNewUser =
+      data.user &&
+      Date.now() - new Date(data.user.created_at).getTime() < 60_000;
+
+    if (isNewUser) {
+      return NextResponse.redirect(`${origin}/?welcome=true`);
+    }
   }
 
   return NextResponse.redirect(`${origin}/`);
