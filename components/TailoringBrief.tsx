@@ -10,16 +10,12 @@ const MATCH_TYPE_STYLES: Record<StrengthMatchType, string> = {
   "Reframe":          "bg-status-stretch/10 text-status-stretch ring-1 ring-status-stretch/20",
 };
 
-type PrepSection = "brief" | "company" | "resume" | "cover-letter" | "outreach" | "interview" | "follow-up";
+type ApplicationStage = "preparing" | "applied" | "post-interview";
 
-const PREP_SECTIONS: { id: PrepSection; label: string }[] = [
-  { id: "brief", label: "Brief" },
-  { id: "company", label: "Company" },
-  { id: "resume", label: "Resume" },
-  { id: "cover-letter", label: "Cover Letter" },
-  { id: "outreach", label: "Outreach" },
-  { id: "interview", label: "Interview" },
-  { id: "follow-up", label: "Follow-up" },
+const APPLICATION_STAGES: { id: ApplicationStage; label: string }[] = [
+  { id: "preparing", label: "Preparing to Apply" },
+  { id: "applied", label: "Applied / Heard Back" },
+  { id: "post-interview", label: "Post-Interview" },
 ];
 
 interface TailoringBriefProps {
@@ -250,7 +246,7 @@ export default function TailoringBrief({
   onGoToJobFit,
   isProfileStale,
 }: TailoringBriefProps) {
-  const [prepSection, setPrepSection] = useState<PrepSection>("brief");
+  const [appStage, setAppStage] = useState<ApplicationStage>("preparing");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -309,7 +305,6 @@ export default function TailoringBrief({
   async function handleGenerate() {
     setIsGenerating(true);
     setError("");
-    setPrepSection("brief");
     onOutreachResultChange(null);
     onCoverLetterResultChange(null);
     try {
@@ -674,118 +669,117 @@ export default function TailoringBrief({
   return (
     <div className="space-y-4">
 
-      {/* ── Header row: description + Export + Build button ── */}
-      {!isGenerating && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-          <p className="text-base text-brand-text/40">
-            {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
-          </p>
-          <div className="flex items-center gap-2 shrink-0">
-            {hasAnyContent && (
-              <button
-                onClick={handleExport}
-                className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Export
-              </button>
-            )}
-            <button
-              onClick={handleGenerate}
-              className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-            >
-              {result ? "Rebuild" : "Build Prep Guide"}
-            </button>
-          </div>
-        </div>
-          {/* Brief correction note — only shown after first generation so it's contextual */}
-          {result && (
-            <div className="space-y-2">
-              <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
-                Anything to correct before rebuilding?
-              </p>
-              <textarea
-                value={briefNote}
-                onChange={(e) => setBriefNote(e.target.value)}
-                placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle"'
-                maxLength={300}
-                rows={2}
-                className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
-              />
-              <div className="flex justify-end">
-                <button
-                  onClick={handleGenerate}
-                  className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-                >
-                  Rebuild →
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      {/* ── Tagline ── */}
+      <p className="text-sm text-brand-text/40">Signal gives you the raw material. You bring the judgment.</p>
 
-      {isGenerating && <LoadingState message="Building your prep guide. This takes about 20 seconds..." />}
-
-      {error && !isGenerating && (
-        <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-          <p className="text-base text-red-700">{error}</p>
-          <button onClick={handleGenerate} className="mt-1 text-sm text-red-500 underline hover:no-underline">
-            Try again
-          </button>
-        </div>
-      )}
-
-      {/* ── Profile staleness banner ── */}
-      {isProfileStale && result && !isGenerating && (
-        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
-          <p className="text-sm text-brand-text/70">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
+      {/* ── Stage selector ── */}
+      <div className="flex gap-1 bg-brand-text/6 rounded-xl p-1">
+        {APPLICATION_STAGES.map((stage) => (
           <button
-            onClick={onGoToJobFit}
-            className="shrink-0 text-sm font-semibold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
+            key={stage.id}
+            onClick={() => setAppStage(stage.id)}
+            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              appStage === stage.id
+                ? "bg-white text-brand-text shadow-sm"
+                : "text-brand-text/40 hover:text-brand-text/70"
+            }`}
           >
-            Re-score →
+            {stage.label}
           </button>
-        </div>
-      )}
-
-      {/* ── Section pill strip ── */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-        {PREP_SECTIONS.map((s) => {
-          const isActive = prepSection === s.id;
-          return (
-            <button
-              key={s.id}
-              onClick={() => setPrepSection(s.id)}
-              className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-brand-text text-white"
-                  : "bg-brand-text/6 text-brand-text/60 hover:bg-brand-text/10 hover:text-brand-text/80"
-              }`}
-            >
-              {s.label}
-            </button>
-          );
-        })}
+        ))}
       </div>
 
-      {/* ── Section content ── */}
-
-      {/* Brief */}
-      {prepSection === "brief" && (
+      {/* ── Preparing to Apply: Brief + Cover Letter + Outreach + Resume Bullets ── */}
+      {appStage === "preparing" && (
         <div className="space-y-4">
+
+          {/* Header row: description + Export + Build button */}
+          {!isGenerating && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-base text-brand-text/40">
+                  {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
+                </p>
+                <div className="flex items-center gap-2 shrink-0">
+                  {hasAnyContent && (
+                    <button
+                      onClick={handleExport}
+                      className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Export
+                    </button>
+                  )}
+                  <button
+                    onClick={handleGenerate}
+                    className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                  >
+                    {result ? "Rebuild" : "Build Prep Guide"}
+                  </button>
+                </div>
+              </div>
+              {result && (
+                <div className="space-y-2">
+                  <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
+                    Anything to correct before rebuilding?
+                  </p>
+                  <textarea
+                    value={briefNote}
+                    onChange={(e) => setBriefNote(e.target.value)}
+                    placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle"'
+                    maxLength={300}
+                    rows={2}
+                    className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none ring-1 ring-brand-text/8 focus:ring-brand-text/20 outline-none placeholder:text-brand-text/25 leading-relaxed"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleGenerate}
+                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                    >
+                      Rebuild →
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {isGenerating && <LoadingState message="Building your prep guide. This takes about 20 seconds..." />}
+
+          {error && !isGenerating && (
+            <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
+              <p className="text-base text-red-700">{error}</p>
+              <button onClick={handleGenerate} className="mt-1 text-sm text-red-500 underline hover:no-underline">
+                Try again
+              </button>
+            </div>
+          )}
+
+          {/* Profile staleness banner */}
+          {isProfileStale && result && !isGenerating && (
+            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
+              <p className="text-sm text-brand-text/70">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
+              <button
+                onClick={onGoToJobFit}
+                className="shrink-0 text-sm font-semibold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
+              >
+                Re-score →
+              </button>
+            </div>
+          )}
+
+          {/* Brief results */}
           {!result && !isGenerating && (
             <div className="bg-white rounded-2xl p-8 shadow text-center">
               <p className="text-base font-semibold text-brand-text">No brief yet</p>
               <p className="text-base text-brand-text/50 mt-1">Hit "Build Prep Guide" to generate your tailored brief.</p>
             </div>
           )}
+
           {result && !isGenerating && (
             <>
-              {/* Honest take — unvarnished advisor read */}
               {result.honest_take && (
                 <div className="rounded-2xl bg-brand-text px-5 py-4">
                   <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
@@ -876,183 +870,299 @@ export default function TailoringBrief({
               )}
             </>
           )}
+
+          {/* Cover Letter — only shown after brief is built */}
+          {result && (
+            <ActionSection
+              title="Cover Letter"
+              description="A tailored cover letter built from the brief above."
+              buttonLabel="Draft Cover Letter"
+              onAction={handleGenerateCoverLetter}
+              isLoading={isGeneratingCoverLetter}
+              loadingMessage="Drafting your cover letter…"
+              hasResult={!!coverLetterResult}
+              error={coverLetterError}
+              noteValue={coverLetterNote}
+              onNoteChange={setCoverLetterNote}
+            >
+              {coverLetterResult && (
+                <div>
+                  <SubHeading label="Cover Letter" copyText={coverLetterResult.cover_letter} />
+                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                    {coverLetterResult.cover_letter}
+                  </pre>
+                </div>
+              )}
+            </ActionSection>
+          )}
+
+          {/* Outreach — only shown after brief is built */}
+          {result && (
+            !result.outreach_angle ? (
+              <div className="bg-white rounded-2xl p-8 shadow text-center">
+                <p className="text-base font-semibold text-brand-text">No outreach angle in brief</p>
+                <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
+                  The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
+                </p>
+                <button
+                  onClick={handleGenerate}
+                  className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                >
+                  Rebuild →
+                </button>
+              </div>
+            ) : (
+              <ActionSection
+                title="Outreach Messages"
+                description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
+                buttonLabel="Draft Messages"
+                onAction={handleGenerateOutreach}
+                isLoading={isGeneratingOutreach}
+                loadingMessage="Drafting outreach messages…"
+                hasResult={!!outreachResult}
+                error={outreachError}
+                noteValue={outreachNote}
+                onNoteChange={setOutreachNote}
+              >
+                {outreachResult && (
+                  <>
+                    <div>
+                      <SubHeading label="Cold Email" copyText={outreachResult.email} />
+                      <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                        {outreachResult.email}
+                      </pre>
+                    </div>
+                    <div className="border-t border-brand-text/8 pt-6">
+                      <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
+                      <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                      <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
+                    </div>
+                  </>
+                )}
+              </ActionSection>
+            )
+          )}
+
+          {/* Resume Bullets — only shown after brief is built */}
+          {result && (
+            <ActionSection
+              title="Resume Bullets"
+              description="Get specific, copy-paste resume edits tailored to this job."
+              buttonLabel="Suggest Updates"
+              onAction={handleGenerateResumeUpdates}
+              isLoading={isGeneratingResumeUpdates}
+              loadingMessage="Generating resume suggestions. This takes about 20 seconds..."
+              hasResult={!!resumeUpdateResult}
+              error={resumeUpdateError}
+            >
+              {resumeUpdateResult && (
+                <>
+                  <div>
+                    <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
+                    <p className="text-base text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                  </div>
+
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading
+                      label="Resume Bullets to Update"
+                      copyText={resumeUpdateResult.bullet_updates
+                        .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
+                        .join("\n\n")}
+                    />
+                    <div className="space-y-4">
+                      {resumeUpdateResult.bullet_updates.map((b, i) => (
+                        <div key={i} className="space-y-2">
+                          <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
+                            {b.section}
+                          </p>
+                          <div className="rounded-xl overflow-hidden border border-brand-text/8">
+                            <div className="px-3.5 py-2.5 bg-brand-text/4">
+                              <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
+                              <p className="text-base text-brand-text/50 italic">{b.original_paraphrase}</p>
+                            </div>
+                            <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="flex-1">
+                                  <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
+                                  <p className="text-base text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                                </div>
+                                <CopyButton getText={() => b.suggested_rewrite} />
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-sm text-brand-text/40 pl-1">{b.why}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading
+                      label="Keywords to Weave In"
+                      copyText={resumeUpdateResult.keywords_to_weave_in
+                        .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
+                        .join("\n")}
+                    />
+                    <div className="space-y-3">
+                      {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
+                        <div key={i} className="flex items-start gap-3">
+                          <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                            {k.keyword}
+                          </span>
+                          <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </ActionSection>
+          )}
+
         </div>
       )}
 
-      {/* Company */}
-      {prepSection === "company" && (
-        <ActionSection
-          title="Company Research"
-          description="What we know, what we're reading into, and questions to test your hypotheses in the interview."
-          buttonLabel="Research Company"
-          onAction={handleGenerateCompanyResearch}
-          isLoading={isGeneratingCompanyResearch}
-          loadingMessage="Researching the company…"
-          hasResult={!!companyResearchResult}
-          error={companyResearchError}
-        >
-          {cr && (
-            <>
-              {/* ── What we know ── */}
-              <div>
-                <div className="flex items-center justify-between gap-3 mb-2">
-                  <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
-                  <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
-                    {cr.what_we_know.sources}
-                  </span>
-                </div>
-                <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
-              </div>
+      {/* ── Applied / Heard Back: Interview Prep + Company Research ── */}
+      {appStage === "applied" && (
+        <div className="space-y-4">
 
-              {/* Limited data caveat */}
-              {cr.caveat && (
-                <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
-                  <p className="text-sm text-status-stretch leading-snug">{cr.caveat}</p>
-                </div>
-              )}
-
-              {/* ── What we're reading ── */}
-              {cr.what_we_re_reading.length > 0 && (
-                <div className="border-t border-brand-text/8 pt-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <SubHeading label="What We're Reading" />
-                    <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
-                      Interpretation
-                    </span>
-                  </div>
-                  <ul className="space-y-2">
-                    {cr.what_we_re_reading.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
-                        <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* ── Culture signals ── */}
-              {cr.culture_signals.length > 0 && (
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading label="Culture Signals" />
-                  <ul className="space-y-1.5">
-                    {cr.culture_signals.map((s, i) => (
-                      <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
-                        <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* ── Red flags ── */}
-              {cr.red_flags_to_probe.length > 0 && (
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading label="Worth Probing" />
-                  <div className="space-y-3">
-                    {cr.red_flags_to_probe.map((f, i) => (
-                      <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
-                        <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
-                        <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
+          {/* Interview Prep — requires brief */}
+          {!result ? (
+            <div className="bg-white rounded-2xl p-8 shadow text-center">
+              <p className="text-base font-semibold text-brand-text">Build your prep guide first</p>
+              <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
+                Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for interview questions.
+              </p>
+              <button
+                onClick={() => setAppStage("preparing")}
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              >
+                Go to Preparing to Apply →
+              </button>
+            </div>
+          ) : (
+            <ActionSection
+              title="Interview Prep"
+              description="Likely questions for this role, calibrated to your background — with suggested framing for each."
+              buttonLabel="Generate Questions"
+              onAction={handleGenerateInterviewPrep}
+              isLoading={isGeneratingInterviewPrep}
+              loadingMessage="Generating interview questions…"
+              hasResult={!!interviewPrepResult}
+              error={interviewPrepError}
+            >
+              {interviewPrepResult && (
+                <div className="space-y-8">
+                  {interviewPrepResult.questions.map((q, i) => (
+                    <div key={i} className="space-y-3">
+                      <p className="text-base font-semibold text-brand-text">{q.question}</p>
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
+                          Why likely
+                        </p>
+                        <p className="text-base text-brand-text/60">{q.why_likely}</p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ── Questions to test ── */}
-              <div className="border-t border-brand-text/8 pt-6">
-                <SubHeading
-                  label="Questions to Test"
-                  copyText={cr.questions_to_test
-                    .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
-                    .join("\n\n")}
-                />
-                <div className="space-y-4">
-                  {cr.questions_to_test.map((q, i) => (
-                    <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                      <p className="text-base font-medium text-brand-text">{q.question}</p>
-                      <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
+                          Suggested approach
+                        </p>
+                        <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            </>
+              )}
+            </ActionSection>
           )}
-        </ActionSection>
-      )}
 
-      {/* Resume */}
-      {prepSection === "resume" && (
-        !result ? (
-          <NeedsBriefPrompt onBuild={handleGenerate} />
-        ) : (
+          {/* Company Research — always available, no brief needed */}
           <ActionSection
-            title="Resume Updates"
-            description="Get specific, copy-paste resume edits tailored to this job."
-            buttonLabel="Suggest Updates"
-            onAction={handleGenerateResumeUpdates}
-            isLoading={isGeneratingResumeUpdates}
-            loadingMessage="Generating resume suggestions. This takes about 20 seconds..."
-            hasResult={!!resumeUpdateResult}
-            error={resumeUpdateError}
+            title="Company Research"
+            description="What we know, what we're reading into, and questions to test your hypotheses in the interview."
+            buttonLabel="Research Company"
+            onAction={handleGenerateCompanyResearch}
+            isLoading={isGeneratingCompanyResearch}
+            loadingMessage="Researching the company…"
+            hasResult={!!companyResearchResult}
+            error={companyResearchError}
           >
-            {resumeUpdateResult && (
+            {cr && (
               <>
                 <div>
-                  <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
-                  <p className="text-base text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
+                    <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
+                      {cr.what_we_know.sources}
+                    </span>
+                  </div>
+                  <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
                 </div>
+
+                {cr.caveat && (
+                  <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
+                    <p className="text-sm text-status-stretch leading-snug">{cr.caveat}</p>
+                  </div>
+                )}
+
+                {cr.what_we_re_reading.length > 0 && (
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <SubHeading label="What We're Reading" />
+                      <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
+                        Interpretation
+                      </span>
+                    </div>
+                    <ul className="space-y-2">
+                      {cr.what_we_re_reading.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
+                          <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {cr.culture_signals.length > 0 && (
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading label="Culture Signals" />
+                    <ul className="space-y-1.5">
+                      {cr.culture_signals.map((s, i) => (
+                        <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {cr.red_flags_to_probe.length > 0 && (
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading label="Worth Probing" />
+                    <div className="space-y-3">
+                      {cr.red_flags_to_probe.map((f, i) => (
+                        <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
+                          <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
+                          <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="border-t border-brand-text/8 pt-6">
                   <SubHeading
-                    label="Resume Bullets to Update"
-                    copyText={resumeUpdateResult.bullet_updates
-                      .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
+                    label="Questions to Test"
+                    copyText={cr.questions_to_test
+                      .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
                       .join("\n\n")}
                   />
                   <div className="space-y-4">
-                    {resumeUpdateResult.bullet_updates.map((b, i) => (
-                      <div key={i} className="space-y-2">
-                        <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
-                          {b.section}
-                        </p>
-                        <div className="rounded-xl overflow-hidden border border-brand-text/8">
-                          <div className="px-3.5 py-2.5 bg-brand-text/4">
-                            <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
-                            <p className="text-base text-brand-text/50 italic">{b.original_paraphrase}</p>
-                          </div>
-                          <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex-1">
-                                <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
-                                <p className="text-base text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
-                              </div>
-                              <CopyButton getText={() => b.suggested_rewrite} />
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-sm text-brand-text/40 pl-1">{b.why}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading
-                    label="Keywords to Weave In"
-                    copyText={resumeUpdateResult.keywords_to_weave_in
-                      .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
-                      .join("\n")}
-                  />
-                  <div className="space-y-3">
-                    {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                          {k.keyword}
-                        </span>
-                        <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                    {cr.questions_to_test.map((q, i) => (
+                      <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                        <p className="text-base font-medium text-brand-text">{q.question}</p>
+                        <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
                       </div>
                     ))}
                   </div>
@@ -1060,179 +1170,60 @@ export default function TailoringBrief({
               </>
             )}
           </ActionSection>
-        )
+
+        </div>
       )}
 
-      {/* Cover Letter */}
-      {prepSection === "cover-letter" && (
-        !result ? (
-          <NeedsBriefPrompt onBuild={handleGenerate} />
-        ) : (
-          <ActionSection
-            title="Cover Letter"
-            description="A tailored cover letter built from the brief above."
-            buttonLabel="Draft Cover Letter"
-            onAction={handleGenerateCoverLetter}
-            isLoading={isGeneratingCoverLetter}
-            loadingMessage="Drafting your cover letter…"
-            hasResult={!!coverLetterResult}
-            error={coverLetterError}
-            noteValue={coverLetterNote}
-            onNoteChange={setCoverLetterNote}
-          >
-            {coverLetterResult && (
-              <div>
-                <SubHeading label="Cover Letter" copyText={coverLetterResult.cover_letter} />
-                <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                  {coverLetterResult.cover_letter}
-                </pre>
-              </div>
-            )}
-          </ActionSection>
-        )
-      )}
+      {/* ── Post-Interview: Follow-Up ── */}
+      {appStage === "post-interview" && (
+        <div className="space-y-4">
 
-      {/* Outreach */}
-      {prepSection === "outreach" && (
-        !result ? (
-          <NeedsBriefPrompt onBuild={handleGenerate} />
-        ) : !result.outreach_angle ? (
-          <div className="bg-white rounded-2xl p-8 shadow text-center">
-            <p className="text-base font-semibold text-brand-text">No outreach angle in brief</p>
-            <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
-              The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
-            </p>
-            <button
-              onClick={handleGenerate}
-              className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+          {!result ? (
+            <div className="bg-white rounded-2xl p-8 shadow text-center">
+              <p className="text-base font-semibold text-brand-text">Build your prep guide first</p>
+              <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
+                Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for follow-up templates.
+              </p>
+              <button
+                onClick={() => setAppStage("preparing")}
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              >
+                Go to Preparing to Apply →
+              </button>
+            </div>
+          ) : (
+            <ActionSection
+              title="Follow-Up Templates"
+              description="A thank-you note and check-in email tailored to this role — ready to send after your interview."
+              buttonLabel="Generate Templates"
+              onAction={handleGenerateFollowUp}
+              isLoading={isGeneratingFollowUp}
+              loadingMessage="Drafting follow-up templates…"
+              hasResult={!!followUpResult}
+              error={followUpError}
             >
-              Rebuild →
-            </button>
-          </div>
-        ) : (
-          <ActionSection
-            title="Outreach Messages"
-            description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
-            buttonLabel="Draft Messages"
-            onAction={handleGenerateOutreach}
-            isLoading={isGeneratingOutreach}
-            loadingMessage="Drafting outreach messages…"
-            hasResult={!!outreachResult}
-            error={outreachError}
-            noteValue={outreachNote}
-            onNoteChange={setOutreachNote}
-          >
-            {outreachResult && (
-              <>
-                <div>
-                  <SubHeading label="Cold Email" copyText={outreachResult.email} />
-                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                    {outreachResult.email}
-                  </pre>
-                </div>
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading label="LinkedIn Message" copyText={outreachResult.linkedin_message} />
-                  <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
-                  <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
-                </div>
-              </>
-            )}
-          </ActionSection>
-        )
-      )}
-
-      {/* Interview */}
-      {prepSection === "interview" && (
-        !result ? (
-          <NeedsBriefPrompt onBuild={handleGenerate} />
-        ) : (
-          <ActionSection
-            title="Interview Prep"
-            description="Likely questions for this role, calibrated to your background — with suggested framing for each."
-            buttonLabel="Generate Questions"
-            onAction={handleGenerateInterviewPrep}
-            isLoading={isGeneratingInterviewPrep}
-            loadingMessage="Generating interview questions…"
-            hasResult={!!interviewPrepResult}
-            error={interviewPrepError}
-          >
-            {interviewPrepResult && (
-              <div className="space-y-8">
-                {interviewPrepResult.questions.map((q, i) => (
-                  <div key={i} className="space-y-3">
-                    <p className="text-base font-semibold text-brand-text">{q.question}</p>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
-                        Why likely
-                      </p>
-                      <p className="text-base text-brand-text/60">{q.why_likely}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1">
-                        Suggested approach
-                      </p>
-                      <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
-                    </div>
+              {followUpResult && (
+                <>
+                  <div>
+                    <SubHeading label="Thank-You Note" copyText={followUpResult.thank_you_note} />
+                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                      {followUpResult.thank_you_note}
+                    </pre>
                   </div>
-                ))}
-              </div>
-            )}
-          </ActionSection>
-        )
+                  <div className="border-t border-brand-text/8 pt-6">
+                    <SubHeading label="Check-In Email" copyText={followUpResult.check_in_email} />
+                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                      {followUpResult.check_in_email}
+                    </pre>
+                  </div>
+                </>
+              )}
+            </ActionSection>
+          )}
+
+        </div>
       )}
 
-      {/* Follow-up */}
-      {prepSection === "follow-up" && (
-        !result ? (
-          <NeedsBriefPrompt onBuild={handleGenerate} />
-        ) : (
-          <ActionSection
-            title="Follow-Up Templates"
-            description="A thank-you note and check-in email tailored to this role — ready to send after your interview."
-            buttonLabel="Generate Templates"
-            onAction={handleGenerateFollowUp}
-            isLoading={isGeneratingFollowUp}
-            loadingMessage="Drafting follow-up templates…"
-            hasResult={!!followUpResult}
-            error={followUpError}
-          >
-            {followUpResult && (
-              <>
-                <div>
-                  <SubHeading label="Thank-You Note" copyText={followUpResult.thank_you_note} />
-                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                    {followUpResult.thank_you_note}
-                  </pre>
-                </div>
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading label="Check-In Email" copyText={followUpResult.check_in_email} />
-                  <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                    {followUpResult.check_in_email}
-                  </pre>
-                </div>
-              </>
-            )}
-          </ActionSection>
-        )
-      )}
-
-    </div>
-  );
-}
-
-function NeedsBriefPrompt({ onBuild }: { onBuild: () => void }) {
-  return (
-    <div className="bg-white rounded-2xl p-8 shadow text-center">
-      <p className="text-base font-semibold text-brand-text">Build the brief first</p>
-      <p className="text-base text-brand-text/50 mt-1">
-        Hit "Build Prep Guide" to generate your tailored brief, then this section will unlock.
-      </p>
-      <button
-        onClick={onBuild}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-      >
-        Build Prep Guide →
-      </button>
     </div>
   );
 }
