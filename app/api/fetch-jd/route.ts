@@ -1,11 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchJobDescription } from "@/lib/fetchJD";
+import { createClient } from "@/lib/supabase/server";
+import { checkAndLogUsage } from "@/lib/checkUsage";
 
 export const runtime = "nodejs";
 export const maxDuration = 20;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    }
+
+    const { allowed } = await checkAndLogUsage(user.id, "/api/fetch-jd");
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You've reached today's limit for URL fetches. Come back tomorrow." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { url } = body as { url?: string };
 
