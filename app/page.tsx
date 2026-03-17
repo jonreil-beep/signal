@@ -14,7 +14,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppHeader from "@/components/AppHeader";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus, DiscoveredJob } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
 
 const MAIN_TABS: { id: TabId; label: string }[] = [
   { id: "my-jobs",        label: "My Jobs" },
@@ -84,9 +84,7 @@ export default function Home() {
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
 
-  // ── Job Discovery state ──
-  const [findSimilarJD, setFindSimilarJD] = useState<string | null>(null);
-  const [discoverJobs, setDiscoverJobs] = useState<DiscoveredJob[]>([]);
+  // (Discover tab is now search-terms-only — no discovery state needed)
 
   // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
@@ -100,21 +98,10 @@ export default function Home() {
     const savedJobId = sessionStorage.getItem("signal-active-job-id");
     if (savedJobId) setActiveJobId(savedJobId);
 
-    const savedDiscoverJobs = sessionStorage.getItem("signal-discover-jobs");
-    if (savedDiscoverJobs) {
-      try { setDiscoverJobs(JSON.parse(savedDiscoverJobs)); } catch { /* ignore */ }
-    }
-
     // Restore profile staleness timestamp so "Profile updated" indicators survive refresh
     const savedProfileUpdatedAt = sessionStorage.getItem("signal-profile-updated-at");
     if (savedProfileUpdatedAt) {
       setProfileUpdatedAt(new Date(savedProfileUpdatedAt));
-    }
-
-    // Restore a discovered job that was pre-loaded but not yet scored
-    const pendingJD = sessionStorage.getItem("signal-pending-jd");
-    if (pendingJD && !savedJobId) {
-      setJobDescription(pendingJD);
     }
 
     setSessionRestored(true);
@@ -142,12 +129,6 @@ export default function Home() {
     }
   }, [activeJobId, sessionRestored]);
 
-  // ── Persist discover jobs ──
-  useEffect(() => {
-    if (!sessionRestored) return;
-    sessionStorage.setItem("signal-discover-jobs", JSON.stringify(discoverJobs));
-  }, [discoverJobs, sessionRestored]);
-
   // ── Persist profile staleness timestamp so indicators survive refresh ──
   useEffect(() => {
     if (!sessionRestored) return;
@@ -158,17 +139,7 @@ export default function Home() {
     }
   }, [profileUpdatedAt, sessionRestored]);
 
-  // ── Persist pending JD for unscored discovered jobs so refresh doesn't lose the textarea ──
-  useEffect(() => {
-    if (!sessionRestored) return;
-    if (jobDescription && !activeJobId) {
-      sessionStorage.setItem("signal-pending-jd", jobDescription);
-    } else {
-      sessionStorage.removeItem("signal-pending-jd");
-    }
-  }, [jobDescription, activeJobId, sessionRestored]);
-
-  // ── Handle browser back/forward for Discover → Job Fit navigation ──
+  // ── Handle browser back/forward navigation ──
   useEffect(() => {
     function handlePopState(event: PopStateEvent) {
       const state = event.state as { signalTab?: string } | null;
@@ -289,7 +260,6 @@ export default function Home() {
     setActiveTab("my-jobs");
     sessionStorage.removeItem("signal-active-tab");
     sessionStorage.removeItem("signal-active-job-id");
-    sessionStorage.removeItem("signal-pending-jd");
     sessionStorage.removeItem("signal-profile-updated-at");
   }
 
@@ -567,22 +537,6 @@ export default function Home() {
     setFollowUpResult(null);
     setCompanyResearchResult(null);
     setActiveJobId(null);
-  }
-
-  function handleLoadDiscoveredJob(jdText: string, _title: string, _company: string) {
-    // Pre-populate Job Fit with the discovered job and navigate there.
-    // The synthetic JD already starts with "Title at Company" — no need to prepend again.
-    handleJobFitReset();
-    setJobDescription(jdText);
-    // Push a history entry so the browser back button returns to Discover instead of /how-it-works
-    window.history.replaceState({ signalTab: "discover" }, "");
-    window.history.pushState({ signalTab: "job-fit" }, "");
-    setActiveTab("job-fit");
-  }
-
-  function handleFindSimilar() {
-    setFindSimilarJD(jobDescription);
-    setActiveTab("discover");
   }
 
   function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
@@ -1084,17 +1038,17 @@ export default function Home() {
                   onReset={handleJobFitReset}
                   onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
                 />
-                {/* Find similar jobs — appears after a job has been scored */}
+                {/* Search terms link — appears after a job has been scored */}
                 {jobFitResult && (
                   <div className="mt-4 flex justify-end">
                     <button
-                      onClick={handleFindSimilar}
+                      onClick={() => setActiveTab("discover")}
                       className="flex items-center gap-1.5 text-sm text-brand-text/40 hover:text-brand-accent transition-colors"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
                       </svg>
-                      Find similar jobs →
+                      Search for similar roles →
                     </button>
                   </div>
                 )}
@@ -1106,13 +1060,7 @@ export default function Home() {
         {/* ── Discover tab ── */}
         {activeTab === "discover" && (
           <JobDiscovery
-            profileText={profileText}
             clusterResult={clusterResult}
-            savedJobs={discoverJobs}
-            onJobsChange={setDiscoverJobs}
-            findSimilarJD={findSimilarJD}
-            onFindSimilarConsumed={() => setFindSimilarJD(null)}
-            onLoadJob={handleLoadDiscoveredJob}
             onGoToProfile={() => setActiveTab("profile")}
           />
         )}
