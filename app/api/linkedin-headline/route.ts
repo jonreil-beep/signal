@@ -24,7 +24,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText } = body as { resumeText?: string };
+    const { resumeText, writingSample } = body as { resumeText?: string; writingSample?: string };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
       return NextResponse.json(
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const prompt = buildLinkedInHeadlinePrompt(resumeText.trim());
+    const prompt = buildLinkedInHeadlinePrompt(resumeText.trim(), writingSample?.trim());
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",

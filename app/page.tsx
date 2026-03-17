@@ -61,6 +61,7 @@ export default function Home() {
   // Guards the save effects so they don't overwrite sessionStorage before restoration runs
   const [sessionRestored, setSessionRestored] = useState(false);
   const [profileText, setProfileText] = useState<string>("");
+  const [writingSample, setWritingSample] = useState<string>("");
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -342,7 +343,7 @@ export default function Home() {
       const response = await fetch("/api/linkedin-headline", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText }),
+        body: JSON.stringify({ resumeText: profileText, writingSample: writingSample || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -886,6 +887,21 @@ export default function Home() {
               </div>
             )}
 
+            {profileText && !updatingProfile && (
+              <div className="mt-5">
+                <label className="block text-sm font-medium text-brand-text mb-1.5">
+                  Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
+                </label>
+                <textarea
+                  value={writingSample}
+                  onChange={(e) => setWritingSample(e.target.value)}
+                  placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
+                  rows={3}
+                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 ring-1 ring-brand-text/10 focus:ring-brand-text/25 outline-none resize-none placeholder:text-brand-text/30 shadow-sm"
+                />
+              </div>
+            )}
+
             {profileText && !updatingProfile && !isAnalyzing && (
               <div className="mt-6 pt-6 border-t border-brand-text/8">
                 <div className="flex items-center justify-between">
@@ -1091,6 +1107,7 @@ export default function Home() {
             )}
             <TailoringBrief
               profileText={profileText}
+              writingSample={writingSample || undefined}
               jobDescription={jobDescription}
               jobLabel={activeJobId ? trackedJobs.find(j => j.id === activeJobId)?.label : undefined}
               result={tailoringResult}

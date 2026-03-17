@@ -24,11 +24,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, outreachAngle, userNote } = body as {
+    const { resumeText, jobDescription, outreachAngle, userNote, writingSample } = body as {
       resumeText?: string;
       jobDescription?: string;
       outreachAngle?: string;
       userNote?: string;
+      writingSample?: string;
     };
 
     if (!resumeText || typeof resumeText !== "string") {
@@ -42,7 +43,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       resumeText.trim(),
       jobDescription.trim(),
       outreachAngle?.trim(),
-      userNote?.trim()
+      userNote?.trim(),
+      writingSample?.trim()
     );
 
     const message = await anthropic.messages.create({

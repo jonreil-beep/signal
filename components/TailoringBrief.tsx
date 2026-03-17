@@ -24,6 +24,7 @@ const PREP_SECTIONS: { id: PrepSection; label: string }[] = [
 
 interface TailoringBriefProps {
   profileText: string;
+  writingSample?: string;
   jobDescription: string;
   jobLabel?: string;
   result: TailoringBriefResult | null;
@@ -218,6 +219,7 @@ function normalizeCompanyResearch(raw: CompanyResearchResult): CompanyResearchRe
 
 export default function TailoringBrief({
   profileText,
+  writingSample,
   jobDescription,
   jobLabel,
   result,
@@ -304,7 +306,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription, userNote: briefNote || undefined }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, userNote: briefNote || undefined, writingSample: writingSample || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -327,7 +329,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/suggest-resume-updates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, writingSample: writingSample || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -355,6 +357,7 @@ export default function TailoringBrief({
           jobDescription,
           outreachAngle: result?.outreach_angle,
           userNote: coverLetterNote || undefined,
+          writingSample: writingSample || undefined,
         }),
       });
       const data = await response.json();
@@ -384,6 +387,7 @@ export default function TailoringBrief({
           resumeText: profileText,
           jobDescription,
           userNote: outreachNote || undefined,
+          writingSample: writingSample || undefined,
         }),
       });
       const data = await response.json();
@@ -407,7 +411,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/interview-prep", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, writingSample: writingSample || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -628,7 +632,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/follow-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, writingSample: writingSample || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {

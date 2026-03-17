@@ -24,9 +24,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription } = body as {
+    const { resumeText, jobDescription, writingSample } = body as {
       resumeText?: string;
       jobDescription?: string;
+      writingSample?: string;
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const prompt = buildInterviewPrepPrompt(resumeText.trim(), jobDescription.trim());
+    const prompt = buildInterviewPrepPrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim());
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
