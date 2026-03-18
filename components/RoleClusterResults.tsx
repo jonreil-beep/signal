@@ -24,16 +24,6 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
   return (
     <div className="space-y-7">
 
-      {/* Headline */}
-      <div className="bg-brand-text rounded-2xl p-7">
-        <p className="text-xs font-bold tracking-[0.1em] uppercase text-white/35 mb-3">
-          Your Recommended LinkedIn Headline
-        </p>
-        <p className="text-xl text-white font-semibold leading-snug">
-          {result.recommended_headline}
-        </p>
-      </div>
-
       {/* Role clusters */}
       <div>
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">

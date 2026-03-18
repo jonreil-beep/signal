@@ -732,11 +732,11 @@ export default function TailoringBrief({
 
       {/* ── Honest Take — always visible when brief is built, across all stages ── */}
       {result?.honest_take && (
-        <div className="rounded-2xl bg-brand-text px-5 py-4">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
+        <div className="rounded-2xl bg-brand-text p-7">
+          <p className="text-xs font-medium uppercase tracking-[0.06em] text-white/35 mb-2">
             Honest Take
           </p>
-          <p className="text-base text-white/80 leading-snug">{result.honest_take}</p>
+          <p className="text-xl font-semibold text-white leading-[1.4]">{result.honest_take}</p>
         </div>
       )}
 
