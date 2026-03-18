@@ -286,7 +286,7 @@ export default function TailoringBrief({
   isProfileStale,
 }: TailoringBriefProps) {
   const [appStage, setAppStage] = useState<ApplicationStage>("preparing");
-  const [briefExpanded, setBriefExpanded] = useState(false);
+  const [briefNoteExpanded, setBriefNoteExpanded] = useState(false);
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
@@ -744,56 +744,40 @@ export default function TailoringBrief({
       {appStage === "preparing" && (
         <div className="space-y-5">
 
-          {/* Header row: description + Export + Build button */}
+          {/* Correction input + Export + Rebuild/Build row */}
           {!isGenerating && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-base text-brand-text/40">
-                  {result ? "Rebuild to refresh with the latest job and profile." : "Signal will build targeted prep for this specific job."}
-                </p>
-                <div className="flex items-center gap-2 shrink-0">
-                  {hasAnyContent && (
-                    <button
-                      onClick={handleExport}
-                      className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      Export
-                    </button>
-                  )}
-                  <button
-                    onClick={handleGenerate}
-                    className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                  >
-                    {result ? "Rebuild" : "Build Prep Guide"}
-                  </button>
-                </div>
-              </div>
+            <div className="space-y-2">
               {result && (
-                <div className="space-y-2">
-                  <p className="text-[0.75rem] font-medium uppercase tracking-[0.06em] text-brand-text/30">
-                    Anything to correct before rebuilding?
-                  </p>
-                  <textarea
-                    value={briefNote}
-                    onChange={(e) => setBriefNote(e.target.value)}
-                    placeholder='e.g. "I was VP level, not Director" or "Focus more on the operational angle"'
-                    maxLength={300}
-                    rows={2}
-                    className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 placeholder:text-brand-text/25 leading-relaxed transition-colors"
-                  />
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleGenerate}
-                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-                    >
-                      Rebuild →
-                    </button>
-                  </div>
-                </div>
+                <textarea
+                  value={briefNote}
+                  onChange={(e) => setBriefNote(e.target.value)}
+                  onFocus={() => setBriefNoteExpanded(true)}
+                  onBlur={() => { if (!briefNote.trim()) setBriefNoteExpanded(false); }}
+                  placeholder="Anything to correct before rebuilding? (optional)"
+                  maxLength={300}
+                  rows={briefNoteExpanded ? 3 : 1}
+                  className="w-full text-sm text-brand-text/70 bg-brand-text/4 rounded-xl px-3 py-2.5 resize-none border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 placeholder:text-brand-text/25 leading-relaxed transition-all"
+                />
               )}
+              <div className="flex justify-end gap-2">
+                {hasAnyContent && (
+                  <button
+                    onClick={handleExport}
+                    className="flex items-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/50 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/70 transition-colors"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export
+                  </button>
+                )}
+                <button
+                  onClick={handleGenerate}
+                  className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                >
+                  {result ? "Rebuild" : "Build Prep Guide"}
+                </button>
+              </div>
             </div>
           )}
 
@@ -831,17 +815,7 @@ export default function TailoringBrief({
 
           {result && !isGenerating && (
             <div className="bg-white rounded-2xl shadow overflow-hidden">
-              <button
-                onClick={() => setBriefExpanded(v => !v)}
-                className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-brand-text/2 transition-colors"
-              >
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Prep Brief</p>
-                <span className="text-sm font-medium text-brand-accent shrink-0">
-                  {briefExpanded ? "Hide brief ↑" : "View brief →"}
-                </span>
-              </button>
-              {briefExpanded && (
-              <div className="border-t border-brand-text/8 px-6 py-6 space-y-5">
+              <div className="px-6 py-6 space-y-5">
               <Section
                 title="Lead Strengths to Emphasize"
                 copyText={result.lead_strengths.map((s) => `• [${s.match_type}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
@@ -922,7 +896,6 @@ export default function TailoringBrief({
                 </Section>
               )}
               </div>
-              )}
             </div>
           )}
 
