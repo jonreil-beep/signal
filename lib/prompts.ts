@@ -325,6 +325,7 @@ Write a tailored cover letter. Return this exact JSON structure — nothing else
 }
 
 Rules:
+- FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. This is a document the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
 - Open with a strong, specific hook${outreachAngle ? " — use the outreach angle provided" : ""}
 - Reference specific role requirements and match them to the candidate's concrete experience
 - Do not use hollow phrases like "I am excited to apply" or "I believe I would be a great fit"
@@ -450,7 +451,8 @@ Draft two follow-up messages tailored to this candidate and role. Return this ex
 }
 
 Rules:
-- Both messages must be written in first person and feel like a real person wrote them, not a template
+- FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. These are documents the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
+- Both messages must feel like a real person wrote them, not a template
 - Do not use hollow openers like "I hope this email finds you well" or "I wanted to follow up"
 - thank_you_note: mention a specific detail from the role or conversation — use '[the conversation about X]' as a bracket placeholder if needed
 - check_in_email: be direct, warm, and brief — no groveling, no over-explaining
@@ -492,6 +494,7 @@ Draft two outreach messages. Return this exact JSON structure — nothing else:
 }
 
 Rules:
+- FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. These are messages the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
 - The email subject line must be specific and intriguing, not generic ("Quick question" is bad)
 - Both messages must reference the outreach angle — it is the core hook
 - Be direct and confident, not groveling
