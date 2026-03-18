@@ -730,6 +730,16 @@ export default function TailoringBrief({
         ))}
       </div>
 
+      {/* ── Honest Take — always visible when brief is built, across all stages ── */}
+      {result?.honest_take && (
+        <div className="rounded-2xl bg-brand-text px-5 py-4">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
+            Honest Take
+          </p>
+          <p className="text-base text-white/80 leading-snug">{result.honest_take}</p>
+        </div>
+      )}
+
       {/* ── Preparing to Apply: Brief + Cover Letter + Outreach + Resume Bullets ── */}
       {appStage === "preparing" && (
         <div className="space-y-5">
@@ -832,15 +842,6 @@ export default function TailoringBrief({
               </button>
               {briefExpanded && (
               <div className="border-t border-brand-text/8 px-6 py-6 space-y-5">
-              {result.honest_take && (
-                <div className="rounded-2xl bg-brand-text px-5 py-4">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-white/30 mb-1.5">
-                    Honest Take
-                  </p>
-                  <p className="text-base text-white/80 leading-snug">{result.honest_take}</p>
-                </div>
-              )}
-
               <Section
                 title="Lead Strengths to Emphasize"
                 copyText={result.lead_strengths.map((s) => `• [${s.match_type}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
