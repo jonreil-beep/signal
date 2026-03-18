@@ -1213,9 +1213,6 @@ export default function Home() {
               <div>
                 <div className="mb-7">
                   <h2 className="text-lg font-semibold text-brand-text">Score a Job</h2>
-                  <p className="text-base text-brand-text/50 mt-1">
-                    Paste or fetch a job description. Signal scores it against your profile — functional fit, seniority, domain, and the specific concern a recruiter will likely raise.
-                  </p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-6">

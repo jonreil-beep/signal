@@ -402,35 +402,32 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Score + recommendation */}
           <div className="bg-brand-text rounded-2xl p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
-                  Overall Fit
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
-                    {result.overall_fit}
-                  </span>
-                  <span className="text-2xl text-white/30 font-light">/10</span>
-                </div>
-                <p className="text-base text-white/50 mt-2 leading-snug max-w-sm">
-                  {result.summary}
-                </p>
-                {/* Mismatch type pills */}
-                {result.mismatch_types?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {result.mismatch_types.map((t) => (
-                      <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
-                        {MISMATCH_LABELS[t]}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
+              Overall Fit
+            </p>
+            {/* Score + badge on one line */}
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
+                {result.overall_fit}
+              </span>
+              <span className="text-2xl text-white/30 font-light">/10</span>
               <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
                 {result.recommendation}
               </span>
             </div>
+            <p className="text-base text-white/50 mt-2 leading-snug max-w-sm">
+              {result.summary}
+            </p>
+            {/* Mismatch type pills */}
+            {result.mismatch_types?.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {result.mismatch_types.map((t) => (
+                  <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
+                    {MISMATCH_LABELS[t]}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Recruiter concern — shown immediately after overall fit when present */}
@@ -439,7 +436,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
                 ⚑ Recruiter Concern to Address
               </p>
-              <p className="text-[1.0625rem] text-brand-text/85 leading-relaxed">{result.recruiter_concern}</p>
+              <p className="text-[1.0625rem] text-brand-text leading-relaxed">{result.recruiter_concern}</p>
             </div>
           )}
 
