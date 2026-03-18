@@ -35,9 +35,9 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow">
+              <div key={i} className="bg-white rounded-2xl p-5 shadow">
                 {/* Header row */}
-                <div className="flex items-start justify-between gap-3 mb-1">
+                <div className="flex items-start justify-between gap-3 mb-2">
                   <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
                   <div className="flex items-center gap-1.5 shrink-0">
                     {rec && (
@@ -51,19 +51,17 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                   </div>
                 </div>
 
-                {/* Market read */}
+                {/* Market read — primary descriptor */}
                 {cluster.market_read && (
-                  <p className="text-sm text-brand-text/40 italic mb-2.5 leading-snug">
+                  <p className="text-[0.9375rem] text-brand-text/50 leading-snug mb-3">
                     {cluster.market_read}
                   </p>
                 )}
 
-                <p className="text-[1.0625rem] text-brand-text/60 leading-[1.7] mb-4">{cluster.reasoning}</p>
-
                 {cluster.signals.length > 0 && (
                   <ul className="space-y-1.5">
-                    {cluster.signals.map((signal, j) => (
-                      <li key={j} className="flex items-start gap-2 text-base text-brand-text/45">
+                    {cluster.signals.slice(0, 3).map((signal, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-brand-text/45">
                         <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-brand-text/20" />
                         {signal}
                       </li>
