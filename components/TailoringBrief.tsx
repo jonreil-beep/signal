@@ -714,15 +714,15 @@ export default function TailoringBrief({
       <p className="text-sm text-brand-text/40">Signal gives you the raw material. You bring the judgment.</p>
 
       {/* ── Stage selector ── */}
-      <div className="flex gap-1 bg-brand-text/6 rounded-xl p-1">
+      <div className="my-2 flex w-full rounded-[14px] bg-brand-text/6 p-1">
         {APPLICATION_STAGES.map((stage) => (
           <button
             key={stage.id}
             onClick={() => setAppStage(stage.id)}
-            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`flex-1 rounded-[10px] px-4 py-3 text-center text-[15px] transition-all duration-150 focus:outline-none focus:ring-0 ${
               appStage === stage.id
-                ? "bg-white text-brand-text shadow-sm"
-                : "text-brand-text/40 hover:text-brand-text/70"
+                ? "bg-white font-semibold text-brand-text shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]"
+                : "font-medium text-brand-text/45 hover:bg-brand-text/4 hover:text-brand-text/70"
             }`}
           >
             {stage.label}
