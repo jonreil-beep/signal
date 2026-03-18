@@ -69,13 +69,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   const [isScoring, setIsScoring] = useState(false);
   const [scoreError, setScoreError] = useState<string>("");
   const [dismissedItems, setDismissedItems] = useState<string[]>([]);
+  const [undoableItems, setUndoableItems] = useState<Set<string>>(new Set());
+  const undoTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
-  const rescoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [showRescoreWarning, setShowRescoreWarning] = useState(false);
-  const [pendingDismissed, setPendingDismissed] = useState<string[]>([]);
-  // "dismiss" = re-score after dismissing gaps; "direct" = re-score with updated profile
-  const [pendingRescoreAction, setPendingRescoreAction] = useState<"dismiss" | "direct" | null>(null);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -135,47 +132,24 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   }
 
   function handleDismissItem(item: string) {
-    const next = [...dismissedItems, item];
-    if (hasPrepData) {
-      // Warn the user that re-scoring will clear their existing prep guide
-      setPendingDismissed(next);
-      setPendingRescoreAction("dismiss");
-      setShowRescoreWarning(true);
-      return;
-    }
-    setDismissedItems(next);
-    setRescoreError("");
-    if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
-    rescoreTimer.current = setTimeout(() => triggerRescore(next), 1200);
+    setDismissedItems(prev => [...prev, item]);
+    setUndoableItems(prev => { const n = new Set(prev); n.add(item); return n; });
+    const tid = setTimeout(() => {
+      setUndoableItems(prev => { const n = new Set(prev); n.delete(item); return n; });
+      undoTimers.current.delete(item);
+    }, 4000);
+    undoTimers.current.set(item, tid);
+  }
+
+  function handleUndoItem(item: string) {
+    setDismissedItems(prev => prev.filter(i => i !== item));
+    setUndoableItems(prev => { const n = new Set(prev); n.delete(item); return n; });
+    const tid = undoTimers.current.get(item);
+    if (tid) { clearTimeout(tid); undoTimers.current.delete(item); }
   }
 
   function handleProfileRescore() {
-    if (hasPrepData) {
-      setPendingRescoreAction("direct");
-      setShowRescoreWarning(true);
-      return;
-    }
     void triggerDirectRescore();
-  }
-
-  function confirmRescore() {
-    setShowRescoreWarning(false);
-    if (pendingRescoreAction === "dismiss") {
-      setDismissedItems(pendingDismissed);
-      setRescoreError("");
-      if (rescoreTimer.current) clearTimeout(rescoreTimer.current);
-      rescoreTimer.current = setTimeout(() => triggerRescore(pendingDismissed), 1200);
-      setPendingDismissed([]);
-    } else if (pendingRescoreAction === "direct") {
-      void triggerDirectRescore();
-    }
-    setPendingRescoreAction(null);
-  }
-
-  function cancelRescore() {
-    setPendingDismissed([]);
-    setPendingRescoreAction(null);
-    setShowRescoreWarning(false);
   }
 
   async function triggerDirectRescore() {
@@ -242,33 +216,6 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
   return (
     <div className="space-y-5">
-      {/* Re-score warning dialog */}
-      {showRescoreWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full space-y-4">
-            <div>
-              <p className="text-base font-semibold text-brand-text">Re-score this job?</p>
-              <p className="mt-1.5 text-sm text-brand-text/60 leading-relaxed">
-                Re-scoring will clear your existing prep guide for this job — cover letter, outreach, interview questions, and any other prep you&apos;ve built will be removed.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={confirmRescore}
-                className="flex-1 px-4 py-2.5 bg-brand-text text-white text-sm font-semibold rounded-xl hover:bg-brand-text/85 transition-colors"
-              >
-                Re-score
-              </button>
-              <button
-                onClick={cancelRescore}
-                className="flex-1 px-4 py-2.5 bg-brand-text/8 text-brand-text/70 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {!result && (
         <>
           {/* Mode toggle */}
@@ -498,15 +445,17 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">
                   What&apos;s Missing
                 </p>
-                <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply to you? Tap × to remove it and re-score.</p>
+                <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply? Tap × to remove.</p>
               </div>
-              {result.whats_missing.filter((item) => !dismissedItems.includes(item)).length === 0 ? (
-                <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
-              ) : (
-                <ul className="space-y-2">
-                  {result.whats_missing
-                    .filter((item) => !dismissedItems.includes(item))
-                    .map((item, i) => (
+
+              {/* Active items */}
+              {(() => {
+                const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
+                return activeItems.length === 0 && undoableItems.size === 0 ? (
+                  <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {activeItems.map((item, i) => (
                       <li key={i} className="flex items-start justify-between gap-2 group">
                         <div className="flex items-start gap-2.5 text-base text-brand-text/80">
                           <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
@@ -515,7 +464,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         <button
                           onClick={() => handleDismissItem(item)}
                           title="Dismiss — I actually have this"
-                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors text-sm font-medium"
+                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors"
                         >
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                             <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -523,19 +472,46 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         </button>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                );
+              })()}
+
+              {/* Undoable items — recently dismissed, fading out after 4s */}
+              {undoableItems.size > 0 && (
+                <div className="mt-3 pt-3 border-t border-brand-text/8 space-y-1.5">
+                  {[...undoableItems].map(item => (
+                    <div key={item} className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-brand-text/30 line-through leading-snug">{item}</span>
+                      <button
+                        onClick={() => handleUndoItem(item)}
+                        className="shrink-0 text-xs text-brand-accent hover:text-brand-accent/70 transition-colors font-medium"
+                      >
+                        Undo
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
 
-              {/* Re-score error (bottom of gaps section) */}
-              {rescoreError && !isRescoring && (
-                <div className="mt-4 pt-4 border-t border-brand-text/8 flex items-center gap-3">
-                  <p className="text-sm text-status-stretch">{rescoreError}</p>
-                  <button
-                    onClick={() => triggerRescore(dismissedItems)}
-                    className="text-sm text-brand-accent hover:text-brand-accent/70 transition-colors"
-                  >
-                    Retry
-                  </button>
+              {/* Re-score button — appears as soon as first item is dismissed */}
+              {dismissedItems.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-brand-text/8 space-y-2">
+                  {isRescoring ? (
+                    <p className="text-sm text-brand-text/50 text-center py-1">Re-scoring…</p>
+                  ) : (
+                    <button
+                      onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
+                      className="w-full px-4 py-2.5 border border-brand-accent/40 text-brand-accent text-sm font-semibold rounded-xl hover:bg-brand-accent/5 hover:border-brand-accent/70 transition-colors"
+                    >
+                      Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
+                    </button>
+                  )}
+                  {hasPrepData && !isRescoring && (
+                    <p className="text-xs text-brand-text/30 text-center">Re-scoring will clear your existing prep guide.</p>
+                  )}
+                  {rescoreError && !isRescoring && (
+                    <p className="text-xs text-status-skip text-center">{rescoreError}</p>
+                  )}
                 </div>
               )}
             </div>
