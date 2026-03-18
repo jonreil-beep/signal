@@ -485,7 +485,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 What You Have
               </p>
               <ul className="space-y-2">
-                {result.what_she_has.map((item, i) => (
+                {result.what_you_have.map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
                     <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
                     {item}

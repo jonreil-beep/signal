@@ -4,6 +4,7 @@
 // Injected into every prompt. Any prompt-level voice rules extend this, never contradict it.
 const VOICE_RULES = `
 Voice and tone rules — apply to every prose field in your output:
+- ADDRESS THE CANDIDATE DIRECTLY in second person throughout all output. Use "you" and "your" when referring to the candidate. Never use "he," "she," "his," "her," "they," or "their" when referring to the candidate. The candidate is reading this output directly — write as if speaking to them, not about them.
 - Write like a sharp, experienced operator: direct, grounded, occasionally dry. Never like a consultant selling an engagement.
 - Banned words and phrases (do not use under any circumstances): "aligns perfectly," "the parallels are striking," "exact challenges," "uniquely positioned," "what differentiates," "strong track record," "proven ability," "passion for," "excited to," "game-changing," "transformative," "leveraged," "spearheaded," "harnessed," "synergized," "results-driven," "dynamic," "innovative," "thought leader," "seasoned professional," "robust," "strategic vision," "core competency," "value-add," "best-in-class," "move the needle," "at the end of the day"
 - Hedge when you are inferring, not stating fact. Use: "likely," "appears to," "based on the JD," "this may signal," "worth probing," "suggests." Do not present inference as verified fact.
@@ -73,7 +74,7 @@ export function buildJobFitPrompt(
 ): string {
   const correctionBlock =
     dismissedItems && dismissedItems.length > 0
-      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications that were previously marked as missing. This means the candidate is stronger than initially assessed — do NOT include these in whats_missing, and the revised overall_fit score MUST be higher than or equal to ${previousScore ?? 1} (the previous score). Removing gaps can only improve the fit:\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
+      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications that were previously marked as missing. This means the candidate is stronger than initially assessed — do NOT include these in whats_missing, and the revised overall_fit score MUST be higher than or equal to ${previousScore ?? 1} (the previous score). Removing gaps can only improve the fit. When writing what_you_have, address the candidate directly using "you" and "your":\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
       : "";
 
   return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description honestly.
@@ -100,8 +101,8 @@ Return this exact JSON structure — nothing else:
     "keyword_overlap": { "score": <1-10>, "reasoning": "Brief explanation" }
   },
   "mismatch_types": ["title" | "comp" | "scope" | "domain" | "functional"],
-  "what_she_has": ["specific match from resume to JD", "..."],
-  "whats_missing": ["specific gap or ambiguity hiring team will notice", "..."],
+  "what_you_have": ["specific match from your resume to the JD — addressed directly to the candidate", "..."],
+  "whats_missing": ["specific gap or ambiguity the hiring team will notice", "..."],
   "recommendation": "Apply Now | Apply with Tailoring | Stretch — Proceed Carefully | Skip",
   "recruiter_concern": "The most likely red flag a recruiter would raise — be specific. Use 'None identified' only if there is genuinely no concern."
 }
@@ -156,7 +157,7 @@ Return this exact JSON structure — nothing else:
   "honest_take": "One sentence — the thing a candid career advisor would say to this person over coffee. Not in a report. Not softened. If they're a strong fit, say so and why. If they're a stretch or have a real problem, name it plainly. This is the sentence the rest of the brief should be read in the context of.",
   "lead_strengths": [
     {
-      "strength": "Specific part of their background that is relevant to this role",
+      "strength": "Specific part of your background that is relevant to this role — address the candidate as 'you'",
       "match_type": "Direct match | Strong inference | Reframe",
       "framing_language": "How they could present this in an interview or cover letter — in their own voice, not marketing copy"
     }
@@ -169,8 +170,8 @@ Return this exact JSON structure — nothing else:
   ],
   "what_to_deemphasize": [
     {
-      "item": "Part of their background to downplay",
-      "reason": "Why it dilutes their candidacy for this role"
+      "item": "Part of your background to downplay — address the candidate as 'you'",
+      "reason": "Why it dilutes your candidacy for this role"
     }
   ],
   "recruiter_concern_to_preempt": {

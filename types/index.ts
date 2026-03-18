@@ -66,7 +66,7 @@ export interface JobFitResult {
     keyword_overlap: DimensionScore;
   };
   mismatch_types: MismatchType[]; // what kind of gap is driving a lower score
-  what_she_has: string[];
+  what_you_have: string[];
   whats_missing: string[];
   recommendation: "Apply Now" | "Apply with Tailoring" | "Stretch — Proceed Carefully" | "Skip";
   recruiter_concern: string; // required — "None identified" if no concern

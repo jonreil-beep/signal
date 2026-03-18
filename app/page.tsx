@@ -32,6 +32,16 @@ function extractJobTitle(jd: string, fallbackCount: number): string {
   return firstShortLine ?? `Job #${fallbackCount}`;
 }
 
+/** Migrate legacy `what_she_has` field name to `what_you_have` for records saved before the rename */
+function normalizeJobFitResult(raw: unknown): JobFitResult {
+  const r = raw as Record<string, unknown>;
+  if (!r.what_you_have && r.what_she_has) {
+    r.what_you_have = r.what_she_has;
+    delete r.what_she_has;
+  }
+  return r as unknown as JobFitResult;
+}
+
 export default function Home() {
   const supabase = createClient();
   const [isNewSignup, setIsNewSignup] = useState(false);
@@ -186,7 +196,7 @@ export default function Home() {
         const savedJob = localStorage.getItem("signal_last_job");
         if (savedJob) {
           const j = JSON.parse(savedJob) as { jobFitResult?: JobFitResult };
-          if (j.jobFitResult) setJobFitResult(j.jobFitResult);
+          if (j.jobFitResult) setJobFitResult(normalizeJobFitResult(j.jobFitResult));
         }
         const savedPrep = localStorage.getItem("signal_last_prep");
         if (savedPrep) {
@@ -339,7 +349,7 @@ export default function Home() {
         id: row.id as string,
         label: row.label as string,
         jobDescription: row.job_description as string,
-        jobFitResult: row.job_fit_result as JobFitResult,
+        jobFitResult: normalizeJobFitResult(row.job_fit_result),
         tailoringResult: row.tailoring_result as TailoringBriefResult | null,
         outreachResult: row.outreach_result as OutreachResult | null,
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
