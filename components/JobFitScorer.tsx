@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import LoadingState from "./LoadingState";
 import type { JobFitResult, MismatchType } from "@/types";
 
@@ -69,8 +69,6 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   const [isScoring, setIsScoring] = useState(false);
   const [scoreError, setScoreError] = useState<string>("");
   const [dismissedItems, setDismissedItems] = useState<string[]>([]);
-  const [undoableItems, setUndoableItems] = useState<Set<string>>(new Set());
-  const undoTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
 
@@ -133,19 +131,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
   function handleDismissItem(item: string) {
     setDismissedItems(prev => [...prev, item]);
-    setUndoableItems(prev => { const n = new Set(prev); n.add(item); return n; });
-    const tid = setTimeout(() => {
-      setUndoableItems(prev => { const n = new Set(prev); n.delete(item); return n; });
-      undoTimers.current.delete(item);
-    }, 4000);
-    undoTimers.current.set(item, tid);
   }
 
   function handleUndoItem(item: string) {
     setDismissedItems(prev => prev.filter(i => i !== item));
-    setUndoableItems(prev => { const n = new Set(prev); n.delete(item); return n; });
-    const tid = undoTimers.current.get(item);
-    if (tid) { clearTimeout(tid); undoTimers.current.delete(item); }
   }
 
   function handleProfileRescore() {
@@ -451,7 +440,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               {/* Active items */}
               {(() => {
                 const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
-                return activeItems.length === 0 && undoableItems.size === 0 ? (
+                return activeItems.length === 0 && dismissedItems.length === 0 ? (
                   <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
                 ) : (
                   <ul className="space-y-2">
@@ -476,10 +465,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 );
               })()}
 
-              {/* Undoable items — recently dismissed, fading out after 4s */}
-              {undoableItems.size > 0 && (
+              {/* Dismissed items — undo stays visible until re-score */}
+              {dismissedItems.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-brand-text/8 space-y-1.5">
-                  {[...undoableItems].map(item => (
+                  {dismissedItems.map(item => (
                     <div key={item} className="flex items-center justify-between gap-3">
                       <span className="text-sm text-brand-text/30 line-through leading-snug">{item}</span>
                       <button
