@@ -12,6 +12,10 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Signal — Job Search Intelligence",
   description: "Job search intelligence for experienced professionals — honest fit scoring, targeted prep, and resume guidance.",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
