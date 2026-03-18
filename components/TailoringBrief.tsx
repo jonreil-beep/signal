@@ -719,9 +719,6 @@ export default function TailoringBrief({
   return (
     <div className="space-y-5">
 
-      {/* ── Tagline ── */}
-      <p className="text-sm text-brand-text/40">Signal gives you the raw material. You bring the judgment.</p>
-
       {/* ── Stage selector ── */}
       <div className="my-2 flex w-full rounded-[14px] bg-brand-text/6 p-1">
         {APPLICATION_STAGES.map((stage) => (

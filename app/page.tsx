@@ -1277,9 +1277,6 @@ export default function Home() {
           <div>
             <div className="mb-7">
               <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
-              <p className="text-base text-brand-text/50 mt-1">
-                Your positioning brief, objection handling, resume edits, cover letter, and interview prep — all built from your profile and this specific role.
-              </p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">

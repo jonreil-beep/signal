@@ -65,7 +65,7 @@ export default function JobLabelEditor({
     >
       <span className={`${className} text-brand-text leading-snug truncate`}>{label}</span>
       <svg
-        className="shrink-0 text-brand-text/20 group-hover:text-brand-text/50 transition-colors"
+        className="shrink-0 text-transparent group-hover:text-brand-text/50 transition-colors"
         style={{ width: "0.875em", height: "0.875em" }}
         fill="none" viewBox="0 0 24 24" stroke="currentColor"
       >
