@@ -287,7 +287,16 @@ export default function TailoringBrief({
 }: TailoringBriefProps) {
   const [appStage, setAppStage] = useState<ApplicationStage>("preparing");
   const [briefNoteExpanded, setBriefNoteExpanded] = useState(false);
+  const [expandedStrengths, setExpandedStrengths] = useState<Set<number>>(new Set());
+  const [expandedPhrases, setExpandedPhrases] = useState<Set<number>>(new Set());
   const [expandedQuestions, setExpandedQuestions] = useState<Set<number>>(new Set());
+
+  function toggleStrength(i: number) {
+    setExpandedStrengths(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  }
+  function togglePhrase(i: number) {
+    setExpandedPhrases(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  }
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -814,18 +823,20 @@ export default function TailoringBrief({
           )}
 
           {result && !isGenerating && (
-            <div className="bg-white rounded-2xl shadow overflow-hidden">
-              <div className="px-6 py-6 space-y-5">
-              <Section
-                title="Lead Strengths to Emphasize"
-                copyText={result.lead_strengths.map((s) => `• [${s.match_type}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")}
-              >
+            <div className="bg-white rounded-2xl shadow overflow-hidden divide-y divide-brand-text/8">
+
+              {/* ── Lead Strengths ── */}
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Lead Strengths to Emphasize</p>
+                  <CopyButton getText={() => result.lead_strengths.map((s) => `• [${s.match_type ?? ""}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")} />
+                </div>
                 <div className="space-y-3">
                   {result.lead_strengths.map((s, i) => {
                     const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
                     return (
                       <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                        <div className="flex items-center gap-2 mb-0.5">
+                        <div className="flex items-center gap-2">
                           <p className="text-base font-medium text-brand-text">{s.strength}</p>
                           {matchStyle && (
                             <span className={`shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
@@ -833,47 +844,72 @@ export default function TailoringBrief({
                             </span>
                           )}
                         </div>
-                        <p className="text-base text-brand-text/40 italic leading-snug">{s.framing_language}</p>
+                        {expandedStrengths.has(i) && (
+                          <p className="text-sm text-brand-text/40 italic leading-snug mt-1.5">{s.framing_language}</p>
+                        )}
+                        <button
+                          onClick={() => toggleStrength(i)}
+                          className="mt-1 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                        >
+                          {expandedStrengths.has(i) ? "Hide ↑" : "See framing →"}
+                        </button>
                       </div>
                     );
                   })}
                 </div>
-              </Section>
+              </div>
 
-              <Section
-                title="JD Language to Mirror"
-                copyText={result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")}
-              >
-                <div className="space-y-3">
+              {/* ── JD Language to Mirror ── */}
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">JD Language to Mirror</p>
+                  <CopyButton getText={() => result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")} />
+                </div>
+                <div className="space-y-2.5">
                   {result.jd_language_to_mirror.map((p, i) => (
                     <div key={i}>
-                      <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                        &ldquo;{p.phrase}&rdquo;
-                      </span>
-                      <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                          &ldquo;{p.phrase}&rdquo;
+                        </span>
+                        <CopyButton getText={() => p.phrase} />
+                        <button
+                          onClick={() => togglePhrase(i)}
+                          className="text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                        >
+                          {expandedPhrases.has(i) ? "Hide ↑" : "Why →"}
+                        </button>
+                      </div>
+                      {expandedPhrases.has(i) && (
+                        <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
+                      )}
                     </div>
                   ))}
                 </div>
-              </Section>
+              </div>
 
-              <Section
-                title="What to De-emphasize"
-                copyText={result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")}
-              >
-                <div className="space-y-3">
+              {/* ── What to De-emphasize ── */}
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">What to De-emphasize</p>
+                  <CopyButton getText={() => result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")} />
+                </div>
+                <div className="space-y-2.5">
                   {result.what_to_deemphasize.map((d, i) => (
                     <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
                       <p className="text-base font-medium text-brand-text">{d.item}</p>
-                      <p className="text-base text-brand-text/40 mt-0.5">{d.reason}</p>
+                      <p className="text-sm text-brand-text/40 mt-0.5 leading-snug">{d.reason}</p>
                     </div>
                   ))}
                 </div>
-              </Section>
+              </div>
 
-              <Section
-                title="Recruiter Concern to Preempt"
-                copyText={`Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`}
-              >
+              {/* ── Recruiter Concern — amber left accent ── */}
+              <div className="px-6 py-5 border-l-4 border-status-stretch/50">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Recruiter Concern to Preempt</p>
+                  <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
+                </div>
                 <div className="space-y-2">
                   <div className="bg-status-tailor/8 rounded-xl p-4 ring-1 ring-status-tailor/20">
                     <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
@@ -888,14 +924,19 @@ export default function TailoringBrief({
                     <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
                   </div>
                 </div>
-              </Section>
-
-              {result.outreach_angle && (
-                <Section title="Outreach Angle" copyText={result.outreach_angle}>
-                  <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
-                </Section>
-              )}
               </div>
+
+              {/* ── Outreach Angle ── */}
+              {result.outreach_angle && (
+                <div className="px-6 py-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Outreach Angle</p>
+                    <CopyButton getText={() => result.outreach_angle!} />
+                  </div>
+                  <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
+                </div>
+              )}
+
             </div>
           )}
 
