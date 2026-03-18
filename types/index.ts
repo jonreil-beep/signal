@@ -115,9 +115,9 @@ export interface CoverLetterResult {
 
 export interface ResumeBulletUpdate {
   section: string;
-  original_paraphrase: string;
-  suggested_rewrite: string;
-  why: string;
+  original: string;
+  suggested: string;
+  what_changed: string;
 }
 
 export interface ResumeKeywordSuggestion {

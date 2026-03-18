@@ -598,9 +598,9 @@ export default function TailoringBrief({
       lines.push("Bullet Updates");
       resumeUpdateResult.bullet_updates.forEach((b) => {
         lines.push(`[${b.section}]`);
-        lines.push(`Was: ${b.original_paraphrase}`);
-        lines.push(`Update to: ${b.suggested_rewrite}`);
-        lines.push(`Why: ${b.why}`);
+        lines.push(`Original: ${b.original}`);
+        lines.push(`Suggested: ${b.suggested}`);
+        lines.push(`What changed: ${b.what_changed}`);
         lines.push("");
       });
       lines.push("Keywords to Weave In");
@@ -1037,31 +1037,37 @@ export default function TailoringBrief({
                     <SubHeading
                       label="Resume Bullets to Update"
                       copyText={resumeUpdateResult.bullet_updates
-                        .map((b) => `[${b.section}]\nWas: ${b.original_paraphrase}\nUpdate to: ${b.suggested_rewrite}\nWhy: ${b.why}`)
+                        .map((b) => `[${b.section}]\nOriginal: ${b.original}\nSuggested: ${b.suggested}\nWhat changed: ${b.what_changed}`)
                         .join("\n\n")}
                     />
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {resumeUpdateResult.bullet_updates.map((b, i) => (
                         <div key={i} className="space-y-2">
                           <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
                             {b.section}
                           </p>
                           <div className="rounded-xl overflow-hidden border border-brand-text/8">
-                            <div className="px-3.5 py-2.5 bg-brand-text/4">
-                              <p className="text-[0.75rem] font-medium uppercase tracking-wide text-brand-text/30 mb-1">Was</p>
-                              <p className="text-base text-brand-text/50 italic">{b.original_paraphrase}</p>
+                            {/* Original — exact text from resume */}
+                            <div className="px-3.5 py-3 bg-brand-text/4">
+                              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1.5">Original</p>
+                              <p className="text-sm text-brand-text/55 leading-relaxed">{b.original}</p>
                             </div>
-                            <div className="px-3.5 py-2.5 bg-white border-t border-brand-text/8">
+                            {/* Suggested rewrite */}
+                            <div className="px-3.5 py-3 bg-white border-t border-brand-text/8">
                               <div className="flex items-start justify-between gap-3">
                                 <div className="flex-1">
-                                  <p className="text-[0.75rem] font-medium uppercase tracking-wide text-status-apply mb-1">Update to</p>
-                                  <p className="text-base text-brand-text font-medium leading-snug">{b.suggested_rewrite}</p>
+                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-status-apply mb-1.5">Suggested</p>
+                                  <p className="text-base text-brand-text font-medium leading-snug">{b.suggested}</p>
                                 </div>
-                                <CopyButton getText={() => b.suggested_rewrite} />
+                                <CopyButton getText={() => b.suggested} />
                               </div>
                             </div>
+                            {/* What changed — accountability row */}
+                            <div className="px-3.5 py-2.5 bg-brand-text/3 border-t border-brand-text/8">
+                              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1">What changed</p>
+                              <p className="text-sm text-brand-text/50 leading-relaxed">{b.what_changed}</p>
+                            </div>
                           </div>
-                          <p className="text-sm text-brand-text/40 pl-1">{b.why}</p>
                         </div>
                       ))}
                     </div>
