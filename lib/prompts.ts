@@ -295,7 +295,9 @@ Rules:
 - Be specific to this candidate and this job — no generic advice
 - Return only valid JSON, no markdown fences
 
-${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;
+${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}
+
+CRITICAL: Return ONLY a valid JSON object. No preamble, no explanation, no markdown fences, no text before or after the JSON. The response must start with { and end with }. Double-check that all strings are properly escaped, all arrays are properly closed, and all objects have matching braces before responding.`;
 }
 
 // Cover letter generation prompt

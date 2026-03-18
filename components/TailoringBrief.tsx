@@ -189,9 +189,12 @@ function ActionSection({
       )}
 
       {error && !isLoading && (
-        <div className="px-5 pb-4 -mt-1">
+        <div className="px-5 pb-4 -mt-1 space-y-2.5">
           <p className="text-base text-red-700">{error}</p>
-          <button onClick={onAction} className="mt-1 text-sm text-red-500 underline hover:no-underline">
+          <button
+            onClick={onAction}
+            className="px-3.5 py-1.5 text-sm font-semibold border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+          >
             Try again
           </button>
         </div>

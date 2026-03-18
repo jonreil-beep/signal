@@ -8,6 +8,20 @@ import type { ResumeUpdateResult } from "@/types";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+/** Call Claude and return the stripped raw text. Throws on API/format errors. */
+async function callClaude(prompt: string): Promise<string> {
+  const message = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 2048,
+    messages: [{ role: "user", content: prompt }],
+  });
+  const content = message.content[0];
+  if (content.type !== "text") {
+    throw new Error("Unexpected response format from Claude.");
+  }
+  return content.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const supabase = await createClient();
@@ -38,27 +52,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Job description is required." }, { status: 400 });
     }
 
-    const prompt = buildResumeUpdatePrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim(), pivotTarget?.trim());
+    const prompt = buildResumeUpdatePrompt(
+      resumeText.trim(),
+      jobDescription.trim(),
+      writingSample?.trim(),
+      pivotTarget?.trim()
+    );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2048,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json({ error: "Unexpected response format from Claude." }, { status: 500 });
-    }
-
-    const raw = content.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-
+    // Attempt 1
+    let raw = await callClaude(prompt);
     let result: ResumeUpdateResult;
     try {
       result = JSON.parse(raw) as ResumeUpdateResult;
     } catch {
-      console.error("[suggest-resume-updates] Failed to parse Claude response:", raw);
-      return NextResponse.json({ error: "Claude returned malformed JSON. Try again." }, { status: 500 });
+      // Log and silently retry once before surfacing an error
+      console.error("[suggest-resume-updates] Parse attempt 1 failed, retrying. Raw:", raw);
+      raw = await callClaude(prompt);
+      try {
+        result = JSON.parse(raw) as ResumeUpdateResult;
+      } catch {
+        console.error("[suggest-resume-updates] Parse attempt 2 failed. Raw:", raw);
+        return NextResponse.json(
+          { error: "Something went wrong generating your resume suggestions. Try again." },
+          { status: 500 }
+        );
+      }
     }
 
     if (
