@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { RoleClusterResult, RoleCluster, RoleRecommendation } from "@/types";
 
 interface RoleClusterResultsProps {
@@ -21,6 +22,12 @@ const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: s
 };
 
 export default function RoleClusterResults({ result }: RoleClusterResultsProps) {
+  const [expandedRisk, setExpandedRisk] = useState<number | null>(null);
+
+  function toggleRisk(i: number) {
+    setExpandedRisk((prev) => (prev === i ? null : i));
+  }
+
   return (
     <div className="space-y-7">
 
@@ -94,21 +101,32 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
             Positioning Risks
           </p>
-          <ul className="space-y-4">
+          <ul className="space-y-3.5">
             {result.positioning_risks.map((r, i) => {
               // Support legacy format where risks were plain strings
               const isLegacy = typeof r === "string";
               const riskText = isLegacy ? (r as unknown as string) : r.risk;
               const actionText = isLegacy ? null : r.what_to_do;
+              const isOpen = expandedRisk === i;
               return (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-brand-text/20" />
                   <div>
                     <p className="text-[1.0625rem] text-brand-text/80 leading-relaxed">{riskText}</p>
                     {actionText && (
-                      <p className="text-sm text-brand-accent mt-1 leading-snug">
-                        ↳ {actionText}
-                      </p>
+                      <>
+                        {isOpen && (
+                          <p className="text-sm text-brand-text/60 mt-1.5 leading-snug">
+                            {actionText}
+                          </p>
+                        )}
+                        <button
+                          onClick={() => toggleRisk(i)}
+                          className="mt-1 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                        >
+                          {isOpen ? "Hide ↑" : "How to address →"}
+                        </button>
+                      </>
                     )}
                   </div>
                 </li>
