@@ -14,19 +14,46 @@ export default function HowItWorksPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-16">
 
-        {/* Hero */}
+        {/* Section 1 — Hero */}
         <div className="mb-16">
           <h1 className="text-5xl font-bold text-brand-text tracking-tight mb-4">
             A better way to job search
           </h1>
           <p className="text-2xl text-brand-text/60 leading-relaxed max-w-2xl">
             Most experienced professionals don&apos;t lose opportunities because they lack experience.
-            They lose them because the fit is off, the framing is generic, or their story doesn&apos;t
-            translate clearly to the role. Signal is built to fix that.
+            They lose them because the fit is unclear, the framing is generic, or they spend time
+            on roles that were never a real match. Signal is built to fix that.
           </p>
         </div>
 
-        {/* How it works */}
+        {/* Section 2 — Who It's For */}
+        <section className="mb-16">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+            Who it&apos;s for
+          </h2>
+          <div className="bg-brand-text rounded-2xl p-8">
+            <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
+              Signal is built for experienced professionals making a deliberate move —
+              especially people whose backgrounds are strong, but not easy to translate
+              into a clean, obvious next step.
+            </p>
+            <ul className="space-y-4">
+              {[
+                "You have a strong track record but struggle to frame it for specific roles",
+                "You're making a pivot, stepping up, or navigating overqualification concerns",
+                "You want to stop wasting time on roles that were never a real match",
+                "You're tired of generic advice that misses the nuance of your background",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-base text-white/60">
+                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-accent/60" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Section 3 — How It Works */}
         <section className="mb-16">
           <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-10">
             How it works
@@ -35,27 +62,62 @@ export default function HowItWorksPage() {
             <Step
               n={1}
               title="Clarify your positioning"
-              body="Upload your resume once — PDF, DOCX, or paste it in. Signal analyzes your career history, identifies your strongest role clusters, surfaces positioning risks a recruiter is likely to notice, and generates LinkedIn headline options you can use right away. No reformatting. No manual summarizing. You get a clearer picture of how your background is likely to be read."
+              body="Upload your resume once. Signal maps your strongest role clusters, surfaces the positioning risks a recruiter is likely to notice, and tells you exactly how your background is likely to be read. Not a summary — a diagnosis."
             />
             <Step
               n={2}
               title="Score any job honestly"
-              body="Paste a job description or fetch it from a URL. Signal scores your fit from 1 to 10 across four dimensions — functional fit, seniority, industry alignment, and keyword overlap — with clear reasoning on what aligns, what's a stretch, and what may concern a recruiter. The goal isn't a number. It's a decision: is this role worth serious effort?"
+              body="Paste a job description. Signal scores your fit 1–10 across functional fit, seniority, industry, and keyword overlap — with the specific concern a recruiter will likely raise. The goal isn't a number. It's a decision: is this role worth your time?"
             />
             <Step
               n={3}
               title="Prepare for the ones worth pursuing"
-              body="For jobs that score well, Signal builds a tailored prep pack based on your actual background and this specific role. It covers what to emphasize and downplay, JD language to mirror, a recruiter concern to preempt, resume edits, a cover letter, outreach messages, company context, interview prep, and follow-up templates. Export everything as a single text file to reference anywhere."
+              body="For roles that score well, Signal builds a full prep pack — what to emphasize, what language to mirror, what concern to preempt. Plus a cover letter, outreach messages, resume edits, and interview prep. All built from your actual background and this specific role."
             />
             <Step
               n={4}
               title="Keep your search organized"
-              body="Every scored job is saved with its fit score, prep guide, and notes. Set application deadlines, track status from first pass through offer or rejection, and sort your pipeline by score, deadline, or date added."
+              body="Every scored job saves with its fit score, prep guide, and status. Track your pipeline from first pass through offer. Sort by score, deadline, or date. No spreadsheet required."
             />
           </div>
         </section>
 
-        {/* What's in a prep guide */}
+        {/* Section 4 — What Makes It Different */}
+        <section className="mb-16">
+          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-8">
+            What makes it different
+          </h2>
+          <div className="space-y-8">
+            {[
+              {
+                bold: "It tells you what recruiters are actually thinking.",
+                plain: "Not just whether you match keywords — but the specific concern a hiring manager is likely to raise about your background for this role.",
+              },
+              {
+                bold: "Every output is built from your profile and the specific job.",
+                plain: "Not a template. Not generic advice. The cover letter, the outreach message, the interview questions — all calibrated to your actual background and this specific role description.",
+              },
+              {
+                bold: "It's honest, not encouraging.",
+                plain: "Signal won't tell you a role is a great match when it isn't. The fit score, the recruiter concern, the gaps — you get the real read, not the optimistic one.",
+              },
+              {
+                bold: "It helps you apply to fewer roles, better.",
+                plain: "The point isn't volume. It's knowing which roles are worth your time before you invest it.",
+              },
+            ].map(({ bold, plain }) => (
+              <div key={bold} className="flex gap-5">
+                <div className="shrink-0 mt-1 w-1 rounded-full bg-brand-text/15 self-stretch" />
+                <p className="text-base text-brand-text/70 leading-relaxed max-w-xl">
+                  <span className="font-semibold text-brand-text">{bold}</span>
+                  {" "}{plain}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 5 — What's in a Prep Guide */}
         <section className="mb-16">
           <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
             What&apos;s in a prep guide
@@ -79,65 +141,7 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        {/* Why it works */}
-        <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
-            Why it works
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-2xl p-7 shadow">
-              <h3 className="text-base font-semibold text-brand-text mb-1.5">Honest fit, not false optimism</h3>
-              <p className="text-base text-brand-text/50 leading-relaxed">
-                Signal won&apos;t tell you a role is a great match when it isn&apos;t.
-                The point is to help you focus your time where you actually have a shot.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl p-7 shadow">
-              <h3 className="text-base font-semibold text-brand-text mb-1.5">Tailored to your background</h3>
-              <p className="text-base text-brand-text/50 leading-relaxed">
-                Every output is based on your actual experience and the specific role
-                in front of you. One candidate&apos;s prep looks nothing like another&apos;s.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl p-7 shadow">
-              <h3 className="text-base font-semibold text-brand-text mb-1.5">Fewer applications, better preparation</h3>
-              <p className="text-base text-brand-text/50 leading-relaxed">
-                Skip roles that aren&apos;t a real fit. Prepare thoroughly for the ones that are.
-                Less volume, better outcomes.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Who it's for */}
-        <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
-            Who it&apos;s for
-          </h2>
-          <div className="bg-brand-text rounded-2xl p-8">
-            <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
-              Signal is built for experienced professionals making a deliberate move —
-              especially people whose backgrounds are strong, but not easy to translate
-              into a clean, obvious next step.
-            </p>
-            <ul className="space-y-4">
-              {[
-                "You have a strong track record but struggle to frame it for specific roles",
-                "You're making a pivot, stepping up, or navigating overqualification concerns",
-                "You want to stop wasting time on roles that were never a real match",
-                "You're searching actively and want a more strategic, higher-quality process",
-                "You're tired of generic job-search advice that misses the nuance of your background",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-base text-white/60">
-                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-accent/60" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* CTA — adapts based on auth state */}
+        {/* Section 6 — CTA */}
         <HowItWorksCTA />
 
       </main>

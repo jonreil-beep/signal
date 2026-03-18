@@ -97,12 +97,9 @@ export default function HowItWorksCTA() {
         </button>
       </div>
       {error && <p className="text-sm text-red-500">{error}</p>}
-      <div className="flex items-center gap-4">
-        <p className="text-sm text-brand-text/40">Free to use. No credit card required.</p>
-        <Link href="/" className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
-          Try without signing up
-        </Link>
-      </div>
+      <Link href="/" className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+        Try without signing up
+      </Link>
     </div>
   );
 }
