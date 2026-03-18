@@ -1179,11 +1179,11 @@ export default function Home() {
 
             {clusterResult && !isAnalyzing && (
               <div className="mt-8 pt-6 border-t border-brand-text/8 flex items-center justify-between gap-4">
-                <p className="text-sm text-brand-text/40">Paste a job description to get an honest fit score and full prep guide — calibrated to this profile.</p>
-                <div className="flex items-center gap-2 shrink-0">
+                <p className="text-sm text-brand-text/40">Ready to evaluate a role?</p>
+                <div className="flex items-center gap-4 shrink-0">
                   <button
                     onClick={() => setActiveTab("discover")}
-                    className="inline-flex items-center gap-1 px-4 py-2.5 border border-brand-text/15 text-brand-text/60 text-sm font-medium rounded-2xl sm:rounded-full hover:border-brand-text/30 hover:text-brand-text/80 transition-colors"
+                    className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
                   >
                     Discover jobs →
                   </button>
