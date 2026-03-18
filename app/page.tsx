@@ -776,9 +776,9 @@ export default function Home() {
             <p className="text-2xl text-white/80 leading-relaxed mb-10">
               {isNewSignup
                 ? "You're all set. Signal is ready to help you apply to fewer, better-fit roles — and show up fully prepared for each one."
-                : `Welcome back${user.email ? `, ${user.email}` : ""}.${
+                : `Welcome back.${
                     trackedJobs.length > 0
-                      ? ` You have ${trackedJobs.length} scored job${trackedJobs.length === 1 ? "" : "s"} saved.`
+                      ? ` You have ${trackedJobs.length} job${trackedJobs.length === 1 ? "" : "s"} scored and ready to act on.`
                       : profileText
                       ? " Your profile is saved and ready."
                       : ""
@@ -789,7 +789,7 @@ export default function Home() {
                 onClick={() => setShowLanding(false)}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
               >
-                {isNewSignup ? "Get started →" : "Back to app →"}
+                {isNewSignup ? "Get started →" : "Go to my jobs →"}
               </button>
               <button
                 onClick={handleSignOut}
@@ -845,16 +845,16 @@ export default function Home() {
               {magicLinkError && (
                 <p className="text-sm text-red-400">{magicLinkError}</p>
               )}
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-5">
                 <Link
                   href="/how-it-works"
-                  className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 text-white text-sm font-medium rounded-2xl sm:rounded-full hover:border-white/40 hover:bg-white/5 transition-colors"
+                  className="text-sm text-white/55 hover:text-white/80 transition-colors"
                 >
                   How Signal works →
                 </Link>
                 <button
                   onClick={() => { setShowLanding(false); setActiveTab("my-jobs"); }}
-                  className="text-sm text-white/30 hover:text-white/50 transition-colors"
+                  className="text-sm text-white/55 hover:text-white/80 transition-colors"
                 >
                   Try without signing up
                 </button>
