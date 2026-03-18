@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { TrackedJob, ApplicationStatus } from "@/types";
-import JobLabelEditor from "./JobLabelEditor";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
@@ -83,174 +82,228 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const [showJD, setShowJD] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(job.notes);
+  const [showOverflow, setShowOverflow] = useState(false);
   const [showDeadlineInput, setShowDeadlineInput] = useState(false);
+  const [editingLabel, setEditingLabel] = useState(false);
+  const [labelValue, setLabelValue] = useState(job.label);
+  const labelInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { if (!editingLabel) setLabelValue(job.label); }, [job.label, editingLabel]);
+  useEffect(() => { if (editingLabel) labelInputRef.current?.select(); }, [editingLabel]);
+
+  function commitLabel() {
+    const trimmed = labelValue.trim();
+    if (trimmed && trimmed !== job.label) onRenameJob(job.id, trimmed);
+    else setLabelValue(job.label);
+    setEditingLabel(false);
+  }
+
   const recStyle =
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" };
   const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
-  const isScoreStale =
-    !!profileUpdatedAt &&
-    new Date(job.scoredAt) < profileUpdatedAt;
-  const isPrepStale =
-    isScoreStale &&
-    !!job.tailoringResult;
+  const isScoreStale = !!profileUpdatedAt && new Date(job.scoredAt) < profileUpdatedAt;
+
+  // Overflow row is always rendered when something is expanded so actions stay accessible
+  const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div
-      onClick={() => onSelectJob(job, "job-fit")}
-      className="bg-white rounded-2xl p-6 shadow cursor-pointer hover:shadow-md transition-shadow"
-    >
-      {/* Title row */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
-          <JobLabelEditor id={job.id} label={job.label} onRename={onRenameJob} />
-        </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); onRemoveJob(job.id); }}
-          className="shrink-0 text-brand-text/20 hover:text-brand-text/50 transition-colors text-lg leading-none mt-0.5"
-          aria-label="Remove job"
-        >
-          ×
-        </button>
-      </div>
+    <div className="group relative bg-white rounded-2xl shadow px-6 pt-5 pb-5 hover:shadow-md hover:bg-[rgba(26,26,26,0.005)] transition-all">
 
-      {/* Score + recommendation + date */}
-      <div className="flex items-center gap-2 mt-3 flex-wrap">
-        <span className={`text-2xl font-bold tabular-nums ${scoreColor(job.jobFitResult.overall_fit)}`}>
-          {job.jobFitResult.overall_fit}
-          <span className="text-sm font-normal text-brand-text/40">/10</span>
-        </span>
-        <span className="text-brand-text/20">·</span>
-        <span className={`text-xs font-medium px-2.5 py-1 rounded-full ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
-          {job.jobFitResult.recommendation}
-        </span>
-        <span className="text-brand-text/20">·</span>
-        <span className="text-xs text-brand-text/40">{formatDate(job.scoredAt)}</span>
-        {job.tailoringResult && (
-          <>
-            <span className="text-brand-text/20">·</span>
-            <span className="text-xs text-status-apply font-medium">Prep ready</span>
-          </>
-        )}
-        {isScoreStale && (
-          <>
-            <span className="text-brand-text/20">·</span>
-            <span className="text-xs text-status-stretch font-medium">Profile updated</span>
-          </>
-        )}
-        {job.deadline && (() => {
-          const { textClass, label } = deadlineUrgency(job.deadline);
-          return (
-            <>
-              <span className="text-brand-text/20">·</span>
-              <span className={`text-xs font-medium ${textClass}`}>{label}</span>
-            </>
-          );
-        })()}
-        {job.notes && (
-          <>
-            <span className="text-brand-text/20">·</span>
-            <span className="text-xs text-brand-text/40">Has notes</span>
-          </>
-        )}
-      </div>
+      {/* ── ROW 1: Title + Primary CTA ── */}
+      <div className="flex items-start justify-between gap-4">
 
-      {/* Status + actions row */}
-      <div className="flex items-center justify-between gap-3 mt-5" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-2">
-        <div className="relative inline-flex items-center">
-          <select
-            value={job.applicationStatus}
-            onChange={(e) => {
-              e.stopPropagation();
-              onStatusChange(job.id, e.target.value as ApplicationStatus);
-            }}
-            onClick={(e) => e.stopPropagation()}
-            className={`text-sm font-semibold pl-3 pr-7 py-1.5 rounded-full cursor-pointer border border-brand-text/15 outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-brand-text/30 ${statusStyle.bg} ${statusStyle.text}`}
-          >
-            {APPLICATION_STATUSES.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-          <svg
-            className={`absolute right-2 w-3 h-3 pointer-events-none shrink-0 ${statusStyle.text}`}
-            viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+        {/* Title area */}
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+          {editingLabel ? (
+            <input
+              ref={labelInputRef}
+              value={labelValue}
+              onChange={(e) => setLabelValue(e.target.value)}
+              onBlur={commitLabel}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitLabel();
+                if (e.key === "Escape") { setLabelValue(job.label); setEditingLabel(false); }
+              }}
+              className="text-base font-bold text-brand-text bg-transparent border-b border-brand-text/30 outline-none w-full leading-snug focus:ring-0"
+            />
+          ) : (
+            <button
+              onClick={() => onSelectJob(job, "job-fit")}
+              className="text-base font-bold text-brand-text hover:text-brand-accent transition-colors leading-snug truncate text-left"
+            >
+              {job.label}
+            </button>
+          )}
+          {/* Pencil — only visible on card hover, not when editing */}
+          {!editingLabel && (
+            <button
+              onClick={() => setEditingLabel(true)}
+              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-brand-text/25 hover:text-brand-text/60"
+              aria-label="Rename job"
+            >
+              <svg style={{ width: "0.8rem", height: "0.8rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z"
+                />
+              </svg>
+            </button>
+          )}
         </div>
 
-        {/* Deadline control */}
-        {showDeadlineInput ? (
-          <input
-            type="date"
-            defaultValue={job.deadline ?? ""}
-            autoFocus
-            onChange={(e) => {
-              const val = e.target.value || null;
-              onDeadlineChange(job.id, val);
-              setShowDeadlineInput(false);
-            }}
-            onBlur={() => setShowDeadlineInput(false)}
-            className="text-xs border border-brand-text/15 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30"
-          />
-        ) : job.deadline ? (
+        {/* Primary CTA */}
+        {isScoreStale ? (
           <button
-            onClick={() => onDeadlineChange(job.id, null)}
-            className="flex items-center gap-1 text-xs text-brand-text/35 hover:text-status-skip transition-colors group"
-            title="Clear deadline"
+            onClick={() => onSelectJob(job, "job-fit")}
+            className="shrink-0 text-sm font-bold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
           >
-            <span>{formatDeadlineDate(job.deadline)}</span>
-            <span className="opacity-0 group-hover:opacity-100 transition-opacity">×</span>
+            Re-score →
           </button>
         ) : (
           <button
-            onClick={() => setShowDeadlineInput(true)}
-            className="text-sm font-medium text-brand-text/45 hover:text-brand-text/70 transition-colors"
+            onClick={() => onSelectJob(job, "tailoring-brief")}
+            className="shrink-0 text-sm font-bold text-brand-accent hover:text-brand-accent/70 transition-colors whitespace-nowrap"
           >
-            + Deadline
+            View Prep →
           </button>
         )}
+      </div>
+
+      {/* ── ROW 2: Score + badge + status + meta ── */}
+      <div className="flex items-center justify-between gap-3 mt-3.5">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Score */}
+          <span className={`text-xl font-bold tabular-nums leading-none ${scoreColor(job.jobFitResult.overall_fit)}`}>
+            {job.jobFitResult.overall_fit}
+            <span className="text-xs font-normal text-brand-text/40">/10</span>
+          </span>
+          <span className="text-brand-text/20 text-xs">·</span>
+          {/* Recommendation badge */}
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
+            {job.jobFitResult.recommendation}
+          </span>
+          <span className="text-brand-text/20 text-xs">·</span>
+          {/* Status dropdown */}
+          <div className="relative inline-flex items-center">
+            <select
+              value={job.applicationStatus}
+              onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
+              className={`text-xs font-semibold pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-brand-text/15 outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-brand-text/30 ${statusStyle.bg} ${statusStyle.text}`}
+            >
+              {APPLICATION_STATUSES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <svg
+              className={`absolute right-1.5 w-2.5 h-2.5 pointer-events-none shrink-0 ${statusStyle.text}`}
+              viewBox="0 0 10 6" fill="none" aria-hidden="true"
+            >
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <span className="text-brand-text/20 text-xs">·</span>
+          {/* Scored date */}
+          <span className="text-xs text-brand-text/35">{formatDate(job.scoredAt)}</span>
+          {/* Prep ready */}
+          {job.tailoringResult && !isScoreStale && (
+            <>
+              <span className="text-brand-text/20 text-xs">·</span>
+              <span className="text-xs text-status-apply font-medium">Prep ready</span>
+            </>
+          )}
+          {/* Profile updated */}
+          {isScoreStale && (
+            <>
+              <span className="text-brand-text/20 text-xs">·</span>
+              <span className="text-xs text-status-stretch font-medium">Profile updated</span>
+            </>
+          )}
+          {/* Deadline — only shown if set */}
+          {job.deadline && (() => {
+            const { textClass, label } = deadlineUrgency(job.deadline);
+            return (
+              <>
+                <span className="text-brand-text/20 text-xs">·</span>
+                <span className={`text-xs font-medium ${textClass}`}>{label}</span>
+              </>
+            );
+          })()}
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* ••• overflow toggle — fades in on hover, stays visible when open */}
+        <button
+          onClick={() => setShowOverflow((v) => !v)}
+          className={`shrink-0 text-brand-text/30 hover:text-brand-text/60 transition-all text-base leading-none tracking-widest px-1 ${
+            overflowVisible ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          }`}
+          aria-label="More options"
+        >
+          •••
+        </button>
+      </div>
+
+      {/* ── OVERFLOW ROW: secondary actions (Notes, View JD, Deadline, Remove) ── */}
+      {overflowVisible && (
+        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-brand-text/6">
           <button
-            onClick={(e) => { e.stopPropagation(); setShowNotes((v) => !v); }}
-            className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
+            onClick={() => setShowNotes((v) => !v)}
+            className={`text-sm font-medium transition-colors ${showNotes ? "text-brand-text/70" : "text-brand-text/35 hover:text-brand-text/70"}`}
           >
             {showNotes ? "Hide Notes" : "Notes"}
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); setShowJD((v) => !v); }}
-            className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
+            onClick={() => setShowJD((v) => !v)}
+            className={`text-sm font-medium transition-colors ${showJD ? "text-brand-text/70" : "text-brand-text/35 hover:text-brand-text/70"}`}
           >
             {showJD ? "Hide JD" : "View JD"}
           </button>
-          {isScoreStale ? (
+          {/* Deadline in overflow */}
+          {showDeadlineInput ? (
+            <input
+              type="date"
+              defaultValue={job.deadline ?? ""}
+              autoFocus
+              onChange={(e) => {
+                const val = e.target.value || null;
+                onDeadlineChange(job.id, val);
+                setShowDeadlineInput(false);
+              }}
+              onBlur={() => setShowDeadlineInput(false)}
+              className="text-xs border border-brand-text/15 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30"
+            />
+          ) : job.deadline ? (
             <button
-              onClick={(e) => { e.stopPropagation(); onSelectJob(job, "job-fit"); }}
-              className="text-sm font-medium text-status-stretch hover:text-status-stretch/70 transition-colors"
+              onClick={() => onDeadlineChange(job.id, null)}
+              className="flex items-center gap-1 text-xs text-brand-text/35 hover:text-status-skip transition-colors group/dl"
+              title="Clear deadline"
             >
-              Re-score →
+              <span>{formatDeadlineDate(job.deadline)}</span>
+              <span className="opacity-0 group-hover/dl:opacity-100 transition-opacity">×</span>
             </button>
           ) : (
             <button
-              onClick={(e) => { e.stopPropagation(); onSelectJob(job, "tailoring-brief"); }}
-              className="text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+              onClick={() => setShowDeadlineInput(true)}
+              className="text-sm font-medium text-brand-text/35 hover:text-brand-text/70 transition-colors"
             >
-              View Prep →
+              + Deadline
             </button>
           )}
+          {/* Remove — pushed right */}
+          <div className="flex-1" />
+          <button
+            onClick={() => onRemoveJob(job.id)}
+            className="text-sm font-medium text-brand-text/25 hover:text-status-skip transition-colors"
+            aria-label="Remove job"
+          >
+            Remove
+          </button>
         </div>
-      </div>
+      )}
 
-      {/* Expandable Notes */}
+      {/* ── Expandable Notes ── */}
       {showNotes && (
-        <div className="mt-4 pt-4 border-t border-brand-text/8" onClick={(e) => e.stopPropagation()}>
-          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">
-            Notes
-          </p>
+        <div className="mt-4 pt-4 border-t border-brand-text/8">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Notes</p>
           <textarea
             value={notesValue}
             onChange={(e) => setNotesValue(e.target.value)}
@@ -262,12 +315,10 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         </div>
       )}
 
-      {/* Expandable JD */}
+      {/* ── Expandable JD ── */}
       {showJD && (
-        <div className="mt-4 pt-4 border-t border-brand-text/8" onClick={(e) => e.stopPropagation()}>
-          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">
-            Job Description
-          </p>
+        <div className="mt-4 pt-4 border-t border-brand-text/8">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Job Description</p>
           <div className="max-h-56 overflow-y-auto rounded-xl bg-brand-text/3 p-3.5">
             <pre className="text-xs text-brand-text/60 whitespace-pre-wrap font-mono leading-relaxed">
               {job.jobDescription}
