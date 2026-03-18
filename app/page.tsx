@@ -70,6 +70,7 @@ export default function Home() {
   } | null>(null);
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
   const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(false);
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
@@ -928,148 +929,174 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
-            <div className="mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">
-                {profileText ? "Your Profile" : "Step 1 — Clarify your positioning"}
-              </h2>
-              <p className="text-base text-brand-text/50 mt-1">
-                {profileText
-                  ? "Your profile is saved. Every fit score, prep guide, and resume suggestion adapts from it — update it any time."
-                  : "Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background."}
-              </p>
-            </div>
 
-            {/* Resume loaded card — shown when profile exists and not in update mode */}
-            {profileText && !updatingProfile ? (
-              <div className="rounded-2xl bg-white p-5 shadow">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-base font-semibold text-brand-text">
-                      {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
-                    </p>
-                    <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
-                      {profileText.slice(0, 240)}…
-                    </p>
-                    {!user && resumeSource === "file" && (
-                      <p className="mt-2 text-xs text-brand-text/40">
-                        Uploaded from file — re-upload if you refresh the page.
-                      </p>
-                    )}
-                  </div>
+            {/* No profile yet: onboarding header + uploader */}
+            {!profileText && (
+              <>
+                <div className="mb-7">
+                  <h2 className="text-lg font-semibold text-brand-text">Step 1 — Clarify your positioning</h2>
+                  <p className="text-base text-brand-text/50 mt-1">
+                    Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
+                  </p>
+                </div>
+                <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
+              </>
+            )}
+
+            {/* Profile exists — collapsed status row */}
+            {profileText && !editingProfile && (
+              <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-2xl shadow mb-6">
+                <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
+                  <span className="font-semibold text-brand-text">Your profile</span>
+                  <span className="text-brand-text/20">·</span>
+                  <span className="text-brand-text/50">
+                    {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
+                  </span>
+                  {writingSample.trim() && (
+                    <>
+                      <span className="text-brand-text/20">·</span>
+                      <span className="text-brand-text/50">Writing sample added</span>
+                    </>
+                  )}
+                  {pivotTarget.trim() && (
+                    <>
+                      <span className="text-brand-text/20">·</span>
+                      <span className="text-brand-text/50">Pivot target set</span>
+                    </>
+                  )}
+                  {clusterResult && (
+                    <>
+                      <span className="text-brand-text/20">·</span>
+                      <span className="text-xs text-brand-text/35">Analyzed</span>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  {!clusterResult && !isAnalyzing && (
+                    <button
+                      onClick={handleAnalyze}
+                      className="text-sm font-semibold text-brand-accent hover:text-brand-accent/70 transition-colors"
+                    >
+                      Analyze →
+                    </button>
+                  )}
                   <button
-                    onClick={() => setUpdatingProfile(true)}
-                    className="shrink-0 text-sm text-brand-accent hover:text-brand-accent/70 font-medium transition-colors"
+                    onClick={() => setEditingProfile(true)}
+                    className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
                   >
-                    Update
+                    Edit
                   </button>
                 </div>
               </div>
-            ) : (
-              <div>
-                {updatingProfile && (
-                  <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm text-brand-text/50">Upload or paste a new resume to replace the saved one.</p>
-                    <button
-                      onClick={() => setUpdatingProfile(false)}
-                      className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
-                    >
-                      Cancel
-                    </button>
+            )}
+
+            {/* Profile exists — expanded editing state */}
+            {profileText && editingProfile && (
+              <div className="mb-6 space-y-4">
+                {/* Resume card */}
+                {!updatingProfile ? (
+                  <div className="rounded-2xl bg-white p-5 shadow">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="text-base font-semibold text-brand-text">
+                          {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
+                        </p>
+                        <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
+                          {profileText.slice(0, 240)}…
+                        </p>
+                        {!user && resumeSource === "file" && (
+                          <p className="mt-2 text-xs text-brand-text/40">
+                            Uploaded from file — re-upload if you refresh the page.
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setUpdatingProfile(true)}
+                        className="shrink-0 text-sm text-brand-accent hover:text-brand-accent/70 font-medium transition-colors"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-sm text-brand-text/50">Upload or paste a new resume to replace the saved one.</p>
+                      <button
+                        onClick={() => setUpdatingProfile(false)}
+                        className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
                   </div>
                 )}
-                <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
-              </div>
-            )}
 
-            {profileText && !updatingProfile && (
-              <div className="mt-5">
-                <div className="flex items-baseline justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-brand-text">
-                    Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
-                  </label>
-                  {writingSample.trim() && (
-                    <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
-                  )}
-                </div>
-                <textarea
-                  value={writingSample}
-                  onChange={(e) => setWritingSample(e.target.value)}
-                  placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
-                  rows={3}
-                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
-                />
-              </div>
-            )}
-
-            {profileText && !updatingProfile && (
-              <div className="mt-4">
-                <div className="flex items-baseline justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-brand-text">
-                    Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
-                  </label>
-                  {pivotTarget.trim() && (
-                    <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
-                  )}
-                </div>
-                <textarea
-                  value={pivotTarget}
-                  onChange={(e) => setPivotTarget(e.target.value)}
-                  placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
-                  rows={3}
-                  className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
-                />
-              </div>
-            )}
-
-            {profileText && !updatingProfile && !isAnalyzing && (() => {
-              const hasProfileChanges = !!savedProfileSnapshot && (
-                profileText !== savedProfileSnapshot.resumeText ||
-                writingSample !== savedProfileSnapshot.writingSample ||
-                pivotTarget !== savedProfileSnapshot.pivotTarget
-              );
-              const canAnalyze = !savedProfileSnapshot || hasProfileChanges;
-              const buttonLabel = hasProfileChanges ? "Update Profile" : "Analyze Profile";
-              const statusLabel = !savedProfileSnapshot
-                ? "Ready to analyze"
-                : hasProfileChanges
-                ? "Profile updated"
-                : "Analysis up to date";
-              const statusSub = !savedProfileSnapshot
-                ? "Signal will map your best-fit roles, strengths, and risks."
-                : hasProfileChanges
-                ? "Click Update Profile to refresh your role analysis."
-                : "Re-run anytime to refresh.";
-              return (
-                <div className="mt-6 pt-6 border-t border-brand-text/8">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-brand-text">{statusLabel}</p>
-                      <p className="text-sm text-brand-text/40 mt-0.5">{statusSub}</p>
-                    </div>
-                    <button
-                      onClick={canAnalyze ? handleAnalyze : undefined}
-                      disabled={!canAnalyze}
-                      className={`shrink-0 px-5 py-2.5 text-sm font-semibold rounded-2xl sm:rounded-full transition-colors ${
-                        canAnalyze
-                          ? "bg-brand-accent text-white hover:bg-brand-accent/90"
-                          : "bg-brand-text/8 text-brand-text/25 cursor-default"
-                      }`}
-                    >
-                      {buttonLabel}
-                    </button>
+                {/* Writing sample */}
+                <div>
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <label className="block text-sm font-medium text-brand-text">
+                      Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
+                    </label>
+                    {writingSample.trim() && (
+                      <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                    )}
                   </div>
+                  <textarea
+                    value={writingSample}
+                    onChange={(e) => setWritingSample(e.target.value)}
+                    placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
+                    rows={3}
+                    className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                  />
                 </div>
-              );
-            })()}
+
+                {/* Pivot target */}
+                <div>
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <label className="block text-sm font-medium text-brand-text">
+                      Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
+                    </label>
+                    {pivotTarget.trim() && (
+                      <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                    )}
+                  </div>
+                  <textarea
+                    value={pivotTarget}
+                    onChange={(e) => setPivotTarget(e.target.value)}
+                    placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
+                    rows={3}
+                    className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                  />
+                </div>
+
+                {/* Save & Reanalyze / Cancel */}
+                <div className="flex items-center gap-4 pt-2">
+                  <button
+                    onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
+                    className="px-5 py-2.5 text-sm font-semibold rounded-2xl sm:rounded-full bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
+                  >
+                    Save &amp; Reanalyze
+                  </button>
+                  <button
+                    onClick={() => { setEditingProfile(false); setUpdatingProfile(false); }}
+                    className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
 
             {isAnalyzing && (
-              <div className="mt-6 pt-6 border-t border-brand-text/8">
+              <div className="mb-6">
                 <LoadingState message="Analyzing your profile. This takes about 20 seconds..." />
               </div>
             )}
 
             {analyzeError && !isAnalyzing && (
-              <div className="mt-4 p-4 bg-red-50 rounded-xl border border-red-100">
+              <div className="mb-4 p-4 bg-red-50 rounded-xl border border-red-100">
                 <p className="text-sm text-red-700">{analyzeError}</p>
                 <button onClick={handleAnalyze} className="mt-1.5 text-xs text-red-600 underline hover:no-underline">
                   Try again
@@ -1077,9 +1104,8 @@ export default function Home() {
               </div>
             )}
 
-            {clusterResult && !isAnalyzing && !updatingProfile && (
-              <div className="mt-10 pt-8 border-t-2 border-brand-text/8 space-y-4">
-                <p className="text-[0.75rem] font-bold tracking-[0.1em] uppercase text-brand-text/30">Your Analysis</p>
+            {clusterResult && !isAnalyzing && (
+              <div className="space-y-4">
 
                 {/* ── Recommended LinkedIn Headline dark card ── */}
                 <div className="rounded-2xl bg-brand-text p-7">
@@ -1148,7 +1174,7 @@ export default function Home() {
               </div>
             )}
 
-            {clusterResult && !isAnalyzing && !updatingProfile && (
+            {clusterResult && !isAnalyzing && (
               <div className="mt-8 pt-6 border-t border-brand-text/8 flex items-center justify-between gap-4">
                 <p className="text-sm text-brand-text/40">Paste a job description to get an honest fit score and full prep guide — calibrated to this profile.</p>
                 <div className="flex items-center gap-2 shrink-0">
