@@ -148,7 +148,7 @@ export default function Home() {
     }
   }, [profileUpdatedAt, sessionRestored]);
 
-  // ── localStorage: load profile fields, snapshot, and JD on mount ──
+  // ── localStorage: load profile fields, snapshot, JD, job result, and prep on mount ──
   useEffect(() => {
     try {
       const savedProfile = localStorage.getItem("signal_profile");
@@ -177,6 +177,37 @@ export default function Home() {
         const j = JSON.parse(savedJD) as { jobDescription?: string };
         if (j.jobDescription) setJobDescription(j.jobDescription);
       }
+
+      // Restore job fit result + prep content UNLESS user hit "Score a job →" (reset flag)
+      const resetFlag = sessionStorage.getItem("signal_reset_job_fit");
+      if (resetFlag) {
+        sessionStorage.removeItem("signal_reset_job_fit");
+      } else {
+        const savedJob = localStorage.getItem("signal_last_job");
+        if (savedJob) {
+          const j = JSON.parse(savedJob) as { jobFitResult?: JobFitResult };
+          if (j.jobFitResult) setJobFitResult(j.jobFitResult);
+        }
+        const savedPrep = localStorage.getItem("signal_last_prep");
+        if (savedPrep) {
+          const p = JSON.parse(savedPrep) as {
+            tailoringResult?: TailoringBriefResult;
+            outreachResult?: OutreachResult;
+            coverLetterResult?: CoverLetterResult;
+            resumeUpdateResult?: ResumeUpdateResult;
+            interviewPrepResult?: InterviewPrepResult;
+            followUpResult?: FollowUpResult;
+            companyResearchResult?: CompanyResearchResult;
+          };
+          if (p.tailoringResult)      setTailoringResult(p.tailoringResult);
+          if (p.outreachResult)       setOutreachResult(p.outreachResult);
+          if (p.coverLetterResult)    setCoverLetterResult(p.coverLetterResult);
+          if (p.resumeUpdateResult)   setResumeUpdateResult(p.resumeUpdateResult);
+          if (p.interviewPrepResult)  setInterviewPrepResult(p.interviewPrepResult);
+          if (p.followUpResult)       setFollowUpResult(p.followUpResult);
+          if (p.companyResearchResult) setCompanyResearchResult(p.companyResearchResult);
+        }
+      }
     } catch { /* ignore parse errors */ }
     setLocalStorageLoaded(true);
   }, []);
@@ -202,6 +233,35 @@ export default function Home() {
       localStorage.setItem("signal_jd", JSON.stringify({ jobDescription }));
     } catch { /* ignore quota errors */ }
   }, [jobDescription, localStorageLoaded]);
+
+  // ── localStorage: persist job fit result so refresh restores it ──
+  useEffect(() => {
+    if (!localStorageLoaded) return;
+    try {
+      if (jobFitResult) {
+        localStorage.setItem("signal_last_job", JSON.stringify({ jobFitResult }));
+      }
+    } catch { /* ignore quota errors */ }
+  }, [jobFitResult, localStorageLoaded]);
+
+  // ── localStorage: persist prep content so refresh restores it ──
+  useEffect(() => {
+    if (!localStorageLoaded) return;
+    try {
+      if (tailoringResult) {
+        localStorage.setItem("signal_last_prep", JSON.stringify({
+          tailoringResult,
+          outreachResult,
+          coverLetterResult,
+          resumeUpdateResult,
+          interviewPrepResult,
+          followUpResult,
+          companyResearchResult,
+        }));
+      }
+    } catch { /* ignore quota errors */ }
+  }, [tailoringResult, outreachResult, coverLetterResult, resumeUpdateResult,
+      interviewPrepResult, followUpResult, companyResearchResult, localStorageLoaded]);
 
   // ── Initialize snapshot when a cluster result exists but no saved snapshot ──
   // Covers the case where the user refreshed and localStorage snapshot was cleared
@@ -627,6 +687,17 @@ export default function Home() {
     setFollowUpResult(null);
     setCompanyResearchResult(null);
     setActiveJobId(null);
+    try {
+      localStorage.removeItem("signal_last_job");
+      localStorage.removeItem("signal_last_prep");
+    } catch { /* ignore */ }
+  }
+
+  /** Called by every "Score a job →" CTA — resets state and flags mount to skip restoration */
+  function resetAndNavigateToJobFit() {
+    handleJobFitReset();
+    sessionStorage.setItem("signal_reset_job_fit", "true");
+    setActiveTab("job-fit");
   }
 
   function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
@@ -1188,7 +1259,7 @@ export default function Home() {
                     Discover jobs →
                   </button>
                   <button
-                    onClick={() => setActiveTab("job-fit")}
+                    onClick={resetAndNavigateToJobFit}
                     className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
                     Score a job →
@@ -1319,7 +1390,7 @@ export default function Home() {
               <h2 className="text-lg font-semibold text-brand-text">My Jobs</h2>
               {trackedJobs.length > 0 && (
                 <button
-                  onClick={() => { handleJobFitReset(); setActiveTab("job-fit"); }}
+                  onClick={resetAndNavigateToJobFit}
                   className="shrink-0 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                 >
                   Score a job →
@@ -1338,7 +1409,7 @@ export default function Home() {
               onDeadlineChange={handleDeadlineChange}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
-              onScoreNewJob={() => { handleJobFitReset(); setActiveTab("job-fit"); }}
+              onScoreNewJob={resetAndNavigateToJobFit}
             />
           </div>
         )}
