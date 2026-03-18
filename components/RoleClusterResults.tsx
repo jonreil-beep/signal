@@ -5,6 +5,8 @@ import type { RoleClusterResult, RoleCluster, RoleRecommendation } from "@/types
 
 interface RoleClusterResultsProps {
   result: RoleClusterResult;
+  resumeText?: string;
+  onClusterUpdate?: (index: number, updated: RoleCluster) => void;
 }
 
 const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], string> = {
@@ -21,11 +23,36 @@ const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: s
   "Reframe First":         { pill: "bg-brand-accent text-white",                            label: "Reframe First" },
 };
 
-export default function RoleClusterResults({ result }: RoleClusterResultsProps) {
+export default function RoleClusterResults({ result, resumeText, onClusterUpdate }: RoleClusterResultsProps) {
   const [expandedRisk, setExpandedRisk] = useState<number | null>(null);
+  const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
+  const [regenErrors, setRegenErrors] = useState<Record<number, string>>({});
 
   function toggleRisk(i: number) {
     setExpandedRisk((prev) => (prev === i ? null : i));
+  }
+
+  async function handleRegenerate(index: number, clusterName: string) {
+    if (!resumeText || !onClusterUpdate) return;
+    setRegeneratingIndex(index);
+    setRegenErrors(prev => { const n = { ...prev }; delete n[index]; return n; });
+    try {
+      const res = await fetch("/api/regenerate-cluster", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText, clusterName }),
+      });
+      const data = await res.json() as { cluster?: RoleCluster; error?: string };
+      if (!res.ok || !data.cluster) {
+        setRegenErrors(prev => ({ ...prev, [index]: data.error ?? "Regeneration failed." }));
+      } else {
+        onClusterUpdate(index, data.cluster);
+      }
+    } catch {
+      setRegenErrors(prev => ({ ...prev, [index]: "Network error. Try again." }));
+    } finally {
+      setRegeneratingIndex(null);
+    }
   }
 
   return (
@@ -46,7 +73,7 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     {rec && (
                       <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rec.pill}`}>
                         {rec.label}
@@ -55,6 +82,15 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${CONFIDENCE_STYLES[cluster.confidence]}`}>
                       {cluster.confidence}
                     </span>
+                    {resumeText && onClusterUpdate && (
+                      <button
+                        onClick={() => handleRegenerate(i, cluster.name)}
+                        disabled={regeneratingIndex === i}
+                        className="text-xs text-brand-text/30 hover:text-brand-text/60 transition-colors disabled:opacity-40 whitespace-nowrap"
+                      >
+                        {regeneratingIndex === i ? "Regenerating…" : "Regenerate →"}
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -74,6 +110,10 @@ export default function RoleClusterResults({ result }: RoleClusterResultsProps) 
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {regenErrors[i] && (
+                  <p className="mt-2 text-xs text-status-skip">{regenErrors[i]}</p>
                 )}
               </div>
             );

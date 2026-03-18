@@ -15,6 +15,42 @@ Voice and tone rules — apply to every prose field in your output:
 `.trim();
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Single-cluster regeneration prompt — returns one RoleCluster object
+export function buildSingleClusterPrompt(resumeText: string, clusterName: string): string {
+  return `You are a senior talent strategist. Re-analyze this candidate's fit for one specific role cluster.
+
+Candidate Resume:
+<resume>
+${resumeText}
+</resume>
+
+Role cluster to analyze: "${clusterName}"
+
+Return ONLY this exact JSON structure — nothing else:
+{
+  "name": "${clusterName}",
+  "confidence": "Strong | Moderate | Stretch",
+  "recommendation": "Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First",
+  "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — be honest if the market will read them differently than they see themselves.",
+  "reasoning": "2-3 sentences on why this candidate fits or doesn't fit this cluster. Be specific to their background.",
+  "signals": ["achievement or capability statement", "another signal"]
+}
+
+Rules:
+- confidence: pick one of Strong | Moderate | Stretch
+- recommendation: pick exactly one of the five options — no hedging
+- market_read: one honest sentence, may differ from how the candidate sees themselves
+- STRICT RULES FOR EVIDENCE BULLETS (signals array):
+  - Every bullet must be a specific achievement or capability statement — never a job title, company name, date range, or raw resume entry
+  - Good: "Grew creative team from 3 to 16 specialists at Toast"
+  - Bad: "Toast, Inc. 01/2020 – Present" / "Head of Brand and Creative, Toast"
+  - If you cannot find a genuine achievement signal, write a capability statement instead
+  - Maximum 3 bullets — use fewer rather than padding with weak entries
+- Return only valid JSON, no markdown fences
+
+${VOICE_RULES}`;
+}
+
 // Session 2: Role clustering prompt
 export function buildRoleClusterPrompt(resumeText: string): string {
   return `You are a senior talent strategist with deep hiring-side experience across corporate strategy, consulting, policy, and research roles.

@@ -1203,7 +1203,18 @@ export default function Home() {
 
                 {/* ── Role clusters, strengths, risks ── */}
                 <div className="pt-4">
-                  <RoleClusterResults result={clusterResult} />
+                  <RoleClusterResults
+                    result={clusterResult}
+                    resumeText={profileText || undefined}
+                    onClusterUpdate={(index, updated) => {
+                      setClusterResult(prev => {
+                        if (!prev) return prev;
+                        const clusters = [...prev.role_clusters];
+                        clusters[index] = updated;
+                        return { ...prev, role_clusters: clusters };
+                      });
+                    }}
+                  />
                 </div>
 
                 {/* ── LinkedIn Headline Generator — below role clusters ── */}
