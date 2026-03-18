@@ -859,6 +859,30 @@ export default function TailoringBrief({
                 </div>
               </div>
 
+              {/* ── Recruiter Concern to Preempt ── */}
+              <div className="px-6 py-5">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor">
+                    ⚑ Recruiter Concern to Preempt
+                  </p>
+                  <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
+                </div>
+                <div className="bg-status-tailor/10 rounded-2xl p-5 border border-status-tailor/40 space-y-3">
+                  <div>
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
+                      Likely concern
+                    </p>
+                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
+                  </div>
+                  <div>
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
+                      How to address it
+                    </p>
+                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                  </div>
+                </div>
+              </div>
+
               {/* ── JD Language to Mirror ── */}
               <div className="px-6 py-5">
                 <div className="flex items-center justify-between mb-4">
@@ -901,28 +925,6 @@ export default function TailoringBrief({
                       <p className="text-sm text-brand-text/40 mt-0.5 leading-snug">{d.reason}</p>
                     </div>
                   ))}
-                </div>
-              </div>
-
-              {/* ── Recruiter Concern — amber left accent ── */}
-              <div className="px-6 py-5 border-l-4 border-status-stretch/50">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Recruiter Concern to Preempt</p>
-                  <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
-                </div>
-                <div className="space-y-2">
-                  <div className="bg-status-tailor/8 rounded-xl p-4 ring-1 ring-status-tailor/20">
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
-                      Likely concern
-                    </p>
-                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
-                  </div>
-                  <div className="bg-status-apply/8 rounded-xl p-4 ring-1 ring-status-apply/20">
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-apply mb-1">
-                      How to address it
-                    </p>
-                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
-                  </div>
                 </div>
               </div>
 
