@@ -1312,21 +1312,8 @@ export default function Home() {
                   onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}
                   onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
+                  onSearchSimilarRoles={() => setActiveTab("discover")}
                 />
-                {/* Search terms link — appears after a job has been scored */}
-                {jobFitResult && (
-                  <div className="mt-4 flex justify-end">
-                    <button
-                      onClick={() => setActiveTab("discover")}
-                      className="flex items-center gap-1.5 text-sm text-brand-text/40 hover:text-brand-accent transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
-                      </svg>
-                      Search for similar roles →
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>

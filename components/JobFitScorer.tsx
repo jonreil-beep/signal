@@ -17,6 +17,7 @@ interface JobFitScorerProps {
   onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
   onGoToTailoringBrief: () => void;
+  onSearchSimilarRoles: () => void;
 }
 
 type InputMode = "paste" | "url";
@@ -59,7 +60,7 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief, onSearchSimilarRoles }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>(initialJDText ?? "");
   const [urlInput, setUrlInput] = useState<string>("");
@@ -540,19 +541,26 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           </div>
 
-          {/* Bottom nav CTAs */}
-          <div className="space-y-3 pt-2">
+          {/* Bottom nav CTAs — three-column row */}
+          <div className="flex items-center justify-between gap-4 pt-2">
+            <button
+              onClick={handleReset}
+              className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+            >
+              ← Score another job
+            </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-brand-accent text-white text-base font-semibold rounded-2xl hover:bg-brand-accent/90 transition-colors shadow-sm"
+              className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
             >
               Go to Prep →
             </button>
-            <div className="flex justify-center">
-              <button onClick={handleReset} className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
-                ← Score a different job
-              </button>
-            </div>
+            <button
+              onClick={onSearchSimilarRoles}
+              className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+            >
+              Search for similar roles →
+            </button>
           </div>
         </div>
       )}
