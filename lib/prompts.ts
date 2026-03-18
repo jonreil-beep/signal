@@ -59,7 +59,14 @@ Rules:
   - "Reframe First": the fit is there but how the candidate is currently presenting themselves will get them screened out
 - market_read: be honest if the market will interpret their background differently than they present it
 - positioning_risks: 2-4 risks — each must include a specific counter-move, not just an observation
-- Signals must be achievement-framed statements drawn from the resume — never raw job titles, company names, or date entries. "Led cross-functional strategy work at a high-growth company" is a signal. "Toast, Inc. 01/2020 – Present" is not — it is raw resume data and must never appear as a signal.
+- STRICT RULES FOR EVIDENCE BULLETS (signals array):
+  - Every bullet must be a specific achievement or capability statement — never a job title, company name, date range, or raw resume entry
+  - Good: "Grew creative team from 3 to 16 specialists at Toast"
+  - Bad: "Toast, Inc. 01/2020 – Present"
+  - Bad: "Head of Brand and Creative, Toast"
+  - If you cannot find a genuine achievement signal to support a cluster, write a capability statement instead — e.g. "Built and scaled in-house creative organizations across two companies"
+  - Never use employment dates, company names alone, or job titles as bullet content
+  - Maximum 3 bullets per cluster — if you cannot find 3 genuine signals, use fewer rather than padding with weak or raw entries
 - Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;
