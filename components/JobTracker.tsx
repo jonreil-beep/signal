@@ -464,12 +464,12 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all ${
+              className={`text-[13px] font-medium px-2.5 py-1 rounded-full transition-all ${
                 isActive
                   ? s === "All"
                     ? "bg-brand-text text-white"
                     : `${cfg!.bg} ${cfg!.text} ring-1 ring-inset ring-current/20 opacity-100`
-                  : "bg-white text-brand-text/40 hover:text-brand-text/70 border border-brand-text/10"
+                  : "bg-white text-brand-text/55 hover:text-brand-text/75 border border-brand-text/10"
               }`}
             >
               {s}

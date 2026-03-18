@@ -59,7 +59,7 @@ Rules:
   - "Reframe First": the fit is there but how the candidate is currently presenting themselves will get them screened out
 - market_read: be honest if the market will interpret their background differently than they present it
 - positioning_risks: 2-4 risks — each must include a specific counter-move, not just an observation
-- Signals must be direct quotes or close paraphrases from the resume
+- Signals must be achievement-framed statements drawn from the resume — never raw job titles, company names, or date entries. "Led cross-functional strategy work at a high-growth company" is a signal. "Toast, Inc. 01/2020 – Present" is not — it is raw resume data and must never appear as a signal.
 - Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;

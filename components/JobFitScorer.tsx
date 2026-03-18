@@ -416,7 +416,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 {result.recommendation}
               </span>
             </div>
-            <p className="text-base text-white/50 mt-2 leading-snug max-w-sm">
+            <p className="text-[15px] text-white/55 mt-3 leading-snug max-w-sm">
               {result.summary}
             </p>
             {/* Mismatch type pills */}

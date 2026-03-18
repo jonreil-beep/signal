@@ -301,6 +301,8 @@ export default function TailoringBrief({
   function toggleBullet(i: number) {
     setExpandedBullets(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
   }
+  const [emailExpanded, setEmailExpanded] = useState(false);
+  const [linkedInExpanded, setLinkedInExpanded] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -970,9 +972,11 @@ export default function TailoringBrief({
                       <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cover Letter</p>
                       <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
                     </div>
-                    <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                      {coverLetterResult.cover_letter}
-                    </pre>
+                    <div className="rounded-xl border border-brand-text/10 bg-[#faf9f7] p-6">
+                      <pre className="text-base text-brand-text/85 leading-relaxed whitespace-pre-wrap font-sans">
+                        {coverLetterResult.cover_letter}
+                      </pre>
+                    </div>
                   </div>
                 )}
               </ActionSection>
@@ -1007,27 +1011,63 @@ export default function TailoringBrief({
                 noteValue={outreachNote}
                 onNoteChange={setOutreachNote}
               >
-                {outreachResult && (
-                  <>
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cold Email</p>
-                        <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
+                {outreachResult && (() => {
+                  // Parse email: "Subject: …\n\nBody…"
+                  const emailParts = outreachResult.email.split(/\n\n/);
+                  const emailSubject = emailParts[0] ?? "";
+                  const emailBody = emailParts.slice(1).join("\n\n");
+                  const sentenceEnd = emailBody.search(/\.\s/);
+                  const emailFirstSentence = sentenceEnd >= 0 ? emailBody.slice(0, sentenceEnd + 1) : emailBody;
+
+                  // LinkedIn: first sentence
+                  const liSentenceEnd = outreachResult.linkedin_message.search(/\.\s/);
+                  const linkedInFirstSentence = liSentenceEnd >= 0 ? outreachResult.linkedin_message.slice(0, liSentenceEnd + 1) : outreachResult.linkedin_message;
+
+                  return (
+                    <>
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cold Email</p>
+                          <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
+                        </div>
+                        <p className="text-sm font-medium text-brand-text/50 mb-1">{emailSubject}</p>
+                        {emailExpanded ? (
+                          <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                            {emailBody}
+                          </pre>
+                        ) : (
+                          <p className="text-base text-brand-text/80 leading-relaxed">{emailFirstSentence}{emailFirstSentence !== emailBody ? "…" : ""}</p>
+                        )}
+                        <button
+                          onClick={() => setEmailExpanded(p => !p)}
+                          className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                        >
+                          {emailExpanded ? "Collapse ↑" : "Read full message →"}
+                        </button>
                       </div>
-                      <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                        {outreachResult.email}
-                      </pre>
-                    </div>
-                    <div className="border-t border-brand-text/8 pt-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">LinkedIn Message</p>
-                        <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">LinkedIn Message</p>
+                          <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
+                        </div>
+                        {linkedInExpanded ? (
+                          <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                        ) : (
+                          <p className="text-base text-brand-text/80 leading-relaxed">{linkedInFirstSentence}{linkedInFirstSentence !== outreachResult.linkedin_message ? "…" : ""}</p>
+                        )}
+                        <div className="flex items-center justify-between mt-2">
+                          <button
+                            onClick={() => setLinkedInExpanded(p => !p)}
+                            className="text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                          >
+                            {linkedInExpanded ? "Collapse ↑" : "Read full message →"}
+                          </button>
+                          <p className="text-xs text-brand-text/35">{outreachResult.linkedin_message.length} / 280 characters</p>
+                        </div>
                       </div>
-                      <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
-                      <p className="mt-2 text-sm text-brand-text/40">{outreachResult.linkedin_message.length} / 280 characters</p>
-                    </div>
-                  </>
-                )}
+                    </>
+                  );
+                })()}
               </ActionSection>
             )
           )}
