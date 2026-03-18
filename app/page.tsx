@@ -961,9 +961,9 @@ export default function Home() {
             {!magicLinkSent ? (
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-brand-text">Your progress won&apos;t be saved</p>
+                  <p className="text-sm font-medium text-brand-text">Want to save your work?</p>
                   <p className="text-xs text-brand-text/50 mt-0.5">
-                    Sign up with email to save your resume, job scores, and prep guides across sessions and devices.
+                    Enter your email to save your profile, scores, and prep guides — free, no password.
                   </p>
                 </div>
                 <div className="flex flex-col gap-1.5 shrink-0">
