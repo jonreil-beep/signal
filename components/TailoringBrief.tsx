@@ -297,6 +297,10 @@ export default function TailoringBrief({
   function togglePhrase(i: number) {
     setExpandedPhrases(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
   }
+  const [expandedBullets, setExpandedBullets] = useState<Set<number>>(new Set());
+  function toggleBullet(i: number) {
+    setExpandedBullets(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  }
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>("");
   const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
@@ -1054,33 +1058,39 @@ export default function TailoringBrief({
                         .map((b) => `[${b.section}]\nOriginal: ${b.original}\nSuggested: ${b.suggested}\nWhat changed: ${b.what_changed}`)
                         .join("\n\n")}
                     />
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                       {resumeUpdateResult.bullet_updates.map((b, i) => (
-                        <div key={i} className="space-y-2">
+                        <div key={i} className="space-y-1.5">
                           <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
                             {b.section}
                           </p>
                           <div className="rounded-xl overflow-hidden border border-brand-text/8">
-                            {/* Original — exact text from resume */}
-                            <div className="px-3.5 py-3 bg-brand-text/4">
-                              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1.5">Original</p>
-                              <p className="text-sm text-brand-text/55 leading-relaxed">{b.original}</p>
-                            </div>
-                            {/* Suggested rewrite */}
-                            <div className="px-3.5 py-3 bg-white border-t border-brand-text/8">
+                            {/* Suggested rewrite — shown by default */}
+                            <div className="px-3.5 py-3 bg-white">
                               <div className="flex items-start justify-between gap-3">
-                                <div className="flex-1">
-                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-status-apply mb-1.5">Suggested</p>
-                                  <p className="text-base text-brand-text font-medium leading-snug">{b.suggested}</p>
-                                </div>
+                                <p className="text-base text-brand-text font-medium leading-snug flex-1">{b.suggested}</p>
                                 <CopyButton getText={() => b.suggested} />
                               </div>
+                              <button
+                                onClick={() => toggleBullet(i)}
+                                className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                              >
+                                {expandedBullets.has(i) ? "Hide original ↑" : "Compare with original →"}
+                              </button>
                             </div>
-                            {/* What changed — accountability row */}
-                            <div className="px-3.5 py-2.5 bg-brand-text/3 border-t border-brand-text/8">
-                              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1">What changed</p>
-                              <p className="text-sm text-brand-text/50 leading-relaxed">{b.what_changed}</p>
-                            </div>
+                            {/* Original + What changed — collapsed by default */}
+                            {expandedBullets.has(i) && (
+                              <>
+                                <div className="px-3.5 py-3 bg-brand-text/4 border-t border-brand-text/8">
+                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1.5">Original</p>
+                                  <p className="text-sm text-brand-text/55 leading-relaxed">{b.original}</p>
+                                </div>
+                                <div className="px-3.5 py-2.5 bg-brand-text/3 border-t border-brand-text/8">
+                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1">What changed</p>
+                                  <p className="text-sm text-brand-text/50 leading-relaxed">{b.what_changed}</p>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       ))}

@@ -537,7 +537,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               onClick={onScoreNewJob}
               className="w-full py-4 rounded-2xl border-2 border-dashed border-brand-text/15 text-sm font-medium text-brand-text/35 hover:border-brand-text/30 hover:text-brand-text/55 transition-colors"
             >
-              + Score another job
+              Score a job →
             </button>
           )}
         </div>

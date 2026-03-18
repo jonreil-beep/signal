@@ -1201,7 +1201,12 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* ── LinkedIn Headline Generator — immediately below the dark card ── */}
+                {/* ── Role clusters, strengths, risks ── */}
+                <div className="pt-4">
+                  <RoleClusterResults result={clusterResult} />
+                </div>
+
+                {/* ── LinkedIn Headline Generator — below role clusters ── */}
                 <div className="bg-white rounded-2xl shadow overflow-hidden">
                   <div className="px-6 py-5 border-b border-brand-text/8">
                     <div className="flex items-center justify-between gap-4">
@@ -1249,11 +1254,6 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                </div>
-
-                {/* ── Role clusters, strengths, risks ── */}
-                <div className="pt-4">
-                  <RoleClusterResults result={clusterResult} />
                 </div>
               </div>
             )}
@@ -1349,7 +1349,7 @@ export default function Home() {
                   id={activeJobId}
                   label={trackedJobs.find(j => j.id === activeJobId)!.label}
                   onRename={handleRenameJob}
-                  className="text-2xl font-bold"
+                  className="text-[1.75rem] font-bold leading-tight"
                 />
               </div>
             )}

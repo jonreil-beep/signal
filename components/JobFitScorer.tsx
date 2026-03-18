@@ -479,7 +479,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           })()}
 
           {/* What you have / Missing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl p-6 shadow">
               <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
                 What You Have

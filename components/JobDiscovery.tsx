@@ -53,26 +53,21 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
       </div>
 
       {/* City / industry modifier */}
-      <div>
-        <label className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 block mb-1.5">
-          Add a city or industry
-        </label>
-        <input
-          type="text"
-          value={modifier}
-          onChange={(e) => setModifier(e.target.value)}
-          placeholder="e.g. New York, fintech, Series B…"
-          className="w-full text-sm text-brand-text/80 bg-brand-text/4 rounded-lg px-3 py-2 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 transition-colors placeholder:text-brand-text/25"
-        />
-      </div>
+      <input
+        type="text"
+        value={modifier}
+        onChange={(e) => setModifier(e.target.value)}
+        placeholder="Add a city or industry (optional)"
+        className="w-full text-sm text-brand-text/80 bg-brand-text/4 rounded-lg px-3 py-2 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 transition-colors placeholder:text-brand-text/25"
+      />
 
-      {/* Search buttons */}
+      {/* Search buttons — equal visual weight */}
       <div className="flex items-center gap-2 pt-1 border-t border-brand-text/8">
         <a
           href={buildGoogleUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 bg-brand-text text-white text-sm font-semibold rounded-xl hover:bg-brand-text/85 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 border border-brand-text/15 text-brand-text/70 text-sm font-semibold rounded-xl hover:border-brand-text/30 hover:text-brand-text transition-colors"
         >
           Search Google →
         </a>
