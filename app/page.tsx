@@ -1315,13 +1315,16 @@ export default function Home() {
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
           <div>
-            <div className="mb-7">
+            <div className="flex items-center justify-between gap-4 mb-7">
               <h2 className="text-lg font-semibold text-brand-text">My Jobs</h2>
-              <p className="text-base text-brand-text/50 mt-1">
-                {trackedJobs.length > 0
-                  ? "Every job you\u2019ve scored. Click any job to reload its fit results or prep guide."
-                  : "Follow the steps below to score your first job and build your prep guide."}
-              </p>
+              {trackedJobs.length > 0 && (
+                <button
+                  onClick={() => { handleJobFitReset(); setActiveTab("job-fit"); }}
+                  className="shrink-0 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                >
+                  Score a job →
+                </button>
+              )}
             </div>
             <JobTracker
               jobs={trackedJobs}
@@ -1335,6 +1338,7 @@ export default function Home() {
               onDeadlineChange={handleDeadlineChange}
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
+              onScoreNewJob={() => { handleJobFitReset(); setActiveTab("job-fit"); }}
             />
           </div>
         )}

@@ -15,6 +15,7 @@ interface JobTrackerProps {
   onDeadlineChange: (id: string, deadline: string | null) => void;
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
+  onScoreNewJob: () => void;
 }
 
 const APPLICATION_STATUSES: ApplicationStatus[] = [
@@ -333,7 +334,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
 type SortBy = "date" | "score" | "deadline";
 type StatusFilter = ApplicationStatus | "All";
 
-export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange, onGoToProfile, onGoToJobFit }: JobTrackerProps) {
+export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange, onGoToProfile, onGoToJobFit, onScoreNewJob }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
@@ -530,6 +531,15 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               onDeadlineChange={onDeadlineChange}
             />
           ))}
+          {/* Score another job — dashed card at bottom of list */}
+          {!isFiltered && (
+            <button
+              onClick={onScoreNewJob}
+              className="w-full py-4 rounded-2xl border-2 border-dashed border-brand-text/15 text-sm font-medium text-brand-text/35 hover:border-brand-text/30 hover:text-brand-text/55 transition-colors"
+            >
+              + Score another job
+            </button>
+          )}
         </div>
       ) : (
         <div className="py-8 text-center bg-white rounded-2xl shadow">
