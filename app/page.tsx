@@ -815,32 +815,35 @@ export default function Home() {
     <div className="min-h-screen bg-brand-bg">
 
       <AppHeader
+        compact
         logoSlot={
           <button onClick={() => setShowLanding(true)} className="text-left">
             <p className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></p>
-            <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
           </button>
         }
         rightSlot={
-          <div className="flex items-center gap-4">
-            <Link href="/how-it-works" className="text-sm text-white/50 hover:text-white/80 transition-colors hidden sm:block">
-              How it works
-            </Link>
-            {user && (
-              <>
-                <span className="text-white/15 hidden sm:block">|</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-white/35 hidden sm:block">{user.email}</span>
-                  <button
-                    onClick={handleSignOut}
-                    className="text-sm text-white/50 hover:text-white/80 transition-colors"
-                  >
-                    Sign out
-                  </button>
+          user ? (
+            <div className="flex items-center gap-5">
+              <div className="flex items-center gap-2">
+                {/* Avatar — first initial */}
+                <div className="w-6 h-6 rounded-full bg-brand-accent flex items-center justify-center shrink-0">
+                  <span className="text-[11px] font-semibold text-white leading-none">
+                    {((user.user_metadata?.full_name as string | undefined) ?? user.email ?? "?")[0].toUpperCase()}
+                  </span>
                 </div>
-              </>
-            )}
-          </div>
+                {/* Username — email prefix only */}
+                <span className="text-[14px] text-white/40 hidden sm:block">
+                  {user.email ? user.email.split("@")[0] : ""}
+                </span>
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="text-[14px] text-white/40 hover:text-white/70 transition-colors"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : null
         }
       />
 

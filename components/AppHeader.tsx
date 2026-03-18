@@ -11,12 +11,14 @@ import SignalWordmark from "./SignalWordmark";
 interface AppHeaderProps {
   logoSlot: React.ReactNode;
   rightSlot?: React.ReactNode;
+  /** Reduces header height to 52px — use for the logged-in app shell */
+  compact?: boolean;
 }
 
-export default function AppHeader({ logoSlot, rightSlot }: AppHeaderProps) {
+export default function AppHeader({ logoSlot, rightSlot, compact }: AppHeaderProps) {
   return (
     <header className="bg-brand-text">
-      <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div className={`max-w-4xl mx-auto px-6 flex items-center justify-between ${compact ? "py-[14px]" : "py-5"}`}>
         {logoSlot}
         {rightSlot}
       </div>
