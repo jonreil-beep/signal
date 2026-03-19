@@ -30,6 +30,20 @@ function buildLinkedInUrl(clusterName: string, modifier: string): string {
   return `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(keywords)}`;
 }
 
+// ── X-Ray ATS URL builders ────────────────────────────────────────────────────
+const ATS_PLATFORMS = [
+  { label: "Workday",    domain: "myworkdayjobs.com" },
+  { label: "Greenhouse", domain: "boards.greenhouse.io" },
+  { label: "Lever",      domain: "jobs.lever.co" },
+  { label: "iCIMS",      domain: "careers.icims.com" },
+];
+
+function buildXRayUrl(domain: string, clusterName: string, modifier: string): string {
+  const role = `"${clusterName}"`;
+  const q = modifier.trim() ? `site:${domain}+${role}+"${modifier.trim()}"` : `site:${domain}+${role}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+
 // ── Confidence badge ──────────────────────────────────────────────────────────
 const CONFIDENCE_STYLES: Record<string, string> = {
   "Strong":   "bg-status-apply/10 text-status-apply",
@@ -79,6 +93,26 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
         >
           Search LinkedIn →
         </a>
+      </div>
+
+      {/* X-Ray ATS buttons */}
+      <div className="mt-2 space-y-1.5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-text/30">
+          X-Ray ATS Platforms
+        </p>
+        <div className="flex items-center gap-2 flex-wrap">
+          {ATS_PLATFORMS.map((ats) => (
+            <a
+              key={ats.label}
+              href={buildXRayUrl(ats.domain, clusterName, modifier)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center px-3 py-1.5 border border-brand-text/12 text-brand-text/55 text-[13px] font-medium rounded-lg hover:border-brand-text/25 hover:text-brand-text/80 transition-colors"
+            >
+              {ats.label}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

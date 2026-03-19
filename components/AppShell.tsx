@@ -126,7 +126,7 @@ export default function AppShell({
   }
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#1A2332" }}>
+    <div className="min-h-screen flex" style={{ background: "#0e2035" }}>
 
       {/* ═══════════════════════════════════════════════════════════════
           DESKTOP SIDEBAR (lg: 1024px+) — 240px, transparent bg
@@ -136,7 +136,7 @@ export default function AppShell({
         <div className="pt-7 pb-8 px-6">
           <button
             onClick={onLogoClick}
-            className="text-xl font-bold text-white tracking-[0.12em] text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
+            className="text-xl font-bold text-white tracking-tight text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
           >
             <SignalWordmark />
           </button>
@@ -183,7 +183,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MOBILE TOP BAR (below 768px) — slim 56px bar
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4" style={{ background: "#1A2332" }}>
+      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4" style={{ background: "#0e2035" }}>
         <button
           onClick={onLogoClick}
           className="text-lg font-bold text-white tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
@@ -210,10 +210,10 @@ export default function AppShell({
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Drawer */}
-          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col shadow-2xl" style={{ background: "#1A2332" }}>
+          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col shadow-2xl" style={{ background: "#0e2035" }}>
             {/* Wordmark + close */}
             <div className="pt-7 pb-8 px-6 flex items-center justify-between">
-              <span className="text-xl font-bold text-white tracking-[0.12em]">
+              <span className="text-xl font-bold text-white tracking-tight">
                 <SignalWordmark />
               </span>
               <button
