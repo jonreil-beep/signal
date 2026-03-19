@@ -967,7 +967,7 @@ export default function Home() {
 
             {/* Profile exists — collapsed status row */}
             {profileText && !editingProfile && (
-              <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-2xl shadow mb-6">
+              <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-xl border border-[rgba(26,26,26,0.12)] mb-6">
                 <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
                   <span className="font-semibold text-brand-text">Your profile</span>
                   <span className="text-brand-text/20">·</span>
@@ -1017,7 +1017,7 @@ export default function Home() {
               <div className="mb-6 space-y-4">
                 {/* Resume card */}
                 {!updatingProfile ? (
-                  <div className="rounded-2xl bg-white p-5 shadow">
+                  <div className="rounded-xl bg-white p-5 border border-[rgba(26,26,26,0.12)]">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <p className="text-base font-semibold text-brand-text">
@@ -1129,7 +1129,7 @@ export default function Home() {
             {clusterResult && !isAnalyzing && (
               <div className="space-y-4">
 
-                {/* ── Recommended LinkedIn Headline dark card ── */}
+                {/* ── Recommended LinkedIn Headline dark card — full width ── */}
                 <div className="rounded-2xl bg-brand-text p-7">
                   <p className="text-xs font-medium uppercase tracking-[0.06em] text-white/35 mb-2">
                     Your Recommended LinkedIn Headline
@@ -1139,71 +1139,70 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* ── Role clusters, strengths, risks ── */}
-                <div className="pt-4">
-                  <RoleClusterResults
-                    result={clusterResult}
-                    resumeText={profileText || undefined}
-                    onClusterUpdate={(index, updated) => {
-                      setClusterResult(prev => {
-                        if (!prev) return prev;
-                        const clusters = [...prev.role_clusters];
-                        clusters[index] = updated;
-                        return { ...prev, role_clusters: clusters };
-                      });
-                    }}
-                  />
-                </div>
-
-                {/* ── LinkedIn Headline Generator — below role clusters ── */}
-                <div className="bg-white rounded-2xl shadow overflow-hidden">
-                  <div className="px-6 py-5 border-b border-brand-text/8">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-base font-semibold text-brand-text">Try other angles</p>
-                        <p className="text-sm text-brand-text/50 mt-0.5 leading-snug">
-                          {headlineResult
-                            ? "Pick the angle that fits where you're headed — paste it straight into LinkedIn."
-                            : "Generate 4 positioning angles calibrated to your career story."}
-                        </p>
+                {/* ── 58/42 grid: left = clusters, right = strengths + risks + headline generator ── */}
+                <RoleClusterResults
+                  result={clusterResult}
+                  resumeText={profileText || undefined}
+                  onClusterUpdate={(index, updated) => {
+                    setClusterResult(prev => {
+                      if (!prev) return prev;
+                      const clusters = [...prev.role_clusters];
+                      clusters[index] = updated;
+                      return { ...prev, role_clusters: clusters };
+                    });
+                  }}
+                  rightColumnExtra={
+                    /* ── LinkedIn Headline Generator — 3rd card in right column ── */
+                    <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] overflow-hidden">
+                      <div className="px-6 py-5 border-b border-brand-text/8">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-1">LinkedIn Headlines</p>
+                            <p className="text-sm text-brand-text/50 leading-snug">
+                              {headlineResult
+                                ? "Pick the angle that fits where you're headed."
+                                : "4 positioning angles calibrated to your career story."}
+                            </p>
+                          </div>
+                          {!isGeneratingHeadlines && (
+                            <button
+                              onClick={handleGenerateHeadlines}
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                            >
+                              {headlineResult ? "Regenerate" : "Try 4 angles →"}
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      {!isGeneratingHeadlines && (
-                        <button
-                          onClick={handleGenerateHeadlines}
-                          className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
-                        >
-                          {headlineResult ? "Regenerate" : "Try 4 angles →"}
-                        </button>
-                      )}
+                      <div className="px-6 py-5">
+                        {isGeneratingHeadlines && (
+                          <LoadingState message="Writing headline angles from your career story…" />
+                        )}
+                        {headlineError && !isGeneratingHeadlines && (
+                          <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
+                            <p className="text-sm text-red-700">{headlineError}</p>
+                            <button
+                              onClick={handleGenerateHeadlines}
+                              className="mt-1 text-xs text-red-500 underline hover:no-underline"
+                            >
+                              Try again
+                            </button>
+                          </div>
+                        )}
+                        {!headlineResult && !isGeneratingHeadlines && !headlineError && (
+                          <p className="text-sm text-brand-text/35 italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
+                        )}
+                        {headlineResult && !isGeneratingHeadlines && (
+                          <div className="space-y-3">
+                            {headlineResult.headlines.map((h, i) => (
+                              <HeadlineCard key={i} headline={h} />
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="px-6 py-5">
-                    {isGeneratingHeadlines && (
-                      <LoadingState message="Writing headline angles from your career story…" />
-                    )}
-                    {headlineError && !isGeneratingHeadlines && (
-                      <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-                        <p className="text-sm text-red-700">{headlineError}</p>
-                        <button
-                          onClick={handleGenerateHeadlines}
-                          className="mt-1 text-xs text-red-500 underline hover:no-underline"
-                        >
-                          Try again
-                        </button>
-                      </div>
-                    )}
-                    {!headlineResult && !isGeneratingHeadlines && !headlineError && (
-                      <p className="text-sm text-brand-text/35 italic">Hit &quot;Try 4 angles →&quot; to see more headline options for your career story.</p>
-                    )}
-                    {headlineResult && !isGeneratingHeadlines && (
-                      <div className="space-y-3">
-                        {headlineResult.headlines.map((h, i) => (
-                          <HeadlineCard key={i} headline={h} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  }
+                />
               </div>
             )}
 

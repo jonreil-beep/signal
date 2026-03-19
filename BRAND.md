@@ -45,8 +45,9 @@ Signal isn't built to help you apply to more jobs. It's built to help you apply 
 | Name | Hex | Usage |
 |---|---|---|
 | Warm Off-White | `#F8F7F4` | Background |
+| Deep Navy | `#1A2332` | App frame, sidebar background |
 | Near-Black | `#1A1A1A` | Type / UI |
-| Slate | `#2E4057` | Accent, CTAs, nav background |
+| Slate | `#2E4057` | Accent, CTAs |
 | Forest Green | `#2D6A4F` | Apply Now status |
 | Burnt Amber | `#A86B2D` | Apply with Tailoring, recruiter concern |
 | Burnt Orange | `#C4622D` | Stretch status |

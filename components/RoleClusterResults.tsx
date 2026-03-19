@@ -7,6 +7,8 @@ interface RoleClusterResultsProps {
   result: RoleClusterResult;
   resumeText?: string;
   onClusterUpdate?: (index: number, updated: RoleCluster) => void;
+  /** Optional card(s) appended to the bottom of the right column */
+  rightColumnExtra?: React.ReactNode;
 }
 
 const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], string> = {
@@ -23,7 +25,7 @@ const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: s
   "Reframe First":         { pill: "bg-brand-accent text-white",                            label: "Reframe First" },
 };
 
-export default function RoleClusterResults({ result, resumeText, onClusterUpdate }: RoleClusterResultsProps) {
+export default function RoleClusterResults({ result, resumeText, onClusterUpdate, rightColumnExtra }: RoleClusterResultsProps) {
   const [expandedRisk, setExpandedRisk] = useState<number | null>(null);
   const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
   const [regenErrors, setRegenErrors] = useState<Record<number, string>>({});
@@ -121,7 +123,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
         </div>
       </div>
 
-      {/* Right column — Strengths + Risks */}
+      {/* Right column — Strengths + Risks + optional extra */}
       <div className="space-y-3">
         <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
@@ -174,6 +176,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
             })}
           </ul>
         </div>
+        {rightColumnExtra}
       </div>
     </div>
   );
