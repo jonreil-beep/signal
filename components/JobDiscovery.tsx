@@ -9,11 +9,14 @@ interface JobDiscoveryProps {
 }
 
 // ── Query construction (never shown to user) ──────────────────────────────────
+function primaryTitle(clusterName: string): string {
+  return clusterName.split(/[,\/|]/)[0].trim();
+}
+
 function clusterToKeywords(clusterName: string): string {
-  return clusterName
+  return primaryTitle(clusterName)
     .toLowerCase()
     .replace(/-level/gi, "")
-    .replace(/\s*,\s*/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -39,8 +42,10 @@ const ATS_PLATFORMS = [
 ];
 
 function buildXRayUrl(domain: string, clusterName: string, modifier: string): string {
-  const role = `"${clusterName}"`;
-  const q = modifier.trim() ? `site:${domain}+${role}+"${modifier.trim()}"` : `site:${domain}+${role}`;
+  const title = primaryTitle(clusterName);
+  const q = modifier.trim()
+    ? `site:${domain} "${title}" "${modifier.trim()}"`
+    : `site:${domain} "${title}"`;
   return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
 }
 
