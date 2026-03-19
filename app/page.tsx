@@ -13,16 +13,8 @@ import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
-import AppHeader from "@/components/AppHeader";
+import AppShell from "@/components/AppShell";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
-
-const MAIN_TABS: { id: TabId; label: string }[] = [
-  { id: "my-jobs",        label: "My Jobs" },
-  { id: "profile",        label: "Profile" },
-  { id: "discover",       label: "Discover" },
-  { id: "job-fit",        label: "Job Fit" },
-  { id: "tailoring-brief", label: "Prep" },
-];
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
   const firstShortLine = jd
@@ -892,123 +884,69 @@ export default function Home() {
   }
 
   // ── App shell ──
-  return (
-    <div className="min-h-screen bg-brand-bg">
-
-      <AppHeader
-        compact
-        logoSlot={
-          <button onClick={() => setShowLanding(true)} className="text-left">
-            <p className="text-xl font-bold text-white tracking-tight hover:text-white/80 transition-colors"><SignalWordmark /></p>
-          </button>
-        }
-        rightSlot={
-          user ? (
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2">
-                {/* Avatar — first initial */}
-                <div className="w-6 h-6 rounded-full bg-brand-accent flex items-center justify-center shrink-0">
-                  <span className="text-[11px] font-semibold text-white leading-none">
-                    {((user.user_metadata?.full_name as string | undefined) ?? user.email ?? "?")[0].toUpperCase()}
-                  </span>
-                </div>
-                {/* Username — email prefix only */}
-                <span className="text-[14px] text-white/40 hidden sm:block">
-                  {user.email ? user.email.split("@")[0] : ""}
-                </span>
-              </div>
-              <button
-                onClick={handleSignOut}
-                className="text-[14px] text-white/40 hover:text-white/70 transition-colors"
-              >
-                Sign out
-              </button>
+  const guestBanner = !user ? (
+    <div className="border-b border-brand-text/8 bg-brand-bg">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 py-4">
+        {!magicLinkSent ? (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-brand-text">Want to save your work?</p>
+              <p className="text-xs text-brand-text/50 mt-0.5">
+                Enter your email to save your profile, scores, and prep guides — free, no password.
+              </p>
             </div>
-          ) : null
-        }
-      />
-
-      {/* Tabs */}
-      <div className="bg-white border-b border-brand-text/8 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6">
-          <nav className="flex items-center" aria-label="Tabs">
-            {MAIN_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-4 text-base font-medium border-b-2 transition-all ${
-                  activeTab === tab.id
-                    ? "border-brand-accent text-brand-accent"
-                    : "border-transparent text-brand-text/40 hover:text-brand-text/70 hover:border-brand-text/20"
-                }`}
-              >
-                {tab.label}
-                {tab.id === "my-jobs" && trackedJobs.length > 0 && (
-                  <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-brand-accent/20 text-brand-accent ring-1 ring-brand-accent/30 px-1.5 rounded-full">
-                    {trackedJobs.length}
-                  </span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Save-progress banner — guest users only */}
-      {!user && (
-        <div className="border-b border-brand-text/8 bg-brand-bg">
-          <div className="max-w-4xl mx-auto px-6 py-4">
-            {!magicLinkSent ? (
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-brand-text">Want to save your work?</p>
-                  <p className="text-xs text-brand-text/50 mt-0.5">
-                    Enter your email to save your profile, scores, and prep guides — free, no password.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1.5 shrink-0">
-                  <div className="flex gap-2">
-                    <input
-                      type="email"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                      className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
-                    />
-                    <button
-                      onClick={handleSendMagicLink}
-                      disabled={sendingMagicLink || !email.trim()}
-                      className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                    >
-                      {sendingMagicLink ? "Sending…" : "Save my progress"}
-                    </button>
-                  </div>
-                  {magicLinkError && (
-                    <p className="text-xs text-red-500 max-w-xs">{magicLinkError}</p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-brand-text/70">
-                  Check your inbox — we sent a link to <span className="font-medium text-brand-text">{email}</span>.
-                  Click it to sign in and save everything.
-                </p>
+            <div className="flex flex-col gap-1.5 shrink-0">
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
+                  className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+                />
                 <button
-                  onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
-                  className="shrink-0 text-xs text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                  onClick={handleSendMagicLink}
+                  disabled={sendingMagicLink || !email.trim()}
+                  className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
-                  Use different email
+                  {sendingMagicLink ? "Sending…" : "Save my progress"}
                 </button>
               </div>
-            )}
+              {magicLinkError && (
+                <p className="text-xs text-red-500 max-w-xs">{magicLinkError}</p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-brand-text/70">
+              Check your inbox — we sent a link to <span className="font-medium text-brand-text">{email}</span>.
+              Click it to sign in and save everything.
+            </p>
+            <button
+              onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
+              className="shrink-0 text-xs text-brand-text/40 hover:text-brand-text/70 transition-colors"
+            >
+              Use different email
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  ) : null;
 
-      {/* Tab content */}
-      <main className="max-w-4xl mx-auto px-6 py-8">
+  return (
+    <AppShell
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      onScoreNewJob={resetAndNavigateToJobFit}
+      onLogoClick={() => setShowLanding(true)}
+      onSignOut={handleSignOut}
+      jobCount={trackedJobs.length}
+      user={user}
+      guestBanner={guestBanner}
+    >
 
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
@@ -1422,8 +1360,7 @@ export default function Home() {
           </div>
         )}
 
-      </main>
-    </div>
+    </AppShell>
   );
 }
 
