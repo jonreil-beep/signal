@@ -103,6 +103,22 @@ All context is loaded. Just describe what you want to build or fix.
 - How It Works page rewrite
 - Guest mode
 
+### Session: Dark frame layout + sidebar refactor ✓
+- Replaced old slate sidebar with dark full-viewport frame layout (#1A2332)
+- Sidebar is transparent — part of the same dark surface, no visible boundary
+- Content panel floats as a rounded white card (#F8F7F4, 16px radius, 12px margin top/right/bottom)
+- Dark frame visible on all four sides around the content panel
+- Installed lucide-react for sidebar icons (Briefcase, User, Compass, Target, BookOpen)
+- Nav items: icon + label, 15px DM Sans 500, opacity states (0.5 default, 0.75 hover, 1.0 active)
+- NO left border on active state — just opacity + background change
+- "Score a job →" CTA at sidebar bottom with border styling
+- Focus states: outline 2px white/25, no blue outlines anywhere
+- Wordmark: SIGNAL with letter-spacing 0.12em, G in burnt amber
+- Responsive: 72px icon-only sidebar at 768–1024px, full-bleed mobile below 768px
+- Mobile: slim 56px top bar with S lettermark + hamburger, overlay drawer
+- Two-column card-based layouts preserved inside content panel from prior session
+- Landing page, How It Works page, and all feature internals untouched
+
 ---
 
 ## Next Sessions

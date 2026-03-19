@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { Briefcase, User, Compass, Target, BookOpen, Menu, X } from "lucide-react";
 import SignalWordmark from "./SignalWordmark";
 import type { TabId } from "@/types";
 
-const NAV_ITEMS: { id: TabId; label: string }[] = [
-  { id: "my-jobs", label: "My Jobs" },
-  { id: "profile", label: "Profile" },
-  { id: "discover", label: "Discover" },
-  { id: "job-fit", label: "Job Fit" },
-  { id: "tailoring-brief", label: "Prep" },
+/* ── Nav items with icons ──────────────────────────────────────────────── */
+const NAV_ITEMS: { id: TabId; label: string; icon: typeof Briefcase }[] = [
+  { id: "my-jobs",         label: "My Jobs",   icon: Briefcase },
+  { id: "profile",         label: "Profile",   icon: User },
+  { id: "discover",        label: "Discover",  icon: Compass },
+  { id: "job-fit",         label: "Job Fit",   icon: Target },
+  { id: "tailoring-brief", label: "Prep",      icon: BookOpen },
 ];
 
+/* ── Props ──────────────────────────────────────────────────────────────── */
 interface AppShellProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
@@ -25,6 +28,7 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
+/* ── Component ──────────────────────────────────────────────────────────── */
 export default function AppShell({
   activeTab,
   onTabChange,
@@ -48,119 +52,156 @@ export default function AppShell({
     setMobileMenuOpen(false);
   }
 
+  /* ── Shared nav item renderer ──────────────────────────────────── */
+  function NavItem({ item, showLabel = true }: { item: typeof NAV_ITEMS[number]; showLabel?: boolean }) {
+    const isActive = activeTab === item.id;
+    const Icon = item.icon;
+    return (
+      <button
+        key={item.id}
+        onClick={() => handleNav(item.id)}
+        className={`w-full flex items-center ${showLabel ? "gap-3 px-4 py-[10px] mx-2" : "justify-center px-0 py-[10px] mx-auto"} text-[15px] font-medium rounded-lg transition-colors text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 ${
+          isActive
+            ? "text-white bg-white/10"
+            : "text-white/50 hover:text-white/75 hover:bg-white/[0.06]"
+        }`}
+        style={showLabel ? { width: "calc(100% - 16px)" } : { width: "48px" }}
+        title={!showLabel ? item.label : undefined}
+      >
+        <Icon
+          size={18}
+          strokeWidth={1.5}
+          className={`shrink-0 transition-opacity ${isActive ? "opacity-100" : "opacity-50 group-hover:opacity-75"}`}
+          style={{ opacity: isActive ? 1 : undefined }}
+        />
+        {showLabel && (
+          <span className="flex-1">{item.label}</span>
+        )}
+        {showLabel && item.id === "my-jobs" && jobCount > 0 && (
+          <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-white/15 text-white/80 px-1.5 rounded-full">
+            {jobCount}
+          </span>
+        )}
+      </button>
+    );
+  }
+
+  /* ── Shared "Score a job" CTA ──────────────────────────────────── */
+  function ScoreJobCTA({ compact = false }: { compact?: boolean }) {
+    return (
+      <button
+        onClick={handleScoreJob}
+        className={`w-full text-white/90 text-sm font-medium border border-white/20 rounded-lg hover:border-white/40 hover:text-white transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 ${
+          compact ? "p-2.5" : "px-4 py-[10px]"
+        }`}
+      >
+        {compact ? "+" : "Score a job →"}
+      </button>
+    );
+  }
+
+  /* ── User info block ───────────────────────────────────────────── */
+  function UserInfo() {
+    if (!user) return null;
+    return (
+      <div className="px-4 py-3 border-t border-white/10">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <span className="text-[11px] font-semibold text-white leading-none">
+              {((user.user_metadata?.full_name as string | undefined) ?? user.email ?? "?")[0].toUpperCase()}
+            </span>
+          </div>
+          <span className="text-[13px] text-white/50 truncate flex-1">
+            {user.email ? user.email.split("@")[0] : ""}
+          </span>
+          <button
+            onClick={onSignOut}
+            className="text-[12px] text-white/35 hover:text-white/60 transition-colors shrink-0 focus:outline-none focus-visible:text-white/60"
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex bg-brand-bg">
-      {/* ── Desktop sidebar (lg+) ── */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 bg-brand-accent z-30">
+    <div className="min-h-screen flex" style={{ background: "#1A2332" }}>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          DESKTOP SIDEBAR (lg: 1024px+) — 240px, transparent bg
+         ═══════════════════════════════════════════════════════════════ */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30">
         {/* Wordmark */}
-        <div className="px-6 pt-6 pb-5">
+        <div className="pt-7 pb-8 px-6">
           <button
             onClick={onLogoClick}
-            className="text-xl font-bold text-white tracking-[0.06em] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded"
+            className="text-xl font-bold text-white tracking-[0.12em] text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
           >
             <SignalWordmark />
           </button>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 px-3 space-y-0.5">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNav(item.id)}
-                className={`w-full flex items-center gap-2 px-3 py-2.5 text-[15px] font-medium rounded-lg transition-colors text-left focus:outline-none focus-visible:bg-white/20 ${
-                  isActive
-                    ? "text-white bg-white/10 border-l-[3px] border-white pl-[9px]"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.06] border-l-[3px] border-transparent pl-[9px]"
-                }`}
-              >
-                {item.label}
-                {item.id === "my-jobs" && jobCount > 0 && (
-                  <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-white/15 text-white/80 px-1.5 rounded-full">
-                    {jobCount}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <nav className="flex-1 space-y-0.5">
+          {NAV_ITEMS.map((item) => (
+            <NavItem key={item.id} item={item} showLabel />
+          ))}
         </nav>
 
-        {/* User info + Sign out */}
-        {user && (
-          <div className="px-4 py-3 border-t border-white/10">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                <span className="text-[11px] font-semibold text-white leading-none">
-                  {((user.user_metadata?.full_name as string | undefined) ?? user.email ?? "?")[0].toUpperCase()}
-                </span>
-              </div>
-              <span className="text-[13px] text-white/50 truncate flex-1">
-                {user.email ? user.email.split("@")[0] : ""}
-              </span>
-              <button
-                onClick={onSignOut}
-                className="text-[12px] text-white/35 hover:text-white/60 transition-colors shrink-0 focus:outline-none focus-visible:text-white/60"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        )}
+        {/* User info */}
+        <UserInfo />
 
         {/* Score a job CTA */}
-        <div className="px-3 pb-4 pt-2">
-          <button
-            onClick={handleScoreJob}
-            className="w-full px-4 py-2.5 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:bg-white/20"
-          >
-            Score a job →
-          </button>
+        <div className="px-4 pb-4 pt-2">
+          <ScoreJobCTA />
         </div>
       </aside>
 
-      {/* ── Tablet sidebar (md to lg) — collapsed to 64px ── */}
-      <aside className="hidden md:flex lg:hidden md:flex-col md:w-16 md:fixed md:inset-y-0 bg-brand-accent z-30">
-        {/* Lettermark */}
-        <div className="flex items-center justify-center pt-5 pb-4">
-          <span className="text-lg font-bold text-white">S</span>
+      {/* ═══════════════════════════════════════════════════════════════
+          TABLET SIDEBAR (md: 768px–1024px) — 72px, icons only
+         ═══════════════════════════════════════════════════════════════ */}
+      <aside className="hidden md:flex lg:hidden md:flex-col md:w-[72px] md:fixed md:inset-y-0 z-30 items-center">
+        {/* S lettermark */}
+        <div className="pt-5 pb-4">
+          <span className="text-xl font-bold text-white">S</span>
         </div>
 
-        {/* Hamburger */}
-        <div className="flex-1 flex flex-col items-center pt-2">
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:bg-white/20"
-            aria-label="Open navigation"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-white">
-              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
+        {/* Nav — icons only */}
+        <nav className="flex-1 space-y-1 flex flex-col items-center w-full px-3">
+          {NAV_ITEMS.map((item) => (
+            <NavItem key={item.id} item={item} showLabel={false} />
+          ))}
+        </nav>
+
+        {/* Score a job — compact */}
+        <div className="px-3 pb-4 pt-2 w-full">
+          <ScoreJobCTA compact />
         </div>
       </aside>
 
-      {/* ── Mobile top bar (below md) ── */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-14 bg-brand-accent z-30 flex items-center justify-between px-4">
+      {/* ═══════════════════════════════════════════════════════════════
+          MOBILE TOP BAR (below 768px) — slim 56px bar
+         ═══════════════════════════════════════════════════════════════ */}
+      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4" style={{ background: "#1A2332" }}>
         <button
           onClick={onLogoClick}
-          className="text-lg font-bold text-white tracking-[0.06em] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded"
+          className="text-lg font-bold text-white tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
         >
-          <SignalWordmark />
+          S
         </button>
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:bg-white/20"
+          className="p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2"
           aria-label="Open navigation"
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-white">
-            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
+          <Menu size={20} strokeWidth={1.5} className="text-white" />
         </button>
       </div>
 
-      {/* ── Mobile / tablet overlay menu ── */}
+      {/* ═══════════════════════════════════════════════════════════════
+          MOBILE / TABLET OVERLAY MENU
+         ═══════════════════════════════════════════════════════════════ */}
       {mobileMenuOpen && (
         <>
           {/* Backdrop */}
@@ -169,95 +210,70 @@ export default function AppShell({
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Drawer */}
-          <div className="fixed inset-y-0 left-0 w-60 bg-brand-accent z-50 lg:hidden flex flex-col shadow-2xl">
+          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col shadow-2xl" style={{ background: "#1A2332" }}>
             {/* Wordmark + close */}
-            <div className="px-6 pt-6 pb-5 flex items-center justify-between">
-              <span className="text-xl font-bold text-white tracking-[0.06em]">
+            <div className="pt-7 pb-8 px-6 flex items-center justify-between">
+              <span className="text-xl font-bold text-white tracking-[0.12em]">
                 <SignalWordmark />
               </span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:bg-white/20"
+                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2"
                 aria-label="Close navigation"
               >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-white/60">
-                  <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+                <X size={18} strokeWidth={1.5} className="text-white/60" />
               </button>
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 px-3 space-y-0.5">
-              {NAV_ITEMS.map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNav(item.id)}
-                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-[15px] font-medium rounded-lg transition-colors text-left focus:outline-none focus-visible:bg-white/20 ${
-                      isActive
-                        ? "text-white bg-white/10 border-l-[3px] border-white pl-[9px]"
-                        : "text-white/60 hover:text-white hover:bg-white/[0.06] border-l-[3px] border-transparent pl-[9px]"
-                    }`}
-                  >
-                    {item.label}
-                    {item.id === "my-jobs" && jobCount > 0 && (
-                      <span className="min-w-[1.25rem] h-5 flex items-center justify-center text-xs font-semibold bg-white/15 text-white/80 px-1.5 rounded-full">
-                        {jobCount}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+            <nav className="flex-1 space-y-0.5">
+              {NAV_ITEMS.map((item) => (
+                <NavItem key={item.id} item={item} showLabel />
+              ))}
             </nav>
 
             {/* User info */}
-            {user && (
-              <div className="px-4 py-3 border-t border-white/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                    <span className="text-[11px] font-semibold text-white leading-none">
-                      {((user.user_metadata?.full_name as string | undefined) ?? user.email ?? "?")[0].toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="text-[13px] text-white/50 truncate flex-1">
-                    {user.email ? user.email.split("@")[0] : ""}
-                  </span>
-                  <button
-                    onClick={onSignOut}
-                    className="text-[12px] text-white/35 hover:text-white/60 transition-colors shrink-0 focus:outline-none focus-visible:text-white/60"
-                  >
-                    Sign out
-                  </button>
-                </div>
-              </div>
-            )}
+            <UserInfo />
 
             {/* Score a job */}
-            <div className="px-3 pb-4 pt-2">
-              <button
-                onClick={handleScoreJob}
-                className="w-full px-4 py-2.5 text-sm font-semibold text-white border border-white/30 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:bg-white/20"
-              >
-                Score a job →
-              </button>
+            <div className="px-4 pb-4 pt-2">
+              <ScoreJobCTA />
             </div>
           </div>
         </>
       )}
 
-      {/* ── Main content area ── */}
-      <div className="flex-1 md:pl-16 lg:pl-60">
+      {/* ═══════════════════════════════════════════════════════════════
+          MAIN CONTENT — floating white panel
+         ═══════════════════════════════════════════════════════════════ */}
+      <div
+        className={`
+          flex-1
+          md:pl-[72px] lg:pl-60
+        `}
+      >
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 
-        {/* Guest save banner */}
-        {guestBanner}
+        {/* Floating content panel — desktop + tablet */}
+        <div
+          className={`
+            min-h-screen
+            md:min-h-[calc(100vh-24px)]
+            md:mt-3 md:mr-3 md:mb-3
+            md:rounded-2xl
+            overflow-y-auto
+          `}
+          style={{ background: "#F8F7F4" }}
+        >
+          {/* Guest save banner */}
+          {guestBanner}
 
-        {/* Content */}
-        <main className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 pt-8 lg:pt-10 pb-12">
-          {children}
-        </main>
+          {/* Content */}
+          <main className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 pt-8 lg:pt-10 pb-8">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
