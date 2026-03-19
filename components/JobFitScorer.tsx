@@ -337,172 +337,179 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           )}
 
-          {/* Score + recommendation */}
-          <div className="bg-brand-text rounded-2xl p-6">
-            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
-              Overall Fit
-            </p>
-            {/* Score + badge on one line */}
-            <div className="flex items-baseline gap-3 flex-wrap">
-              <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
-                {result.overall_fit}
-              </span>
-              <span className="text-2xl text-white/30 font-light">/10</span>
-              <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
-                {result.recommendation}
-              </span>
-            </div>
-            <p className="text-[15px] text-white/55 mt-3 leading-snug max-w-sm">
-              {result.summary}
-            </p>
-            {/* Mismatch type pills */}
-            {result.mismatch_types?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {result.mismatch_types.map((t) => (
-                  <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
-                    {MISMATCH_LABELS[t]}
+          {/* Two-column layout: left = score + concern + dimensions, right = have/missing */}
+          <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
+
+            {/* Left column */}
+            <div className="space-y-5">
+              {/* Score + recommendation */}
+              <div className="bg-brand-text rounded-xl p-6">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
+                  Overall Fit
+                </p>
+                {/* Score + badge on one line */}
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
+                    {result.overall_fit}
                   </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Recruiter concern — shown immediately after overall fit when present */}
-          {result.recruiter_concern && (
-            <div className="bg-status-tailor/10 rounded-2xl p-6 border border-status-tailor/40">
-              <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
-                ⚑ Recruiter Concern to Address
-              </p>
-              <p className="text-[1.0625rem] text-brand-text leading-relaxed">{result.recruiter_concern}</p>
-            </div>
-          )}
-
-          {/* Dimensions */}
-          {(() => {
-            const dims = [
-              ["Functional Fit",  result.dimensions.functional_fit],
-              ["Seniority Fit",   result.dimensions.seniority_fit],
-              ["Industry Fit",    result.dimensions.industry_fit],
-              ["Keyword Overlap", result.dimensions.keyword_overlap],
-            ] as const;
-            const lowestScore = Math.min(...dims.map(([, d]) => d.score));
-            return (
-              <div className="bg-white rounded-2xl p-6 shadow">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-4">
-                  What Drove This Score
-                </p>
-                <div className="space-y-4">
-                  {dims.map(([label, dim]) => {
-                    const isWeakest = dim.score === lowestScore;
-                    return (
-                      <div key={label} className={isWeakest ? "rounded-xl bg-status-stretch/5 ring-1 ring-status-stretch/15 p-3 -mx-3" : ""}>
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <p className={`text-base font-medium ${isWeakest ? "text-brand-text" : "text-brand-text/80"}`}>{label}</p>
-                          {isWeakest && (
-                            <span className="text-[0.65rem] font-semibold uppercase tracking-[0.07em] text-status-stretch">
-                              Pulling score down
-                            </span>
-                          )}
-                        </div>
-                        <ScoreBar score={dim.score} />
-                        <p className="mt-1.5 text-base text-brand-text/45 leading-relaxed">{dim.reasoning}</p>
-                      </div>
-                    );
-                  })}
+                  <span className="text-2xl text-white/30 font-light">/10</span>
+                  <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
+                    {result.recommendation}
+                  </span>
                 </div>
-              </div>
-            );
-          })()}
-
-          {/* What you have / Missing */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-2xl p-6 shadow">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
-                What You Have
-              </p>
-              <ul className="space-y-2">
-                {result.what_you_have.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
-                    <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow">
-              <div className="flex items-baseline justify-between gap-2 mb-3">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">
-                  What&apos;s Missing
+                <p className="text-[15px] text-white/55 mt-3 leading-snug">
+                  {result.summary}
                 </p>
-                <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply? Tap × to remove.</p>
+                {/* Mismatch type pills */}
+                {result.mismatch_types?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {result.mismatch_types.map((t) => (
+                      <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
+                        {MISMATCH_LABELS[t]}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Active items */}
+              {/* Recruiter concern — shown immediately after overall fit when present */}
+              {result.recruiter_concern && (
+                <div className="bg-status-tailor/10 rounded-xl p-6 border border-status-tailor/40">
+                  <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
+                    ⚑ Recruiter Concern to Address
+                  </p>
+                  <p className="text-[1.0625rem] text-brand-text leading-relaxed">{result.recruiter_concern}</p>
+                </div>
+              )}
+
+              {/* Dimensions */}
               {(() => {
-                const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
-                return activeItems.length === 0 && dismissedItems.length === 0 ? (
-                  <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {activeItems.map((item, i) => (
-                      <li key={i} className="flex items-start justify-between gap-2 group">
-                        <div className="flex items-start gap-2.5 text-base text-brand-text/80">
-                          <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
-                          {item}
-                        </div>
-                        <button
-                          onClick={() => handleDismissItem(item)}
-                          title="Dismiss — I actually have this"
-                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors"
-                        >
-                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                const dims = [
+                  ["Functional Fit",  result.dimensions.functional_fit],
+                  ["Seniority Fit",   result.dimensions.seniority_fit],
+                  ["Industry Fit",    result.dimensions.industry_fit],
+                  ["Keyword Overlap", result.dimensions.keyword_overlap],
+                ] as const;
+                const lowestScore = Math.min(...dims.map(([, d]) => d.score));
+                return (
+                  <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-4">
+                      What Drove This Score
+                    </p>
+                    <div className="space-y-4">
+                      {dims.map(([label, dim]) => {
+                        const isWeakest = dim.score === lowestScore;
+                        return (
+                          <div key={label} className={isWeakest ? "rounded-xl bg-status-stretch/5 ring-1 ring-status-stretch/15 p-3 -mx-3" : ""}>
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <p className={`text-base font-medium ${isWeakest ? "text-brand-text" : "text-brand-text/80"}`}>{label}</p>
+                              {isWeakest && (
+                                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.07em] text-status-stretch">
+                                  Pulling score down
+                                </span>
+                              )}
+                            </div>
+                            <ScoreBar score={dim.score} />
+                            <p className="mt-1.5 text-base text-brand-text/45 leading-relaxed">{dim.reasoning}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 );
               })()}
+            </div>
 
-              {/* Dismissed items — undo stays visible until re-score */}
-              {dismissedItems.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-brand-text/8 space-y-1.5">
-                  {dismissedItems.map(item => (
-                    <div key={item} className="flex items-center justify-between gap-3">
-                      <span className="text-sm text-brand-text/30 line-through leading-snug">{item}</span>
-                      <button
-                        onClick={() => handleUndoItem(item)}
-                        className="shrink-0 text-xs text-brand-accent hover:text-brand-accent/70 transition-colors font-medium"
-                      >
-                        Undo
-                      </button>
-                    </div>
+            {/* Right column — What you have / Missing */}
+            <div className="space-y-3">
+              <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
+                  What You Have
+                </p>
+                <ul className="space-y-2">
+                  {result.what_you_have.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
+                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
+                      {item}
+                    </li>
                   ))}
+                </ul>
+              </div>
+              <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+                <div className="flex items-baseline justify-between gap-2 mb-3">
+                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">
+                    What&apos;s Missing
+                  </p>
+                  <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply? Tap × to remove.</p>
                 </div>
-              )}
 
-              {/* Re-score button — appears as soon as first item is dismissed */}
-              {dismissedItems.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-brand-text/8 space-y-2">
-                  {isRescoring ? (
-                    <p className="text-sm text-brand-text/50 text-center py-1">Re-scoring…</p>
+                {/* Active items */}
+                {(() => {
+                  const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
+                  return activeItems.length === 0 && dismissedItems.length === 0 ? (
+                    <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
                   ) : (
-                    <button
-                      onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                      className="w-full px-4 py-2.5 border border-brand-accent/40 text-brand-accent text-sm font-semibold rounded-xl hover:bg-brand-accent/5 hover:border-brand-accent/70 transition-colors"
-                    >
-                      Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
-                    </button>
-                  )}
-                  {hasPrepData && !isRescoring && (
-                    <p className="text-xs text-brand-text/30 text-center">Re-scoring will clear your existing prep guide.</p>
-                  )}
-                  {rescoreError && !isRescoring && (
-                    <p className="text-xs text-status-skip text-center">{rescoreError}</p>
-                  )}
-                </div>
-              )}
+                    <ul className="space-y-2">
+                      {activeItems.map((item, i) => (
+                        <li key={i} className="flex items-start justify-between gap-2 group">
+                          <div className="flex items-start gap-2.5 text-base text-brand-text/80">
+                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                            {item}
+                          </div>
+                          <button
+                            onClick={() => handleDismissItem(item)}
+                            title="Dismiss — I actually have this"
+                            className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors"
+                          >
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                              <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                            </svg>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
+
+                {/* Dismissed items — undo stays visible until re-score */}
+                {dismissedItems.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-brand-text/8 space-y-1.5">
+                    {dismissedItems.map(item => (
+                      <div key={item} className="flex items-center justify-between gap-3">
+                        <span className="text-sm text-brand-text/30 line-through leading-snug">{item}</span>
+                        <button
+                          onClick={() => handleUndoItem(item)}
+                          className="shrink-0 text-xs text-brand-accent hover:text-brand-accent/70 transition-colors font-medium"
+                        >
+                          Undo
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Re-score button — appears as soon as first item is dismissed */}
+                {dismissedItems.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-brand-text/8 space-y-2">
+                    {isRescoring ? (
+                      <p className="text-sm text-brand-text/50 text-center py-1">Re-scoring…</p>
+                    ) : (
+                      <button
+                        onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
+                        className="w-full px-4 py-2.5 border border-brand-accent/40 text-brand-accent text-sm font-semibold rounded-xl hover:bg-brand-accent/5 hover:border-brand-accent/70 transition-colors"
+                      >
+                        Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
+                      </button>
+                    )}
+                    {hasPrepData && !isRescoring && (
+                      <p className="text-xs text-brand-text/30 text-center">Re-scoring will clear your existing prep guide.</p>
+                    )}
+                    {rescoreError && !isRescoring && (
+                      <p className="text-xs text-status-skip text-center">{rescoreError}</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

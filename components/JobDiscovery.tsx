@@ -43,7 +43,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
   const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-brand-text/8 text-brand-text/50";
 
   return (
-    <div className="bg-white rounded-2xl shadow p-5 space-y-4">
+    <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6 space-y-4">
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
         <p className="text-base font-bold text-brand-text leading-snug">{clusterName}</p>
@@ -113,7 +113,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         Your best-fit role clusters — search for open positions directly from here.
       </p>
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {clusters.map((cluster, i) => (
           <ClusterCard key={i} clusterName={cluster.name} confidence={cluster.confidence} />
         ))}

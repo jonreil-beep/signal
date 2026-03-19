@@ -1,16 +1,8 @@
-# ARCHITECTURE.md — Job Search Copilot
+# ARCHITECTURE.md — Signal
 
-## Stack Decision
+## Stack
 
-**Recommended: Next.js 14 (App Router) + Tailwind CSS**
-
-### Why
-
-- Full-stack in one framework — no separate backend needed for v1
-- API routes handle resume parsing, URL fetching, and Anthropic API calls server-side (keeps API key secure)
-- Easy to deploy to Vercel in minutes
-- Tailwind is fast for scrappy internal UI
-- Can scale to a real product without a rewrite
+**Next.js 14 (App Router) + Tailwind CSS + Supabase + Vercel**
 
 ### Key dependencies
 
@@ -19,10 +11,11 @@
 | `next` | Framework (App Router) |
 | `tailwindcss` | Styling |
 | `@anthropic-ai/sdk` | Claude API client |
+| `@supabase/supabase-js` | Database + auth client |
+| `@supabase/ssr` | Supabase server-side rendering helpers |
 | `pdf-parse` | Extract text from PDF uploads |
 | `mammoth` | Extract text from DOCX uploads |
 | `cheerio` or `node-html-parser` | Strip HTML from fetched JD URLs |
-| `multer` or Next.js built-in | File upload handling |
 
 ---
 
@@ -30,62 +23,135 @@
 
 ```
 /app
-  /page.tsx                  → Main single-page UI (3 tabs)
+  /page.tsx                        → Landing page (logged-out)
+  /how-it-works/page.tsx           → How it works marketing page
+  /auth/callback/route.ts          → Supabase magic link callback
   /api
-    /parse-resume/route.ts   → Accepts file or text, returns parsed profile text
-    /cluster-roles/route.ts  → Sends profile to Claude, returns role clusters
-    /score-job/route.ts      → Sends profile + JD to Claude, returns fit scores
-    /tailor/route.ts         → Sends profile + JD to Claude, returns tailoring brief
-    /fetch-jd/route.ts       → Fetches URL, strips HTML, returns plain text
+    /parse-resume/route.ts
+    /cluster-roles/route.ts
+    /score-job/route.ts
+    /tailor/route.ts
+    /fetch-jd/route.ts
+    /generate-cover-letter/route.ts
+    /generate-outreach/route.ts
+    /interview-prep/route.ts
+    /follow-up/route.ts
+    /company-research/route.ts
+    /suggest-resume-updates/route.ts
+    /linkedin-headline/route.ts
 
 /components
-  ProfileUploader.tsx        → File drop + paste text input
-  RoleClusterResults.tsx     → Renders role cluster output
-  JobFitScorer.tsx           → JD input + renders score output
-  TailoringBrief.tsx         → Renders tailoring brief output
-  LoadingState.tsx           → Shared loading indicator
+  ProfileUploader.tsx
+  RoleClusterResults.tsx
+  JobFitScorer.tsx
+  TailoringBrief.tsx
+  PrepTab.tsx
+  MyJobs.tsx
+  Discover.tsx
+  LoadingState.tsx
 
 /lib
-  anthropic.ts               → Anthropic client init
-  prompts.ts                 → All Claude prompt templates (centralized)
-  parseResume.ts             → PDF/DOCX text extraction logic
-  fetchJD.ts                 → URL fetch + HTML strip logic
+  anthropic.ts                     → Anthropic client init
+  prompts.ts                       → ALL Claude prompt templates (centralized)
+  parseResume.ts                   → PDF/DOCX text extraction
+  fetchJD.ts                       → URL fetch + HTML strip
+  checkUsage.ts                    → Rate limiting via Supabase api_usage table
+
+/lib/supabase
+  client.ts                        → Browser Supabase client
+  server.ts                        → Server Supabase client (SSR-safe)
 
 /types
-  index.ts                   → Shared TypeScript types
+  index.ts                         → Shared TypeScript types
 ```
 
 ---
 
-## Data Flow
+## Auth
 
-### Feature 1: Profile Upload + Role Clustering
+**Magic link email auth via Supabase**
+- No passwords
+- Users receive a magic link, click it, are authenticated
+- Session persisted via Supabase cookies
+- Guest mode available ("Try without signing up") — no auth, no persistence, rate limits still apply via IP
 
-```
-User uploads file or pastes text
-  → /api/parse-resume     (extract clean text from PDF/DOCX if needed)
-  → /api/cluster-roles    (send text to Claude with clustering prompt)
-  → Return: role clusters, strengths, risks, headline
-  → Store profile text in client state (useState or context)
+---
+
+## Database (Supabase)
+
+### Tables
+
+**profiles** (or handled via Supabase auth.users)
+- user_id
+- resume_text
+- writing_sample
+- pivot_target
+- last_analyzed_at
+
+**api_usage**
+```sql
+create table api_usage (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id),
+  route text not null,
+  created_at timestamp with time zone default now()
+);
+create index on api_usage(user_id, created_at);
+alter table api_usage enable row level security;
 ```
 
-### Feature 2: Job Fit Scoring
+**jobs** (My Jobs tab)
+- id
+- user_id
+- title
+- company
+- jd_text
+- score_result (jsonb)
+- prep_result (jsonb)
+- status (tracking/applied/phone_screen/interview/offer/rejected)
+- deadline
+- notes
+- created_at
 
-```
-User pastes JD or provides URL
-  → /api/fetch-jd         (if URL: fetch page, strip to plain text)
-  → /api/score-job        (send profile + JD to Claude with scoring prompt)
-  → Return: scores, what she has, what's missing, recommendation
-```
+### Row Level Security
+All tables have RLS enabled. Users can only read/write their own rows.
 
-### Feature 3: Tailoring Brief
+---
 
-```
-Profile + JD already in session state
-  → /api/tailor           (send profile + JD to Claude with tailoring prompt)
-  → Return: structured brief
-  (No new inputs needed if called after scoring)
-```
+## Rate Limiting
+
+All Claude API routes check usage before making any API call via `lib/checkUsage.ts`.
+
+| Route | Daily limit |
+|---|---|
+| `/api/cluster-roles` | 3 |
+| `/api/score-job` | 10 |
+| `/api/tailor` | 10 |
+| `/api/fetch-jd` | 20 |
+| All other Claude routes | 10 |
+
+Limits reset at midnight UTC (Vercel server timezone).
+
+When limit is reached: returns 429 with user-friendly message. No Claude API call is made.
+
+---
+
+## State Management
+
+**Server-side persistence:** Supabase (profile, jobs, prep results)
+
+**Client-side state:** React useState/context for current session
+
+**localStorage:** Used for cross-tab navigation state and session flags
+- `signal_profile` — current profile inputs
+- `signal_last_job` — last scored job for back-navigation restore
+- `signal_last_prep` — last generated prep content
+- `signal_reset_job_fit` — sessionStorage flag to distinguish "restore last job" vs "start fresh"
+
+**Navigation pattern:**
+- "Score a job →" CTA clears job state and navigates to blank Job Fit
+- Clicking Job Fit tab restores last scored job
+- Browser back/forward restores from localStorage
 
 ---
 
@@ -93,43 +159,32 @@ Profile + JD already in session state
 
 All prompts live in `/lib/prompts.ts`. Key principles:
 
-- **Role-play framing:** Claude acts as a senior talent strategist with hiring-side experience
-- **Structured output:** All responses use consistent XML-like or JSON output format for reliable parsing
-- **Honesty instruction:** Prompts explicitly instruct Claude not to soften weaknesses
-- **Specificity instruction:** Prompts require role names, not categories; exact JD phrases, not paraphrases
+**Role framing:** Claude acts as a senior talent strategist with hiring-side experience
 
-### Output format for all API responses
+**Voice block:** `buildVoiceBlock(writingSample)` — injected into all output prompts when writing sample is provided. Instructs Claude to match the candidate's sentence rhythm, formality, and cadence. Does NOT polish upward.
 
-Claude returns structured JSON. Example for role clustering:
+**Pivot block:** `buildPivotBlock(pivotTarget)` — injected when pivot target is provided. Reframes analysis through the lens of the target role.
 
-```json
-{
-  "role_clusters": [
-    {
-      "name": "Corporate Strategy, Director-level",
-      "confidence": "Strong",
-      "reasoning": "...",
-      "signals": ["signal 1", "signal 2"]
-    }
-  ],
-  "core_strengths": ["...", "..."],
-  "positioning_risks": ["...", "..."],
-  "recommended_headline": "..."
-}
-```
+**Output format:** All responses return structured JSON. Parsed on API route, typed data returned to frontend.
 
-Parse this on the API route and return typed data to the frontend.
+**JSON reliability:** Every prompt ends with explicit instruction to return only valid JSON starting with { and ending with }. API routes include retry logic — one automatic retry before showing error to user.
+
+**Honesty instruction:** Prompts explicitly instruct Claude not to soften weaknesses.
+
+**Second/first person rule:**
+- Analysis prompts: "Always address the candidate in second person — use 'you' and 'your'. Never use he/she/his/her/their."
+- Document prompts (cover letter, outreach, follow-up): "Write entirely in first person — I/my/me."
+
+**Fabrication prohibition:** Resume bullet prompts include hard prohibition on inventing metrics, percentages, or numbers not present in the original resume.
 
 ---
 
-## Session / State Management
+## Error Handling
 
-**v1: No database, no auth.**
-
-- Profile text stored in React state (client-side)
-- JD text stored in React state per scoring session
-- If user refreshes, they re-upload (acceptable for internal tool)
-- If this becomes a real product, add localStorage persistence or a lightweight DB (Supabase / SQLite) in v2
+- Malformed JSON: strip markdown fences, retry once automatically, then show user-friendly error
+- URL fetch failure: graceful degradation to paste input
+- Rate limit exceeded: 429 with friendly message, no retry
+- Auth failure: 401, redirect to login
 
 ---
 
@@ -137,6 +192,9 @@ Parse this on the API route and return typed data to the frontend.
 
 ```
 ANTHROPIC_API_KEY=sk-...
+NEXT_PUBLIC_SUPABASE_URL=https://...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
 Store in `.env.local`. Never expose to client — all Claude calls go through API routes.
@@ -145,19 +203,19 @@ Store in `.env.local`. Never expose to client — all Claude calls go through AP
 
 ## Deployment
 
-- **Vercel** (one command: `vercel deploy`)
-- No separate server needed
+- **Vercel** (current: signal-zeta-lime.vercel.app)
+- **Custom domain:** pending — check getsignal.co, trysignal.io, signalhq.co
 - API routes run as serverless functions
-- File upload size limit: 4MB (Vercel default — enough for any resume)
+- File upload size limit: 4MB (Vercel default)
+- Max function duration: 60 seconds (set on all Claude routes)
 
 ---
 
-## Key Constraints to Honor in v1
+## Key Constraints
 
-1. No auth. No login.
-2. No database.
-3. Single-page UI.
-4. File upload must support PDF and DOCX.
-5. All Claude calls are server-side only.
-6. Graceful failure if URL fetch is blocked (JD paste always works as fallback).
-7. Every Claude response must be parseable — use JSON output mode.
+1. All Claude API calls server-side only — never from client
+2. All prompts in `/lib/prompts.ts` — never inline
+3. Claude must return JSON — explicit JSON instruction in every prompt
+4. No database queries from client — all data access through API routes or Supabase RLS
+5. Rate limit check before every Claude call — no exceptions
+6. Graceful failure if URL fetch blocked — paste always works

@@ -56,20 +56,20 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
   }
 
   return (
-    <div className="space-y-7">
+    <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
-      {/* Role clusters */}
+      {/* Left column — Role clusters */}
       <div>
-        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
+        <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
           Best-Fit Role Clusters
         </p>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {result.role_clusters.map((cluster, i) => {
             const rec = cluster.recommendation
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-2xl p-5 shadow">
+              <div key={i} className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <h4 className="text-base font-semibold text-brand-text leading-snug">{cluster.name}</h4>
@@ -121,10 +121,10 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
         </div>
       </div>
 
-      {/* Strengths + Risks — stacked single column */}
+      {/* Right column — Strengths + Risks */}
       <div className="space-y-3">
-        <div className="bg-white rounded-2xl p-6 shadow">
-          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
+        <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
             Core Strengths
           </p>
           <ul className="space-y-2">
@@ -137,8 +137,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           </ul>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow">
-          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-3">
+        <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+          <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
             Positioning Risks
           </p>
           <ul className="space-y-3.5">

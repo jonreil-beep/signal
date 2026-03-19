@@ -109,7 +109,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div className="group relative bg-white rounded-2xl shadow px-6 pt-5 pb-5 hover:shadow-md hover:bg-[rgba(26,26,26,0.005)] transition-all">
+    <div className="group relative bg-white rounded-xl border border-[rgba(26,26,26,0.12)] px-6 pt-5 pb-5 hover:border-[rgba(26,26,26,0.2)] hover:bg-[rgba(26,26,26,0.005)] transition-all">
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -364,7 +364,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               done: false,
             },
           ].map(({ step, title, body, done }) => (
-            <div key={step} className={`rounded-2xl p-5 ${done ? "bg-status-apply/6 shadow" : "bg-white shadow"}`}>
+            <div key={step} className={`rounded-xl border border-[rgba(26,26,26,0.12)] p-5 ${done ? "bg-status-apply/6" : "bg-white"}`}>
               <div className="flex items-center gap-2.5 mb-3">
                 <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${done ? "bg-status-apply text-white" : "bg-brand-text text-white"}`}>
                   {done ? (
@@ -469,7 +469,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
                   ? s === "All"
                     ? "bg-brand-text text-white"
                     : `${cfg!.bg} ${cfg!.text} ring-1 ring-inset ring-current/20 opacity-100`
-                  : "bg-white text-brand-text/55 hover:text-brand-text/75 border border-brand-text/10"
+                  : "bg-white text-brand-text/75 hover:text-brand-text/90 border border-brand-text/10"
               }`}
             >
               {s}
@@ -535,14 +535,14 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           {!isFiltered && (
             <button
               onClick={onScoreNewJob}
-              className="w-full py-4 rounded-2xl border-2 border-dashed border-brand-text/15 text-sm font-medium text-brand-text/35 hover:border-brand-text/30 hover:text-brand-text/55 transition-colors"
+              className="w-full py-4 rounded-xl border-2 border-dashed border-brand-text/15 text-sm font-medium text-brand-text/35 hover:border-brand-text/30 hover:text-brand-text/55 transition-colors"
             >
               Score a job →
             </button>
           )}
         </div>
       ) : (
-        <div className="py-8 text-center bg-white rounded-2xl shadow">
+        <div className="py-8 text-center bg-white rounded-xl border border-[rgba(26,26,26,0.12)]">
           <p className="text-base text-brand-text/50">No jobs match your filters.</p>
           <button
             onClick={clearFilters}

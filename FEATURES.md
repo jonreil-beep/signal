@@ -1,150 +1,181 @@
-# FEATURES.md — Job Search Copilot
+# FEATURES.md — Signal
 
-## MVP Feature Set (Phase 1)
+## Current Feature Set (v1 — built and deployed)
 
-These are the only three features being built in v1. Scope is intentionally narrow.
+All features are live at signal-zeta-lime.vercel.app. Eleven API routes exist. All are rate-limited via Supabase usage metering.
 
 ---
 
 ## Feature 1: Profile Upload + Role Clustering
 
 ### What it does
-Takes Holly's resume (file or pasted text) and returns a structured map of her best-fit role categories, core strengths, and positioning risks.
+Takes the user's resume and returns a structured map of best-fit role categories, core strengths, positioning risks, and a recommended LinkedIn headline.
 
 ### Inputs
-- Resume as PDF, DOCX upload — OR — pasted plain text
-- Optional: 1–2 sentences about what kind of role she's targeting (free text)
+- Resume as PDF, DOCX upload OR pasted plain text (persisted in Supabase)
+- Writing sample (optional) — 2-3 sentences in the user's voice; used to calibrate tone of all outputs
+- Pivot target (optional) — describes a role the user wants to move toward even if not an obvious fit
 
 ### Outputs
-**Top Role Clusters (3–5):**
-Each cluster includes:
-- Role category name (e.g. "Corporate Strategy / Director-level")
-- Why she fits it (2–3 sentences)
-- Keywords/signals from her resume that support it
-- Confidence level: Strong / Moderate / Stretch
+- **Recommended LinkedIn headline** — displayed prominently in a dark card at top of Profile tab
+- **Best-fit role clusters (3–5)** — each with: role name, Pursue/Stretch badge, confidence level, market read line, 3 evidence bullets
+- **Core strengths** — bullet list
+- **Positioning risks** — collapsible bullets with "How to address →" expand
+- **LinkedIn headline generator** — "Try 4 angles" generates additional headline variants
 
-**Core Strengths (bullets):**
-What she consistently demonstrates across experience
+### UI notes
+- Profile tab defaults to output-first: collapsed input row shows "Resume saved · Writing sample added · Analyzed · Edit"
+- Edit expands all inputs with "Save & Reanalyze" button
+- Role cluster bullets must be achievement-framed — never raw job titles or date ranges
+- All outputs use second person (you/your)
 
-**Positioning Risks (bullets):**
-Where her profile may create confusion or gaps for hiring teams
-
-**Recommended headline:**
-A single sentence she could use on LinkedIn or a cover letter
-
-### Acceptance criteria
-- [ ] Accepts both file upload and pasted text
-- [ ] Returns results for all output sections above
-- [ ] Role clusters are specific (not generic like "consulting") and include reasoning
-- [ ] Positioning risks are honest, not just reframed strengths
-- [ ] Runs in < 20 seconds
-- [ ] Output is readable without further action required
+### API route
+`/api/cluster-roles` — 3 calls/day limit
 
 ---
 
 ## Feature 2: Job Fit Scoring
 
 ### What it does
-Takes a job description (URL or paste) and scores it against Holly's profile with clear reasoning — and a recommendation on whether to apply.
+Takes a job description and scores it against the user's profile with clear reasoning — and a recommendation on whether to apply.
 
 ### Inputs
-- Job description: paste text or URL (with auto-fetch if URL provided)
-- Her profile (pulled from the session or re-uploaded)
+- Job description: paste text or URL (server-side fetch with graceful failure)
+- Profile from session (no re-upload needed)
 
 ### Outputs
-**Overall Fit Score:** 1–10 with one-line summary
+- **Overall fit score** (1–10) with one-line summary
+- **Apply Now / Apply with Tailoring / Stretch / Skip** recommendation badge
+- **Recruiter Concern to Address** — amber card, always visible, most differentiated output
+- **Dimension scores** — Functional Fit, Seniority Fit, Industry Fit, Keyword Overlap (each 1–10 with reasoning and progress bar)
+- **PULLING SCORE DOWN** tag on lowest dimension
+- **What You Have** — bullets of matching signals
+- **What's Missing** — dismissable bullets with persistent undo; "Re-score with N items removed →" button
 
-**Dimension Scores:**
-- Functional fit (does her experience match the work?)
-- Seniority fit (is the level right?)
-- Industry fit (sector match or transferable?)
-- Keyword overlap (explicit language match)
+### UI notes
+- Score + Apply Now badge on same line inside dark card
+- Recruiter concern always visible below score card
+- Bottom row: ← Score another job / Go to Prep → (centered) / Search for similar roles →
+- "What's Missing" items dismissable without modal — re-score is explicit user action
 
-**What she has (bullets):** Where her background clearly matches
-
-**What's missing or unclear (bullets):** Gaps or ambiguities the hiring team will likely notice
-
-**Recommendation:**
-One of: `Apply Now` / `Apply with Tailoring` / `Stretch — Proceed Carefully` / `Skip`
-
-**Recruiter concern flag (optional):**
-If the JD has a clear red flag against her profile, call it out explicitly.
-
-### Acceptance criteria
-- [ ] Accepts pasted text for JD
-- [ ] URL fetch is attempted but degrades gracefully if blocked
-- [ ] All dimension scores shown with brief reasoning
-- [ ] Recommendation is decisive, not hedged
-- [ ] "What's missing" section is honest and specific
-- [ ] Works without re-uploading resume if session is active
+### API routes
+`/api/score-job` — 10 calls/day limit
+`/api/fetch-jd` — 20 calls/day limit
 
 ---
 
-## Feature 3: Tailoring Brief Generator
+## Feature 3: Prep Tab — Full Application Workflow
 
 ### What it does
-Before Holly applies, produces a concise brief that tells her exactly how to position herself for that specific job — what to emphasize, what language to mirror, and what concern to preempt.
+Generates a complete pre-application brief and all application materials for a specific job, built from the user's profile.
 
-### Inputs
-- Her profile (from session)
-- The job description (from session or re-pasted)
+### Stage selector
+Three stages with progressive disclosure:
+- **Preparing to Apply** — Tailoring brief + Cover letter + Outreach messages + Resume bullets
+- **Applied / Heard Back** — Interview prep + Company research
+- **Post-Interview** — Follow-up templates
 
-### Outputs
-**Lead strengths to emphasize:**
-2–4 bullets — specific parts of her background that align, with suggested framing language
+### Always-visible elements (all stages)
+- **Honest Take** dark card — direct assessment of fit and key challenge, always shown, never collapsible
+- Correction textarea (collapsed single line by default) — "Anything to correct before rebuilding?"
+- Export + Rebuild buttons
 
-**JD language to mirror:**
-Exact phrases from the JD she should echo in her resume/cover letter (with context)
+### Tailoring Brief (Preparing to Apply)
+Brief sections in this order:
+1. Lead Strengths to Emphasize — with "See framing →" expand per item
+2. Recruiter Concern to Preempt — amber card matching Job Fit styling
+3. JD Language to Mirror — quoted phrases as pills with copy button; "Why →" expand
+4. What to De-emphasize — with reasoning
+5. Outreach Angle
 
-**What to de-emphasize or reframe:**
-1–3 things that might dilute her candidacy if foregrounded
+### Application Materials (Preparing to Apply)
+- **Cover letter** — first person, voice-calibrated, in distinct document container
+- **Outreach messages** — email + LinkedIn message, first person, subject line + first sentence visible by default with "Read full message →" expand
+- **Resume bullets** — suggested bullet visible by default; "Compare with original →" expands to show original + what changed
 
-**Recruiter concern to preempt:**
-The most likely hesitation and how to address it proactively
+### Interview Prep (Applied / Heard Back)
+- Behavioral, functional, and gap-related questions
+- Each question collapsible — bold question header, answer and framing hidden by default
 
-**Outreach angle (optional):**
-A hook for a cold LinkedIn message or referral note if networking into the role
+### Company Research (Applied / Heard Back)
+- Business overview, strategic context, culture signals, smart questions to ask
+- Clearly labeled as synthesis/inference, not verified facts
 
-### Acceptance criteria
-- [ ] Brief is specific to the JD, not generic
-- [ ] Language-to-mirror includes actual phrases from the JD
-- [ ] "What to de-emphasize" section present and honest
-- [ ] Output is scannable — not a wall of text
-- [ ] Can be generated after fit scoring without extra input
+### Follow-up Templates (Post-Interview)
+- Thank-you note + check-in email
+- First person, voice-calibrated
+
+### API routes
+`/api/tailor` — 10 calls/day
+`/api/generate-cover-letter` — 10 calls/day
+`/api/generate-outreach` — 10 calls/day
+`/api/interview-prep` — 10 calls/day
+`/api/company-research` — 10 calls/day
+`/api/suggest-resume-updates` — 10 calls/day
+`/api/follow-up` — 10 calls/day
+
+---
+
+## Feature 4: My Jobs
+
+### What it does
+Persistent list of every scored job with status tracking and quick navigation.
+
+### Features
+- Every scored job saved with fit score, recommendation badge, date, status, and prep readiness
+- Filter by status: All / Tracking / Applied / Phone Screen / Interview / Offer / Rejected
+- Sort by Date / Score / Due
+- Search jobs
+- Status dropdown per card (Tracking, Applied, Phone Screen, etc.)
+- "Prep ready" label only shown when prep has been generated
+- "Score a job →" CTA in header and as dashed card at bottom of list
+- Clicking job title navigates to Job Fit for that job
+
+---
+
+## Feature 5: Discover
+
+### What it does
+Generates search queries from the user's role clusters so they can find relevant job postings directly.
+
+### Features
+- One card per role cluster with confidence badge
+- "Add a city or industry" input per card (optional, appends to search query)
+- "Search Google →" and "Search LinkedIn →" buttons — equal visual weight, open pre-built queries in new tab
+- Single instruction line: "Your best-fit role clusters — search for open positions directly from here."
+
+---
+
+## Feature 6: LinkedIn Headline Generator
+
+### What it does
+Generates 4–5 LinkedIn headline variants calibrated to the user's career story.
+
+### Location
+Profile tab — lives directly below the Recommended LinkedIn Headline dark card
+
+### API route
+`/api/linkedin-headline` — 10 calls/day
 
 ---
 
 ## Out of Scope (v1)
 
-These are documented for v2 planning but explicitly excluded from the first build:
-
-- Application tracker / history
-- Resume rewriting
-- LinkedIn summary optimizer
-- Outreach message drafting
-- Learning loop / outcome tracking
-- Weekly search plan
+- Resume rewriting from scratch
+- Application tracker beyond status tags
 - Multi-user support
-- Auth / accounts
-- Saved job lists
+- Auth beyond magic link email
+- Saved job lists with notes (beyond current My Jobs)
+- Learning loop / outcome tracking
+- Landing page beyond current How It Works page
 
 ---
 
-## UI Requirements (v1)
+## Voice and Tone Rules (enforced in prompts)
 
-- Single-page web app — no multi-page routing needed
-- Three clear sections/tabs: Profile | Job Fit | Tailoring Brief
-- No login required
-- Mobile-readable but not mobile-first
-- Functional over beautiful — this is an internal tool
-- Loading state during API calls (these will take 5–20 seconds)
-- Copy-to-clipboard on key outputs
-
----
-
-## API Notes
-
-- All AI analysis powered by Anthropic Claude API (`claude-sonnet-4-20250514`)
-- Resume parsing: handle PDF and DOCX via server-side extraction; plain text fallback
-- JD URL fetching: server-side fetch + HTML-to-text stripping; graceful failure
-- Session state: store profile in localStorage or simple server session — no DB required for v1
+- **Analysis outputs** (fit scores, role clusters, recruiter concerns, tailoring brief, interview prep, company research): second person — you/your
+- **Sendable documents** (cover letter, outreach email, outreach LinkedIn message, follow-up templates): first person — I/my/me
+- **Never**: he/she/his/her/their when referring to the candidate
+- **Never**: fabricate metrics, percentages, or numbers not in the original resume
+- **Never**: "aligns perfectly", "uniquely positioned", "spearheaded", "leveraged", "synergized"
+- **Always**: write like a smart direct human, not an AI doing executive theater

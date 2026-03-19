@@ -1,137 +1,166 @@
-# SESSIONS.md — Claude Code Build Plan
+# SESSIONS.md — Signal Build Plan
 
-A phased session plan for building the Job Search Copilot with Claude Code.
-Each session has a clear goal, defined deliverables, and a handoff note.
+## How to start every session
+
+### In Claude Code:
+```
+We are building Signal — a job search copilot for experienced professionals. 
+Read PRODUCT.md, FEATURES.md, ARCHITECTURE.md, BRAND.md, and DECISIONS.md 
+before doing anything.
+```
+
+### In Claude.ai (this project):
+All context is loaded. Just describe what you want to build or fix.
 
 ---
 
-## Before You Start
+## Current State (as of March 18, 2026)
 
-Tell Claude Code at the top of every session:
-> "We are building a job search copilot. Read PRODUCT.md, FEATURES.md, and ARCHITECTURE.md before doing anything."
+### What's built and deployed
+- Next.js 14 app deployed on Vercel (signal-zeta-lime.vercel.app)
+- Magic link auth via Supabase
+- Profile persistence in Supabase
+- 11 Claude API routes, all rate-limited via api_usage table
+- All five tabs working: My Jobs, Profile, Discover, Job Fit, Prep
+- Progressive disclosure on Prep tab (3 stages)
+- Voice calibration via writing sample
+- Pivot targeting via optional field
+- Second/first person correctly separated across prompts
+- No fabricated metrics in resume bullets
+- Retry logic on JSON parse failures
+- State persistence across browser navigation
+- Favicon (S on atmospheric gradient)
+- How It Works marketing page
+- Guest mode ("Try without signing up")
+- What's Missing dismissal without modal
 
-Keep all four project docs in your project root so Claude Code can reference them.
+### What's working well
+- Job Fit tab — score card, recruiter concern, dimension scores
+- Honest Take card on Prep — always visible, high impact
+- Role clusters with Pursue/Stretch badges
+- Tailoring brief with collapsed framing
+- Cover letter and outreach in first person
+- My Jobs pipeline with status tracking
+- Discover tab simplified to Google/LinkedIn search
+
+### Known issues / open items
+- CMO cluster bullet showing raw resume data — prompt guard added, needs regeneration
+- Resume bullets collapse not fully implemented (suggested only by default)
+- Outreach messages expand/collapse not implemented
+- Filter pills on My Jobs still slightly low contrast
+- Custom domain not yet purchased
+- Trademark not yet checked
 
 ---
 
-## Session 1 — Project scaffold + resume parsing
+## Completed Sessions
 
-**Goal:** Working Next.js app with file/text upload that extracts resume text.
+### Session 1 — Project scaffold + resume parsing ✓
+- Next.js app scaffolded
+- File upload (PDF + DOCX) + text paste
+- `/api/parse-resume` working
+- Extracted text renders on screen
 
+### Session 2 — Role clustering ✓
+- `/api/cluster-roles` with structured JSON output
+- Role clusters, strengths, risks, headline rendered
+- Loading states
+- Prompts in `/lib/prompts.ts`
+
+### Session 3 — Job fit scoring ✓
+- Job Fit tab with paste + URL input
+- `/api/score-job` with dimension scores
+- Recommendation badge
+- Recruiter concern flag
+
+### Session 4 — Tailoring brief ✓
+- `/api/tailor` with full brief structure
+- All brief sections rendered
+- Copy-to-clipboard per section
+
+### Session 5 — Polish + deploy ✓
+- Error states for all routes
+- Malformed JSON handling
+- UI cleanup
+- README + env example
+- Deployed to Vercel
+
+### Post-launch sessions ✓
+- Supabase auth (magic link)
+- Profile persistence
+- My Jobs tab with pipeline tracking
+- Discover tab
+- 7 additional prep routes (cover letter, outreach, interview prep, follow-up, company research, resume bullets, LinkedIn headline)
+- Rate limiting via api_usage table
+- Voice calibration (writing sample)
+- Pivot targeting
+- Progressive disclosure on Prep
+- Comprehensive UX/UI pass
+- Second/first person prompt fix
+- No-fabrication guard on resume bullets
+- Retry logic for JSON failures
+- State persistence across navigation
+- How It Works page rewrite
+- Guest mode
+
+---
+
+## Next Sessions
+
+### Session: Resume bullets collapse (HIGH PRIORITY)
+**Goal:** Each resume bullet shows only suggested text by default.
 **Tell Claude Code:**
-> "Set up a Next.js 14 app with Tailwind. Create a single-page UI with three tabs: Profile, Job Fit, Tailoring Brief. Build the Profile tab first. It should accept a PDF or DOCX file upload AND a plain text paste — whichever the user provides. When a file is uploaded, call an API route that extracts the text using pdf-parse (for PDFs) or mammoth (for DOCX). Display the extracted text back on screen so I can confirm it works. No Claude API calls yet — just file parsing. Follow the folder structure in ARCHITECTURE.md."
+> "In the suggest-resume-updates component, each bullet should show only the SUGGESTED text by default. Add a 'Compare with original →' text link beneath each suggested bullet. Clicking expands inline to show ORIGINAL and WHAT CHANGED. Clicking again collapses. This is not yet implemented — bullets are still showing all fields at full size."
 
-**Deliverables:**
-- [ ] Next.js app runs locally
-- [ ] File upload accepts PDF + DOCX
-- [ ] Text paste input works
-- [ ] Extracted text renders on screen
-- [ ] `/api/parse-resume` route working
-
-**Handoff note for Session 2:**
-> "Session 1 complete. The app scaffolded. Resume parsing works for PDF and DOCX. Extracted text renders on screen. Next: connect to Claude API to generate role clusters."
-
----
-
-## Session 2 — Role clustering (Feature 1)
-
-**Goal:** Send resume text to Claude, get back structured role clusters.
-
+### Session: Outreach message expand/collapse
+**Goal:** Show subject + first sentence by default with "Read full message →" expand.
 **Tell Claude Code:**
-> "Resume text is now available in state after upload. Build the role clustering feature. Create `/api/cluster-roles` route that sends the resume text to Claude (`claude-sonnet-4-20250514`) using the Anthropic SDK. Claude should return a JSON object with: role_clusters (array with name, confidence, reasoning, signals), core_strengths (array), positioning_risks (array), recommended_headline (string). Store the prompt in `/lib/prompts.ts`. Parse the JSON response and display it in the Profile tab. Show a loading state while the API call runs. The prompt must instruct Claude to be honest about weaknesses, not just strengths, and to name specific roles (not generic categories). See FEATURES.md for full output spec."
+> "In the generate-outreach component, show only the subject line and first sentence of each message (email and LinkedIn) by default. Add 'Read full message →' expand link. Full message appears inline on click."
 
-**Deliverables:**
-- [ ] `/api/cluster-roles` calls Claude and returns structured JSON
-- [ ] Role clusters render with name, confidence badge, reasoning
-- [ ] Core strengths and positioning risks render as bullets
-- [ ] Recommended headline renders
-- [ ] Loading state shows during API call
-- [ ] Prompt lives in `/lib/prompts.ts`
-
-**Handoff note for Session 3:**
-> "Session 2 complete. Role clustering works end-to-end. Profile tab shows clusters, strengths, risks, and headline. Next: Job Fit tab and scoring feature."
-
----
-
-## Session 3 — Job fit scoring (Feature 2)
-
-**Goal:** User pastes or URLs a job description, gets a scored fit report.
-
+### Session: My Jobs filter pill contrast
+**Goal:** Filter pills more readable.
 **Tell Claude Code:**
-> "Build the Job Fit tab. It needs two input options: paste a JD as text, OR enter a URL (with a server-side fetch route at `/api/fetch-jd` that retrieves the page and strips HTML to plain text — fail gracefully if blocked). Once JD text is available, a 'Score This Job' button calls `/api/score-job`, which sends the stored profile text + JD to Claude. Claude returns JSON: overall_fit (1–10), summary (string), dimensions (functional_fit, seniority_fit, industry_fit, keyword_overlap — each with score 1–10 and reasoning), what_she_has (array), whats_missing (array), recommendation (one of: Apply Now / Apply with Tailoring / Stretch / Skip), recruiter_concern (optional string). Render all of this in the Job Fit tab. See FEATURES.md for full output spec."
+> "On the My Jobs tab, increase the font size of the status filter pills (Tracking, Applied, Phone Screen, etc.) to 13px and increase text opacity to 0.75."
 
-**Deliverables:**
-- [ ] JD paste input works
-- [ ] URL fetch attempts, fails gracefully with paste fallback
-- [ ] `/api/score-job` calls Claude and returns structured JSON
-- [ ] All dimension scores render with reasoning
-- [ ] Recommendation renders as a clear badge/label
-- [ ] "What she has" and "What's missing" render as bullets
-- [ ] Profile text from Session 2 carries through — no re-upload needed
-
-**Handoff note for Session 4:**
-> "Session 3 complete. Job Fit tab works. Paste and URL input both work. Scores and recommendation render correctly. Next: Tailoring Brief tab."
-
----
-
-## Session 4 — Tailoring brief (Feature 3)
-
-**Goal:** Generate a pre-application brief from the stored profile + JD.
-
+### Session: Custom domain setup
+**Goal:** Connect purchased domain to Vercel.
 **Tell Claude Code:**
-> "Build the Tailoring Brief tab. If both profile and JD are already in state (from previous steps), a 'Generate Brief' button calls `/api/tailor`. This sends profile + JD to Claude and returns JSON: lead_strengths (array of objects with strength and framing_language), jd_language_to_mirror (array of exact phrases from the JD with context), what_to_deemphasize (array with item and reason), recruiter_concern_to_preempt (object with concern and suggested_response), outreach_angle (optional string). Render this as a clean, scannable brief in the Tailoring Brief tab. Add a 'Copy to Clipboard' button for each section. If profile or JD aren't loaded yet, show a prompt to complete those steps first."
+> "Help me connect a custom domain to this Vercel project. The domain is [domain]. Walk me through the DNS configuration and Vercel domain setup."
 
-**Deliverables:**
-- [ ] `/api/tailor` calls Claude and returns structured JSON
-- [ ] All brief sections render clearly
-- [ ] Copy-to-clipboard works per section
-- [ ] Guard state: shows prompt if profile or JD missing
-- [ ] No extra input required if called after scoring
-
-**Handoff note for Session 5:**
-> "Session 4 complete. All three core features work end-to-end. Next: polish, error handling, and prepare for Holly to use it."
-
----
-
-## Session 5 — Polish + error handling + deploy
-
-**Goal:** Make it solid enough for Holly to use reliably. Deploy to Vercel.
-
+### Session: Stripe integration (when ready to charge)
+**Goal:** Gate Claude API calls behind payment.
 **Tell Claude Code:**
-> "Polish pass before first real use. Handle these: (1) Error states — if any API call fails, show a clear message and let the user retry without re-uploading. (2) File size limit — warn if file is over 4MB. (3) Empty state — if Claude returns malformed JSON, log the raw response and show a fallback error message. (4) UI cleanup — make sure the three tabs are clearly labeled, active state is obvious, and outputs are readable on a laptop screen. No redesign — just tighten what's there. (5) Add a `.env.local.example` file with the required env vars. (6) Write a simple README with setup instructions. Then deploy to Vercel and confirm all three features work in production."
+> "I want to add Stripe to Signal. Create a single product at $[price] for a 90-day search sprint. Add a payment gate to the app — unauthenticated or unpaid users see a paywall after [N] free uses. Paid users get full access. Use Stripe Checkout for the payment flow. Store payment status in Supabase on the user record."
 
-**Deliverables:**
-- [ ] Error states for all three API routes
-- [ ] Malformed Claude response handled gracefully
-- [ ] File size warning in place
-- [ ] UI is clean and scannable on a laptop
-- [ ] `.env.local.example` created
-- [ ] README with setup steps
-- [ ] Deployed and working on Vercel
-
----
-
-## Future Sessions (v2 — only after Holly finds it useful)
-
-These are documented but intentionally deferred:
-
-| Feature | When to build |
-|---|---|
-| Application tracker | After Holly applies to 5+ jobs with the tool |
-| Resume tailoring suggestions | After fit scoring proves useful |
-| LinkedIn headline optimizer | After role clustering is validated |
-| Outreach message generator | After tailoring brief is validated |
-| Outcome learning loop | After 20+ applications tracked |
-| Multi-user / auth | When you want to share it |
-| Landing page / onboarding | When it's ready for others |
+### Session: Per-cluster regenerate (v2 consideration)
+**Goal:** Let users refresh one cluster without full reanalysis.
+**Tell Claude Code:**
+> "Add a 'Regenerate →' subtle text link to the top right of each role cluster card on the Profile tab. Clicking re-runs the cluster-roles API call for just that cluster and replaces only that card's content."
 
 ---
 
 ## Rules for All Sessions
 
-1. Read PRODUCT.md, FEATURES.md, ARCHITECTURE.md at the start of every session.
-2. Never build outside the current session's scope.
-3. All Claude API calls go through API routes — never from the client.
-4. All prompts live in `/lib/prompts.ts` — never inline.
-5. Claude must return JSON — use `response_format` or explicit JSON instruction in every prompt.
-6. No database. No auth. No accounts. Not yet.
+1. Read all 6 .md files at the start of every Claude Code session
+2. Never build outside the current session's scope
+3. All Claude API calls go through API routes — never from the client
+4. All prompts live in `/lib/prompts.ts` — never inline
+5. Claude must return JSON — explicit JSON instruction in every prompt
+6. Rate limit check before every Claude call via checkUsage.ts
+7. Second person for analysis, first person for sendable documents
+8. Never fabricate metrics in resume bullets
+9. No blue outlines — all focus states use brand colors
+10. Output-first UI — inputs collapse when not in use
+
+---
+
+## Business Status
+
+- **Deployed:** Yes (signal-zeta-lime.vercel.app)
+- **Auth:** Magic link via Supabase
+- **Paying users:** 0 (pre-revenue)
+- **Active test user:** Holly — actively searching, said she'd pay
+- **Goal:** First paid user within 2 weeks
+- **Pricing:** $79–149 for 90-day sprint (to be validated)
+- **Domain:** Not yet purchased — check getsignal.co, trysignal.io, signalhq.co
+- **Trademark:** Not yet checked — USPTO Class 042

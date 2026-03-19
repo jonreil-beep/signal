@@ -124,7 +124,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow">
+    <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">{title}</p>
         <CopyButton getText={() => copyText} />
@@ -163,7 +163,7 @@ function ActionSection({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`${bgClass} rounded-2xl shadow overflow-hidden`}>
+    <div className={`${bgClass} rounded-xl border border-[rgba(26,26,26,0.12)] overflow-hidden`}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
         <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text">{title}</p>
@@ -747,7 +747,7 @@ export default function TailoringBrief({
 
       {/* ── Honest Take — always visible when brief is built, across all stages ── */}
       {result?.honest_take && (
-        <div className="rounded-2xl bg-brand-text p-7">
+        <div className="rounded-xl bg-brand-text p-7">
           <p className="text-xs font-medium uppercase tracking-[0.06em] text-white/35 mb-2">
             Honest Take
           </p>
@@ -822,345 +822,345 @@ export default function TailoringBrief({
 
           {/* Brief results */}
           {!result && !isGenerating && (
-            <div className="bg-white rounded-2xl p-8 shadow text-center">
+            <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-8 text-center">
               <p className="text-base font-semibold text-brand-text">No brief yet</p>
-              <p className="text-base text-brand-text/50 mt-1">Hit "Build Prep Guide" to generate your tailored brief.</p>
+              <p className="text-base text-brand-text/50 mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
             </div>
           )}
 
+          {/* Two-column layout when brief is built */}
           {result && !isGenerating && (
-            <div className="bg-white rounded-2xl shadow overflow-hidden divide-y divide-brand-text/8">
+            <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
-              {/* ── Lead Strengths ── */}
-              <div className="px-6 py-5">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Lead Strengths to Emphasize</p>
-                  <CopyButton getText={() => result.lead_strengths.map((s) => `• [${s.match_type ?? ""}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")} />
-                </div>
-                <div className="space-y-3">
-                  {result.lead_strengths.map((s, i) => {
-                    const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
-                    return (
-                      <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                        <div className="flex items-center gap-2">
-                          <p className="text-base font-medium text-brand-text">{s.strength}</p>
-                          {matchStyle && (
-                            <span className={`shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
-                              {s.match_type}
-                            </span>
-                          )}
-                        </div>
-                        {expandedStrengths.has(i) && (
-                          <p className="text-sm text-brand-text/40 italic leading-snug mt-1.5">{s.framing_language}</p>
-                        )}
-                        <button
-                          onClick={() => toggleStrength(i)}
-                          className="mt-1 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
-                        >
-                          {expandedStrengths.has(i) ? "Hide ↑" : "See framing →"}
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* Left column — Brief sections */}
+              <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] overflow-hidden divide-y divide-brand-text/8">
 
-              {/* ── Recruiter Concern to Preempt ── */}
-              <div className="px-6 py-5">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor">
-                    ⚑ Recruiter Concern to Preempt
-                  </p>
-                  <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
-                </div>
-                <div className="bg-status-tailor/10 rounded-2xl p-5 border border-status-tailor/40 space-y-3">
-                  <div>
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
-                      Likely concern
-                    </p>
-                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
-                  </div>
-                  <div>
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
-                      How to address it
-                    </p>
-                    <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── JD Language to Mirror ── */}
-              <div className="px-6 py-5">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">JD Language to Mirror</p>
-                  <CopyButton getText={() => result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")} />
-                </div>
-                <div className="space-y-2.5">
-                  {result.jd_language_to_mirror.map((p, i) => (
-                    <div key={i}>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                          &ldquo;{p.phrase}&rdquo;
-                        </span>
-                        <CopyButton getText={() => p.phrase} />
-                        <button
-                          onClick={() => togglePhrase(i)}
-                          className="text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
-                        >
-                          {expandedPhrases.has(i) ? "Hide ↑" : "Why →"}
-                        </button>
-                      </div>
-                      {expandedPhrases.has(i) && (
-                        <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* ── What to De-emphasize ── */}
-              <div className="px-6 py-5">
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">What to De-emphasize</p>
-                  <CopyButton getText={() => result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")} />
-                </div>
-                <div className="space-y-2.5">
-                  {result.what_to_deemphasize.map((d, i) => (
-                    <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
-                      <p className="text-base font-medium text-brand-text">{d.item}</p>
-                      <p className="text-sm text-brand-text/40 mt-0.5 leading-snug">{d.reason}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* ── Outreach Angle ── */}
-              {result.outreach_angle && (
+                {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/40">Outreach Angle</p>
-                    <CopyButton getText={() => result.outreach_angle!} />
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">Lead Strengths to Emphasize</p>
+                    <CopyButton getText={() => result.lead_strengths.map((s) => `• [${s.match_type ?? ""}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")} />
                   </div>
-                  <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
-                </div>
-              )}
-
-            </div>
-          )}
-
-          {/* Cover Letter — only shown after brief is built */}
-          {result && (
-            <>
-              {!coverLetterResult && !isGeneratingCoverLetter && (
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-1 h-4 bg-brand-accent rounded-full" />
-                  <p className="text-xs font-bold uppercase tracking-[0.08em] text-brand-accent">Start here</p>
-                </div>
-              )}
-              <ActionSection
-                title="Cover Letter"
-                description="A tailored cover letter built from the brief above."
-                buttonLabel="Draft Cover Letter"
-                onAction={handleGenerateCoverLetter}
-                isLoading={isGeneratingCoverLetter}
-                loadingMessage="Drafting your cover letter…"
-                hasResult={!!coverLetterResult}
-                error={coverLetterError}
-                noteValue={coverLetterNote}
-                onNoteChange={setCoverLetterNote}
-              >
-                {coverLetterResult && (
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cover Letter</p>
-                      <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
-                    </div>
-                    <div className="rounded-xl border border-brand-text/10 bg-[#faf9f7] p-6">
-                      <pre className="text-base text-brand-text/85 leading-relaxed whitespace-pre-wrap font-sans">
-                        {coverLetterResult.cover_letter}
-                      </pre>
-                    </div>
-                  </div>
-                )}
-              </ActionSection>
-            </>
-          )}
-
-          {/* Outreach — only shown after brief is built */}
-          {result && (
-            !result.outreach_angle ? (
-              <div className="bg-white rounded-2xl p-8 shadow text-center">
-                <p className="text-base font-semibold text-brand-text">No outreach angle in brief</p>
-                <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
-                  The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
-                </p>
-                <button
-                  onClick={handleGenerate}
-                  className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
-                >
-                  Rebuild →
-                </button>
-              </div>
-            ) : (
-              <ActionSection
-                title="Outreach Messages"
-                description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
-                buttonLabel="Draft Messages"
-                onAction={handleGenerateOutreach}
-                isLoading={isGeneratingOutreach}
-                loadingMessage="Drafting outreach messages…"
-                hasResult={!!outreachResult}
-                error={outreachError}
-                noteValue={outreachNote}
-                onNoteChange={setOutreachNote}
-              >
-                {outreachResult && (() => {
-                  // Parse email: "Subject: …\n\nBody…"
-                  const emailParts = outreachResult.email.split(/\n\n/);
-                  const emailSubject = emailParts[0] ?? "";
-                  const emailBody = emailParts.slice(1).join("\n\n");
-                  const sentenceEnd = emailBody.search(/\.\s/);
-                  const emailFirstSentence = sentenceEnd >= 0 ? emailBody.slice(0, sentenceEnd + 1) : emailBody;
-
-                  // LinkedIn: first sentence
-                  const liSentenceEnd = outreachResult.linkedin_message.search(/\.\s/);
-                  const linkedInFirstSentence = liSentenceEnd >= 0 ? outreachResult.linkedin_message.slice(0, liSentenceEnd + 1) : outreachResult.linkedin_message;
-
-                  return (
-                    <>
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cold Email</p>
-                          <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
-                        </div>
-                        <p className="text-sm font-medium text-brand-text/50 mb-1">{emailSubject}</p>
-                        {emailExpanded ? (
-                          <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
-                            {emailBody}
-                          </pre>
-                        ) : (
-                          <p className="text-base text-brand-text/80 leading-relaxed">{emailFirstSentence}{emailFirstSentence !== emailBody ? "…" : ""}</p>
-                        )}
-                        <button
-                          onClick={() => setEmailExpanded(p => !p)}
-                          className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
-                        >
-                          {emailExpanded ? "Collapse ↑" : "Read full message →"}
-                        </button>
-                      </div>
-                      <div className="border-t border-brand-text/8 pt-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">LinkedIn Message</p>
-                          <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
-                        </div>
-                        {linkedInExpanded ? (
-                          <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
-                        ) : (
-                          <p className="text-base text-brand-text/80 leading-relaxed">{linkedInFirstSentence}{linkedInFirstSentence !== outreachResult.linkedin_message ? "…" : ""}</p>
-                        )}
-                        <div className="flex items-center justify-between mt-2">
+                  <div className="space-y-3">
+                    {result.lead_strengths.map((s, i) => {
+                      const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
+                      return (
+                        <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                          <div className="flex items-center gap-2">
+                            <p className="text-base font-medium text-brand-text">{s.strength}</p>
+                            {matchStyle && (
+                              <span className={`shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
+                                {s.match_type}
+                              </span>
+                            )}
+                          </div>
+                          {expandedStrengths.has(i) && (
+                            <p className="text-sm text-brand-text/40 italic leading-snug mt-1.5">{s.framing_language}</p>
+                          )}
                           <button
-                            onClick={() => setLinkedInExpanded(p => !p)}
+                            onClick={() => toggleStrength(i)}
+                            className="mt-1 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                          >
+                            {expandedStrengths.has(i) ? "Hide ↑" : "See framing →"}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* ── Recruiter Concern to Preempt ── */}
+                <div className="px-6 py-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor">
+                      ⚑ Recruiter Concern to Preempt
+                    </p>
+                    <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
+                  </div>
+                  <div className="bg-status-tailor/10 rounded-xl p-5 border border-status-tailor/40 space-y-3">
+                    <div>
+                      <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
+                        Likely concern
+                      </p>
+                      <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.concern}</p>
+                    </div>
+                    <div>
+                      <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-status-tailor mb-1">
+                        How to address it
+                      </p>
+                      <p className="text-base text-brand-text">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── JD Language to Mirror ── */}
+                <div className="px-6 py-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">JD Language to Mirror</p>
+                    <CopyButton getText={() => result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")} />
+                  </div>
+                  <div className="space-y-2.5">
+                    {result.jd_language_to_mirror.map((p, i) => (
+                      <div key={i}>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                            &ldquo;{p.phrase}&rdquo;
+                          </span>
+                          <CopyButton getText={() => p.phrase} />
+                          <button
+                            onClick={() => togglePhrase(i)}
                             className="text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
                           >
-                            {linkedInExpanded ? "Collapse ↑" : "Read full message →"}
+                            {expandedPhrases.has(i) ? "Hide ↑" : "Why →"}
                           </button>
-                          <p className="text-xs text-brand-text/35">{outreachResult.linkedin_message.length} / 280 characters</p>
+                        </div>
+                        {expandedPhrases.has(i) && (
+                          <p className="mt-1.5 text-sm text-brand-text/40 leading-snug">{p.context}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── What to De-emphasize ── */}
+                <div className="px-6 py-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">What to De-emphasize</p>
+                    <CopyButton getText={() => result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")} />
+                  </div>
+                  <div className="space-y-2.5">
+                    {result.what_to_deemphasize.map((d, i) => (
+                      <div key={i} className="border-l-2 border-status-tailor/40 pl-3.5">
+                        <p className="text-base font-medium text-brand-text">{d.item}</p>
+                        <p className="text-sm text-brand-text/40 mt-0.5 leading-snug">{d.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Outreach Angle ── */}
+                {result.outreach_angle && (
+                  <div className="px-6 py-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">Outreach Angle</p>
+                      <CopyButton getText={() => result.outreach_angle!} />
+                    </div>
+                    <p className="text-base text-brand-text/80 leading-relaxed">{result.outreach_angle}</p>
+                  </div>
+                )}
+
+              </div>
+
+              {/* Right column — Cover Letter + Outreach + Resume Bullets */}
+              <div className="space-y-5">
+                {/* Cover Letter */}
+                {!coverLetterResult && !isGeneratingCoverLetter && (
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1 h-4 bg-brand-accent rounded-full" />
+                    <p className="text-xs font-bold uppercase tracking-[0.08em] text-brand-accent">Start here</p>
+                  </div>
+                )}
+                <ActionSection
+                  title="Cover Letter"
+                  description="A tailored cover letter built from the brief."
+                  buttonLabel="Draft Cover Letter"
+                  onAction={handleGenerateCoverLetter}
+                  isLoading={isGeneratingCoverLetter}
+                  loadingMessage="Drafting your cover letter…"
+                  hasResult={!!coverLetterResult}
+                  error={coverLetterError}
+                  noteValue={coverLetterNote}
+                  onNoteChange={setCoverLetterNote}
+                >
+                  {coverLetterResult && (
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cover Letter</p>
+                        <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
+                      </div>
+                      <div className="rounded-xl border border-brand-text/10 bg-[#faf9f7] p-6">
+                        <pre className="text-base text-brand-text/85 leading-relaxed whitespace-pre-wrap font-sans">
+                          {coverLetterResult.cover_letter}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </ActionSection>
+
+                {/* Outreach */}
+                {!result.outreach_angle ? (
+                  <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-8 text-center">
+                    <p className="text-base font-semibold text-brand-text">No outreach angle in brief</p>
+                    <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
+                      The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
+                    </p>
+                    <button
+                      onClick={handleGenerate}
+                      className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                    >
+                      Rebuild →
+                    </button>
+                  </div>
+                ) : (
+                  <ActionSection
+                    title="Outreach Messages"
+                    description="Turn the outreach angle into a ready-to-send email and LinkedIn message."
+                    buttonLabel="Draft Messages"
+                    onAction={handleGenerateOutreach}
+                    isLoading={isGeneratingOutreach}
+                    loadingMessage="Drafting outreach messages…"
+                    hasResult={!!outreachResult}
+                    error={outreachError}
+                    noteValue={outreachNote}
+                    onNoteChange={setOutreachNote}
+                  >
+                    {outreachResult && (() => {
+                      // Parse email: "Subject: …\n\nBody…"
+                      const emailParts = outreachResult.email.split(/\n\n/);
+                      const emailSubject = emailParts[0] ?? "";
+                      const emailBody = emailParts.slice(1).join("\n\n");
+                      const sentenceEnd = emailBody.search(/\.\s/);
+                      const emailFirstSentence = sentenceEnd >= 0 ? emailBody.slice(0, sentenceEnd + 1) : emailBody;
+
+                      // LinkedIn: first sentence
+                      const liSentenceEnd = outreachResult.linkedin_message.search(/\.\s/);
+                      const linkedInFirstSentence = liSentenceEnd >= 0 ? outreachResult.linkedin_message.slice(0, liSentenceEnd + 1) : outreachResult.linkedin_message;
+
+                      return (
+                        <>
+                          <div>
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">Cold Email</p>
+                              <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
+                            </div>
+                            <p className="text-sm font-medium text-brand-text/50 mb-1">{emailSubject}</p>
+                            {emailExpanded ? (
+                              <pre className="text-base text-brand-text/80 leading-relaxed whitespace-pre-wrap font-sans">
+                                {emailBody}
+                              </pre>
+                            ) : (
+                              <p className="text-base text-brand-text/80 leading-relaxed">{emailFirstSentence}{emailFirstSentence !== emailBody ? "…" : ""}</p>
+                            )}
+                            <button
+                              onClick={() => setEmailExpanded(p => !p)}
+                              className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                            >
+                              {emailExpanded ? "Collapse ↑" : "Read full message →"}
+                            </button>
+                          </div>
+                          <div className="border-t border-brand-text/8 pt-6">
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/30">LinkedIn Message</p>
+                              <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
+                            </div>
+                            {linkedInExpanded ? (
+                              <p className="text-base text-brand-text/80 leading-relaxed">{outreachResult.linkedin_message}</p>
+                            ) : (
+                              <p className="text-base text-brand-text/80 leading-relaxed">{linkedInFirstSentence}{linkedInFirstSentence !== outreachResult.linkedin_message ? "…" : ""}</p>
+                            )}
+                            <div className="flex items-center justify-between mt-2">
+                              <button
+                                onClick={() => setLinkedInExpanded(p => !p)}
+                                className="text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                              >
+                                {linkedInExpanded ? "Collapse ↑" : "Read full message →"}
+                              </button>
+                              <p className="text-xs text-brand-text/35">{outreachResult.linkedin_message.length} / 280 characters</p>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </ActionSection>
+                )}
+
+                {/* Resume Bullets */}
+                <ActionSection
+                  title="Resume Bullets"
+                  description="Get specific, copy-paste resume edits tailored to this job."
+                  buttonLabel="Suggest Updates"
+                  onAction={handleGenerateResumeUpdates}
+                  isLoading={isGeneratingResumeUpdates}
+                  loadingMessage="Generating resume suggestions. This takes about 20 seconds..."
+                  hasResult={!!resumeUpdateResult}
+                  error={resumeUpdateError}
+                >
+                  {resumeUpdateResult && (
+                    <>
+                      <div>
+                        <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
+                        <p className="text-base text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
+                      </div>
+
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <SubHeading
+                          label="Resume Bullets to Update"
+                          copyText={resumeUpdateResult.bullet_updates
+                            .map((b) => `[${b.section}]\nOriginal: ${b.original}\nSuggested: ${b.suggested}\nWhat changed: ${b.what_changed}`)
+                            .join("\n\n")}
+                        />
+                        <div className="space-y-4">
+                          {resumeUpdateResult.bullet_updates.map((b, i) => (
+                            <div key={i} className="space-y-1.5">
+                              <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
+                                {b.section}
+                              </p>
+                              <div className="rounded-xl overflow-hidden border border-brand-text/8">
+                                {/* Suggested rewrite — shown by default */}
+                                <div className="px-3.5 py-3 bg-white">
+                                  <div className="flex items-start justify-between gap-3">
+                                    <p className="text-base text-brand-text font-medium leading-snug flex-1">{b.suggested}</p>
+                                    <CopyButton getText={() => b.suggested} />
+                                  </div>
+                                  <button
+                                    onClick={() => toggleBullet(i)}
+                                    className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
+                                  >
+                                    {expandedBullets.has(i) ? "Hide original ↑" : "Compare with original →"}
+                                  </button>
+                                </div>
+                                {/* Original + What changed — collapsed by default */}
+                                {expandedBullets.has(i) && (
+                                  <>
+                                    <div className="px-3.5 py-3 bg-brand-text/4 border-t border-brand-text/8">
+                                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1.5">Original</p>
+                                      <p className="text-sm text-brand-text/55 leading-relaxed">{b.original}</p>
+                                    </div>
+                                    <div className="px-3.5 py-2.5 bg-brand-text/3 border-t border-brand-text/8">
+                                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1">What changed</p>
+                                      <p className="text-sm text-brand-text/50 leading-relaxed">{b.what_changed}</p>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <SubHeading
+                          label="Keywords to Weave In"
+                          copyText={resumeUpdateResult.keywords_to_weave_in
+                            .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
+                            .join("\n")}
+                        />
+                        <div className="space-y-3">
+                          {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
+                            <div key={i} className="flex items-start gap-3">
+                              <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
+                                {k.keyword}
+                              </span>
+                              <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </>
-                  );
-                })()}
-              </ActionSection>
-            )
-          )}
-
-          {/* Resume Bullets — only shown after brief is built */}
-          {result && (
-            <ActionSection
-              title="Resume Bullets"
-              description="Get specific, copy-paste resume edits tailored to this job."
-              buttonLabel="Suggest Updates"
-              onAction={handleGenerateResumeUpdates}
-              isLoading={isGeneratingResumeUpdates}
-              loadingMessage="Generating resume suggestions. This takes about 20 seconds..."
-              hasResult={!!resumeUpdateResult}
-              error={resumeUpdateError}
-            >
-              {resumeUpdateResult && (
-                <>
-                  <div>
-                    <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
-                    <p className="text-base text-brand-text/80 leading-relaxed">{resumeUpdateResult.summary_rewrite}</p>
-                  </div>
-
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <SubHeading
-                      label="Resume Bullets to Update"
-                      copyText={resumeUpdateResult.bullet_updates
-                        .map((b) => `[${b.section}]\nOriginal: ${b.original}\nSuggested: ${b.suggested}\nWhat changed: ${b.what_changed}`)
-                        .join("\n\n")}
-                    />
-                    <div className="space-y-4">
-                      {resumeUpdateResult.bullet_updates.map((b, i) => (
-                        <div key={i} className="space-y-1.5">
-                          <p className="text-[0.75rem] font-medium tracking-[0.06em] uppercase text-brand-text/30">
-                            {b.section}
-                          </p>
-                          <div className="rounded-xl overflow-hidden border border-brand-text/8">
-                            {/* Suggested rewrite — shown by default */}
-                            <div className="px-3.5 py-3 bg-white">
-                              <div className="flex items-start justify-between gap-3">
-                                <p className="text-base text-brand-text font-medium leading-snug flex-1">{b.suggested}</p>
-                                <CopyButton getText={() => b.suggested} />
-                              </div>
-                              <button
-                                onClick={() => toggleBullet(i)}
-                                className="mt-2 text-xs text-brand-text/35 hover:text-brand-text/60 transition-colors"
-                              >
-                                {expandedBullets.has(i) ? "Hide original ↑" : "Compare with original →"}
-                              </button>
-                            </div>
-                            {/* Original + What changed — collapsed by default */}
-                            {expandedBullets.has(i) && (
-                              <>
-                                <div className="px-3.5 py-3 bg-brand-text/4 border-t border-brand-text/8">
-                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1.5">Original</p>
-                                  <p className="text-sm text-brand-text/55 leading-relaxed">{b.original}</p>
-                                </div>
-                                <div className="px-3.5 py-2.5 bg-brand-text/3 border-t border-brand-text/8">
-                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-brand-text/30 mb-1">What changed</p>
-                                  <p className="text-sm text-brand-text/50 leading-relaxed">{b.what_changed}</p>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <SubHeading
-                      label="Keywords to Weave In"
-                      copyText={resumeUpdateResult.keywords_to_weave_in
-                        .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
-                        .join("\n")}
-                    />
-                    <div className="space-y-3">
-                      {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
-                        <div key={i} className="flex items-start gap-3">
-                          <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                            {k.keyword}
-                          </span>
-                          <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </ActionSection>
+                  )}
+                </ActionSection>
+              </div>
+            </div>
           )}
 
         </div>
@@ -1168,11 +1168,10 @@ export default function TailoringBrief({
 
       {/* ── Applied / Heard Back: Interview Prep + Company Research ── */}
       {appStage === "applied" && (
-        <div className="space-y-5">
-
-          {/* Interview Prep — requires brief */}
+        <>
+          {/* No brief yet — single centered prompt */}
           {!result ? (
-            <div className="bg-white rounded-2xl p-8 shadow text-center">
+            <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-8 text-center">
               <p className="text-base font-semibold text-brand-text">Build your prep guide first</p>
               <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for interview questions.
@@ -1185,156 +1184,160 @@ export default function TailoringBrief({
               </button>
             </div>
           ) : (
-            <ActionSection
-              title="Interview Prep"
-              description="Likely questions for this role, calibrated to your background — with suggested framing for each."
-              buttonLabel="Generate Questions"
-              onAction={handleGenerateInterviewPrep}
-              isLoading={isGeneratingInterviewPrep}
-              loadingMessage="Generating interview questions…"
-              hasResult={!!interviewPrepResult}
-              error={interviewPrepError}
-            >
-              {interviewPrepResult && (
-                <div className="space-y-3">
-                  {interviewPrepResult.questions.map((q, i) => (
-                    <div key={i} className="rounded-xl ring-1 ring-brand-text/10 overflow-hidden">
-                      <button
-                        onClick={() => setExpandedQuestions(prev => {
-                          const next = new Set(prev);
-                          if (next.has(i)) { next.delete(i); } else { next.add(i); }
-                          return next;
-                        })}
-                        className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-brand-text/2 transition-colors bg-white"
-                      >
-                        <p className="text-base font-semibold text-brand-text pr-4 leading-snug">{q.question}</p>
-                        <svg
-                          className={`shrink-0 w-4 h-4 text-brand-text/30 transition-transform ${expandedQuestions.has(i) ? "rotate-180" : ""}`}
-                          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            /* Two-column: left = interview prep, right = company research */
+            <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
+
+              {/* Left column — Interview Prep */}
+              <ActionSection
+                title="Interview Prep"
+                description="Likely questions for this role, calibrated to your background — with suggested framing for each."
+                buttonLabel="Generate Questions"
+                onAction={handleGenerateInterviewPrep}
+                isLoading={isGeneratingInterviewPrep}
+                loadingMessage="Generating interview questions…"
+                hasResult={!!interviewPrepResult}
+                error={interviewPrepError}
+              >
+                {interviewPrepResult && (
+                  <div className="space-y-3">
+                    {interviewPrepResult.questions.map((q, i) => (
+                      <div key={i} className="rounded-xl ring-1 ring-brand-text/10 overflow-hidden">
+                        <button
+                          onClick={() => setExpandedQuestions(prev => {
+                            const next = new Set(prev);
+                            if (next.has(i)) { next.delete(i); } else { next.add(i); }
+                            return next;
+                          })}
+                          className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-brand-text/2 transition-colors bg-white"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      {expandedQuestions.has(i) && (
-                        <div className="px-4 pb-4 pt-3 space-y-3 border-t border-brand-text/8 bg-white">
-                          <div>
-                            <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
-                              Why likely
-                            </p>
-                            <p className="text-base text-brand-text/60 leading-relaxed">{q.why_likely}</p>
+                          <p className="text-base font-semibold text-brand-text pr-4 leading-snug">{q.question}</p>
+                          <svg
+                            className={`shrink-0 w-4 h-4 text-brand-text/30 transition-transform ${expandedQuestions.has(i) ? "rotate-180" : ""}`}
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {expandedQuestions.has(i) && (
+                          <div className="px-4 pb-4 pt-3 space-y-3 border-t border-brand-text/8 bg-white">
+                            <div>
+                              <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
+                                Why likely
+                              </p>
+                              <p className="text-base text-brand-text/60 leading-relaxed">{q.why_likely}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
+                                Suggested approach
+                              </p>
+                              <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-xs font-medium uppercase tracking-[0.06em] text-brand-text/30 mb-1.5">
-                              Suggested approach
-                            </p>
-                            <p className="text-base text-brand-text/80 leading-relaxed">{q.suggested_approach}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </ActionSection>
-          )}
-
-          {/* Company Research — always available, no brief needed */}
-          <ActionSection
-            title="Company Research"
-            description="What we know, what we're reading into, and questions to test your hypotheses in the interview."
-            buttonLabel="Research Company"
-            onAction={handleGenerateCompanyResearch}
-            isLoading={isGeneratingCompanyResearch}
-            loadingMessage="Researching the company…"
-            hasResult={!!companyResearchResult}
-            error={companyResearchError}
-          >
-            {cr && (
-              <>
-                <div>
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
-                    <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
-                      {cr.what_we_know.sources}
-                    </span>
-                  </div>
-                  <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
-                </div>
-
-                {cr.caveat && (
-                  <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
-                    <p className="text-sm text-status-stretch leading-snug">{cr.caveat}</p>
-                  </div>
-                )}
-
-                {cr.what_we_re_reading.length > 0 && (
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <SubHeading label="What We're Reading" />
-                      <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
-                        Interpretation
-                      </span>
-                    </div>
-                    <ul className="space-y-2">
-                      {cr.what_we_re_reading.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
-                          <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {cr.culture_signals.length > 0 && (
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <SubHeading label="Culture Signals" />
-                    <ul className="space-y-1.5">
-                      {cr.culture_signals.map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
-                          <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
-                          {s}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {cr.red_flags_to_probe.length > 0 && (
-                  <div className="border-t border-brand-text/8 pt-6">
-                    <SubHeading label="Worth Probing" />
-                    <div className="space-y-3">
-                      {cr.red_flags_to_probe.map((f, i) => (
-                        <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
-                          <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
-                          <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="border-t border-brand-text/8 pt-6">
-                  <SubHeading
-                    label="Questions to Test"
-                    copyText={cr.questions_to_test
-                      .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
-                      .join("\n\n")}
-                  />
-                  <div className="space-y-4">
-                    {cr.questions_to_test.map((q, i) => (
-                      <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
-                        <p className="text-base font-medium text-brand-text">{q.question}</p>
-                        <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
+                        )}
                       </div>
                     ))}
                   </div>
-                </div>
-              </>
-            )}
-          </ActionSection>
+                )}
+              </ActionSection>
 
-        </div>
+              {/* Right column — Company Research */}
+              <ActionSection
+                title="Company Research"
+                description="What we know, what we're reading into, and questions to test your hypotheses in the interview."
+                buttonLabel="Research Company"
+                onAction={handleGenerateCompanyResearch}
+                isLoading={isGeneratingCompanyResearch}
+                loadingMessage="Researching the company…"
+                hasResult={!!companyResearchResult}
+                error={companyResearchError}
+              >
+                {cr && (
+                  <>
+                    <div>
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
+                        <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
+                          {cr.what_we_know.sources}
+                        </span>
+                      </div>
+                      <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
+                    </div>
+
+                    {cr.caveat && (
+                      <div className="rounded-xl bg-status-stretch/8 ring-1 ring-status-stretch/20 px-4 py-3">
+                        <p className="text-sm text-status-stretch leading-snug">{cr.caveat}</p>
+                      </div>
+                    )}
+
+                    {cr.what_we_re_reading.length > 0 && (
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <SubHeading label="What We're Reading" />
+                          <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
+                            Interpretation
+                          </span>
+                        </div>
+                        <ul className="space-y-2">
+                          {cr.what_we_re_reading.map((item, i) => (
+                            <li key={i} className="flex items-start gap-2 text-base text-brand-text/60 italic leading-relaxed">
+                              <span className="mt-2 w-1 h-1 rounded-full bg-brand-text/20 shrink-0" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {cr.culture_signals.length > 0 && (
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <SubHeading label="Culture Signals" />
+                        <ul className="space-y-1.5">
+                          {cr.culture_signals.map((s, i) => (
+                            <li key={i} className="flex items-start gap-2 text-base text-brand-text/70">
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-brand-text/30 shrink-0" />
+                              {s}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {cr.red_flags_to_probe.length > 0 && (
+                      <div className="border-t border-brand-text/8 pt-6">
+                        <SubHeading label="Worth Probing" />
+                        <div className="space-y-3">
+                          {cr.red_flags_to_probe.map((f, i) => (
+                            <div key={i} className="rounded-xl bg-status-stretch/6 ring-1 ring-status-stretch/15 px-4 py-3 space-y-1">
+                              <p className="text-sm font-medium text-status-stretch">{f.flag}</p>
+                              <p className="text-sm text-brand-text/50">{f.how_to_probe}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="border-t border-brand-text/8 pt-6">
+                      <SubHeading
+                        label="Questions to Test"
+                        copyText={cr.questions_to_test
+                          .map((q) => `Q: ${q.question}\nProbing: ${q.what_youre_probing}`)
+                          .join("\n\n")}
+                      />
+                      <div className="space-y-4">
+                        {cr.questions_to_test.map((q, i) => (
+                          <div key={i} className="border-l-2 border-brand-accent/30 pl-3.5">
+                            <p className="text-base font-medium text-brand-text">{q.question}</p>
+                            <p className="text-sm text-brand-text/40 mt-0.5">{q.what_youre_probing}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </ActionSection>
+            </div>
+          )}
+        </>
       )}
 
       {/* ── Post-Interview: Follow-Up ── */}
@@ -1342,7 +1345,7 @@ export default function TailoringBrief({
         <div className="space-y-5">
 
           {!result ? (
-            <div className="bg-white rounded-2xl p-8 shadow text-center">
+            <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-8 text-center">
               <p className="text-base font-semibold text-brand-text">Build your prep guide first</p>
               <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for follow-up templates.
