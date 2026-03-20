@@ -1145,15 +1145,13 @@ export default function TailoringBrief({
                             .map((k) => `"${k.keyword}" — ${k.suggested_context}`)
                             .join("\n")}
                         />
-                        <div className="space-y-3">
-                          {resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
-                            <div key={i} className="flex items-start gap-3">
-                              <span className="shrink-0 inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12">
-                                {k.keyword}
-                              </span>
-                              <p className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>
-                            </div>
-                          ))}
+                        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: "12px 16px", alignItems: "start" }}>
+                          {resumeUpdateResult.keywords_to_weave_in.flatMap((k, i) => [
+                            <span key={`pill-${i}`} className="inline-block bg-brand-text/5 text-brand-text text-base font-medium px-3 py-1 rounded-lg ring-1 ring-brand-text/12 justify-self-start">
+                              {k.keyword}
+                            </span>,
+                            <p key={`desc-${i}`} className="text-base text-brand-text/50 leading-snug mt-1">{k.suggested_context}</p>,
+                          ])}
                         </div>
                       </div>
                     </>
