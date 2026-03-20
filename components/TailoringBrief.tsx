@@ -1269,11 +1269,8 @@ export default function TailoringBrief({
 
                     {cr.what_we_re_reading.length > 0 && (
                       <div className="border-t border-brand-text/8 pt-6">
-                        <div className="flex items-center gap-2 mb-3">
+                        <div className="mb-3">
                           <SubHeading label="What We're Reading" />
-                          <span className="text-[0.65rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-accent/8 text-brand-accent/70">
-                            Interpretation
-                          </span>
                         </div>
                         <ul className="space-y-2">
                           {cr.what_we_re_reading.map((item, i) => (
