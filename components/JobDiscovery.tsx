@@ -81,7 +81,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
       />
 
       {/* Search buttons — equal visual weight */}
-      <div className="flex items-center gap-2 pt-1 border-t border-brand-text/8">
+      <div className="flex items-center gap-2 pt-1">
         <a
           href={buildGoogleUrl(clusterName, modifier)}
           target="_blank"
