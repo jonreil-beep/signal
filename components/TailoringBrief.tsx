@@ -1252,11 +1252,11 @@ export default function TailoringBrief({
                 {cr && (
                   <>
                     <div>
-                      <div className="flex items-center justify-between gap-3 mb-2">
+                      <div className="mb-2">
                         <p className="text-base font-semibold text-brand-text">{cr.company_name}</p>
-                        <span className="shrink-0 text-[0.7rem] font-medium uppercase tracking-[0.07em] px-2 py-0.5 rounded-full bg-brand-text/6 text-brand-text/40">
+                        <p className="text-[0.7rem] font-medium uppercase tracking-[0.07em] text-brand-text/40 mt-0.5" style={{ whiteSpace: "normal" }}>
                           {cr.what_we_know.sources}
-                        </span>
+                        </p>
                       </div>
                       <p className="text-base text-brand-text/70 leading-relaxed">{cr.what_we_know.summary}</p>
                     </div>
