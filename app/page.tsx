@@ -772,7 +772,7 @@ export default function Home() {
           <div className="landing-gradient-spinner" aria-hidden="true" />
           <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
             <div className="mb-10">
-              <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
+              <h1 className="text-5xl font-bold text-white tracking-[0.025em]"><SignalWordmark /></h1>
               <p className="text-sm text-white/40 mt-2">Smarter search for experienced professionals</p>
             </div>
             <p className="text-2xl text-white/80 leading-relaxed mb-10">
@@ -811,7 +811,7 @@ export default function Home() {
         <div className="landing-gradient-spinner" aria-hidden="true" />
         <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
           <div className="mb-12">
-            <h1 className="text-5xl font-bold text-white tracking-tight"><SignalWordmark /></h1>
+            <h1 className="text-5xl font-bold text-white tracking-[0.025em]"><SignalWordmark /></h1>
             <p className="text-sm text-white/40 mt-2">Smarter search for experienced professionals</p>
           </div>
           <p className="text-3xl font-medium text-white/80 leading-snug mb-5">

@@ -136,7 +136,7 @@ export default function AppShell({
         <div className="pt-7 pb-8 px-6">
           <button
             onClick={onLogoClick}
-            className="text-xl font-bold text-white tracking-tight text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
+            className="text-xl font-bold text-white tracking-[0.025em] text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/25 focus-visible:outline-offset-2 rounded"
           >
             <SignalWordmark />
           </button>
@@ -213,7 +213,7 @@ export default function AppShell({
           <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col shadow-2xl" style={{ background: "#0e2035" }}>
             {/* Wordmark + close */}
             <div className="pt-7 pb-8 px-6 flex items-center justify-between">
-              <span className="text-xl font-bold text-white tracking-tight">
+              <span className="text-xl font-bold text-white tracking-[0.025em]">
                 <SignalWordmark />
               </span>
               <button

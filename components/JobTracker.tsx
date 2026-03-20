@@ -163,9 +163,9 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 text-sm font-bold text-brand-accent hover:text-brand-accent/70 transition-colors whitespace-nowrap"
+            className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors whitespace-nowrap"
           >
-            View Prep →
+            Go to Prep →
           </button>
         )}
       </div>
