@@ -1251,12 +1251,22 @@ export default function Home() {
                       onRename={handleRenameJob}
                       className="text-2xl font-bold"
                     />
-                    <button
-                      onClick={handleJobFitReset}
-                      className="shrink-0 px-4 py-2 bg-brand-text/8 text-brand-text/60 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors whitespace-nowrap"
-                    >
-                      + Score another job
-                    </button>
+                    <div className="flex items-center gap-3 shrink-0">
+                      {jobFitResult && (
+                        <button
+                          onClick={() => setActiveTab("tailoring-brief")}
+                          className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors whitespace-nowrap"
+                        >
+                          Go to Prep →
+                        </button>
+                      )}
+                      <button
+                        onClick={handleJobFitReset}
+                        className="px-4 py-2 bg-brand-text/8 text-brand-text/60 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors whitespace-nowrap"
+                      >
+                        + Score another job
+                      </button>
+                    </div>
                   </div>
                 )}
                 <JobFitScorer
