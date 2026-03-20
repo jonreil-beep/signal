@@ -214,15 +214,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     {/* Sticky summary bar — only when a result exists */}
     {result && recStyle && (
       <div
-        className="sticky top-0 z-10 -mx-6 md:-mx-8 lg:-mx-12 px-6 py-3 flex items-center gap-4"
+        className="sticky top-0 z-10 -mx-6 md:-mx-8 lg:-mx-12 px-6 py-2 flex items-center gap-4"
         style={{ background: "#F8F7F4", borderBottom: "1px solid rgba(26,26,26,0.1)" }}
       >
         <p className="flex-1 min-w-0 text-base font-semibold text-brand-text truncate">
           {jobTitle}
         </p>
-        <span className={`shrink-0 px-3 py-1 rounded-lg text-sm font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
-          {result.recommendation}
-        </span>
         <button
           onClick={onGoToTailoringBrief}
           className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
