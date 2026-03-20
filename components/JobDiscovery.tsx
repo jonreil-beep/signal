@@ -101,10 +101,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
       </div>
 
       {/* X-Ray ATS buttons */}
-      <div className="mt-2 space-y-1.5">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-brand-text/30">
-          X-Ray ATS Platforms
-        </p>
+      <div className="mt-2">
         <div className="flex items-center gap-2 flex-wrap">
           {ATS_PLATFORMS.map((ats) => (
             <a

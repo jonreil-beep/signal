@@ -951,6 +951,9 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
+            <div className="mb-7">
+              <h2 className="text-lg font-semibold text-brand-text">Profile</h2>
+            </div>
 
             {/* No profile yet: onboarding header + uploader */}
             {!profileText && (
@@ -1289,10 +1292,15 @@ export default function Home() {
 
         {/* ── Discover tab ── */}
         {activeTab === "discover" && (
-          <JobDiscovery
-            clusterResult={clusterResult}
-            onGoToProfile={() => setActiveTab("profile")}
-          />
+          <div>
+            <div className="mb-7">
+              <h2 className="text-lg font-semibold text-brand-text">Discover</h2>
+            </div>
+            <JobDiscovery
+              clusterResult={clusterResult}
+              onGoToProfile={() => setActiveTab("profile")}
+            />
+          </div>
         )}
 
         {/* ── Prep tab ── */}
