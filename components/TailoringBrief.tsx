@@ -88,7 +88,7 @@ function PrimaryCopyButton({ getText, label = "Copy" }: { getText: () => string;
   return (
     <button
       onClick={handleCopy}
-      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[14px] font-medium transition-colors ${
+      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[14px] font-[500] transition-colors ${
         copied
           ? "bg-status-apply/10 text-status-apply"
           : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB] hover:text-[#374151]"
@@ -124,7 +124,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+    <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
       <div className="flex items-center justify-between mb-4">
         <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280]">{title}</p>
         <CopyButton getText={() => copyText} />
@@ -163,7 +163,7 @@ function ActionSection({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`${bgClass} rounded-xl border border-[#E5E7EB] overflow-hidden`}>
+    <div className={`${bgClass} rounded-xl overflow-hidden`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
         <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#111827]">{title}</p>
@@ -336,7 +336,7 @@ export default function TailoringBrief({
         <p className="text-[14px] text-[#9CA3AF] mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
         >
           Go to Profile →
         </button>
@@ -353,7 +353,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -736,8 +736,8 @@ export default function TailoringBrief({
             onClick={() => setAppStage(stage.id)}
             className={`flex-1 rounded-[10px] px-4 py-3 text-center text-[15px] transition-all duration-150 focus:outline-none focus:ring-0 ${
               appStage === stage.id
-                ? "bg-white font-semibold text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
-                : "font-medium text-[#9CA3AF] hover:bg-white/50 hover:text-[#6B7280]"
+                ? "bg-white font-[500] text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+                : "font-[400] text-[#9CA3AF] hover:bg-white/50 hover:text-[#6B7280]"
             }`}
           >
             {stage.label}
@@ -747,11 +747,11 @@ export default function TailoringBrief({
 
       {/* ── Honest Take — always visible when brief is built, across all stages ── */}
       {result?.honest_take && (
-        <div className="rounded-xl bg-white border border-[#E5E7EB] border-l-[3px] border-l-[#111827] p-6">
+        <div className="rounded-xl bg-white border-l-[3px] border-l-[#111827] p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
             Honest Take
           </p>
-          <p className="text-[15px] font-semibold text-[#111827] leading-[1.4]">{result.honest_take}</p>
+          <p className="text-[15px] font-[500] text-[#111827] leading-[1.4]">{result.honest_take}</p>
         </div>
       )}
 
@@ -778,7 +778,7 @@ export default function TailoringBrief({
                 {hasAnyContent && (
                   <button
                     onClick={handleExport}
-                    className="flex items-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#6B7280] text-[14px] font-[500] rounded-lg hover:border-[#9CA3AF] hover:text-[#374151] transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#6B7280] text-[14px] font-[500] rounded-full hover:border-[#9CA3AF] hover:text-[#374151] transition-colors"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -788,7 +788,7 @@ export default function TailoringBrief({
                 )}
                 <button
                   onClick={handleGenerate}
-                  className="px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+                  className="px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
                 >
                   {result ? "Rebuild" : "Build Prep Guide"}
                 </button>
@@ -822,7 +822,7 @@ export default function TailoringBrief({
 
           {/* Brief results */}
           {!result && !isGenerating && (
-            <div className="bg-white rounded-xl border border-[#E5E7EB] p-8 text-center">
+            <div className="bg-white rounded-xl p-8 text-center" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <p className="text-[14px] font-[500] text-[#111827]">No brief yet</p>
               <p className="text-[14px] text-[#9CA3AF] mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
             </div>
@@ -833,7 +833,7 @@ export default function TailoringBrief({
             <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
               {/* Left column — Brief sections */}
-              <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden divide-y divide-[#E5E7EB]">
+              <div className="bg-white rounded-xl overflow-hidden divide-y divide-[#E5E7EB]" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
 
                 {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
@@ -849,7 +849,7 @@ export default function TailoringBrief({
                           <div className="flex items-center gap-2">
                             <p className="text-[14px] font-[500] text-[#111827]">{s.strength}</p>
                             {matchStyle && (
-                              <span className={`shrink-0 text-[0.65rem] font-semibold uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
+                              <span className={`shrink-0 text-[0.65rem] font-[500] uppercase tracking-[0.06em] px-2 py-0.5 rounded-full ${matchStyle}`}>
                                 {s.match_type}
                               </span>
                             )}
@@ -957,7 +957,7 @@ export default function TailoringBrief({
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-1 h-4 bg-[#2E4057] rounded-full" />
-                    <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#2E4057]">Start here</p>
+                    <p className="text-xs font-[500] uppercase tracking-[0.08em] text-[#2E4057]">Start here</p>
                   </div>
                 )}
                 <ActionSection
@@ -989,14 +989,14 @@ export default function TailoringBrief({
 
                 {/* Outreach */}
                 {!result.outreach_angle ? (
-                  <div className="bg-white rounded-xl border border-[#E5E7EB] p-8 text-center">
+                  <div className="bg-white rounded-xl p-8 text-center" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                     <p className="text-[14px] font-[500] text-[#111827]">No outreach angle in brief</p>
                     <p className="text-[14px] text-[#9CA3AF] mt-1 max-w-xs mx-auto">
                       The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
                     </p>
                     <button
                       onClick={handleGenerate}
-                      className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+                      className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
                     >
                       Rebuild →
                     </button>
@@ -1123,11 +1123,11 @@ export default function TailoringBrief({
                                 {expandedBullets.has(i) && (
                                   <>
                                     <div className="px-3.5 py-3 bg-[#F9FAFB] border-t border-[#E5E7EB]">
-                                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-[#9CA3AF] mb-1.5">Original</p>
+                                      <p className="text-[0.7rem] font-[500] uppercase tracking-[0.07em] text-[#9CA3AF] mb-1.5">Original</p>
                                       <p className="text-[13px] text-[#6B7280] leading-relaxed">{b.original}</p>
                                     </div>
                                     <div className="px-3.5 py-2.5 bg-[#F9FAFB] border-t border-[#E5E7EB]">
-                                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-[#9CA3AF] mb-1">What changed</p>
+                                      <p className="text-[0.7rem] font-[500] uppercase tracking-[0.07em] text-[#9CA3AF] mb-1">What changed</p>
                                       <p className="text-[13px] text-[#6B7280] leading-relaxed">{b.what_changed}</p>
                                     </div>
                                   </>
@@ -1169,14 +1169,14 @@ export default function TailoringBrief({
         <>
           {/* No brief yet — single centered prompt */}
           {!result ? (
-            <div className="bg-white rounded-xl border border-[#E5E7EB] p-8 text-center">
+            <div className="bg-white rounded-xl p-8 text-center" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <p className="text-[14px] font-[500] text-[#111827]">Build your prep guide first</p>
               <p className="text-[14px] text-[#9CA3AF] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for interview questions.
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>
@@ -1253,7 +1253,7 @@ export default function TailoringBrief({
                   <>
                     <div>
                       <div className="mb-2">
-                        <p className="text-[14px] font-semibold text-[#111827]">{cr.company_name}</p>
+                        <p className="text-[14px] font-[500] text-[#111827]">{cr.company_name}</p>
                         <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mt-0.5" style={{ whiteSpace: "normal" }}>
                           {cr.what_we_know.sources}
                         </p>
@@ -1340,14 +1340,14 @@ export default function TailoringBrief({
         <div className="space-y-5">
 
           {!result ? (
-            <div className="bg-white rounded-xl border border-[#E5E7EB] p-8 text-center">
+            <div className="bg-white rounded-xl p-8 text-center" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <p className="text-[14px] font-[500] text-[#111827]">Build your prep guide first</p>
               <p className="text-[14px] text-[#9CA3AF] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for follow-up templates.
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>

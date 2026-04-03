@@ -952,14 +952,14 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">Profile</h2>
+              <h2 className="text-lg font-[500] text-brand-text">Profile</h2>
             </div>
 
             {/* No profile yet: onboarding header + uploader */}
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="text-lg font-semibold text-brand-text">Step 1 — Clarify your positioning</h2>
+                  <h2 className="text-lg font-[500] text-brand-text">Step 1 — Clarify your positioning</h2>
                   <p className="text-base text-brand-text/50 mt-1">
                     Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
@@ -972,7 +972,7 @@ export default function Home() {
             {profileText && !editingProfile && (
               <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-xl border border-[rgba(26,26,26,0.12)] mb-6">
                 <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
-                  <span className="font-semibold text-brand-text">Your profile</span>
+                  <span className="font-[500] text-brand-text">Your profile</span>
                   <span className="text-brand-text/20">·</span>
                   <span className="text-brand-text/50">
                     {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
@@ -1000,7 +1000,7 @@ export default function Home() {
                   {!clusterResult && !isAnalyzing && (
                     <button
                       onClick={handleAnalyze}
-                      className="text-sm font-semibold text-brand-accent hover:text-brand-accent/70 transition-colors"
+                      className="text-sm font-[500] text-brand-accent hover:text-brand-accent/70 transition-colors"
                     >
                       Analyze →
                     </button>
@@ -1023,7 +1023,7 @@ export default function Home() {
                   <div className="rounded-xl bg-white p-5 border border-[rgba(26,26,26,0.12)]">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-base font-semibold text-brand-text">
+                        <p className="text-base font-[500] text-brand-text">
                           {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
                         </p>
                         <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
@@ -1100,7 +1100,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-2">
                   <button
                     onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-semibold rounded-2xl sm:rounded-full bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
+                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
                   >
                     Save &amp; Reanalyze
                   </button>
@@ -1137,7 +1137,7 @@ export default function Home() {
                   <p className="text-xs font-medium uppercase tracking-[0.06em] text-white/35 mb-2">
                     Your Recommended LinkedIn Headline
                   </p>
-                  <p className="text-xl font-semibold text-white leading-[1.4]">
+                  <p className="text-xl font-[500] text-white leading-[1.4]">
                     {clusterResult.recommended_headline}
                   </p>
                 </div>
@@ -1170,7 +1170,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-[500] rounded-xl hover:bg-brand-accent/90 transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1221,7 +1221,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1244,7 +1244,7 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-lg font-semibold text-brand-text">Score a Job</h2>
+                  <h2 className="text-lg font-[500] text-brand-text">Score a Job</h2>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-6">
@@ -1252,13 +1252,13 @@ export default function Home() {
                       id={activeJobId}
                       label={trackedJobs.find(j => j.id === activeJobId)!.label}
                       onRename={handleRenameJob}
-                      className="text-2xl font-bold"
+                      className="text-2xl font-[500]"
                     />
                     <div className="flex items-center gap-3 shrink-0">
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors whitespace-nowrap"
+                          className="px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-full hover:bg-brand-accent/90 transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
@@ -1294,7 +1294,7 @@ export default function Home() {
         {activeTab === "discover" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">Discover</h2>
+              <h2 className="text-lg font-[500] text-brand-text">Discover</h2>
             </div>
             <JobDiscovery
               clusterResult={clusterResult}
@@ -1307,7 +1307,7 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">Prep</h2>
+              <h2 className="text-lg font-[500] text-brand-text">Prep</h2>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">
@@ -1315,7 +1315,7 @@ export default function Home() {
                   id={activeJobId}
                   label={trackedJobs.find(j => j.id === activeJobId)!.label}
                   onRename={handleRenameJob}
-                  className="text-[1.75rem] font-bold leading-tight"
+                  className="text-[1.75rem] font-[500] leading-tight"
                 />
               </div>
             )}
@@ -1350,11 +1350,11 @@ export default function Home() {
         {activeTab === "my-jobs" && (
           <div>
             <div className="flex items-center justify-between gap-4 mb-7">
-              <h2 className="text-lg font-semibold text-brand-text">My Jobs</h2>
+              <h2 className="text-lg font-[500] text-brand-text">My Jobs</h2>
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                  className="shrink-0 px-4 py-2 bg-brand-accent text-white text-sm font-[500] rounded-full hover:bg-brand-accent/90 transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1394,11 +1394,11 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="text-base font-semibold text-brand-text">{message}</p>
+      <p className="text-base font-[500] text-brand-text">{message}</p>
       <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-full hover:bg-brand-accent/90 transition-colors"
       >
         {action} →
       </button>
@@ -1427,7 +1427,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
         <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
       </div>
       {/* Headline text */}
-      <p className="text-base font-semibold text-brand-text leading-snug mb-2">{headline.text}</p>
+      <p className="text-base font-[500] text-brand-text leading-snug mb-2">{headline.text}</p>
       {/* Best for */}
       <p className="text-sm text-brand-text/45 leading-snug mb-3">{headline.best_for}</p>
       {/* Copy button */}

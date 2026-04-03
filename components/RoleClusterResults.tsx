@@ -71,13 +71,13 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+              <div key={i} className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <h4 className="text-base font-semibold text-[#111827] leading-snug">{cluster.name}</h4>
+                  <h4 className="text-base font-[500] text-[#111827] leading-snug">{cluster.name}</h4>
                   <div className="flex items-center gap-2 shrink-0">
                     {rec && (
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${rec.pill}`}>
+                      <span className={`text-xs font-[500] px-2.5 py-1 rounded-full ${rec.pill}`}>
                         {rec.label}
                       </span>
                     )}
@@ -125,7 +125,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Right column — Strengths + Risks + optional extra */}
       <div className="space-y-3">
-        <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+        <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Core Strengths
           </p>
@@ -139,7 +139,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+        <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Positioning Risks
           </p>

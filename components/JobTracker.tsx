@@ -109,7 +109,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div className="group relative bg-white rounded-xl border border-[#E5E7EB] px-6 pt-5 pb-5 hover:border-[#D1D5DB] transition-all">
+    <div className="group relative bg-white rounded-xl px-6 pt-5 pb-5 transition-all" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -126,12 +126,12 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
                 if (e.key === "Enter") commitLabel();
                 if (e.key === "Escape") { setLabelValue(job.label); setEditingLabel(false); }
               }}
-              className="text-base font-semibold text-[#111827] bg-transparent border-b border-[#D1D5DB] outline-none w-full leading-snug focus:ring-0"
+              className="text-[15px] font-[500] text-[#111827] bg-transparent border-b border-[#D1D5DB] outline-none w-full leading-snug focus:ring-0"
             />
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="text-base font-semibold text-[#111827] hover:text-[#2E4057] transition-colors leading-snug truncate text-left"
+              className="text-[15px] font-[500] text-[#111827] hover:text-[#2E4057] transition-colors leading-snug truncate text-left"
             >
               {job.label}
             </button>
@@ -156,14 +156,14 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         {isScoreStale ? (
           <button
             onClick={() => onSelectJob(job, "job-fit")}
-            className="shrink-0 text-sm font-semibold text-[#C4622D] hover:text-[#C4622D]/70 transition-colors whitespace-nowrap"
+            className="shrink-0 text-sm font-[500] text-[#C4622D] hover:text-[#C4622D]/70 transition-colors whitespace-nowrap"
           >
             Re-score →
           </button>
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] transition-colors whitespace-nowrap"
+            className="shrink-0 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors whitespace-nowrap"
           >
             Go to Prep →
           </button>
@@ -189,7 +189,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             <select
               value={job.applicationStatus}
               onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className={`text-[12px] font-medium pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#E5E7EB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#D1D5DB] ${statusStyle.bg} ${statusStyle.text}`}
+              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#2E4057] ${statusStyle.bg} ${statusStyle.text}`}
             >
               {APPLICATION_STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -364,16 +364,16 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               done: false,
             },
           ].map(({ step, title, body, done }) => (
-            <div key={step} className={`rounded-xl border border-[#E5E7EB] p-5 ${done ? "bg-[rgba(45,106,79,0.06)]" : "bg-white"}`}>
+            <div key={step} className={`rounded-xl p-5 ${done ? "bg-[rgba(45,106,79,0.06)]" : "bg-white"}`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <div className="flex items-center gap-2.5 mb-3">
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${done ? "bg-[#2D6A4F] text-white" : "bg-[#111827] text-white"}`}>
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#2D6A4F] text-white" : "bg-[#111827] text-white"}`}>
                   {done ? (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                       <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ) : step}
                 </span>
-                <p className={`text-sm font-semibold ${done ? "text-[#2D6A4F]" : "text-[#111827]"}`}>{title}</p>
+                <p className={`text-sm font-[500] ${done ? "text-[#2D6A4F]" : "text-[#111827]"}`}>{title}</p>
               </div>
               <p className="text-sm text-[#6B7280] leading-relaxed">{body}</p>
             </div>
@@ -386,7 +386,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
             >
               Add your profile
             </button>
@@ -396,7 +396,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
             >
               Score a job
             </button>
@@ -439,7 +439,8 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs..."
-          className="w-full pl-9 pr-4 py-2 rounded-lg bg-white border border-[#D1D5DB] text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-0 focus:border-[#2E4057] transition-colors"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2E4057] transition-colors"
+          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}
         />
         {searchQuery && (
           <button
@@ -464,7 +465,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`text-[13px] font-medium px-3 py-1 rounded-full transition-all ${
+              className={`text-[13px] font-[400] px-3 py-1 rounded-full transition-all ${
                 isActive
                   ? s === "All"
                     ? "bg-[#F3F4F6] text-[#111827] border border-[#D1D5DB]"
@@ -488,7 +489,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <button
               key={s}
               onClick={() => setSortBy(s)}
-              className={`px-3 py-1 rounded-md text-[13px] font-medium transition-all ${
+              className={`px-3 py-1 rounded-md text-[13px] font-[400] transition-all ${
                 sortBy === s ? "bg-[#F3F4F6] text-[#111827] border border-[#D1D5DB]" : "text-[#9CA3AF] hover:text-[#6B7280]"
               }`}
             >
@@ -535,14 +536,14 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           {!isFiltered && (
             <button
               onClick={onScoreNewJob}
-              className="w-full py-4 rounded-xl border-2 border-dashed border-[#D1D5DB] text-[14px] font-medium text-[#9CA3AF] hover:border-[#6B7280] hover:text-[#6B7280] transition-colors"
+              className="w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-[#D1D5DB] hover:text-[#6B7280] transition-colors"
             >
               Score a job →
             </button>
           )}
         </div>
       ) : (
-        <div className="py-8 text-center bg-white rounded-xl border border-[#E5E7EB]">
+        <div className="py-8 text-center bg-white rounded-xl" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[14px] text-[#9CA3AF]">No jobs match your filters.</p>
           <button
             onClick={clearFilters}

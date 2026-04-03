@@ -62,10 +62,10 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
   const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-[rgba(136,136,136,0.10)] text-[#888888]";
 
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 space-y-4">
+    <div className="bg-white rounded-xl p-6 space-y-4" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[16px] font-[600] text-[#111827] leading-snug">{clusterName}</p>
+        <p className="text-[16px] font-[500] text-[#111827] leading-snug">{clusterName}</p>
         <span className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${confStyle}`}>
           {confidence}
         </span>
@@ -77,7 +77,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
         value={modifier}
         onChange={(e) => setModifier(e.target.value)}
         placeholder="Add a city or industry (optional)"
-        className="w-full border border-[#D1D5DB] rounded-lg px-3 py-2 text-[14px] bg-white focus:outline-none focus:border-[#2E4057] placeholder:text-[#9CA3AF] transition-colors"
+        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#2E4057] placeholder:text-[#9CA3AF] transition-colors"
       />
 
       {/* Search buttons — equal visual weight */}
@@ -86,7 +86,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
           href={buildGoogleUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-lg hover:bg-[#F9FAFB] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
         >
           Search Google →
         </a>
@@ -94,7 +94,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
           href={buildLinkedInUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-lg hover:bg-[#F9FAFB] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
         >
           Search LinkedIn →
         </a>
@@ -109,7 +109,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
               href={buildXRayUrl(ats.domain, clusterName, modifier)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center px-3 py-1.5 border border-[#D1D5DB] text-[#374151] text-[13px] font-[500] rounded-lg hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center justify-center px-3 py-1.5 border border-[#D1D5DB] text-[#374151] text-[13px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
             >
               {ats.label}
             </a>
@@ -131,7 +131,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
         >
           Go to Profile →
         </button>

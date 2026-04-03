@@ -195,7 +195,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
           <button
             onClick={handleConfirm}
             disabled={confirmed}
-            className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all ${
+            className={`px-5 py-2 rounded-full text-[14px] font-[500] transition-all ${
               confirmed
                 ? "bg-[#2D6A4F] text-white cursor-default"
                 : "bg-[#2E4057] text-white hover:bg-[#243445]"

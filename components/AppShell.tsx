@@ -61,12 +61,12 @@ export default function AppShell({
         key={item.id}
         onClick={() => handleNav(item.id)}
         title={!showLabel ? item.label : undefined}
-        className={`w-full flex items-center text-[14px] font-medium rounded-lg transition-colors text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 ${
+        className={`w-full flex items-center text-[14px] rounded-lg transition-colors text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 ${
           showLabel ? "gap-3 px-3 py-2" : "justify-center px-0 py-2.5"
         } ${
           isActive
-            ? "text-[#111827] bg-[#F3F4F6]"
-            : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F9FAFB]"
+            ? "text-[#111827] bg-[#F3F4F6] font-[500]"
+            : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F9FAFB] font-[400]"
         }`}
         style={showLabel ? {} : { width: "48px", margin: "0 auto" }}
       >
@@ -79,7 +79,7 @@ export default function AppShell({
           <span className="flex-1">{item.label}</span>
         )}
         {showLabel && item.id === "my-jobs" && jobCount > 0 && (
-          <span className="min-w-[20px] h-5 flex items-center justify-center text-[11px] font-semibold bg-[#F3F4F6] text-[#6B7280] px-1.5 rounded-full">
+          <span className="min-w-[20px] h-5 flex items-center justify-center text-[11px] font-[500] bg-[#F3F4F6] text-[#6B7280] px-1.5 rounded-full">
             {jobCount}
           </span>
         )}
@@ -92,7 +92,7 @@ export default function AppShell({
     return (
       <button
         onClick={handleScoreJob}
-        className={`w-full bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 ${
+        className={`w-full bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 ${
           compact ? "flex items-center justify-center p-2.5" : "px-4 py-[10px]"
         }`}
       >
@@ -120,7 +120,7 @@ export default function AppShell({
   }
 
   return (
-    <div className="min-h-screen flex bg-[#F9FAFB]">
+    <div className="min-h-screen flex bg-white">
 
       {/* ═══════════════════════════════════════════════════════════════
           DESKTOP SIDEBAR (lg: 1024px+) — 240px, white, fixed
@@ -166,7 +166,7 @@ export default function AppShell({
         <div className="pt-5 pb-4">
           <button
             onClick={onLogoClick}
-            className="text-xl font-bold text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 rounded"
+            className="text-xl font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 rounded"
           >
             S
           </button>
@@ -191,7 +191,7 @@ export default function AppShell({
       <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-white border-b border-[#E5E7EB]">
         <button
           onClick={onLogoClick}
-          className="text-lg font-bold text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 rounded"
+          className="text-lg font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 rounded"
         >
           S
         </button>
@@ -258,7 +258,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MAIN CONTENT — flat content area on #F9FAFB background
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 md:pl-[72px] lg:pl-60 bg-[#F9FAFB]">
+      <div className="flex-1 md:pl-[72px] lg:pl-60 bg-white">
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 
