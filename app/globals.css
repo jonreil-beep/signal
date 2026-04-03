@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  /* Legacy CSS variables — kept for landing page compatibility */
   --color-bg:             #F8F7F4;
   --color-text:           #1A1A1A;
   --color-accent:         #2E4057;
@@ -11,8 +14,18 @@
   --color-status-stretch: #C4622D;
   --color-status-skip:    #888888;
 
-  /* Override Tailwind's default ring color (blue) with on-brand dark */
-  --tw-ring-color: rgba(26, 26, 26, 0.2);
+  /* New design system variables */
+  --color-surface:        #F9FAFB;
+  --color-border:         #E5E7EB;
+  --color-border-strong:  #D1D5DB;
+  --color-text-primary:   #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary:  #9CA3AF;
+  --color-text-body:      #374151;
+  --color-accent-slate:   #2E4057;
+
+  /* Override Tailwind's default ring color — use brand slate */
+  --tw-ring-color: rgba(46, 64, 87, 0.3);
 }
 
 @layer base {
@@ -22,15 +35,40 @@
     scrollbar-gutter: stable;
   }
 
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #F9FAFB;
+    color: #111827;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #D1D5DB;
+    border-radius: 3px;
+  }
+
   /* Strip all browser-default blue focus outlines globally */
   *:focus {
     outline: none;
   }
 
-  /* Replace with a subtle on-brand outline only for keyboard nav */
+  /* Replace with on-brand slate focus ring for keyboard nav */
   *:focus-visible {
-    outline: 2px solid rgba(26, 26, 26, 0.2);
+    outline: 2px solid #2E4057;
     outline-offset: 2px;
+  }
+
+  /* Global transition default */
+  button, a, input, textarea, select {
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
   }
 }
 

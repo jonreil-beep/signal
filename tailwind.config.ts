@@ -8,7 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
       colors: {
+        // Legacy brand tokens — kept for landing page compatibility
         brand: {
           bg:     "#F8F7F4",
           text:   "#1A1A1A",
@@ -21,6 +25,16 @@ const config: Config = {
           stretch: "#C4622D",
           skip:    "#888888",
         },
+        // New design system tokens
+        surface:       "#F9FAFB",
+        "border-default": "#E5E7EB",
+        "border-strong":  "#D1D5DB",
+        "text-primary":   "#111827",
+        "text-secondary": "#6B7280",
+        "text-tertiary":  "#9CA3AF",
+        "text-body":      "#374151",
+        "accent-slate":      "#2E4057",
+        "accent-slate-hover": "#243445",
       },
     },
   },

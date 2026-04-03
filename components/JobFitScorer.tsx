@@ -47,7 +47,7 @@ function ScoreBar({ score }: { score: number }) {
   const barColor = score >= 7 ? "bg-status-apply" : score >= 5 ? "bg-status-tailor" : "bg-status-stretch";
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1.5 bg-brand-text/8 rounded-full overflow-hidden">
+      <div className="flex-1 h-1 bg-[#F3F4F6] rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all ${barColor}`}
           style={{ width: `${score * 10}%` }}
@@ -200,7 +200,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   }
 
   const recStyle = result
-    ? (RECOMMENDATION_STYLES[result.recommendation] ?? { bg: "bg-brand-text/6", text: "text-brand-text/60", ring: "ring-brand-text/15" })
+    ? (RECOMMENDATION_STYLES[result.recommendation] ?? { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]", ring: "ring-[#E5E7EB]" })
     : null;
 
   return (
@@ -208,13 +208,13 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
       {!result && (
         <>
           {/* Mode toggle */}
-          <div className="flex gap-1 bg-brand-text/6 rounded-xl p-1 w-fit">
+          <div className="flex gap-1 bg-[#F3F4F6] rounded-lg p-1 w-fit">
             {(["paste", "url"] as InputMode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setFetchError(""); }}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  mode === m ? "bg-white text-brand-text shadow-sm" : "text-brand-text/40 hover:text-brand-text/70"
+                className={`px-4 py-1.5 rounded-md text-[14px] font-medium transition-all ${
+                  mode === m ? "bg-white text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]" : "text-[#6B7280] hover:text-[#111827]"
                 }`}
               >
                 {m === "paste" ? "Paste JD" : "Fetch from URL"}
@@ -229,7 +229,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-brand-text/15 rounded-2xl p-4 text-base text-brand-text font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 resize-y placeholder:text-brand-text/25 transition-colors"
+              className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057] resize-y placeholder:text-[#9CA3AF] transition-colors"
             />
           )}
 
@@ -243,28 +243,28 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
                   placeholder="https://…"
-                  className="flex-1 border border-brand-text/15 rounded-xl px-4 py-2.5 text-base bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+                  className="flex-1 border border-[#D1D5DB] rounded-lg px-4 py-2.5 text-[14px] bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057] transition-colors placeholder:text-[#9CA3AF]"
                 />
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-4 py-2.5 bg-brand-accent text-white text-base font-medium rounded-2xl sm:rounded-full hover:bg-brand-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Fetch
                 </button>
               </div>
-              <p className="text-sm text-brand-text/40">
+              <p className="text-[13px] text-[#9CA3AF]">
                 Many job boards block automated fetches. Paste the text if this fails.
               </p>
 
               {isFetching && <LoadingState message="Fetching job description…" />}
 
               {fetchError && (
-                <div className="p-4 bg-status-tailor/8 rounded-xl ring-1 ring-status-tailor/20">
-                  <p className="text-base text-status-tailor">{fetchError}</p>
+                <div className="p-4 bg-[rgba(220,38,38,0.05)] rounded-lg border border-[rgba(220,38,38,0.15)]">
+                  <p className="text-[14px] text-[#DC2626]">{fetchError}</p>
                   <button
                     onClick={() => { setMode("paste"); setFetchError(""); }}
-                    className="mt-1 text-sm text-status-tailor/80 underline hover:no-underline"
+                    className="mt-1 text-[13px] text-[#DC2626] underline hover:no-underline"
                   >
                     Switch to paste mode
                   </button>
@@ -276,7 +276,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   value={jdText}
                   onChange={(e) => setJdText(e.target.value)}
                   rows={12}
-                  className="w-full border border-brand-text/8 rounded-2xl p-4 text-base text-brand-text/60 font-mono leading-relaxed bg-brand-text/3 resize-y"
+                  className="w-full border border-[#E5E7EB] rounded-lg p-4 text-[14px] text-[#6B7280] font-mono leading-relaxed bg-[#F9FAFB] resize-y"
                 />
               )}
             </div>
@@ -286,11 +286,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                className="px-4 py-2 bg-[#2E4057] text-white text-[14px] font-medium rounded-lg hover:bg-[#243445] transition-colors"
               >
                 Score This Job
               </button>
-              <button onClick={handleReset} className="text-base text-brand-text/40 hover:text-brand-text/70 transition-colors">
+              <button onClick={handleReset} className="text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors">
                 Clear
               </button>
             </div>
@@ -299,9 +299,9 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           {isScoring && <LoadingState message="Scoring job fit. This takes about 20 seconds..." />}
 
           {scoreError && !isScoring && (
-            <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-              <p className="text-base text-red-700">{scoreError}</p>
-              <button onClick={handleScore} className="mt-1 text-sm text-red-500 underline hover:no-underline">
+            <div className="p-4 bg-[rgba(220,38,38,0.05)] rounded-lg border border-[rgba(220,38,38,0.15)]">
+              <p className="text-[14px] text-[#DC2626]">{scoreError}</p>
+              <button onClick={handleScore} className="mt-1 text-[13px] text-[#DC2626] underline hover:no-underline">
                 Try again
               </button>
             </div>
@@ -315,22 +315,22 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Re-scoring in-progress banner — shown at top so it's always visible */}
           {isRescoring && (
-            <div className="flex items-center gap-3 px-4 py-3 bg-brand-accent/8 rounded-xl ring-1 ring-brand-accent/20">
-              <svg className="animate-spin shrink-0 w-4 h-4 text-brand-accent" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(46,64,87,0.06)] rounded-xl border border-[rgba(46,64,87,0.12)]">
+              <svg className="animate-spin shrink-0 w-4 h-4 text-[#2E4057]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
               </svg>
-              <p className="text-sm text-brand-text/70">Re-scoring against your updated profile…</p>
+              <p className="text-[14px] text-[#374151]">Re-scoring against your updated profile…</p>
             </div>
           )}
 
           {/* Profile staleness banner */}
           {isProfileStale && !isRescoring && (
-            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-status-stretch/8 rounded-xl ring-1 ring-status-stretch/20">
-              <p className="text-sm text-brand-text/70">Your profile was updated after this score — results may not reflect your current resume.</p>
+            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(196,98,45,0.06)] rounded-xl border border-[rgba(196,98,45,0.15)]">
+              <p className="text-[14px] text-[#374151]">Your profile was updated after this score — results may not reflect your current resume.</p>
               <button
                 onClick={handleProfileRescore}
-                className="shrink-0 text-sm font-semibold text-status-stretch hover:text-status-stretch/70 transition-colors whitespace-nowrap"
+                className="shrink-0 text-[14px] font-[500] text-[#C4622D] hover:text-[#C4622D]/70 transition-colors whitespace-nowrap"
               >
                 Re-score →
               </button>
@@ -343,28 +343,28 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             {/* Left column */}
             <div className="space-y-5">
               {/* Score + recommendation */}
-              <div className="bg-brand-text rounded-xl p-6">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40 mb-2">
+              <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+                <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-2">
                   Overall Fit
                 </p>
                 {/* Score + badge on one line */}
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className={`text-6xl font-bold tabular-nums ${scoreColor(result.overall_fit)}`}>
+                  <span className={`text-[32px] font-[600] tabular-nums ${scoreColor(result.overall_fit)}`}>
                     {result.overall_fit}
                   </span>
-                  <span className="text-2xl text-white/30 font-light">/10</span>
-                  <span className={`shrink-0 px-4 py-2 rounded-xl text-base font-semibold ring-1 ${recStyle.bg} ${recStyle.text} ${recStyle.ring}`}>
+                  <span className="text-[16px] text-[#9CA3AF]">/10</span>
+                  <span className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}>
                     {result.recommendation}
                   </span>
                 </div>
-                <p className="text-[15px] text-white/55 mt-3 leading-snug">
+                <p className="text-[14px] text-[#374151] mt-3 leading-snug">
                   {result.summary}
                 </p>
                 {/* Mismatch type pills */}
                 {result.mismatch_types?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-3">
                     {result.mismatch_types.map((t) => (
-                      <span key={t} className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/60">
+                      <span key={t} className="text-[12px] font-[500] px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280]">
                         {MISMATCH_LABELS[t]}
                       </span>
                     ))}
@@ -374,11 +374,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
               {/* Recruiter concern — shown immediately after overall fit when present */}
               {result.recruiter_concern && (
-                <div className="bg-status-tailor/10 rounded-xl p-6 border border-status-tailor/40">
-                  <p className="text-sm font-bold tracking-[0.08em] uppercase text-status-tailor mb-2">
+                <div className="bg-white rounded-xl border border-[#E5E7EB] border-l-[3px] border-l-[#A86B2D] p-6">
+                  <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#A86B2D] mb-2">
                     ⚑ Recruiter Concern to Address
                   </p>
-                  <p className="text-[1.0625rem] text-brand-text leading-relaxed">{result.recruiter_concern}</p>
+                  <p className="text-[14px] text-[#374151] leading-relaxed">{result.recruiter_concern}</p>
                 </div>
               )}
 
@@ -392,25 +392,25 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 ] as const;
                 const lowestScore = Math.min(...dims.map(([, d]) => d.score));
                 return (
-                  <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
-                    <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-4">
+                  <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+                    <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-4">
                       What Drove This Score
                     </p>
                     <div className="space-y-4">
                       {dims.map(([label, dim]) => {
                         const isWeakest = dim.score === lowestScore;
                         return (
-                          <div key={label} className={isWeakest ? "rounded-xl bg-status-stretch/5 ring-1 ring-status-stretch/15 p-3 -mx-3" : ""}>
+                          <div key={label} className={isWeakest ? "rounded-xl bg-[rgba(196,98,45,0.04)] border border-[rgba(196,98,45,0.10)] p-3 -mx-3" : ""}>
                             <div className="flex items-center gap-2 mb-1.5">
-                              <p className={`text-base font-medium ${isWeakest ? "text-brand-text" : "text-brand-text/80"}`}>{label}</p>
+                              <p className="text-[14px] font-[500] text-[#111827]">{label}</p>
                               {isWeakest && (
-                                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.07em] text-status-stretch">
+                                <span className="text-[11px] font-[600] uppercase text-[#DC2626] bg-[rgba(220,38,38,0.08)] rounded-full px-2 py-0.5">
                                   Pulling score down
                                 </span>
                               )}
                             </div>
                             <ScoreBar score={dim.score} />
-                            <p className="mt-1.5 text-base text-brand-text/45 leading-relaxed">{dim.reasoning}</p>
+                            <p className="mt-1.5 text-[13px] text-[#6B7280] leading-relaxed">{dim.reasoning}</p>
                           </div>
                         );
                       })}
@@ -422,44 +422,44 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
             {/* Right column — What you have / Missing */}
             <div className="space-y-3">
-              <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
-                <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-3">
+              <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
+                <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-3">
                   What You Have
                 </p>
                 <ul className="space-y-2">
                   {result.what_you_have.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-base text-brand-text/80">
-                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-apply" />
+                    <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#374151]">
+                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" />
                       {item}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] p-6">
+              <div className="bg-white rounded-xl border border-[#E5E7EB] p-6">
                 <div className="flex items-baseline justify-between gap-2 mb-3">
-                  <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45">
+                  <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280]">
                     What&apos;s Missing
                   </p>
-                  <p className="text-xs font-medium text-brand-text/45">Doesn&apos;t apply? Tap × to remove.</p>
+                  <p className="text-xs font-medium text-[#9CA3AF]">Doesn&apos;t apply? Tap × to remove.</p>
                 </div>
 
                 {/* Active items */}
                 {(() => {
                   const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
                   return activeItems.length === 0 && dismissedItems.length === 0 ? (
-                    <p className="text-sm text-brand-text/40 italic">All items dismissed.</p>
+                    <p className="text-[14px] text-[#9CA3AF] italic">All items dismissed.</p>
                   ) : (
                     <ul className="space-y-2">
                       {activeItems.map((item, i) => (
                         <li key={i} className="flex items-start justify-between gap-2 group">
-                          <div className="flex items-start gap-2.5 text-base text-brand-text/80">
-                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-status-stretch" />
+                          <div className="flex items-start gap-2.5 text-[14px] text-[#374151]">
+                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#C4622D]" />
                             {item}
                           </div>
                           <button
                             onClick={() => handleDismissItem(item)}
                             title="Dismiss — I actually have this"
-                            className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-brand-text/35 hover:text-status-skip hover:bg-status-skip/8 transition-colors"
+                            className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center rounded-full text-[#9CA3AF] hover:text-[#DC2626] hover:bg-[rgba(220,38,38,0.06)] transition-colors"
                           >
                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                               <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -473,13 +473,13 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
                 {/* Dismissed items — undo stays visible until re-score */}
                 {dismissedItems.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-brand-text/8 space-y-1.5">
+                  <div className="mt-3 pt-3 border-t border-[#E5E7EB] space-y-1.5">
                     {dismissedItems.map(item => (
                       <div key={item} className="flex items-center justify-between gap-3">
-                        <span className="text-sm text-brand-text/30 line-through leading-snug">{item}</span>
+                        <span className="text-[13px] text-[#9CA3AF] line-through leading-snug">{item}</span>
                         <button
                           onClick={() => handleUndoItem(item)}
-                          className="shrink-0 text-xs text-brand-accent hover:text-brand-accent/70 transition-colors font-medium"
+                          className="shrink-0 text-[13px] text-[#2E4057] hover:text-[#243445] transition-colors font-medium"
                         >
                           Undo
                         </button>
@@ -490,22 +490,22 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
                 {/* Re-score button — appears as soon as first item is dismissed */}
                 {dismissedItems.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-brand-text/8 space-y-2">
+                  <div className="mt-4 pt-4 border-t border-[#E5E7EB] space-y-2">
                     {isRescoring ? (
-                      <p className="text-sm text-brand-text/50 text-center py-1">Re-scoring…</p>
+                      <p className="text-[14px] text-[#6B7280] text-center py-1">Re-scoring…</p>
                     ) : (
                       <button
                         onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                        className="w-full px-4 py-2.5 border border-brand-accent/40 text-brand-accent text-sm font-semibold rounded-xl hover:bg-brand-accent/5 hover:border-brand-accent/70 transition-colors"
+                        className="w-full px-4 py-2 border border-[#2E4057]/40 text-[#2E4057] text-[14px] font-[500] rounded-lg hover:bg-[#2E4057]/5 transition-colors"
                       >
                         Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
                       </button>
                     )}
                     {hasPrepData && !isRescoring && (
-                      <p className="text-xs text-brand-text/30 text-center">Re-scoring will clear your existing prep guide.</p>
+                      <p className="text-xs text-[#9CA3AF] text-center">Re-scoring will clear your existing prep guide.</p>
                     )}
                     {rescoreError && !isRescoring && (
-                      <p className="text-xs text-status-skip text-center">{rescoreError}</p>
+                      <p className="text-xs text-[#888888] text-center">{rescoreError}</p>
                     )}
                   </div>
                 )}
@@ -517,19 +517,19 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           <div className="flex items-center justify-between gap-4 pt-2">
             <button
               onClick={handleReset}
-              className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+              className="text-[14px] text-[#6B7280] hover:text-[#111827] transition-colors"
             >
               ← Score another job
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="shrink-0 px-5 py-2.5 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+              className="shrink-0 px-4 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-lg hover:bg-[#243445] transition-colors"
             >
               Go to Prep →
             </button>
             <button
               onClick={onSearchSimilarRoles}
-              className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+              className="text-[14px] text-[#6B7280] hover:text-[#111827] transition-colors"
             >
               Search for similar roles →
             </button>
