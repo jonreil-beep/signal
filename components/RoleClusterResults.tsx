@@ -12,17 +12,17 @@ interface RoleClusterResultsProps {
 }
 
 const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], string> = {
-  Strong:   "bg-status-apply/10 text-status-apply ring-1 ring-status-apply/25",
-  Moderate: "bg-status-tailor/10 text-status-tailor ring-1 ring-status-tailor/25",
-  Stretch:  "bg-status-stretch/10 text-status-stretch ring-1 ring-status-stretch/25",
+  Strong:   "bg-[rgba(75,155,126,0.10)] text-[#4B9B7E] ring-1 ring-[rgba(75,155,126,0.25)]",
+  Moderate: "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A] ring-1 ring-[rgba(124,139,154,0.25)]",
+  Stretch:  "bg-[rgba(176,144,110,0.10)] text-[#B0906E] ring-1 ring-[rgba(176,144,110,0.25)]",
 };
 
 const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: string }> = {
-  "Pursue":                { pill: "bg-status-apply text-white",                                                              label: "Pursue" },
-  "Pursue Selectively":    { pill: "bg-status-tailor text-white",                                                             label: "Pursue Selectively" },
-  "Stretch — Prep Required": { pill: "bg-status-stretch text-white",                                                          label: "Stretch — Prep Required" },
-  "Avoid":                 { pill: "bg-[rgba(136,136,136,0.10)] text-[#888888] rounded-full px-2.5 py-0.5 text-[12px]",      label: "Avoid" },
-  "Reframe First":         { pill: "bg-[rgba(168,107,45,0.10)] text-[#A86B2D] rounded-full px-2.5 py-0.5 text-[12px]",       label: "Reframe First" },
+  "Pursue":                  { pill: "bg-[#4B9B7E] text-white",                                                                         label: "Pursue" },
+  "Pursue Selectively":      { pill: "bg-[#7C8B9A] text-white",                                                                         label: "Pursue Selectively" },
+  "Stretch — Prep Required": { pill: "bg-[#B0906E] text-white",                                                                         label: "Stretch — Prep Required" },
+  "Avoid":                   { pill: "bg-[rgba(163,163,163,0.10)] text-[#A3A3A3] rounded-full px-2.5 py-0.5 text-[12px]",               label: "Avoid" },
+  "Reframe First":           { pill: "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A] rounded-full px-2.5 py-0.5 text-[12px]",               label: "Reframe First" },
 };
 
 export default function RoleClusterResults({ result, resumeText, onClusterUpdate, rightColumnExtra }: RoleClusterResultsProps) {
@@ -132,7 +132,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           <ul className="space-y-2">
             {result.core_strengths.map((s, i) => (
               <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#374151] leading-relaxed">
-                <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" />
+                <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-[#4B9B7E]" />
                 {s}
               </li>
             ))}

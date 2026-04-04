@@ -23,25 +23,25 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
 ];
 
 const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string; border: string }> = {
-  "Tracking":     { bg: "bg-white",                         text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
-  "Applied":      { bg: "bg-[rgba(46,64,87,0.08)]",         text: "text-[#2E4057]",  border: "border-0" },
-  "Phone Screen": { bg: "bg-[rgba(168,107,45,0.08)]",       text: "text-[#A86B2D]",  border: "border-0" },
-  "Interview":    { bg: "bg-[rgba(45,106,79,0.08)]",        text: "text-[#2D6A4F]",  border: "border-0" },
-  "Offer":        { bg: "bg-[rgba(45,106,79,0.12)]",        text: "text-[#2D6A4F]",  border: "border-0" },
-  "Rejected":     { bg: "bg-[rgba(156,163,175,0.08)]",      text: "text-[#9CA3AF]",  border: "border-0" },
+  "Tracking":     { bg: "bg-white",                           text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
+  "Applied":      { bg: "bg-[rgba(61,90,76,0.08)]",           text: "text-[#3D5A4C]",  border: "border-0" },
+  "Phone Screen": { bg: "bg-[rgba(124,139,154,0.08)]",        text: "text-[#7C8B9A]",  border: "border-0" },
+  "Interview":    { bg: "bg-[rgba(75,155,126,0.08)]",         text: "text-[#4B9B7E]",  border: "border-0" },
+  "Offer":        { bg: "bg-[rgba(75,155,126,0.12)]",         text: "text-[#4B9B7E]",  border: "border-0" },
+  "Rejected":     { bg: "bg-[rgba(163,163,163,0.08)]",        text: "text-[#9CA3AF]",  border: "border-0" },
 };
 
 const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
-  "Apply Now":                  { bg: "bg-status-apply/10",   text: "text-status-apply",   ring: "ring-status-apply/25"   },
-  "Apply with Tailoring":       { bg: "bg-status-tailor/10",  text: "text-status-tailor",  ring: "ring-status-tailor/25"  },
-  "Stretch — Proceed Carefully":{ bg: "bg-status-stretch/10", text: "text-status-stretch", ring: "ring-status-stretch/25" },
-  "Skip":                       { bg: "bg-status-skip/10",    text: "text-status-skip",    ring: "ring-status-skip/25"    },
+  "Apply Now":                   { bg: "bg-[rgba(75,155,126,0.10)]",   text: "text-[#4B9B7E]", ring: "" },
+  "Apply with Tailoring":        { bg: "bg-[rgba(124,139,154,0.10)]",  text: "text-[#7C8B9A]", ring: "" },
+  "Stretch — Proceed Carefully": { bg: "bg-[rgba(176,144,110,0.10)]",  text: "text-[#B0906E]", ring: "" },
+  "Skip":                        { bg: "bg-[rgba(163,163,163,0.10)]",  text: "text-[#A3A3A3]", ring: "" },
 };
 
 function scoreColor(score: number) {
-  if (score >= 7) return "text-status-apply";
-  if (score >= 5) return "text-status-tailor";
-  return "text-status-stretch";
+  if (score >= 7) return "text-[#4B9B7E]";
+  if (score >= 5) return "text-[#B0906E]";
+  return "text-[#C45C5C]";
 }
 
 function formatDate(date: Date): string {
@@ -131,7 +131,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="text-[15px] font-[500] text-[#111827] hover:text-[#2E4057] transition-colors leading-snug truncate text-left"
+              className="text-[15px] font-[500] text-[#111827] hover:text-[#3D5A4C] transition-colors leading-snug truncate text-left"
             >
               {job.label}
             </button>
@@ -156,14 +156,14 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         {isScoreStale ? (
           <button
             onClick={() => onSelectJob(job, "job-fit")}
-            className="shrink-0 text-sm font-[500] text-[#C4622D] hover:text-[#C4622D]/70 transition-colors whitespace-nowrap"
+            className="shrink-0 text-sm font-[500] text-[#B0906E] hover:text-[#B0906E]/70 transition-colors whitespace-nowrap"
           >
             Re-score →
           </button>
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors whitespace-nowrap"
+            className="shrink-0 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors whitespace-nowrap"
           >
             Go to Prep →
           </button>
@@ -189,7 +189,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             <select
               value={job.applicationStatus}
               onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#2E4057] ${statusStyle.bg} ${statusStyle.text}`}
+              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#3D5A4C] ${statusStyle.bg} ${statusStyle.text}`}
             >
               {APPLICATION_STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -209,14 +209,14 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
           {job.tailoringResult && !isScoreStale && (
             <>
               <span className="text-[#9CA3AF] text-xs">·</span>
-              <span className="text-[12px] text-[#2D6A4F] font-medium">Prep ready</span>
+              <span className="text-[12px] text-[#4B9B7E] font-medium">Prep ready</span>
             </>
           )}
           {/* Profile updated */}
           {isScoreStale && (
             <>
               <span className="text-[#9CA3AF] text-xs">·</span>
-              <span className="text-[12px] text-[#C4622D] font-medium">Profile updated</span>
+              <span className="text-[12px] text-[#B0906E] font-medium">Profile updated</span>
             </>
           )}
           {/* Deadline — only shown if set */}
@@ -270,7 +270,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
                 setShowDeadlineInput(false);
               }}
               onBlur={() => setShowDeadlineInput(false)}
-              className="text-xs border border-[#D1D5DB] rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057]"
+              className="text-xs border border-[#D1D5DB] rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-[#3D5A4C]"
             />
           ) : job.deadline ? (
             <button
@@ -311,7 +311,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[14px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#2E4057] transition-colors"
+            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[14px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#3D5A4C] transition-colors"
           />
         </div>
       )}
@@ -364,16 +364,16 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               done: false,
             },
           ].map(({ step, title, body, done }) => (
-            <div key={step} className={`rounded-xl p-5 ${done ? "bg-[rgba(45,106,79,0.06)]" : "bg-white"}`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+            <div key={step} className={`rounded-xl p-5 ${done ? "bg-[rgba(75,155,126,0.06)]" : "bg-white"}`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <div className="flex items-center gap-2.5 mb-3">
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#2D6A4F] text-white" : "bg-[#111827] text-white"}`}>
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#4B9B7E] text-white" : "bg-[#111827] text-white"}`}>
                   {done ? (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                       <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ) : step}
                 </span>
-                <p className={`text-sm font-[500] ${done ? "text-[#2D6A4F]" : "text-[#111827]"}`}>{title}</p>
+                <p className={`text-sm font-[500] ${done ? "text-[#4B9B7E]" : "text-[#111827]"}`}>{title}</p>
               </div>
               <p className="text-sm text-[#6B7280] leading-relaxed">{body}</p>
             </div>
@@ -386,7 +386,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
             >
               Add your profile
             </button>
@@ -396,7 +396,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
             >
               Score a job
             </button>
@@ -439,7 +439,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs..."
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2E4057] transition-colors"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#3D5A4C] transition-colors"
           style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}
         />
         {searchQuery && (
@@ -509,7 +509,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           </p>
           <button
             onClick={clearFilters}
-            className="text-[14px] text-[#2E4057] hover:text-[#243445] transition-colors"
+            className="text-[14px] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
           >
             Clear filters
           </button>
@@ -547,7 +547,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           <p className="text-[14px] text-[#9CA3AF]">No jobs match your filters.</p>
           <button
             onClick={clearFilters}
-            className="mt-2 text-[14px] text-[#2E4057] hover:text-[#243445] transition-colors"
+            className="mt-2 text-[14px] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
           >
             Clear filters →
           </button>

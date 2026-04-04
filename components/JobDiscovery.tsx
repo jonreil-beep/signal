@@ -51,9 +51,9 @@ function buildXRayUrl(domain: string, clusterName: string, modifier: string): st
 
 // ── Confidence badge ──────────────────────────────────────────────────────────
 const CONFIDENCE_STYLES: Record<string, string> = {
-  "Strong":   "bg-[rgba(45,106,79,0.10)] text-[#2D6A4F]",
-  "Moderate": "bg-[rgba(168,107,45,0.10)] text-[#A86B2D]",
-  "Stretch":  "bg-[rgba(196,98,45,0.10)] text-[#C4622D]",
+  "Strong":   "bg-[rgba(75,155,126,0.10)] text-[#4B9B7E]",
+  "Moderate": "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A]",
+  "Stretch":  "bg-[rgba(176,144,110,0.10)] text-[#B0906E]",
 };
 
 // ── Cluster card ──────────────────────────────────────────────────────────────
@@ -77,7 +77,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
         value={modifier}
         onChange={(e) => setModifier(e.target.value)}
         placeholder="Add a city or industry (optional)"
-        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#2E4057] placeholder:text-[#9CA3AF] transition-colors"
+        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#3D5A4C] placeholder:text-[#9CA3AF] transition-colors"
       />
 
       {/* Search buttons — equal visual weight */}
@@ -131,7 +131,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
         >
           Go to Profile →
         </button>

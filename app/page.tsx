@@ -771,31 +771,27 @@ export default function Home() {
         <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
           <div className="landing-gradient-spinner" aria-hidden="true" />
           <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
-            <div className="mb-10">
-              <h1 className="text-5xl font-bold text-white tracking-[0.025em]"><SignalWordmark /></h1>
-              <p className="text-sm text-white/40 mt-2">Smarter search for experienced professionals</p>
+            <div className="mb-8">
+              <h1 className="text-[18px] font-[700] text-white tracking-[0.14em]">
+                <span className="text-[18px] font-[700] text-white tracking-[0.14em]"><SignalWordmark /></span>
+              </h1>
+              <p className="text-[16px] font-[400] text-[rgba(255,255,255,0.6)] mt-2">Smarter search for experienced professionals</p>
             </div>
-            <p className="text-2xl text-white/80 leading-relaxed mb-10">
+            <p className="text-[24px] font-[500] text-white leading-snug mb-8">
               {isNewSignup
-                ? "You're all set. Signal is ready to help you apply to fewer, better-fit roles — and show up fully prepared for each one."
-                : `Welcome back.${
-                    trackedJobs.length > 0
-                      ? ` You have ${trackedJobs.length} job${trackedJobs.length === 1 ? "" : "s"} scored and ready to act on.`
-                      : profileText
-                      ? " Your profile is saved and ready."
-                      : ""
-                  }`}
+                ? "Welcome. You're all set."
+                : `Welcome back. You have ${trackedJobs.length} job${trackedJobs.length === 1 ? "" : "s"} scored.`}
             </p>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setShowLanding(false)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#111827] text-base font-semibold rounded-full hover:bg-white/90 transition-colors"
               >
                 {isNewSignup ? "Get started →" : "Go to my jobs →"}
               </button>
               <button
                 onClick={handleSignOut}
-                className="text-sm text-white/40 hover:text-white/60 transition-colors"
+                className="text-[14px] text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.6)] transition-colors"
               >
                 Sign out
               </button>
@@ -810,20 +806,27 @@ export default function Home() {
       <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
         <div className="landing-gradient-spinner" aria-hidden="true" />
         <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
-          <div className="mb-12">
-            <h1 className="text-5xl font-bold text-white tracking-[0.025em]"><SignalWordmark /></h1>
-            <p className="text-sm text-white/40 mt-2">Smarter search for experienced professionals</p>
+          <div className="mb-10">
+            <h1 className="text-[18px] font-[700] text-white tracking-[0.14em]"><SignalWordmark /></h1>
+            <p className="text-[16px] font-[400] text-[rgba(255,255,255,0.6)] mt-2">Smarter search for experienced professionals</p>
           </div>
-          <p className="text-3xl font-medium text-white/80 leading-snug mb-5">
-            Most experienced professionals don&apos;t lose opportunities because they lack experience.
-            They lose them because the fit is unclear, the framing is generic, or they spend
-            time on roles that were never a real match.
+
+          <p className="text-[28px] font-[500] text-white/85 leading-snug mb-8">
+            Score your fit. Build your prep. Apply to fewer, better-matched roles.
           </p>
-          <p className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg">
-            Signal helps you understand how your background is likely to be read, identify the
-            roles worth pursuing, and prepare thoroughly for the ones that matter. Upload your
-            resume once — Signal does the rest.
-          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+            {[
+              { step: "1", label: "Upload your resume" },
+              { step: "2", label: "Score any job description" },
+              { step: "3", label: "Get a targeted prep guide" },
+            ].map(({ step, label }) => (
+              <div key={step} className="rounded-xl bg-white/6 border border-white/10 px-4 py-3">
+                <p className="text-xs text-white/35 mb-1">Step {step}</p>
+                <p className="text-sm font-[500] text-white/80">{label}</p>
+              </div>
+            ))}
+          </div>
 
           {!magicLinkSent ? (
             <div className="space-y-3">
@@ -839,7 +842,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-6 py-4 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-4 bg-white text-[#111827] text-base font-semibold rounded-2xl sm:rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {sendingMagicLink ? "Sending…" : "Send magic link →"}
                 </button>
@@ -908,7 +911,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-4 py-2 bg-brand-accent text-white text-sm font-semibold rounded-xl hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 bg-[#3D5A4C] text-white text-sm font-semibold rounded-xl hover:bg-[#2E4A3C] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save my progress"}
                 </button>
@@ -1000,7 +1003,7 @@ export default function Home() {
                   {!clusterResult && !isAnalyzing && (
                     <button
                       onClick={handleAnalyze}
-                      className="text-sm font-[500] text-brand-accent hover:text-brand-accent/70 transition-colors"
+                      className="text-sm font-[500] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
                     >
                       Analyze →
                     </button>
@@ -1037,7 +1040,7 @@ export default function Home() {
                       </div>
                       <button
                         onClick={() => setUpdatingProfile(true)}
-                        className="shrink-0 text-sm text-brand-accent hover:text-brand-accent/70 font-medium transition-colors"
+                        className="shrink-0 text-sm text-[#3D5A4C] hover:text-[#2E4A3C] font-medium transition-colors"
                       >
                         Update
                       </button>
@@ -1100,7 +1103,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-2">
                   <button
                     onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
+                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-[#3D5A4C] text-white hover:bg-[#2E4A3C] transition-colors"
                   >
                     Save &amp; Reanalyze
                   </button>
@@ -1133,8 +1136,8 @@ export default function Home() {
               <div className="space-y-4">
 
                 {/* ── Recommended LinkedIn Headline dark card — full width ── */}
-                <div className="rounded-xl p-7" style={{ background: "rgba(46,64,87,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-                  <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#2E4057] mb-2">
+                <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(75,155,126,0.04) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                  <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
                     Your Recommended LinkedIn Headline
                   </p>
                   <p className="text-[20px] font-[500] text-[#111827] leading-[1.4]">
@@ -1170,7 +1173,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-brand-accent text-white text-sm font-[500] rounded-xl hover:bg-brand-accent/90 transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-[#3D5A4C] text-white text-sm font-[500] rounded-xl hover:bg-[#2E4A3C] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1221,7 +1224,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:bg-[#2E4A3C] transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1258,7 +1261,7 @@ export default function Home() {
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-full hover:bg-brand-accent/90 transition-colors whitespace-nowrap"
+                          className="px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
@@ -1354,7 +1357,7 @@ export default function Home() {
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-brand-accent text-white text-sm font-[500] rounded-full hover:bg-brand-accent/90 transition-colors"
+                  className="shrink-0 px-4 py-2 bg-[#3D5A4C] text-white text-sm font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1398,7 +1401,7 @@ function EmptyState({
       <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-brand-accent text-white text-base font-[500] rounded-full hover:bg-brand-accent/90 transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
       >
         {action} →
       </button>
@@ -1421,7 +1424,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
     <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
       {/* Angle label + char count */}
       <div className="flex items-center justify-between gap-3 mb-2.5">
-        <span className="text-xs font-medium text-brand-accent/80 bg-brand-accent/8 px-2.5 py-0.5 rounded-full ring-1 ring-brand-accent/15">
+        <span className="text-xs font-medium text-[#3D5A4C] bg-[rgba(61,90,76,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(61,90,76,0.15)]">
           {headline.angle}
         </span>
         <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
@@ -1433,7 +1436,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 text-sm font-medium text-brand-accent hover:text-brand-accent/70 transition-colors"
+        className="flex items-center gap-1.5 text-sm font-medium text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
       >
         {copied ? (
           <>

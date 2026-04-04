@@ -23,10 +23,10 @@ interface JobFitScorerProps {
 type InputMode = "paste" | "url";
 
 const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
-  "Apply Now":                  { bg: "bg-status-apply/10",   text: "text-status-apply",   ring: "ring-status-apply/25"   },
-  "Apply with Tailoring":       { bg: "bg-status-tailor/10",  text: "text-status-tailor",  ring: "ring-status-tailor/25"  },
-  "Stretch — Proceed Carefully":{ bg: "bg-status-stretch/10", text: "text-status-stretch", ring: "ring-status-stretch/25" },
-  "Skip":                       { bg: "bg-status-skip/10",    text: "text-status-skip",    ring: "ring-status-skip/25"    },
+  "Apply Now":                   { bg: "bg-[rgba(75,155,126,0.10)]",   text: "text-[#4B9B7E]",  ring: "ring-[rgba(75,155,126,0.25)]"  },
+  "Apply with Tailoring":        { bg: "bg-[rgba(124,139,154,0.10)]",  text: "text-[#7C8B9A]",  ring: "ring-[rgba(124,139,154,0.25)]" },
+  "Stretch — Proceed Carefully": { bg: "bg-[rgba(176,144,110,0.10)]",  text: "text-[#B0906E]",  ring: "ring-[rgba(176,144,110,0.25)]" },
+  "Skip":                        { bg: "bg-[rgba(163,163,163,0.10)]",  text: "text-[#A3A3A3]",  ring: "ring-[rgba(163,163,163,0.25)]" },
 };
 
 const MISMATCH_LABELS: Record<MismatchType, string> = {
@@ -38,13 +38,13 @@ const MISMATCH_LABELS: Record<MismatchType, string> = {
 };
 
 function scoreColor(score: number) {
-  if (score >= 7) return "text-status-apply";
-  if (score >= 5) return "text-status-tailor";
-  return "text-status-stretch";
+  if (score >= 7) return "text-[#4B9B7E]";
+  if (score >= 5) return "text-[#B0906E]";
+  return "text-[#C45C5C]";
 }
 
 function ScoreBar({ score }: { score: number }) {
-  const barColor = score >= 9 ? "bg-[#2D6A4F]" : score >= 7 ? "bg-[#A86B2D]" : score >= 5 ? "bg-[#C4622D]" : "bg-[#DC2626]";
+  const barColor = score >= 9 ? "bg-[#4B9B7E]" : score >= 7 ? "bg-[#7C8B9A]" : score >= 5 ? "bg-[#B0906E]" : "bg-[#C45C5C]";
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 h-[3px] bg-[#F3F4F6] rounded-full overflow-hidden">
@@ -229,7 +229,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057] resize-y placeholder:text-[#9CA3AF] transition-colors"
+              className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#3D5A4C] resize-y placeholder:text-[#9CA3AF] transition-colors"
             />
           )}
 
@@ -243,12 +243,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
                   placeholder="https://…"
-                  className="flex-1 border border-[#D1D5DB] rounded-lg px-4 py-2.5 text-[14px] bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057] transition-colors placeholder:text-[#9CA3AF]"
+                  className="flex-1 border border-[#D1D5DB] rounded-lg px-4 py-2.5 text-[14px] bg-white focus:outline-none focus:ring-0 focus:border-[#3D5A4C] transition-colors placeholder:text-[#9CA3AF]"
                 />
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Fetch
                 </button>
@@ -286,7 +286,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
+                className="px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
               >
                 Score This Job
               </button>
@@ -315,8 +315,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Re-scoring in-progress banner — shown at top so it's always visible */}
           {isRescoring && (
-            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(46,64,87,0.06)] rounded-xl border border-[rgba(46,64,87,0.12)]">
-              <svg className="animate-spin shrink-0 w-4 h-4 text-[#2E4057]" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(61,90,76,0.06)] rounded-xl border border-[rgba(61,90,76,0.12)]">
+              <svg className="animate-spin shrink-0 w-4 h-4 text-[#3D5A4C]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
               </svg>
@@ -326,11 +326,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Profile staleness banner */}
           {isProfileStale && !isRescoring && (
-            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(196,98,45,0.06)] rounded-xl border border-[rgba(196,98,45,0.15)]">
+            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(176,144,110,0.06)] rounded-xl border border-[rgba(176,144,110,0.15)]">
               <p className="text-[14px] text-[#374151]">Your profile was updated after this score — results may not reflect your current resume.</p>
               <button
                 onClick={handleProfileRescore}
-                className="shrink-0 text-[14px] font-[500] text-[#C4622D] hover:text-[#C4622D]/70 transition-colors whitespace-nowrap"
+                className="shrink-0 text-[14px] font-[500] text-[#B0906E] hover:text-[#B0906E]/70 transition-colors whitespace-nowrap"
               >
                 Re-score →
               </button>
@@ -343,7 +343,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             {/* Left column */}
             <div className="space-y-5">
               {/* Score + recommendation */}
-              <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div className="rounded-xl p-6" style={{ background: "linear-gradient(135deg, rgba(75,155,126,0.04) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-2">
                   Overall Fit
                 </p>
@@ -374,8 +374,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
               {/* Recruiter concern — shown immediately after overall fit when present */}
               {result.recruiter_concern && (
-                <div className="rounded-xl p-6" style={{ background: "rgba(168,107,45,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-                  <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#A86B2D] mb-2">
+                <div className="rounded-xl p-6" style={{ background: "rgba(124,139,154,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                  <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#7C8B9A] mb-2">
                     ▸ Recruiter Concern to Address
                   </p>
                   <p className="text-[14px] text-[#374151] leading-relaxed">{result.recruiter_concern}</p>
@@ -404,7 +404,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                             <div className="flex items-center gap-2 mb-1.5">
                               <p className="text-[14px] font-[500] text-[#111827]">{label}</p>
                               {isWeakest && (
-                                <span className="text-[11px] font-[600] uppercase text-[#DC2626] bg-[rgba(220,38,38,0.08)] rounded-full px-2 py-0.5">
+                                <span className="text-[11px] font-[600] uppercase text-[#C45C5C] bg-[rgba(196,92,92,0.06)] rounded-full px-2 py-0.5">
                                   Pulling score down
                                 </span>
                               )}
@@ -429,7 +429,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 <ul className="space-y-2">
                   {result.what_you_have.map((item, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#374151]">
-                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#2D6A4F]" />
+                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#4B9B7E]" />
                       {item}
                     </li>
                   ))}
@@ -453,7 +453,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                       {activeItems.map((item, i) => (
                         <li key={i} className="flex items-start justify-between gap-2 group">
                           <div className="flex items-start gap-2.5 text-[14px] text-[#374151]">
-                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#C4622D]" />
+                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#B0906E]" />
                             {item}
                           </div>
                           <button
@@ -479,7 +479,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         <span className="text-[13px] text-[#9CA3AF] line-through leading-snug">{item}</span>
                         <button
                           onClick={() => handleUndoItem(item)}
-                          className="shrink-0 text-[13px] text-[#2E4057] hover:text-[#243445] transition-colors font-medium"
+                          className="shrink-0 text-[13px] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors font-medium"
                         >
                           Undo
                         </button>
@@ -496,7 +496,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                     ) : (
                       <button
                         onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                        className="w-full px-4 py-2 border border-[#2E4057]/40 text-[#2E4057] text-[14px] font-[500] rounded-full hover:bg-[#2E4057]/5 transition-colors"
+                        className="w-full px-4 py-2 border border-[#3D5A4C] text-[#3D5A4C] text-[14px] font-[500] rounded-full hover:bg-[rgba(61,90,76,0.05)] transition-colors"
                       >
                         Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
                       </button>
@@ -523,7 +523,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="shrink-0 px-5 py-2 bg-[#2E4057] text-white text-[14px] font-[500] rounded-full hover:bg-[#243445] transition-colors"
+              className="shrink-0 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
             >
               Go to Prep →
             </button>

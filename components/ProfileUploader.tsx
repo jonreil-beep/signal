@@ -118,7 +118,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
               isDragging
-                ? "border-[#2E4057]/50 bg-[#2E4057]/5"
+                ? "border-[#3D5A4C]/50 bg-[#3D5A4C]/5"
                 : "border-[#D1D5DB] hover:border-[#6B7280] hover:bg-[#F9FAFB]"
             }`}
           >
@@ -137,7 +137,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
               </div>
               <div>
                 <p className="text-[14px] font-medium text-[#374151]">
-                  <span className="text-[#2E4057]">Click to upload</span> or drag and drop
+                  <span className="text-[#3D5A4C]">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-[13px] text-[#9CA3AF] mt-1">PDF or DOCX · max 4MB</p>
               </div>
@@ -171,7 +171,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onChange={(e) => { setPastedText(e.target.value); setConfirmed(false); }}
             placeholder="Paste the full text of your resume here…"
             rows={14}
-            className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2E4057] resize-y placeholder:text-[#9CA3AF] transition-colors"
+            className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#3D5A4C] resize-y placeholder:text-[#9CA3AF] transition-colors"
           />
         </div>
       )}
@@ -197,15 +197,15 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             disabled={confirmed}
             className={`px-5 py-2 rounded-full text-[14px] font-[500] transition-all ${
               confirmed
-                ? "bg-[#2D6A4F] text-white cursor-default"
-                : "bg-[#2E4057] text-white hover:bg-[#243445]"
+                ? "bg-[#4B9B7E] text-white cursor-default"
+                : "bg-[#3D5A4C] text-white hover:bg-[#2E4A3C]"
             }`}
           >
             {confirmed ? "✓ Profile confirmed" : "Confirm Profile"}
           </button>
 
           {confirmed && (
-            <p className="text-[14px] text-[#2D6A4F] font-medium">Ready to score jobs.</p>
+            <p className="text-[14px] text-[#4B9B7E] font-medium">Ready to score jobs.</p>
           )}
 
           {!confirmed && (
