@@ -260,7 +260,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MAIN CONTENT — flat content area on #F9FAFB background
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 md:pl-[72px] lg:pl-60 bg-white">
+      <div className="flex-1 md:pl-[72px] lg:pl-60" style={{ background: "linear-gradient(to bottom, #ffffff 0%, #EDEDF3 100%)", minHeight: "100vh" }}>
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 

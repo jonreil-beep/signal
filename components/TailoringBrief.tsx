@@ -987,7 +987,7 @@ export default function TailoringBrief({
                         <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280]">Cover Letter</p>
                         <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
                       </div>
-                      <div className="rounded-xl border border-[#E5E7EB] bg-[#faf9f7] p-6">
+                      <div className="rounded-xl border border-[#E2E2E8] bg-white p-6">
                         <pre className="text-[14px] text-[#374151] leading-[1.7] whitespace-pre-wrap font-sans">
                           {coverLetterResult.cover_letter}
                         </pre>
