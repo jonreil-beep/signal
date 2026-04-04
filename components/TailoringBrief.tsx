@@ -170,7 +170,7 @@ function ActionSection({
         {!isLoading && (
           <button
             onClick={onAction}
-            className="shrink-0 text-[14px] font-[500] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
+            className="shrink-0 text-[14px] font-[500] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
           >
             {hasResult ? "Re-generate →" : `${buttonLabel} →`}
           </button>
@@ -215,12 +215,12 @@ function ActionSection({
                 placeholder='e.g. "Make it more direct" or "I was VP level, not Director"'
                 maxLength={300}
                 rows={2}
-                className="w-full text-[14px] text-[#374151] bg-[#F9FAFB] rounded-xl px-3 py-2.5 resize-none border border-[#E5E7EB] focus:border-[#3D5A4C] focus:outline-none focus:ring-0 placeholder:text-[#9CA3AF] leading-relaxed transition-colors"
+                className="w-full text-[14px] text-[#374151] bg-[#F9FAFB] rounded-xl px-3 py-2.5 resize-none border border-[#E5E7EB] focus:border-[#4F46E5] focus:outline-none focus:ring-0 placeholder:text-[#9CA3AF] leading-relaxed transition-colors"
               />
               <div className="flex justify-end">
                 <button
                   onClick={onAction}
-                  className="text-[14px] font-[500] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
+                  className="text-[14px] font-[500] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
                 >
                   Re-generate →
                 </button>
@@ -336,7 +336,7 @@ export default function TailoringBrief({
         <p className="text-[14px] text-[#9CA3AF] mt-1">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
         >
           Go to Profile →
         </button>
@@ -353,7 +353,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -771,7 +771,7 @@ export default function TailoringBrief({
                   placeholder="Anything to correct before rebuilding? (optional)"
                   maxLength={300}
                   rows={briefNoteExpanded ? 3 : 1}
-                  className="w-full text-[14px] text-[#374151] bg-[#F9FAFB] rounded-xl px-3 py-2.5 resize-none border border-[#E5E7EB] focus:border-[#3D5A4C] focus:outline-none focus:ring-0 placeholder:text-[#9CA3AF] leading-relaxed transition-all"
+                  className="w-full text-[14px] text-[#374151] bg-[#F9FAFB] rounded-xl px-3 py-2.5 resize-none border border-[#E5E7EB] focus:border-[#4F46E5] focus:outline-none focus:ring-0 placeholder:text-[#9CA3AF] leading-relaxed transition-all"
                 />
               )}
               <div className="flex justify-end gap-2">
@@ -788,7 +788,7 @@ export default function TailoringBrief({
                 )}
                 <button
                   onClick={handleGenerate}
-                  className="px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+                  className="px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                 >
                   {result ? "Rebuild" : "Build Prep Guide"}
                 </button>
@@ -845,7 +845,7 @@ export default function TailoringBrief({
                     {result.lead_strengths.map((s, i) => {
                       const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
                       return (
-                        <div key={i} className="border-l-2 border-[#3D5A4C]/30 pl-3.5">
+                        <div key={i} className="border-l-2 border-[#4F46E5]/30 pl-3.5">
                           <div className="flex items-center gap-2">
                             <p className="text-[14px] font-[500] text-[#111827]">{s.strength}</p>
                             {matchStyle && (
@@ -956,8 +956,8 @@ export default function TailoringBrief({
                 {/* Cover Letter */}
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1 h-4 bg-[#3D5A4C] rounded-full" />
-                    <p className="text-xs font-[500] uppercase tracking-[0.08em] text-[#3D5A4C]">Start here</p>
+                    <div className="w-1 h-4 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] rounded-full" />
+                    <p className="text-xs font-[500] uppercase tracking-[0.08em] text-[#4F46E5]">Start here</p>
                   </div>
                 )}
                 <ActionSection
@@ -996,7 +996,7 @@ export default function TailoringBrief({
                     </p>
                     <button
                       onClick={handleGenerate}
-                      className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+                      className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                     >
                       Rebuild →
                     </button>
@@ -1176,7 +1176,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>
@@ -1320,7 +1320,7 @@ export default function TailoringBrief({
                       />
                       <div className="space-y-4">
                         {cr.questions_to_test.map((q, i) => (
-                          <div key={i} className="border-l-2 border-[#3D5A4C]/30 pl-3.5">
+                          <div key={i} className="border-l-2 border-[#4F46E5]/30 pl-3.5">
                             <p className="text-[14px] font-[500] text-[#111827]">{q.question}</p>
                             <p className="text-[13px] text-[#6B7280] mt-0.5">{q.what_youre_probing}</p>
                           </div>
@@ -1347,7 +1347,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>

@@ -61,7 +61,7 @@ export default function AppShell({
         key={item.id}
         onClick={() => handleNav(item.id)}
         title={!showLabel ? item.label : undefined}
-        className={`w-full flex items-center text-[14px] rounded-lg transition-colors text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2 ${
+        className={`w-full flex items-center text-[14px] rounded-lg transition-colors text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2 ${
           showLabel ? "gap-3 px-3 py-2" : "justify-center px-0 py-2.5"
         } ${
           isActive
@@ -92,7 +92,7 @@ export default function AppShell({
     return (
       <button
         onClick={handleScoreJob}
-        className={`w-full bg-[#3D5A4C] text-white text-[14px] font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2 ${
+        className={`w-full bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2 ${
           compact ? "flex items-center justify-center p-2.5" : "px-4 py-[10px]"
         }`}
       >
@@ -130,7 +130,7 @@ export default function AppShell({
         <div style={{ padding: "28px 24px 32px 24px" }}>
           <button
             onClick={onLogoClick}
-            className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2 rounded"
+            className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2 rounded"
           >
             <span className="text-[18px] font-[700] text-[#111827] tracking-[0.14em]">
               <SignalWordmark />
@@ -168,7 +168,7 @@ export default function AppShell({
         <div className="pt-5 pb-4">
           <button
             onClick={onLogoClick}
-            className="text-xl font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2 rounded"
+            className="text-xl font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2 rounded"
           >
             S
           </button>
@@ -193,13 +193,13 @@ export default function AppShell({
       <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-white border-b border-[#E5E7EB]">
         <button
           onClick={onLogoClick}
-          className="text-lg font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2 rounded"
+          className="text-lg font-[600] text-[#111827] tracking-[0.12em] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2 rounded"
         >
           S
         </button>
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="p-2 rounded-lg hover:bg-[#F9FAFB] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2"
+          className="p-2 rounded-lg hover:bg-[#F9FAFB] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2"
           aria-label="Open navigation"
         >
           <Menu size={20} strokeWidth={1.5} className="text-[#6B7280]" />
@@ -226,7 +226,7 @@ export default function AppShell({
               </span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F9FAFB] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#3D5A4C] focus-visible:outline-offset-2"
+                className="p-1.5 rounded-lg hover:bg-[#F9FAFB] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#4F46E5] focus-visible:outline-offset-2"
                 aria-label="Close navigation"
               >
                 <X size={18} strokeWidth={1.5} className="text-[#6B7280]" />

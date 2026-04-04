@@ -911,7 +911,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-4 py-2 bg-[#3D5A4C] text-white text-sm font-semibold rounded-xl hover:bg-[#2E4A3C] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-semibold rounded-xl hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save my progress"}
                 </button>
@@ -1003,7 +1003,7 @@ export default function Home() {
                   {!clusterResult && !isAnalyzing && (
                     <button
                       onClick={handleAnalyze}
-                      className="text-sm font-[500] text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
+                      className="text-sm font-[500] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
                     >
                       Analyze →
                     </button>
@@ -1040,7 +1040,7 @@ export default function Home() {
                       </div>
                       <button
                         onClick={() => setUpdatingProfile(true)}
-                        className="shrink-0 text-sm text-[#3D5A4C] hover:text-[#2E4A3C] font-medium transition-colors"
+                        className="shrink-0 text-sm text-[#4F46E5] hover:text-[#4338CA] font-medium transition-colors"
                       >
                         Update
                       </button>
@@ -1103,7 +1103,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-2">
                   <button
                     onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-[#3D5A4C] text-white hover:bg-[#2E4A3C] transition-colors"
+                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                   >
                     Save &amp; Reanalyze
                   </button>
@@ -1173,7 +1173,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-[#3D5A4C] text-white text-sm font-[500] rounded-xl hover:bg-[#2E4A3C] transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-[500] rounded-xl hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1224,7 +1224,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:bg-[#2E4A3C] transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1261,7 +1261,7 @@ export default function Home() {
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors whitespace-nowrap"
+                          className="px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
@@ -1357,7 +1357,7 @@ export default function Home() {
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-[#3D5A4C] text-white text-sm font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1401,7 +1401,7 @@ function EmptyState({
       <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#3D5A4C] text-white text-base font-[500] rounded-full hover:bg-[#2E4A3C] transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
       >
         {action} →
       </button>
@@ -1424,7 +1424,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
     <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
       {/* Angle label + char count */}
       <div className="flex items-center justify-between gap-3 mb-2.5">
-        <span className="text-xs font-medium text-[#3D5A4C] bg-[rgba(61,90,76,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(61,90,76,0.15)]">
+        <span className="text-xs font-medium text-[#4F46E5] bg-[rgba(79,70,229,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(79,70,229,0.15)]">
           {headline.angle}
         </span>
         <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
@@ -1436,7 +1436,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 text-sm font-medium text-[#3D5A4C] hover:text-[#2E4A3C] transition-colors"
+        className="flex items-center gap-1.5 text-sm font-medium text-[#4F46E5] hover:text-[#4338CA] transition-colors"
       >
         {copied ? (
           <>

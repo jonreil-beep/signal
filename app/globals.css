@@ -8,7 +8,7 @@
   /* Legacy CSS variables — kept for landing page compatibility */
   --color-bg:             #F8F7F4;
   --color-text:           #1A1A1A;
-  --color-accent:         #3D5A4C;
+  --color-accent:         #4F46E5;
   --color-status-apply:   #4B9B7E;
   --color-status-tailor:  #7C8B9A;
   --color-status-stretch: #B0906E;
@@ -22,7 +22,7 @@
   --color-text-secondary: #6B7280;
   --color-text-tertiary:  #9CA3AF;
   --color-text-body:      #374151;
-  --color-accent-slate:   #3D5A4C;
+  --color-accent-slate:   #4F46E5;
 
   /* Override Tailwind's default ring color — use brand slate */
   --tw-ring-color: rgba(61, 90, 76, 0.3);
@@ -61,7 +61,7 @@
 
   /* Replace with on-brand slate focus ring for keyboard nav */
   *:focus-visible {
-    outline: 2px solid #3D5A4C;
+    outline: 2px solid #4F46E5;
     outline-offset: 2px;
   }
 

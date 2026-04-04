@@ -19,7 +19,7 @@ const config: Config = {
         brand: {
           bg:     "#F8F7F4",
           text:   "#1A1A1A",
-          accent: "#3D5A4C",
+          accent: "#4F46E5",
           g:      "#C5892D",
         },
         status: {
@@ -29,8 +29,8 @@ const config: Config = {
           skip:    "#A3A3A3",
         },
         // CTA colors
-        "brand-cta":       "#3D5A4C",
-        "brand-cta-hover": "#2E4A3C",
+        "brand-cta":       "#4F46E5",
+        "brand-cta-hover": "#4338CA",
         // New design system tokens
         surface:       "#F9FAFB",
         "border-default": "#E5E7EB",
@@ -39,8 +39,8 @@ const config: Config = {
         "text-secondary": "#6B7280",
         "text-tertiary":  "#9CA3AF",
         "text-body":      "#374151",
-        "accent-slate":      "#3D5A4C",
-        "accent-slate-hover": "#2E4A3C",
+        "accent-slate":      "#4F46E5",
+        "accent-slate-hover": "#4338CA",
       },
     },
   },
