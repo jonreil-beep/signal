@@ -22,13 +22,13 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
   "Tracking", "Applied", "Phone Screen", "Interview", "Offer", "Rejected",
 ];
 
-const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string }> = {
-  "Tracking":     { bg: "bg-[#F3F4F6]",         text: "text-[#6B7280]"     },
-  "Applied":      { bg: "bg-status-tailor/10",  text: "text-status-tailor" },
-  "Phone Screen": { bg: "bg-status-tailor/10",  text: "text-status-tailor" },
-  "Interview":    { bg: "bg-status-apply/10",   text: "text-status-apply"  },
-  "Offer":        { bg: "bg-status-apply/20",   text: "text-status-apply"  },
-  "Rejected":     { bg: "bg-status-skip/10",    text: "text-status-skip"   },
+const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string; border: string }> = {
+  "Tracking":     { bg: "bg-white",                         text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
+  "Applied":      { bg: "bg-[rgba(46,64,87,0.08)]",         text: "text-[#2E4057]",  border: "border-0" },
+  "Phone Screen": { bg: "bg-[rgba(168,107,45,0.08)]",       text: "text-[#A86B2D]",  border: "border-0" },
+  "Interview":    { bg: "bg-[rgba(45,106,79,0.08)]",        text: "text-[#2D6A4F]",  border: "border-0" },
+  "Offer":        { bg: "bg-[rgba(45,106,79,0.12)]",        text: "text-[#2D6A4F]",  border: "border-0" },
+  "Rejected":     { bg: "bg-[rgba(156,163,175,0.08)]",      text: "text-[#9CA3AF]",  border: "border-0" },
 };
 
 const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
@@ -109,7 +109,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div className="group relative bg-white rounded-xl px-6 pt-5 pb-5 transition-all" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+    <div className="group relative bg-white rounded-xl px-6 pt-5 pb-5 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">

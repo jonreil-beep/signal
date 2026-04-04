@@ -952,14 +952,14 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-[500] text-brand-text">Profile</h2>
+              <h2 className="text-[20px] font-[500] text-[#111827]">Profile</h2>
             </div>
 
             {/* No profile yet: onboarding header + uploader */}
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="text-lg font-[500] text-brand-text">Step 1 — Clarify your positioning</h2>
+                  <h2 className="text-[20px] font-[500] text-[#111827]">Step 1 — Clarify your positioning</h2>
                   <p className="text-base text-brand-text/50 mt-1">
                     Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
@@ -1133,11 +1133,11 @@ export default function Home() {
               <div className="space-y-4">
 
                 {/* ── Recommended LinkedIn Headline dark card — full width ── */}
-                <div className="rounded-2xl bg-brand-text p-7">
-                  <p className="text-xs font-medium uppercase tracking-[0.06em] text-white/35 mb-2">
+                <div className="rounded-xl p-7" style={{ background: "rgba(46,64,87,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                  <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#2E4057] mb-2">
                     Your Recommended LinkedIn Headline
                   </p>
-                  <p className="text-xl font-[500] text-white leading-[1.4]">
+                  <p className="text-[20px] font-[500] text-[#111827] leading-[1.4]">
                     {clusterResult.recommended_headline}
                   </p>
                 </div>
@@ -1244,7 +1244,7 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-7">
-                  <h2 className="text-lg font-[500] text-brand-text">Score a Job</h2>
+                  <h2 className="text-[20px] font-[500] text-[#111827]">Job Fit</h2>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-6">
@@ -1294,7 +1294,7 @@ export default function Home() {
         {activeTab === "discover" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-[500] text-brand-text">Discover</h2>
+              <h2 className="text-[20px] font-[500] text-[#111827]">Discover</h2>
             </div>
             <JobDiscovery
               clusterResult={clusterResult}
@@ -1307,7 +1307,7 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-7">
-              <h2 className="text-lg font-[500] text-brand-text">Prep</h2>
+              <h2 className="text-[20px] font-[500] text-[#111827]">Prep</h2>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">
@@ -1350,7 +1350,7 @@ export default function Home() {
         {activeTab === "my-jobs" && (
           <div>
             <div className="flex items-center justify-between gap-4 mb-7">
-              <h2 className="text-lg font-[500] text-brand-text">My Jobs</h2>
+              <h2 className="text-[20px] font-[500] text-[#111827]">My Jobs</h2>
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}

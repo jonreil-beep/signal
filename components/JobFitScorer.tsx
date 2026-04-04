@@ -44,16 +44,16 @@ function scoreColor(score: number) {
 }
 
 function ScoreBar({ score }: { score: number }) {
-  const barColor = score >= 7 ? "bg-status-apply" : score >= 5 ? "bg-status-tailor" : "bg-status-stretch";
+  const barColor = score >= 9 ? "bg-[#2D6A4F]" : score >= 7 ? "bg-[#A86B2D]" : score >= 5 ? "bg-[#C4622D]" : "bg-[#DC2626]";
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-1 bg-[#F3F4F6] rounded-full overflow-hidden">
+      <div className="flex-1 h-[3px] bg-[#F3F4F6] rounded-full overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all ${barColor}`}
-          style={{ width: `${score * 10}%` }}
+          className={`h-full rounded-full ${barColor}`}
+          style={{ width: `${score * 10}%`, transition: "width 600ms ease-out" }}
         />
       </div>
-      <span className={`text-sm font-semibold tabular-nums w-5 text-right ${scoreColor(score)}`}>
+      <span className={`text-sm font-[600] tabular-nums w-5 text-right ${scoreColor(score)}`}>
         {score}
       </span>
     </div>
@@ -374,9 +374,9 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
               {/* Recruiter concern — shown immediately after overall fit when present */}
               {result.recruiter_concern && (
-                <div className="bg-white rounded-xl border-l-[3px] border-l-[#A86B2D] p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                <div className="rounded-xl p-6" style={{ background: "rgba(168,107,45,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                   <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#A86B2D] mb-2">
-                    ⚑ Recruiter Concern to Address
+                    ▸ Recruiter Concern to Address
                   </p>
                   <p className="text-[14px] text-[#374151] leading-relaxed">{result.recruiter_concern}</p>
                 </div>

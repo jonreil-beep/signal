@@ -132,7 +132,9 @@ export default function AppShell({
             onClick={onLogoClick}
             className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2E4057] focus-visible:outline-offset-2 rounded"
           >
-            <SignalWordmark />
+            <span className="text-[18px] font-[700] text-[#111827] tracking-[0.14em]">
+              <SignalWordmark />
+            </span>
           </button>
         </div>
 
@@ -219,7 +221,7 @@ export default function AppShell({
           <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-white border-r border-[#E5E7EB]">
             {/* Wordmark + close */}
             <div style={{ padding: "28px 24px 32px 24px" }} className="flex items-center justify-between">
-              <span>
+              <span className="text-[18px] font-[700] text-[#111827] tracking-[0.14em]">
                 <SignalWordmark />
               </span>
               <button
@@ -266,7 +268,7 @@ export default function AppShell({
         {guestBanner}
 
         {/* Content */}
-        <main className="max-w-[960px] mx-auto px-8 py-8">
+        <main className="max-w-[1280px] mx-auto px-12 py-8">
           {children}
         </main>
       </div>

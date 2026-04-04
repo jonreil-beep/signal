@@ -747,11 +747,11 @@ export default function TailoringBrief({
 
       {/* ── Honest Take — always visible when brief is built, across all stages ── */}
       {result?.honest_take && (
-        <div className="rounded-xl bg-white border-l-[3px] border-l-[#111827] p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-          <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
+        <div className="rounded-xl p-6" style={{ background: "rgba(17,24,39,0.03)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+          <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#111827] mb-2">
             Honest Take
           </p>
-          <p className="text-[15px] font-[500] text-[#111827] leading-[1.4]">{result.honest_take}</p>
+          <p className="text-[14px] font-[400] text-[#374151] leading-relaxed">{result.honest_take}</p>
         </div>
       )}
 
@@ -877,7 +877,7 @@ export default function TailoringBrief({
                     </p>
                     <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
                   </div>
-                  <div className="rounded-xl p-5 border-l-[3px] border-l-[#A86B2D] border border-[rgba(168,107,45,0.15)] bg-[rgba(168,107,45,0.04)] space-y-3">
+                  <div className="rounded-xl p-5 space-y-3" style={{ background: "rgba(168,107,45,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                     <div>
                       <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#A86B2D] mb-1">
                         Likely concern

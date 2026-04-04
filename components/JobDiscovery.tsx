@@ -62,7 +62,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
   const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-[rgba(136,136,136,0.10)] text-[#888888]";
 
   return (
-    <div className="bg-white rounded-xl p-6 space-y-4" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+    <div className="bg-white rounded-xl p-6 space-y-4 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
         <p className="text-[16px] font-[500] text-[#111827] leading-snug">{clusterName}</p>
