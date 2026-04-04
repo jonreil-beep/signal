@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoadingState from "./LoadingState";
 import type { JobFitResult, MismatchType } from "@/types";
 
@@ -43,17 +43,31 @@ function scoreColor(score: number) {
   return "text-[#C45C5C]";
 }
 
-function ScoreBar({ score }: { score: number }) {
+// Bar delay constants (ms from when animation starts)
+const BAR_DELAYS = [200, 950, 1700, 2450];
+
+function ScoreBar({ score, animate, delayMs }: { score: number; animate: boolean; delayMs: number }) {
   const barColor = score >= 9 ? "bg-[#4B9B7E]" : score >= 7 ? "bg-[#7C8B9A]" : score >= 5 ? "bg-[#B0906E]" : "bg-[#C45C5C]";
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 h-[3px] bg-[#F3F4F6] rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${barColor}`}
-          style={{ width: `${score * 10}%`, transition: "width 600ms ease-out" }}
+          style={{
+            width: animate ? `${score * 10}%` : "0%",
+            transition: `width 600ms ease-out`,
+            transitionDelay: animate ? `${delayMs}ms` : "0ms",
+          }}
         />
       </div>
-      <span className={`text-sm font-[600] tabular-nums w-5 text-right ${scoreColor(score)}`}>
+      <span
+        className={`text-sm font-[600] tabular-nums w-5 text-right ${scoreColor(score)}`}
+        style={{
+          opacity: animate ? 1 : 0,
+          transition: "opacity 200ms ease-out",
+          transitionDelay: animate ? `${delayMs + 550}ms` : "0ms",
+        }}
+      >
         {score}
       </span>
     </div>
@@ -63,6 +77,63 @@ function ScoreBar({ score }: { score: number }) {
 export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief, onSearchSimilarRoles }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>(initialJDText ?? "");
+
+  // ── Score reveal animation ───────────────────────────────────────────
+  // displayScore counts up from 0; for tab restore it starts at the real value.
+  const [displayScore, setDisplayScore] = useState<number>(result?.overall_fit ?? 0);
+  // animateBars: false = bars at 0%, true = bars fill with staggered delays
+  const [animateBars, setAnimateBars] = useState(result !== null);
+  // isRevealing: true while the fresh-score entrance animation is playing
+  const [isRevealing, setIsRevealing] = useState(false);
+  // hasSeenResult: prevents re-animating on tab switch / rescore
+  const hasSeenResult = useRef(result !== null);
+
+  useEffect(() => {
+    if (!result) {
+      setDisplayScore(0);
+      setAnimateBars(false);
+      setIsRevealing(false);
+      hasSeenResult.current = false;
+      return;
+    }
+    if (hasSeenResult.current) {
+      // Tab restore or rescore — show final values immediately, no animation
+      setDisplayScore(result.overall_fit);
+      setAnimateBars(true);
+      setIsRevealing(false);
+      return;
+    }
+    // Fresh score arrival (null → value) — run the reveal sequence
+    hasSeenResult.current = true;
+    setIsRevealing(true);
+    setAnimateBars(false);
+
+    // Scroll to result
+    setTimeout(() => {
+      document.getElementById("score-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+
+    // Count score from 0 to target over 800ms (ease-out cubic)
+    let start: number | null = null;
+    const duration = 800;
+    const target = result.overall_fit;
+    const raf = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayScore(Math.round(eased * target));
+      if (progress < 1) {
+        requestAnimationFrame(raf);
+      } else {
+        setDisplayScore(target);
+        setAnimateBars(true);
+        // Keep isRevealing=true until all animations finish (~2.6s), then clean up
+        setTimeout(() => setIsRevealing(false), 2600);
+      }
+    };
+    requestAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
   const [urlInput, setUrlInput] = useState<string>("");
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string>("");
@@ -343,21 +414,42 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             {/* Left column */}
             <div className="space-y-6">
               {/* Score + recommendation */}
-              <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div id="score-result" className="rounded-xl p-7 result-scroll-target" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-2">
                   Overall Fit
                 </p>
                 {/* Score + badge on one line */}
                 <div className="flex items-baseline gap-3 flex-wrap">
                   <span className={`text-[32px] font-[600] tabular-nums ${scoreColor(result.overall_fit)}`}>
-                    {result.overall_fit}
+                    {displayScore}
                   </span>
-                  <span className="text-[16px] text-[#9CA3AF]">/10</span>
-                  <span className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}>
+                  <span
+                    className="text-[16px] text-[#9CA3AF]"
+                    style={isRevealing ? {
+                      opacity: 0,
+                      animation: "fadeInUp 300ms ease-out forwards",
+                      animationDelay: "400ms",
+                    } : {}}
+                  >/10</span>
+                  <span
+                    className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}
+                    style={isRevealing ? {
+                      opacity: 0,
+                      animation: "slideInRight 300ms ease-out forwards",
+                      animationDelay: "600ms",
+                    } : {}}
+                  >
                     {result.recommendation}
                   </span>
                 </div>
-                <p className="text-[14px] text-[#374151] mt-3 leading-snug">
+                <p
+                  className="text-[14px] text-[#374151] mt-3 leading-snug"
+                  style={isRevealing ? {
+                    opacity: 0,
+                    animation: "fadeInUp 400ms ease-out forwards",
+                    animationDelay: "800ms",
+                  } : {}}
+                >
                   {result.summary}
                 </p>
                 {/* Mismatch type pills */}
@@ -385,11 +477,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               {/* Dimensions */}
               {(() => {
                 const dims = [
-                  ["Functional Fit",  result.dimensions.functional_fit],
-                  ["Seniority Fit",   result.dimensions.seniority_fit],
-                  ["Industry Fit",    result.dimensions.industry_fit],
-                  ["Keyword Overlap", result.dimensions.keyword_overlap],
-                ] as const;
+                  ["Functional Fit",  result.dimensions.functional_fit,  0],
+                  ["Seniority Fit",   result.dimensions.seniority_fit,   1],
+                  ["Industry Fit",    result.dimensions.industry_fit,    2],
+                  ["Keyword Overlap", result.dimensions.keyword_overlap, 3],
+                ] as [string, typeof result.dimensions.functional_fit, number][];
                 const lowestScore = Math.min(...dims.map(([, d]) => d.score));
                 return (
                   <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
@@ -397,7 +489,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                       What Drove This Score
                     </p>
                     <div className="space-y-4">
-                      {dims.map(([label, dim]) => {
+                      {dims.map(([label, dim, idx]) => {
                         const isWeakest = dim.score === lowestScore;
                         return (
                           <div key={label} className={isWeakest ? "rounded-xl bg-[rgba(196,98,45,0.04)] border border-[rgba(196,98,45,0.10)] p-3 -mx-3" : ""}>
@@ -409,7 +501,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                                 </span>
                               )}
                             </div>
-                            <ScoreBar score={dim.score} />
+                            <ScoreBar score={dim.score} animate={animateBars} delayMs={BAR_DELAYS[idx] ?? 0} />
                             <p className="mt-1.5 text-[13px] text-[#6B7280] leading-relaxed">{dim.reasoning}</p>
                           </div>
                         );

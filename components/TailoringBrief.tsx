@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoadingState from "./LoadingState";
+import TypingIndicator from "./TypingIndicator";
+import { useToast } from "./ToastProvider";
 import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, StrengthMatchType } from "@/types";
 
 const MATCH_TYPE_STYLES: Record<StrengthMatchType, string> = {
@@ -45,10 +47,12 @@ interface TailoringBriefProps {
 
 function CopyButton({ getText }: { getText: () => string }) {
   const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(getText());
       setCopied(true);
+      showToast();
       setTimeout(() => setCopied(false), 2000);
     } catch { /* silently fail */ }
   }
@@ -78,10 +82,12 @@ function CopyButton({ getText }: { getText: () => string }) {
 
 function PrimaryCopyButton({ getText, label = "Copy" }: { getText: () => string; label?: string }) {
   const [copied, setCopied] = useState(false);
+  const { showToast } = useToast();
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(getText());
       setCopied(true);
+      showToast();
       setTimeout(() => setCopied(false), 2000);
     } catch { /* silently fail */ }
   }
@@ -184,7 +190,7 @@ function ActionSection({
 
       {isLoading && (
         <div className="px-5 pb-5">
-          <LoadingState message={loadingMessage} />
+          <TypingIndicator message={loadingMessage} />
         </div>
       )}
 
@@ -377,6 +383,9 @@ export default function TailoringBrief({
         setError(data.error ?? "Failed to generate brief. Please try again.");
       } else {
         onResultChange(data as TailoringBriefResult);
+        setTimeout(() => {
+          document.getElementById("prep-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 150);
       }
     } catch {
       setError("Network error. Check your connection and try again.");
@@ -747,7 +756,7 @@ export default function TailoringBrief({
 
       {/* ── Honest Take — always visible when brief is built, across all stages ── */}
       {result?.honest_take && (
-        <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+        <div id="prep-result" className="rounded-xl p-7 result-scroll-target honest-take-entrance" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#111827] mb-2">
             Honest Take
           </p>
@@ -796,7 +805,7 @@ export default function TailoringBrief({
             </div>
           )}
 
-          {isGenerating && <LoadingState message="Building your prep guide. This takes about 20 seconds..." />}
+          {isGenerating && <TypingIndicator message="Building your prep guide. This takes about 20 seconds…" />}
 
           {error && !isGenerating && (
             <div className="p-4 bg-red-50 rounded-xl border border-red-100">

@@ -14,6 +14,7 @@ import LoadingState from "@/components/LoadingState";
 import SignalWordmark from "@/components/SignalWordmark";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
+import { ToastProvider } from "@/components/ToastProvider";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -470,6 +471,9 @@ export default function Home() {
         setAnalyzeError(data.error ?? "Analysis failed. Please try again.");
       } else {
         setClusterResult(data as RoleClusterResult);
+        setTimeout(() => {
+          document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
         const snapshot = { resumeText: profileText, writingSample, pivotTarget };
         setSavedProfileSnapshot(snapshot);
         try { localStorage.setItem("signal_profile_snapshot", JSON.stringify(snapshot)); } catch { /* ignore */ }
@@ -940,6 +944,7 @@ export default function Home() {
   ) : null;
 
   return (
+    <ToastProvider>
     <AppShell
       activeTab={activeTab}
       onTabChange={setActiveTab}
@@ -1136,7 +1141,7 @@ export default function Home() {
               <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline dark card — full width ── */}
-                <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                <div id="profile-result" className="rounded-xl p-7 result-scroll-target" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                   <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
                     Your Recommended LinkedIn Headline
                   </p>
@@ -1381,6 +1386,7 @@ export default function Home() {
         )}
 
     </AppShell>
+    </ToastProvider>
   );
 }
 

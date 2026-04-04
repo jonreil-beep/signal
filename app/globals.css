@@ -77,6 +77,53 @@
   to   { transform: rotate(360deg); }
 }
 
+/* ── Card entrance stagger ─────────────────────────────────────────── */
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.card-entrance {
+  animation: cardEntrance 300ms ease-out both;
+}
+
+/* ── Cluster badge pulse ───────────────────────────────────────────── */
+@keyframes badgePulse {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1);    }
+}
+
+/* ── Honest Take entrance ──────────────────────────────────────────── */
+@keyframes honestTakeEntrance {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+.honest-take-entrance {
+  animation: honestTakeEntrance 400ms ease-out both;
+  animation-delay: 100ms;
+}
+
+/* ── Typing indicator bounce ───────────────────────────────────────── */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0);    }
+  30%           { transform: translateY(-4px); }
+}
+
+/* ── Score reveal fade-ins ─────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* ── Scroll offset for anchored targets ───────────────────────────── */
+.result-scroll-target {
+  scroll-margin-top: 24px;
+}
+
 .landing-gradient-spinner {
   position: absolute;
   inset: -100%;

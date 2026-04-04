@@ -71,13 +71,26 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div
+                key={i}
+                className="bg-white rounded-xl p-7 card-entrance"
+                style={{
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+                  animationDelay: `${Math.min(i, 5) * 50}ms`,
+                }}
+              >
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <h4 className="text-base font-[500] text-[#111827] leading-snug">{cluster.name}</h4>
                   <div className="flex items-center gap-2 shrink-0">
                     {rec && (
-                      <span className={`text-xs font-[500] px-2.5 py-1 rounded-full ${rec.pill}`}>
+                      <span
+                        className={`text-xs font-[500] px-2.5 py-1 rounded-full ${rec.pill}`}
+                        style={{
+                          animation: "badgePulse 400ms ease-in-out both",
+                          animationDelay: `${Math.min(i, 5) * 50 + 200}ms`,
+                        }}
+                      >
                         {rec.label}
                       </span>
                     )}
@@ -125,7 +138,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Right column — Strengths + Risks + optional extra */}
       <div className="space-y-4">
-        <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+        <div className="bg-white rounded-xl p-7 card-entrance" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: "50ms" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Core Strengths
           </p>
@@ -139,7 +152,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+        <div className="bg-white rounded-xl p-7 card-entrance" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: "100ms" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Positioning Risks
           </p>

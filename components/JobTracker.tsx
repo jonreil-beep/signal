@@ -70,6 +70,7 @@ function deadlineUrgency(deadline: string): { textClass: string; label: string }
 
 interface JobCardProps {
   job: TrackedJob;
+  staggerIndex: number;
   profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
@@ -79,7 +80,7 @@ interface JobCardProps {
   onDeadlineChange: (id: string, deadline: string | null) => void;
 }
 
-function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
+function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
   const [showJD, setShowJD] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -109,7 +110,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div className="group relative bg-white rounded-xl px-7 pt-6 pb-6 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div className="group relative bg-white rounded-xl px-7 pt-6 pb-6 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -189,7 +190,8 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             <select
               value={job.applicationStatus}
               onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#2563EB] ${statusStyle.bg} ${statusStyle.text}`}
+              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none hover:opacity-80 focus:ring-0 focus:border-[#2563EB] ${statusStyle.bg} ${statusStyle.text}`}
+              style={{ transition: "background-color 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out" }}
             >
               {APPLICATION_STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -519,10 +521,11 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
       {/* ── Job cards ── */}
       {filtered.length > 0 ? (
         <div className="space-y-4">
-          {filtered.map((job) => (
+          {filtered.map((job, i) => (
             <JobCard
               key={job.id}
               job={job}
+              staggerIndex={i}
               profileUpdatedAt={profileUpdatedAt}
               onSelectJob={onSelectJob}
               onRemoveJob={onRemoveJob}
@@ -536,7 +539,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           {!isFiltered && (
             <button
               onClick={onScoreNewJob}
-              className="w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-[#D1D5DB] hover:text-[#6B7280] transition-colors"
+              className="group/add w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-solid hover:border-[#D1D5DB] hover:text-[#1D4ED8] hover:bg-[rgba(29,78,216,0.02)] hover:scale-[1.005] transition-all duration-200 ease-out"
             >
               Score a job →
             </button>

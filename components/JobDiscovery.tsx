@@ -57,12 +57,12 @@ const CONFIDENCE_STYLES: Record<string, string> = {
 };
 
 // ── Cluster card ──────────────────────────────────────────────────────────────
-function ClusterCard({ clusterName, confidence }: { clusterName: string; confidence: string }) {
+function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: string; confidence: string; staggerIndex: number }) {
   const [modifier, setModifier] = useState("");
   const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-[rgba(136,136,136,0.10)] text-[#888888]";
 
   return (
-    <div className="bg-white rounded-xl p-7 space-y-5 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div className="bg-white rounded-xl p-7 space-y-5 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
         <p className="text-[16px] font-[500] text-[#111827] leading-snug">{clusterName}</p>
@@ -151,7 +151,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {clusters.map((cluster, i) => (
-          <ClusterCard key={i} clusterName={cluster.name} confidence={cluster.confidence} />
+          <ClusterCard key={i} clusterName={cluster.name} confidence={cluster.confidence} staggerIndex={i} />
         ))}
       </div>
     </div>
