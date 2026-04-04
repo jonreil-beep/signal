@@ -911,7 +911,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-semibold rounded-xl hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-semibold rounded-xl hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save my progress"}
                 </button>
@@ -1103,7 +1103,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-2">
                   <button
                     onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
+                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                   >
                     Save &amp; Reanalyze
                   </button>
@@ -1173,7 +1173,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-[500] rounded-xl hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-xl hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1224,7 +1224,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1261,7 +1261,7 @@ export default function Home() {
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors whitespace-nowrap"
+                          className="px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
@@ -1318,7 +1318,7 @@ export default function Home() {
                   id={activeJobId}
                   label={trackedJobs.find(j => j.id === activeJobId)!.label}
                   onRename={handleRenameJob}
-                  className="text-[1.75rem] font-[500] leading-tight"
+                  className="text-2xl font-[500]"
                 />
               </div>
             )}
@@ -1357,7 +1357,7 @@ export default function Home() {
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
+                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1401,7 +1401,7 @@ function EmptyState({
       <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
       >
         {action} →
       </button>

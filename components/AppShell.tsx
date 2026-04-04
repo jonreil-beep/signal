@@ -92,7 +92,7 @@ export default function AppShell({
     return (
       <button
         onClick={handleScoreJob}
-        className={`w-full bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 ${
+        className={`w-full bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2563EB] focus-visible:outline-offset-2 ${
           compact ? "flex items-center justify-center p-2.5" : "px-4 py-[10px]"
         }`}
       >
