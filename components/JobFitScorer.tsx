@@ -229,7 +229,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#4F46E5] resize-y placeholder:text-[#9CA3AF] transition-colors"
+              className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB] resize-y placeholder:text-[#9CA3AF] transition-colors"
             />
           )}
 
@@ -243,12 +243,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   onChange={(e) => setUrlInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
                   placeholder="https://…"
-                  className="flex-1 border border-[#D1D5DB] rounded-lg px-4 py-2.5 text-[14px] bg-white focus:outline-none focus:ring-0 focus:border-[#4F46E5] transition-colors placeholder:text-[#9CA3AF]"
+                  className="flex-1 border border-[#D1D5DB] rounded-lg px-4 py-2.5 text-[14px] bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB] transition-colors placeholder:text-[#9CA3AF]"
                 />
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   Fetch
                 </button>
@@ -286,7 +286,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             <div className="flex items-center gap-3">
               <button
                 onClick={handleScore}
-                className="px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+                className="px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
               >
                 Score This Job
               </button>
@@ -311,12 +311,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
       {/* Results */}
       {result && recStyle && (
-        <div className="space-y-5">
+        <div className="space-y-6">
 
           {/* Re-scoring in-progress banner — shown at top so it's always visible */}
           {isRescoring && (
-            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(79,70,229,0.06)] rounded-xl border border-[rgba(79,70,229,0.12)]">
-              <svg className="animate-spin shrink-0 w-4 h-4 text-[#4F46E5]" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(37,99,235,0.06)] rounded-xl border border-[rgba(37,99,235,0.12)]">
+              <svg className="animate-spin shrink-0 w-4 h-4 text-[#2563EB]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
               </svg>
@@ -341,9 +341,9 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
             {/* Left column */}
-            <div className="space-y-5">
+            <div className="space-y-6">
               {/* Score + recommendation */}
-              <div className="rounded-xl p-6" style={{ background: "linear-gradient(135deg, rgba(75,155,126,0.04) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-2">
                   Overall Fit
                 </p>
@@ -374,7 +374,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
               {/* Recruiter concern — shown immediately after overall fit when present */}
               {result.recruiter_concern && (
-                <div className="rounded-xl p-6" style={{ background: "rgba(124,139,154,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                <div className="rounded-xl p-7" style={{ background: "rgba(124,139,154,0.04)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                   <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#7C8B9A] mb-2">
                     ▸ Recruiter Concern to Address
                   </p>
@@ -392,7 +392,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 ] as const;
                 const lowestScore = Math.min(...dims.map(([, d]) => d.score));
                 return (
-                  <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                  <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                     <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-4">
                       What Drove This Score
                     </p>
@@ -421,8 +421,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
 
             {/* Right column — What you have / Missing */}
-            <div className="space-y-3">
-              <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+            <div className="space-y-4">
+              <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-3">
                   What You Have
                 </p>
@@ -435,7 +435,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   ))}
                 </ul>
               </div>
-              <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 <div className="flex items-baseline justify-between gap-2 mb-3">
                   <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280]">
                     What&apos;s Missing
@@ -479,7 +479,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         <span className="text-[13px] text-[#9CA3AF] line-through leading-snug">{item}</span>
                         <button
                           onClick={() => handleUndoItem(item)}
-                          className="shrink-0 text-[13px] text-[#4F46E5] hover:text-[#4338CA] transition-colors font-medium"
+                          className="shrink-0 text-[13px] text-[#2563EB] hover:text-[#4338CA] transition-colors font-medium"
                         >
                           Undo
                         </button>
@@ -496,7 +496,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                     ) : (
                       <button
                         onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                        className="w-full px-4 py-2 border border-[#4F46E5] text-[#4F46E5] text-[14px] font-[500] rounded-full hover:bg-[rgba(79,70,229,0.05)] transition-colors"
+                        className="w-full px-4 py-2 border border-[#2563EB] text-[#2563EB] text-[14px] font-[500] rounded-full hover:bg-[rgba(37,99,235,0.05)] transition-colors"
                       >
                         Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
                       </button>
@@ -523,7 +523,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+              className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
             >
               Go to Prep →
             </button>

@@ -16,7 +16,6 @@
 | `pdf-parse` | Extract text from PDF uploads |
 | `mammoth` | Extract text from DOCX uploads |
 | `cheerio` or `node-html-parser` | Strip HTML from fetched JD URLs |
-| `lucide-react` | Sidebar navigation icons |
 
 ---
 

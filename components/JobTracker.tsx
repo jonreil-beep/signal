@@ -24,7 +24,7 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
 
 const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string; border: string }> = {
   "Tracking":     { bg: "bg-white",                           text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
-  "Applied":      { bg: "bg-[rgba(79,70,229,0.08)]",           text: "text-[#4F46E5]",  border: "border-0" },
+  "Applied":      { bg: "bg-[rgba(37,99,235,0.08)]",           text: "text-[#2563EB]",  border: "border-0" },
   "Phone Screen": { bg: "bg-[rgba(124,139,154,0.08)]",        text: "text-[#7C8B9A]",  border: "border-0" },
   "Interview":    { bg: "bg-[rgba(75,155,126,0.08)]",         text: "text-[#4B9B7E]",  border: "border-0" },
   "Offer":        { bg: "bg-[rgba(75,155,126,0.12)]",         text: "text-[#4B9B7E]",  border: "border-0" },
@@ -109,7 +109,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
   const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
-    <div className="group relative bg-white rounded-xl px-6 pt-5 pb-5 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div className="group relative bg-white rounded-xl px-7 pt-6 pb-6 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -131,7 +131,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="text-[15px] font-[500] text-[#111827] hover:text-[#4F46E5] transition-colors leading-snug truncate text-left"
+              className="text-[15px] font-[500] text-[#111827] hover:text-[#2563EB] transition-colors leading-snug truncate text-left"
             >
               {job.label}
             </button>
@@ -163,7 +163,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors whitespace-nowrap"
+            className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors whitespace-nowrap"
           >
             Go to Prep →
           </button>
@@ -189,7 +189,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             <select
               value={job.applicationStatus}
               onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#4F46E5] ${statusStyle.bg} ${statusStyle.text}`}
+              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none transition-all hover:opacity-80 focus:ring-0 focus:border-[#2563EB] ${statusStyle.bg} ${statusStyle.text}`}
             >
               {APPLICATION_STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -270,7 +270,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
                 setShowDeadlineInput(false);
               }}
               onBlur={() => setShowDeadlineInput(false)}
-              className="text-xs border border-[#D1D5DB] rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-[#4F46E5]"
+              className="text-xs border border-[#D1D5DB] rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB]"
             />
           ) : job.deadline ? (
             <button
@@ -311,7 +311,7 @@ function JobCard({ job, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob,
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[14px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#4F46E5] transition-colors"
+            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[14px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#2563EB] transition-colors"
           />
         </div>
       )}
@@ -386,7 +386,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
             >
               Add your profile
             </button>
@@ -396,7 +396,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
             >
               Score a job
             </button>
@@ -428,7 +428,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* ── Search row ── */}
       <div className="relative">
         <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -439,7 +439,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs..."
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#4F46E5] transition-colors"
+          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-colors"
           style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}
         />
         {searchQuery && (
@@ -509,7 +509,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           </p>
           <button
             onClick={clearFilters}
-            className="text-[14px] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
+            className="text-[14px] text-[#2563EB] hover:text-[#4338CA] transition-colors"
           >
             Clear filters
           </button>
@@ -547,7 +547,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           <p className="text-[14px] text-[#9CA3AF]">No jobs match your filters.</p>
           <button
             onClick={clearFilters}
-            className="mt-2 text-[14px] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
+            className="mt-2 text-[14px] text-[#2563EB] hover:text-[#4338CA] transition-colors"
           >
             Clear filters →
           </button>

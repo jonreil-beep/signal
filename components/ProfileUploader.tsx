@@ -118,7 +118,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
               isDragging
-                ? "border-[rgba(79,70,229,0.5)] bg-[rgba(79,70,229,0.04)]"
+                ? "border-[rgba(37,99,235,0.5)] bg-[rgba(37,99,235,0.04)]"
                 : "border-[#D1D5DB] hover:border-[#6B7280] hover:bg-[#F9FAFB]"
             }`}
           >
@@ -137,7 +137,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
               </div>
               <div>
                 <p className="text-[14px] font-medium text-[#374151]">
-                  <span className="text-[#4F46E5]">Click to upload</span> or drag and drop
+                  <span className="text-[#2563EB]">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-[13px] text-[#9CA3AF] mt-1">PDF or DOCX · max 4MB</p>
               </div>
@@ -171,7 +171,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onChange={(e) => { setPastedText(e.target.value); setConfirmed(false); }}
             placeholder="Paste the full text of your resume here…"
             rows={14}
-            className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#4F46E5] resize-y placeholder:text-[#9CA3AF] transition-colors"
+            className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB] resize-y placeholder:text-[#9CA3AF] transition-colors"
           />
         </div>
       )}
@@ -198,7 +198,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             className={`px-5 py-2 rounded-full text-[14px] font-[500] transition-all ${
               confirmed
                 ? "bg-[#4B9B7E] text-white cursor-default"
-                : "bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white hover:from-[#4338CA] hover:to-[#6D28D9]"
+                : "bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white hover:from-[#1D4ED8] hover:to-[#4338CA]"
             }`}
           >
             {confirmed ? "✓ Profile confirmed" : "Confirm Profile"}

@@ -62,7 +62,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
   const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-[rgba(136,136,136,0.10)] text-[#888888]";
 
   return (
-    <div className="bg-white rounded-xl p-6 space-y-4 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div className="bg-white rounded-xl p-7 space-y-5 transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
         <p className="text-[16px] font-[500] text-[#111827] leading-snug">{clusterName}</p>
@@ -77,7 +77,7 @@ function ClusterCard({ clusterName, confidence }: { clusterName: string; confide
         value={modifier}
         onChange={(e) => setModifier(e.target.value)}
         placeholder="Add a city or industry (optional)"
-        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#4F46E5] placeholder:text-[#9CA3AF] transition-colors"
+        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#2563EB] placeholder:text-[#9CA3AF] transition-colors"
       />
 
       {/* Search buttons — equal visual weight */}
@@ -131,7 +131,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-[14px] font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-[14px] font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
         >
           Go to Profile →
         </button>
@@ -144,7 +144,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <p className="text-[14px] text-[#6B7280]">
         Your best-fit role clusters — search for open positions directly from here.
       </p>

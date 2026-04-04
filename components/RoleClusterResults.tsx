@@ -58,22 +58,22 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
+    <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-6">
 
       {/* Left column — Role clusters */}
       <div>
         <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
           Best-Fit Role Clusters
         </p>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {result.role_clusters.map((cluster, i) => {
             const rec = cluster.recommendation
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
             return (
-              <div key={i} className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+              <div key={i} className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                 {/* Header row */}
-                <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex items-start justify-between gap-3 mb-3">
                   <h4 className="text-base font-[500] text-[#111827] leading-snug">{cluster.name}</h4>
                   <div className="flex items-center gap-2 shrink-0">
                     {rec && (
@@ -124,8 +124,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       </div>
 
       {/* Right column — Strengths + Risks + optional extra */}
-      <div className="space-y-3">
-        <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+      <div className="space-y-4">
+        <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Core Strengths
           </p>
@@ -139,7 +139,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+        <div className="bg-white rounded-xl p-7" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
           <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
             Positioning Risks
           </p>

@@ -911,7 +911,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-semibold rounded-xl hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-semibold rounded-xl hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save my progress"}
                 </button>
@@ -1003,7 +1003,7 @@ export default function Home() {
                   {!clusterResult && !isAnalyzing && (
                     <button
                       onClick={handleAnalyze}
-                      className="text-sm font-[500] text-[#4F46E5] hover:text-[#4338CA] transition-colors"
+                      className="text-sm font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
                     >
                       Analyze →
                     </button>
@@ -1040,7 +1040,7 @@ export default function Home() {
                       </div>
                       <button
                         onClick={() => setUpdatingProfile(true)}
-                        className="shrink-0 text-sm text-[#4F46E5] hover:text-[#4338CA] font-medium transition-colors"
+                        className="shrink-0 text-sm text-[#2563EB] hover:text-[#4338CA] font-medium transition-colors"
                       >
                         Update
                       </button>
@@ -1103,7 +1103,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 pt-2">
                   <button
                     onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
                   >
                     Save &amp; Reanalyze
                   </button>
@@ -1133,10 +1133,10 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && (
-              <div className="space-y-4">
+              <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline dark card — full width ── */}
-                <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(75,155,126,0.04) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
+                <div className="rounded-xl p-7" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
                   <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
                     Your Recommended LinkedIn Headline
                   </p>
@@ -1173,7 +1173,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-[500] rounded-xl hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-[500] rounded-xl hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1224,7 +1224,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1261,7 +1261,7 @@ export default function Home() {
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors whitespace-nowrap"
+                          className="px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
@@ -1357,7 +1357,7 @@ export default function Home() {
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-sm font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-sm font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1401,7 +1401,7 @@ function EmptyState({
       <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-white text-base font-[500] rounded-full hover:from-[#4338CA] hover:to-[#6D28D9] transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#2563EB] to-[#4F46E5] text-white text-base font-[500] rounded-full hover:from-[#1D4ED8] hover:to-[#4338CA] transition-colors"
       >
         {action} →
       </button>
@@ -1424,7 +1424,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
     <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
       {/* Angle label + char count */}
       <div className="flex items-center justify-between gap-3 mb-2.5">
-        <span className="text-xs font-medium text-[#4F46E5] bg-[rgba(79,70,229,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(79,70,229,0.15)]">
+        <span className="text-xs font-medium text-[#2563EB] bg-[rgba(37,99,235,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(37,99,235,0.15)]">
           {headline.angle}
         </span>
         <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
@@ -1436,7 +1436,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 text-sm font-medium text-[#4F46E5] hover:text-[#4338CA] transition-colors"
+        className="flex items-center gap-1.5 text-sm font-medium text-[#2563EB] hover:text-[#4338CA] transition-colors"
       >
         {copied ? (
           <>
