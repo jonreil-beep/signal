@@ -1186,7 +1186,7 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-xl hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                              className="shrink-0 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1370,7 +1370,7 @@ export default function Home() {
               {trackedJobs.length > 0 && (
                 <button
                   onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                  className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
                 >
                   Score a job →
                 </button>
@@ -1411,11 +1411,11 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="text-base font-[500] text-brand-text">{message}</p>
-      <p className="text-base text-brand-text/50 mt-1 max-w-xs mx-auto">{sub}</p>
+      <p className="text-base font-[500] text-[#111827]">{message}</p>
+      <p className="text-sm text-[#9CA3AF] mt-2 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+        className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
       >
         {action} →
       </button>

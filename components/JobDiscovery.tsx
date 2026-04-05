@@ -109,7 +109,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
               href={buildXRayUrl(ats.domain, clusterName, modifier)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center px-3 py-1.5 border border-[#D1D5DB] text-[#374151] text-[13px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center justify-center px-3 py-1 border border-[#D1D5DB] text-[#374151] text-xs font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
             >
               {ats.label}
             </a>
@@ -125,8 +125,8 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
   if (!clusterResult) {
     return (
       <div className="text-center py-20">
-        <p className="text-[14px] font-[500] text-[#111827]">Analyze your profile first</p>
-        <p className="text-[14px] text-[#9CA3AF] mt-1 max-w-xs mx-auto">
+        <p className="text-base font-[500] text-[#111827]">Analyze your profile first</p>
+        <p className="text-sm text-[#9CA3AF] mt-2 max-w-xs mx-auto">
           Run the profile analysis to get role clusters — this tab uses them to build your search terms.
         </p>
         <button

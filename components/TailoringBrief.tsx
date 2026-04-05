@@ -94,7 +94,7 @@ function PrimaryCopyButton({ getText, label = "Copy" }: { getText: () => string;
   return (
     <button
       onClick={handleCopy}
-      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[14px] font-[500] transition-colors ${
+      className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-[500] transition-colors ${
         copied
           ? "bg-status-apply/10 text-status-apply"
           : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB] hover:text-[#374151]"
@@ -338,8 +338,8 @@ export default function TailoringBrief({
   if (!profileText) {
     return (
       <div className="text-center py-20">
-        <p className="text-[14px] font-[500] text-[#111827]">Profile required</p>
-        <p className="text-[14px] text-[#9CA3AF] mt-1">Upload your resume in the Profile tab first.</p>
+        <p className="text-base font-[500] text-[#111827]">Profile required</p>
+        <p className="text-sm text-[#9CA3AF] mt-2">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
           className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
@@ -787,7 +787,7 @@ export default function TailoringBrief({
                 {hasAnyContent && (
                   <button
                     onClick={handleExport}
-                    className="flex items-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#6B7280] text-[14px] font-[500] rounded-full hover:border-[#9CA3AF] hover:text-[#374151] transition-colors"
+                    className="flex items-center gap-1.5 px-5 py-2 border border-[#D1D5DB] text-[#6B7280] text-[14px] font-[500] rounded-full hover:border-[#9CA3AF] hover:text-[#374151] transition-colors"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
