@@ -105,7 +105,15 @@ export default function Home() {
     if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
 
     // Restore guest "dismissed landing" state so refresh doesn't kick them back to landing
-    if (sessionStorage.getItem("signal-show-landing") === "false") setShowLanding(false);
+    // Also support ?skip=1 from external links (e.g. How It Works "Try without signing up")
+    const skipParam = new URLSearchParams(window.location.search).get("skip");
+    if (sessionStorage.getItem("signal-show-landing") === "false" || skipParam === "1") {
+      setShowLanding(false);
+      if (skipParam === "1") {
+        sessionStorage.setItem("signal-show-landing", "false");
+        window.history.replaceState({}, "", "/");
+      }
+    }
 
     const savedJobId = sessionStorage.getItem("signal-active-job-id");
     if (savedJobId) setActiveJobId(savedJobId);

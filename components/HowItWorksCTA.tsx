@@ -97,7 +97,7 @@ export default function HowItWorksCTA() {
         </button>
       </div>
       {error && <p className="text-[13px] text-red-500">{error}</p>}
-      <Link href="/" className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
+      <Link href="/?skip=1" className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
         Try without signing up
       </Link>
     </div>
