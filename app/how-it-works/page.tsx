@@ -16,7 +16,7 @@ export default function HowItWorksPage() {
         rightSlot={<BackToAppLink light />}
       />
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
+      <main className="max-w-4xl mx-auto px-6 py-12">
 
         {/* Section 1 — Hero */}
         <div className="mb-10">
@@ -34,10 +34,7 @@ export default function HowItWorksPage() {
           <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-6">
             How it works
           </p>
-          <div
-            className="px-7 py-6 space-y-6"
-            style={{ background: "linear-gradient(to bottom, #ffffff, #EDEDF3)" }}
-          >
+          <div className="space-y-6">
             {[
               {
                 n: 1,
