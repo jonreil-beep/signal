@@ -854,7 +854,7 @@ export default function Home() {
               {magicLinkError && (
                 <p className="text-sm text-red-400">{magicLinkError}</p>
               )}
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 mt-6">
                 <Link
                   href="/how-it-works"
                   className="text-sm text-white/55 hover:text-white/80 transition-colors"
