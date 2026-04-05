@@ -893,7 +893,7 @@ export default function Home() {
   // ── App shell ──
   const guestBanner = !user ? (
     <div className="border-b border-[#E5E7EB] bg-white">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8 lg:px-12 py-4">
+      <div className="max-w-[1280px] mx-auto px-12 py-4">
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">

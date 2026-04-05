@@ -368,7 +368,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           ].map(({ step, title, body, done }) => (
             <div key={step} className={`rounded-xl p-5 ${done ? "bg-[rgba(75,155,126,0.06)]" : "bg-white"}`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
               <div className="flex items-center gap-2.5 mb-3">
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#4B9B7E] text-white" : "bg-[#111827] text-white"}`}>
+                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#4B9B7E] text-white" : "bg-[#1D4ED8] text-white"}`}>
                   {done ? (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                       <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
