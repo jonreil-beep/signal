@@ -8,30 +8,34 @@ export const metadata = {
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-brand-bg">
+    <div className="min-h-screen bg-white">
 
-      <AppHeader logoSlot={<LogoLink />} rightSlot={<BackToAppLink />} />
+      <AppHeader
+        light
+        logoSlot={<LogoLink light />}
+        rightSlot={<BackToAppLink light />}
+      />
 
       <main className="max-w-4xl mx-auto px-6 py-16">
 
         {/* Section 1 — Hero */}
         <div className="mb-16">
-          <h1 className="text-5xl font-bold text-brand-text tracking-tight mb-4">
+          <h1 className="text-5xl font-bold text-[#111827] tracking-tight mb-4">
             A better way to job search
           </h1>
-          <p className="text-2xl text-brand-text/60 leading-relaxed max-w-2xl">
+          <p className="text-2xl text-[#6B7280] leading-relaxed max-w-2xl">
             Most experienced professionals don&apos;t lose opportunities because they lack experience.
             They lose them because the fit is unclear, the framing is generic, or they spend time
             on roles that were never a real match. Signal is built to fix that.
           </p>
         </div>
 
-        {/* Section 2 — Who It's For */}
+        {/* Section 2 — Who It's For (intentionally dark contrast card) */}
         <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+          <h2 className="text-[12px] font-[500] tracking-[0.06em] uppercase text-[#9CA3AF] mb-6">
             Who it&apos;s for
           </h2>
-          <div className="bg-brand-text rounded-2xl p-8">
+          <div className="bg-[#111827] rounded-xl p-8">
             <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
               Signal is built for experienced professionals making a deliberate move —
               especially people whose backgrounds are strong, but not easy to translate
@@ -45,7 +49,7 @@ export default function HowItWorksPage() {
                 "You're tired of generic advice that misses the nuance of your background",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-base text-white/60">
-                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-brand-accent/60" />
+                  <span className="mt-[7px] shrink-0 w-1.5 h-1.5 rounded-full bg-white/30" />
                   {item}
                 </li>
               ))}
@@ -55,7 +59,7 @@ export default function HowItWorksPage() {
 
         {/* Section 3 — How It Works */}
         <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-10">
+          <h2 className="text-[12px] font-[500] tracking-[0.06em] uppercase text-[#9CA3AF] mb-10">
             How it works
           </h2>
           <div className="space-y-10">
@@ -84,7 +88,7 @@ export default function HowItWorksPage() {
 
         {/* Section 4 — What Makes It Different */}
         <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-8">
+          <h2 className="text-[12px] font-[500] tracking-[0.06em] uppercase text-[#9CA3AF] mb-8">
             What makes it different
           </h2>
           <div className="space-y-8">
@@ -107,9 +111,9 @@ export default function HowItWorksPage() {
               },
             ].map(({ bold, plain }) => (
               <div key={bold} className="flex gap-5">
-                <div className="shrink-0 mt-1 w-1 rounded-full bg-brand-text/15 self-stretch" />
-                <p className="text-base text-brand-text/70 leading-relaxed max-w-xl">
-                  <span className="font-semibold text-brand-text">{bold}</span>
+                <div className="shrink-0 mt-1 w-[3px] rounded-full bg-[#D1D5DB] self-stretch" />
+                <p className="text-base text-[#6B7280] leading-relaxed max-w-xl">
+                  <span className="font-semibold text-[#111827]">{bold}</span>
                   {" "}{plain}
                 </p>
               </div>
@@ -119,7 +123,7 @@ export default function HowItWorksPage() {
 
         {/* Section 5 — What's in a Prep Guide */}
         <section className="mb-16">
-          <h2 className="text-sm font-medium tracking-[0.06em] uppercase text-brand-text/40 mb-6">
+          <h2 className="text-[12px] font-[500] tracking-[0.06em] uppercase text-[#9CA3AF] mb-6">
             What&apos;s in a prep guide
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -133,9 +137,13 @@ export default function HowItWorksPage() {
               { label: "Follow-up templates", detail: "A thank-you note and check-in email ready to send after your interview" },
               { label: "Export", detail: "Download everything as a formatted text file — one document, ready to reference anywhere" },
             ].map(({ label, detail }) => (
-              <div key={label} className="bg-white rounded-2xl p-5 shadow">
-                <p className="text-sm font-semibold text-brand-text mb-1">{label}</p>
-                <p className="text-sm text-brand-text/50 leading-relaxed">{detail}</p>
+              <div
+                key={label}
+                className="bg-white rounded-xl p-5 border border-[#E5E7EB]"
+                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+              >
+                <p className="text-[14px] font-[500] text-[#111827] mb-1">{label}</p>
+                <p className="text-[13px] text-[#6B7280] leading-relaxed">{detail}</p>
               </div>
             ))}
           </div>
@@ -152,12 +160,12 @@ export default function HowItWorksPage() {
 function Step({ n, title, body }: { n: number; title: string; body: string }) {
   return (
     <div className="flex gap-6">
-      <div className="shrink-0 w-8 h-8 rounded-full bg-brand-text flex items-center justify-center text-white text-sm font-bold">
+      <div className="shrink-0 w-8 h-8 rounded-full bg-[#111827] flex items-center justify-center text-white text-[13px] font-[600]">
         {n}
       </div>
       <div className="pt-0.5">
-        <h3 className="text-lg font-semibold text-brand-text mb-1.5">{title}</h3>
-        <p className="text-base text-brand-text/55 leading-relaxed max-w-xl">{body}</p>
+        <h3 className="text-[17px] font-[500] text-[#111827] mb-1.5">{title}</h3>
+        <p className="text-base text-[#6B7280] leading-relaxed max-w-xl">{body}</p>
       </div>
     </div>
   );

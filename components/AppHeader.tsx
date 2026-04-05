@@ -3,21 +3,25 @@ import SignalWordmark from "./SignalWordmark";
 
 /**
  * Shared header shell — bg, padding, max-width, and layout are defined here.
- * Change once and it applies to every page in the app.
  *
  * logoSlot  — left side (logo + tagline). Use LogoLink, LogoStatic, or a custom element.
  * rightSlot — right side (nav, auth controls, back link, etc.).
+ * light     — use white/light-bordered header instead of the dark default.
  */
 interface AppHeaderProps {
   logoSlot: React.ReactNode;
   rightSlot?: React.ReactNode;
-  /** Reduces header height to 52px — use for the logged-in app shell */
   compact?: boolean;
+  light?: boolean;
 }
 
-export default function AppHeader({ logoSlot, rightSlot, compact }: AppHeaderProps) {
+export default function AppHeader({ logoSlot, rightSlot, compact, light }: AppHeaderProps) {
   return (
-    <header className="bg-brand-text">
+    <header
+      className={light
+        ? "bg-white border-b border-[#E5E7EB]"
+        : "bg-brand-text"}
+    >
       <div className={`max-w-4xl mx-auto px-6 flex items-center justify-between ${compact ? "py-[14px]" : "py-5"}`}>
         {logoSlot}
         {rightSlot}
@@ -26,41 +30,49 @@ export default function AppHeader({ logoSlot, rightSlot, compact }: AppHeaderPro
   );
 }
 
-/**
- * Logo + tagline block where the wordmark links to "/" (e.g. /how-it-works).
- * Clicking anywhere in the block navigates home.
- */
-export function LogoLink() {
+/** Logo block (links to "/") — light or dark variant inferred from prop. */
+export function LogoLink({ light }: { light?: boolean }) {
   return (
     <Link href="/" className="block group">
-      <p className="text-xl font-bold text-white tracking-tight group-hover:text-white/80 transition-colors">
+      <p className={`text-[18px] font-[700] tracking-[0.14em] transition-colors ${
+        light
+          ? "text-[#111827] group-hover:text-[#374151]"
+          : "text-white group-hover:text-white/80"
+      }`}>
         <SignalWordmark />
       </p>
-      <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
+      <p className={`text-[13px] mt-0.5 ${light ? "text-[#9CA3AF]" : "text-white/40"}`}>
+        Smarter search for experienced professionals
+      </p>
     </Link>
   );
 }
 
-/**
- * Non-clickable logo + tagline block (e.g. /brand — stays on same page).
- */
-export function LogoStatic() {
+/** Non-clickable logo block (e.g. /brand). */
+export function LogoStatic({ light }: { light?: boolean }) {
   return (
     <div>
-      <p className="text-xl font-bold text-white tracking-tight">
+      <p className={`text-[18px] font-[700] tracking-[0.14em] ${light ? "text-[#111827]" : "text-white"}`}>
         <SignalWordmark />
       </p>
-      <p className="text-sm text-white/40 mt-0.5">Smarter search for experienced professionals</p>
+      <p className={`text-[13px] mt-0.5 ${light ? "text-[#9CA3AF]" : "text-white/40"}`}>
+        Smarter search for experienced professionals
+      </p>
     </div>
   );
 }
 
-/**
- * Standard "← Back to app" link used on all secondary pages.
- */
-export function BackToAppLink() {
+/** "← Back to app" link — light or dark variant. */
+export function BackToAppLink({ light }: { light?: boolean }) {
   return (
-    <Link href="/" className="text-sm text-white/50 hover:text-white/80 transition-colors">
+    <Link
+      href="/"
+      className={`text-[13px] font-[400] transition-colors ${
+        light
+          ? "text-[#9CA3AF] hover:text-[#6B7280]"
+          : "text-white/50 hover:text-white/80"
+      }`}
+    >
       ← Back to app
     </Link>
   );

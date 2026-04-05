@@ -39,36 +39,36 @@ export default function HowItWorksCTA() {
     }
   }
 
-  // Don't flash anything until we know auth state
   if (!checked) return null;
 
-  // Signed-in user — just go back to the app
+  // Signed-in user
   if (user) {
     return (
       <div className="flex flex-col items-start gap-3 pb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#111827] text-white text-[14px] font-[500] rounded-full hover:bg-[#1f2937] transition-colors"
         >
           Go to app →
         </Link>
-        <p className="text-base text-brand-text/40">Signed in as {user.email}</p>
+        <p className="text-[13px] text-[#9CA3AF]">Signed in as {user.email}</p>
       </div>
     );
   }
 
-  // Guest — sent confirmation
+  // Sent confirmation
   if (sent) {
     return (
       <div className="flex flex-col gap-3 pb-4 max-w-md">
-        <p className="text-base font-semibold text-brand-text">Check your inbox</p>
-        <p className="text-base text-brand-text/50">
-          We sent a sign-in link to <span className="font-medium text-brand-text">{email}</span>.
+        <p className="text-[15px] font-[500] text-[#111827]">Check your inbox</p>
+        <p className="text-[14px] text-[#6B7280] leading-relaxed">
+          We sent a sign-in link to{" "}
+          <span className="font-[500] text-[#111827]">{email}</span>.
           Click it to get started — your progress will be saved automatically.
         </p>
         <button
           onClick={() => { setSent(false); setEmail(""); }}
-          className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors w-fit"
+          className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors w-fit"
         >
           Use a different email
         </button>
@@ -76,28 +76,28 @@ export default function HowItWorksCTA() {
     );
   }
 
-  // Guest — sign-up form
+  // Sign-up form — stacked vertical pills, full-width
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="flex flex-col sm:flex-row gap-2 max-w-md">
+      <div className="flex flex-col gap-2 max-w-md w-full">
         <input
           type="email"
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          className="flex-1 px-4 py-3 border border-brand-text/15 rounded-2xl sm:rounded-full text-base bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+          className="w-full px-5 py-3.5 border border-[#D1D5DB] rounded-full text-[14px] text-[#111827] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:ring-0 focus:border-[#6B7280] transition-colors"
         />
         <button
           onClick={handleSend}
           disabled={sending || !email.trim()}
-          className="px-6 py-3 bg-brand-accent text-white text-base font-semibold rounded-2xl sm:rounded-full hover:bg-brand-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          className="w-full px-6 py-3 bg-[#111827] text-white text-[14px] font-[500] rounded-full hover:bg-[#1f2937] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         >
           {sending ? "Sending…" : "Get started →"}
         </button>
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
-      <Link href="/" className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors">
+      {error && <p className="text-[13px] text-red-500">{error}</p>}
+      <Link href="/" className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
         Try without signing up
       </Link>
     </div>
