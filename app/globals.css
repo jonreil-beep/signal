@@ -33,10 +33,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
+    font-family: 'Inter', system-ui, sans-serif !important;
   }
 
   body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif !important;
     background-color: #FFFFFF;
     color: #111827;
   }

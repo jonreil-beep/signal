@@ -352,8 +352,8 @@ export default function BrandGuidelines() {
         {/* Belief */}
         <div className="mb-4">
           <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Belief</p>
-          <div className="bg-brand-text rounded-2xl p-6">
-            <p className="text-base font-normal leading-[1.7] text-white/80">
+          <div className="bg-white rounded-2xl p-6 border border-[#E2E2E8]">
+            <p className="text-base font-normal leading-[1.7] text-brand-text/70">
               {BRAND_HOUSE.belief}
             </p>
           </div>
@@ -369,8 +369,8 @@ export default function BrandGuidelines() {
           </div>
           <div className="flex flex-col">
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-2">Brand Promise</p>
-            <div className="bg-brand-accent rounded-2xl p-5 flex-1">
-              <p className="text-base font-semibold text-white/90 leading-[1.6]">{BRAND_HOUSE.promise}</p>
+            <div className="bg-white rounded-2xl p-5 border border-[#E2E2E8] flex-1">
+              <p className="text-base font-normal text-brand-text leading-[1.6]">{BRAND_HOUSE.promise}</p>
             </div>
           </div>
         </div>
@@ -485,10 +485,10 @@ export default function BrandGuidelines() {
       <section>
         <SectionLabel>02 — Type Scale</SectionLabel>
         <h2 className="text-[20px] font-[500] leading-[1.3] text-brand-text mb-1">
-          DM Sans — Full Scale
+          Inter — Full Scale
         </h2>
         <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8">
-          Base 16px · 1.25 modular scale · DM Sans at 400/500/600/700
+          Base 16px · 1.25 modular scale · Inter at 400/500/600/700
         </p>
 
         <div className="space-y-1">
@@ -550,14 +550,14 @@ export default function BrandGuidelines() {
           Voice examples
         </h3>
         <div className="rounded-2xl overflow-hidden border border-[#E2E2E8]">
-          <div className="grid grid-cols-2 bg-brand-text">
+          <div className="grid grid-cols-2 bg-[#F8F9FA] border-b border-[#E2E2E8]">
             <div className="px-5 py-3">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-[#6B7280]">
                 Instead of this
               </p>
             </div>
-            <div className="px-5 py-3 border-l border-white/10">
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">
+            <div className="px-5 py-3 border-l border-[#E2E2E8]">
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-[#6B7280]">
                 Say this
               </p>
             </div>
@@ -631,21 +631,21 @@ export default function BrandGuidelines() {
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Primary — Pill CTA</p>
             <div className="bg-white rounded-2xl p-6 border border-[#E2E2E8] space-y-5">
               <div className="flex flex-wrap items-center gap-4">
-                <button className="px-6 py-3 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-semibold rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors">
+                <button className="px-6 py-3 bg-[#3B5BDB] text-white text-base font-semibold rounded-full hover:bg-[#3451C4] transition-colors">
                   Generate Brief
                 </button>
-                <button className="px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-semibold rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors">
+                <button className="px-5 py-2.5 bg-[#3B5BDB] text-white text-base font-semibold rounded-full hover:bg-[#3451C4] transition-colors">
                   Score This Job
                 </button>
-                <button className="inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-medium rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors">
+                <button className="inline-flex items-center gap-1 px-4 py-2 bg-[#3B5BDB] text-white text-base font-medium rounded-full hover:bg-[#3451C4] transition-colors">
                   Go to Prep →
                 </button>
-                <button className="px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-medium rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors">
+                <button className="px-4 py-2 bg-[#3B5BDB] text-white text-sm font-medium rounded-full hover:bg-[#3451C4] transition-colors">
                   Small variant
                 </button>
               </div>
               <p className="text-sm text-brand-text/40">
-                Use <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white rounded-full</code>. Font weight <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-semibold</code> for primary actions, <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-medium</code> for navigation CTAs.
+                Use <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">bg-[#3B5BDB] text-white rounded-full</code>. Font weight <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-semibold</code> for primary actions, <code className="font-mono bg-brand-text/6 px-1.5 py-0.5 rounded">font-medium</code> for navigation CTAs.
               </p>
             </div>
           </div>
@@ -655,10 +655,10 @@ export default function BrandGuidelines() {
             <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/30 mb-4">Disabled State</p>
             <div className="bg-white rounded-2xl p-6 border border-[#E2E2E8] space-y-5">
               <div className="flex flex-wrap items-center gap-4">
-                <button disabled className="px-5 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-semibold rounded-full opacity-40 cursor-not-allowed">
+                <button disabled className="px-5 py-2.5 bg-[#3B5BDB] text-white text-base font-semibold rounded-full opacity-40 cursor-not-allowed">
                   Score This Job
                 </button>
-                <button disabled className="px-4 py-2.5 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-base font-medium rounded-full opacity-40 disabled:opacity-40 disabled:cursor-not-allowed">
+                <button disabled className="px-4 py-2.5 bg-[#3B5BDB] text-white text-base font-medium rounded-full opacity-40 disabled:opacity-40 disabled:cursor-not-allowed">
                   Fetch
                 </button>
               </div>
@@ -749,14 +749,14 @@ export default function BrandGuidelines() {
           Photography Do&apos;s and Don&apos;ts
         </h3>
         <div className="rounded-2xl overflow-hidden border border-[#E2E2E8]">
-          <div className="grid grid-cols-2 bg-brand-text">
+          <div className="grid grid-cols-2 bg-[#F8F9FA] border-b border-[#E2E2E8]">
             <div className="px-5 py-3 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-status-apply shrink-0" />
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">Use</p>
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-[#6B7280]">Use</p>
             </div>
-            <div className="px-5 py-3 border-l border-white/10 flex items-center gap-2">
+            <div className="px-5 py-3 border-l border-[#E2E2E8] flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-status-stretch shrink-0" />
-              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-white/40">Avoid</p>
+              <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-[#6B7280]">Avoid</p>
             </div>
           </div>
           {PHOTO_DOS_DONTS.map((row, i) => (
