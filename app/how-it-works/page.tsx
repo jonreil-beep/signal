@@ -58,7 +58,7 @@ export default function HowItWorksPage() {
               },
             ].map(({ n, title, body }) => (
               <div key={n} className="flex gap-4">
-                <div className="shrink-0 w-6 h-6 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white text-[11px] font-[500] mt-0.5">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-[#374151] flex items-center justify-center text-white text-sm font-[500] mt-0.5">
                   {n}
                 </div>
                 <div>
