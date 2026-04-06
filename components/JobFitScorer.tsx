@@ -29,6 +29,14 @@ const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: st
   "Skip":                        { bg: "bg-[rgba(163,163,163,0.10)]",  text: "text-[#A3A3A3]",  ring: "ring-[rgba(163,163,163,0.25)]" },
 };
 
+// Dark-background pill variants for the hero card
+const RECOMMENDATION_DARK_STYLES: Record<string, { bg: string; color: string }> = {
+  "Apply Now":                   { bg: "rgba(74,222,128,0.15)",   color: "#4ADE80" },
+  "Apply with Tailoring":        { bg: "rgba(148,163,184,0.15)",  color: "#94A3B8" },
+  "Stretch — Proceed Carefully": { bg: "rgba(212,165,116,0.15)",  color: "#D4A574" },
+  "Skip":                        { bg: "rgba(156,163,175,0.15)",  color: "#9CA3AF" },
+};
+
 const MISMATCH_LABELS: Record<MismatchType, string> = {
   title:      "Title mismatch",
   comp:       "Comp gap likely",
@@ -414,49 +422,60 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             {/* Left column */}
             <div className="space-y-6">
               {/* Score + recommendation */}
-              <div id="score-result" className="rounded-xl p-7 result-scroll-target" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-                <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-2">
+              <div id="score-result" className="relative overflow-hidden rounded-xl result-scroll-target" style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", padding: "28px 32px" }}>
+                {/* Atmospheric glow */}
+                <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
+                <p className="relative text-[11px] font-[500] tracking-[0.05em] uppercase mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                   Overall Fit
                 </p>
                 {/* Score + badge on one line */}
-                <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className={`text-[32px] font-[600] tabular-nums ${scoreColor(result.overall_fit)}`}>
+                <div className="relative flex items-baseline gap-3 flex-wrap">
+                  <span className="text-[32px] font-[600] tabular-nums text-white">
                     {displayScore}
                   </span>
                   <span
-                    className="text-[16px] text-[#9CA3AF]"
+                    className="text-[16px]"
                     style={isRevealing ? {
+                      color: "rgba(255,255,255,0.4)",
                       opacity: 0,
                       animation: "fadeInUp 300ms ease-out forwards",
                       animationDelay: "400ms",
-                    } : {}}
+                    } : { color: "rgba(255,255,255,0.4)" }}
                   >/10</span>
-                  <span
-                    className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}
-                    style={isRevealing ? {
-                      opacity: 0,
-                      animation: "slideInRight 300ms ease-out forwards",
-                      animationDelay: "600ms",
-                    } : {}}
-                  >
-                    {result.recommendation}
-                  </span>
+                  {(() => {
+                    const dark = RECOMMENDATION_DARK_STYLES[result.recommendation] ?? { bg: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" };
+                    return (
+                      <span
+                        className="shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full"
+                        style={isRevealing ? {
+                          background: dark.bg,
+                          color: dark.color,
+                          opacity: 0,
+                          animation: "slideInRight 300ms ease-out forwards",
+                          animationDelay: "600ms",
+                        } : { background: dark.bg, color: dark.color }}
+                      >
+                        {result.recommendation}
+                      </span>
+                    );
+                  })()}
                 </div>
                 <p
-                  className="text-[14px] text-[#374151] mt-3 leading-snug"
+                  className="relative text-[14px] mt-3 leading-snug"
                   style={isRevealing ? {
+                    color: "rgba(255,255,255,0.7)",
                     opacity: 0,
                     animation: "fadeInUp 400ms ease-out forwards",
                     animationDelay: "800ms",
-                  } : {}}
+                  } : { color: "rgba(255,255,255,0.7)" }}
                 >
                   {result.summary}
                 </p>
                 {/* Mismatch type pills */}
                 {result.mismatch_types?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
+                  <div className="relative flex flex-wrap gap-1.5 mt-3">
                     {result.mismatch_types.map((t) => (
-                      <span key={t} className="text-[12px] font-[500] px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280]">
+                      <span key={t} className="text-[12px] font-[500] px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}>
                         {MISMATCH_LABELS[t]}
                       </span>
                     ))}

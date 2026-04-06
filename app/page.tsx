@@ -1161,12 +1161,14 @@ export default function Home() {
             {clusterResult && !isAnalyzing && (
               <div className="space-y-6">
 
-                {/* ── Recommended LinkedIn Headline dark card — full width ── */}
-                <div id="profile-result" className="rounded-xl p-7 result-scroll-target" style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(255,255,255,1) 70%)", boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-                  <p className="text-[12px] font-[500] uppercase tracking-[0.05em] text-[#6B7280] mb-2">
+                {/* ── Recommended LinkedIn Headline hero card — full width ── */}
+                <div id="profile-result" className="relative overflow-hidden rounded-xl result-scroll-target" style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", padding: "28px 32px" }}>
+                  {/* Atmospheric glow */}
+                  <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
+                  <p className="relative text-[11px] font-[500] uppercase tracking-[0.05em] mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                     Your Recommended LinkedIn Headline
                   </p>
-                  <p className="text-[20px] font-[500] text-[#111827] leading-[1.4]">
+                  <p className="relative text-[19px] font-[500] text-white leading-[1.45]">
                     {clusterResult.recommended_headline}
                   </p>
                 </div>
