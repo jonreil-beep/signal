@@ -910,21 +910,21 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-auto">
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <input
                   type="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="flex-1 sm:w-48 sm:flex-none px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+                  className="flex-1 h-10 px-3 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="px-4 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-semibold rounded-xl hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="h-10 px-4 shrink-0 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-sm font-semibold rounded-xl hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
-                  {sendingMagicLink ? "Sending…" : "Save my progress"}
+                  {sendingMagicLink ? "Sending…" : "Save progress"}
                 </button>
               </div>
               {magicLinkError && (
