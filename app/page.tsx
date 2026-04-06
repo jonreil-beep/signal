@@ -72,8 +72,7 @@ export default function Home() {
     resumeText: string; writingSample: string; pivotTarget: string;
   } | null>(null);
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
-  const [updatingProfile, setUpdatingProfile] = useState(false);
-  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileExpanded, setProfileExpanded] = useState<"none" | "view" | "update">("none");
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
@@ -457,7 +456,7 @@ export default function Home() {
     setAnalyzeError("");
     setHeadlineResult(null);
     setHeadlineError("");
-    setUpdatingProfile(false);
+    setProfileExpanded("none");
     if (user) {
       await supabase.from("profiles").upsert({ id: user.id, resume_text: text, cluster_result: null, updated_at: new Date().toISOString() });
     }
@@ -984,149 +983,163 @@ export default function Home() {
               </>
             )}
 
-            {/* Profile exists — collapsed status row */}
-            {profileText && !editingProfile && (
-              <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-xl border border-[rgba(26,26,26,0.12)] mb-6">
-                <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
-                  <span className="font-[500] text-brand-text">Your profile</span>
-                  <span className="text-brand-text/20">·</span>
-                  <span className="text-brand-text/50">
-                    {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
-                  </span>
-                  {writingSample.trim() && (
-                    <>
-                      <span className="text-brand-text/20">·</span>
-                      <span className="text-brand-text/50">Writing sample added</span>
-                    </>
-                  )}
-                  {pivotTarget.trim() && (
-                    <>
-                      <span className="text-brand-text/20">·</span>
-                      <span className="text-brand-text/50">Pivot target set</span>
-                    </>
-                  )}
-                  {clusterResult && (
-                    <>
-                      <span className="text-brand-text/20">·</span>
-                      <span className="text-xs text-brand-text/35">Analyzed</span>
-                    </>
-                  )}
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  {!clusterResult && !isAnalyzing && (
-                    <button
-                      onClick={handleAnalyze}
-                      className="text-sm font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
-                    >
-                      Analyze →
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setEditingProfile(true)}
-                    className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Profile exists — expanded editing state */}
-            {profileText && editingProfile && (
-              <div className="mb-6 space-y-4">
-                {/* Resume card */}
-                {!updatingProfile ? (
-                  <div className="rounded-xl bg-white p-5 border border-[rgba(26,26,26,0.12)]">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="text-base font-[500] text-brand-text">
-                          {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
-                        </p>
-                        <p className="mt-1.5 text-sm text-brand-text/40 font-mono leading-relaxed line-clamp-3">
-                          {profileText.slice(0, 240)}…
-                        </p>
-                        {!user && resumeSource === "file" && (
-                          <p className="mt-2 text-xs text-brand-text/40">
-                            Uploaded from file — re-upload if you refresh the page.
-                          </p>
-                        )}
-                      </div>
+            {/* Profile exists — summary row (always visible when profileText set) */}
+            {profileText && (
+              <div className="mb-6">
+                {/* ── Summary bar ── */}
+                <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-xl border border-[rgba(26,26,26,0.12)]">
+                  <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
+                    <span className="font-[500] text-brand-text">Your profile</span>
+                    <span className="text-brand-text/20">·</span>
+                    <span className="text-brand-text/50">
+                      {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
+                    </span>
+                    {writingSample.trim() && (
+                      <>
+                        <span className="text-brand-text/20">·</span>
+                        <span className="text-brand-text/50">Writing sample added</span>
+                      </>
+                    )}
+                    {pivotTarget.trim() && (
+                      <>
+                        <span className="text-brand-text/20">·</span>
+                        <span className="text-brand-text/50">Pivot target set</span>
+                      </>
+                    )}
+                    {clusterResult && (
+                      <>
+                        <span className="text-brand-text/20">·</span>
+                        <span className="text-xs text-brand-text/35">Analyzed</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    {!clusterResult && !isAnalyzing && (
                       <button
-                        onClick={() => setUpdatingProfile(true)}
-                        className="shrink-0 text-sm text-[#2563EB] hover:text-[#4338CA] font-medium transition-colors"
+                        onClick={handleAnalyze}
+                        className="text-sm font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
                       >
-                        Update
+                        Analyze →
                       </button>
+                    )}
+                    <button
+                      onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
+                      className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
+                    >
+                      {profileExpanded === "view" ? "Hide" : "View"}
+                    </button>
+                    <button
+                      onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
+                      className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
+                    >
+                      {profileExpanded === "update" ? "Cancel" : "Update"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* ── View: formatted resume text ── */}
+                {profileExpanded === "view" && (
+                  <div className="mt-3">
+                    <div
+                      className="overflow-y-auto rounded-lg p-6"
+                      style={{
+                        maxHeight: "400px",
+                        background: "#F9FAFB",
+                        border: "1px solid #E5E7EB",
+                        scrollbarWidth: "thin",
+                        scrollbarColor: "#D1D5DB transparent",
+                      }}
+                    >
+                      {profileText.split(/\n\n+/).map((para, pi) => (
+                        <p
+                          key={pi}
+                          className="mb-4 last:mb-0 text-[13px] leading-[1.6] text-[#374151]"
+                          style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+                        >
+                          {para.split(/\n/).map((line, li, arr) => (
+                            <span key={li}>
+                              {line}
+                              {li < arr.length - 1 && <br />}
+                            </span>
+                          ))}
+                        </p>
+                      ))}
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-sm text-brand-text/50">Upload or paste a new resume to replace the saved one.</p>
+                )}
+
+                {/* ── Update: full edit form ── */}
+                {profileExpanded === "update" && (
+                  <div className="mt-3 space-y-4">
+                    {/* Resume uploader */}
+                    <div className="rounded-xl bg-white p-5 border border-[rgba(26,26,26,0.12)]">
+                      <p className="text-sm text-brand-text/50 mb-4">Upload or paste a new resume to replace the saved one.</p>
+                      <ProfileUploader onProfileConfirmed={(text, source, fileName) => {
+                        handleProfileConfirmed(text, source, fileName);
+                        setProfileExpanded("none");
+                      }} />
+                      {!user && resumeSource === "file" && (
+                        <p className="mt-2 text-xs text-brand-text/40">
+                          Uploaded from file — re-upload if you refresh the page.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Writing sample */}
+                    <div>
+                      <div className="flex items-baseline justify-between mb-1.5">
+                        <label className="block text-sm font-medium text-brand-text">
+                          Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
+                        </label>
+                        {writingSample.trim() && (
+                          <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                        )}
+                      </div>
+                      <textarea
+                        value={writingSample}
+                        onChange={(e) => setWritingSample(e.target.value)}
+                        placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
+                        rows={3}
+                        className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                      />
+                    </div>
+
+                    {/* Pivot target */}
+                    <div>
+                      <div className="flex items-baseline justify-between mb-1.5">
+                        <label className="block text-sm font-medium text-brand-text">
+                          Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
+                        </label>
+                        {pivotTarget.trim() && (
+                          <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                        )}
+                      </div>
+                      <textarea
+                        value={pivotTarget}
+                        onChange={(e) => setPivotTarget(e.target.value)}
+                        placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
+                        rows={3}
+                        className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                      />
+                    </div>
+
+                    {/* Save & Reanalyze / Cancel */}
+                    <div className="flex items-center gap-4 pt-2">
                       <button
-                        onClick={() => setUpdatingProfile(false)}
+                        onClick={() => { setProfileExpanded("none"); handleAnalyze(); }}
+                        className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                      >
+                        Save &amp; Reanalyze
+                      </button>
+                      <button
+                        onClick={() => setProfileExpanded("none")}
                         className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
                       >
                         Cancel
                       </button>
                     </div>
-                    <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
                   </div>
                 )}
-
-                {/* Writing sample */}
-                <div>
-                  <div className="flex items-baseline justify-between mb-1.5">
-                    <label className="block text-sm font-medium text-brand-text">
-                      Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
-                    </label>
-                    {writingSample.trim() && (
-                      <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
-                    )}
-                  </div>
-                  <textarea
-                    value={writingSample}
-                    onChange={(e) => setWritingSample(e.target.value)}
-                    placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
-                    rows={3}
-                    className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
-                  />
-                </div>
-
-                {/* Pivot target */}
-                <div>
-                  <div className="flex items-baseline justify-between mb-1.5">
-                    <label className="block text-sm font-medium text-brand-text">
-                      Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
-                    </label>
-                    {pivotTarget.trim() && (
-                      <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
-                    )}
-                  </div>
-                  <textarea
-                    value={pivotTarget}
-                    onChange={(e) => setPivotTarget(e.target.value)}
-                    placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
-                    rows={3}
-                    className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
-                  />
-                </div>
-
-                {/* Save & Reanalyze / Cancel */}
-                <div className="flex items-center gap-4 pt-2">
-                  <button
-                    onClick={() => { setEditingProfile(false); setUpdatingProfile(false); handleAnalyze(); }}
-                    className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
-                  >
-                    Save &amp; Reanalyze
-                  </button>
-                  <button
-                    onClick={() => { setEditingProfile(false); setUpdatingProfile(false); }}
-                    className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
               </div>
             )}
 

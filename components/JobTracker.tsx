@@ -81,15 +81,17 @@ interface JobCardProps {
 }
 
 function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
-  const [showJD, setShowJD] = useState(false);
-  const [showNotes, setShowNotes] = useState(false);
+  const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
-  const [showOverflow, setShowOverflow] = useState(false);
-  const [showDeadlineInput, setShowDeadlineInput] = useState(false);
+  const showNotes = expanded === "notes";
+  const showJD = expanded === "jd";
+  const showDeadlineInput = expanded === "deadline";
+  function toggleExpanded(panel: "notes" | "jd" | "deadline") {
+    setExpanded(prev => prev === panel ? "none" : panel);
+  }
   const [editingLabel, setEditingLabel] = useState(false);
   const [labelValue, setLabelValue] = useState(job.label);
   const labelInputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => { if (!editingLabel) setLabelValue(job.label); }, [job.label, editingLabel]);
   useEffect(() => { if (editingLabel) labelInputRef.current?.select(); }, [editingLabel]);
 
@@ -105,9 +107,6 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
     { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]", ring: "ring-[#E5E7EB]" };
   const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
   const isScoreStale = !!profileUpdatedAt && new Date(job.scoredAt) < profileUpdatedAt;
-
-  // Overflow row is always rendered when something is expanded so actions stay accessible
-  const overflowVisible = showOverflow || showNotes || showJD || showDeadlineInput;
 
   return (
     <div className="group relative bg-white rounded-xl px-7 pt-6 pb-6 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
@@ -233,34 +232,26 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
           })()}
         </div>
 
-        {/* ••• overflow toggle — fades in on hover, stays visible when open */}
-        <button
-          onClick={() => setShowOverflow((v) => !v)}
-          className={`shrink-0 text-[#9CA3AF] hover:text-[#6B7280] transition-all text-base leading-none tracking-widest px-1 ${
-            overflowVisible ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-          }`}
-          aria-label="More options"
-        >
-          •••
-        </button>
       </div>
 
-      {/* ── OVERFLOW ROW: secondary actions (Notes, View JD, Deadline, Remove) ── */}
-      {overflowVisible && (
-        <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#F3F4F6]">
+      {/* ── ROW 3: always-visible action row ── */}
+      <div className="flex items-center mt-3 pt-3 border-t border-[#F3F4F6]">
+        {/* Left group: Notes · View JD · Deadline */}
+        <div className="flex items-center gap-1.5 flex-1">
           <button
-            onClick={() => setShowNotes((v) => !v)}
-            className={`text-[13px] font-medium transition-colors ${showNotes ? "text-[#374151]" : "text-[#9CA3AF] hover:text-[#6B7280]"}`}
+            onClick={() => toggleExpanded("notes")}
+            className={`text-xs font-[400] transition-colors ${showNotes ? "text-[#111827]" : "text-[#6B7280] hover:text-[#111827]"}`}
           >
-            {showNotes ? "Hide Notes" : "Notes"}
+            {showNotes ? "Hide Notes" : job.notes?.trim() ? "Notes (1)" : "Notes"}
           </button>
+          <span className="text-[#D1D5DB] text-xs mx-1">·</span>
           <button
-            onClick={() => setShowJD((v) => !v)}
-            className={`text-[13px] font-medium transition-colors ${showJD ? "text-[#374151]" : "text-[#9CA3AF] hover:text-[#6B7280]"}`}
+            onClick={() => toggleExpanded("jd")}
+            className={`text-xs font-[400] transition-colors ${showJD ? "text-[#111827]" : "text-[#6B7280] hover:text-[#111827]"}`}
           >
             {showJD ? "Hide JD" : "View JD"}
           </button>
-          {/* Deadline in overflow */}
+          <span className="text-[#D1D5DB] text-xs mx-1">·</span>
           {showDeadlineInput ? (
             <input
               type="date"
@@ -269,63 +260,80 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
               onChange={(e) => {
                 const val = e.target.value || null;
                 onDeadlineChange(job.id, val);
-                setShowDeadlineInput(false);
+                setExpanded("none");
               }}
-              onBlur={() => setShowDeadlineInput(false)}
-              className="text-xs border border-[#D1D5DB] rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB]"
+              onBlur={() => setExpanded("none")}
+              className="text-xs border border-[#D1D5DB] rounded-md px-2 py-0.5 bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB]"
             />
           ) : job.deadline ? (
             <button
               onClick={() => onDeadlineChange(job.id, null)}
-              className="flex items-center gap-1 text-xs text-[#9CA3AF] hover:text-[#888888] transition-colors group/dl"
+              className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#111827] transition-colors group/dl"
               title="Clear deadline"
             >
               <span>{formatDeadlineDate(job.deadline)}</span>
-              <span className="opacity-0 group-hover/dl:opacity-100 transition-opacity">×</span>
+              <span className="opacity-0 group-hover/dl:opacity-100 transition-opacity text-[#9CA3AF]">×</span>
             </button>
           ) : (
             <button
-              onClick={() => setShowDeadlineInput(true)}
-              className="text-[13px] font-medium text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+              onClick={() => toggleExpanded("deadline")}
+              className="text-xs font-[400] text-[#6B7280] hover:text-[#111827] transition-colors"
             >
               + Deadline
             </button>
           )}
-          {/* Remove — pushed right */}
-          <div className="flex-1" />
-          <button
-            onClick={() => onRemoveJob(job.id)}
-            className="text-[13px] text-[#DC2626] hover:bg-[rgba(220,38,38,0.05)] transition-colors px-2 py-0.5 rounded"
-            aria-label="Remove job"
-          >
-            Remove
-          </button>
         </div>
-      )}
+        {/* Right: Remove */}
+        <button
+          onClick={() => onRemoveJob(job.id)}
+          className="text-xs font-[400] text-[#DC2626] hover:bg-[rgba(220,38,38,0.05)] transition-colors px-2 py-0.5 rounded"
+          aria-label="Remove job"
+        >
+          Remove
+        </button>
+      </div>
 
       {/* ── Expandable Notes ── */}
       {showNotes && (
-        <div className="mt-4 pt-4 border-t border-[#F3F4F6]">
-          <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-2">Notes</p>
+        <div className="mt-3">
           <textarea
             value={notesValue}
             onChange={(e) => setNotesValue(e.target.value)}
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[14px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#2563EB] transition-colors"
+            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[13px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#2563EB] transition-colors"
           />
         </div>
       )}
 
       {/* ── Expandable JD ── */}
       {showJD && (
-        <div className="mt-4 pt-4 border-t border-[#F3F4F6]">
-          <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-2">Job Description</p>
-          <div className="max-h-56 overflow-y-auto rounded-lg bg-[#F9FAFB] border border-[#E5E7EB] p-3.5">
-            <pre className="text-xs text-[#6B7280] whitespace-pre-wrap font-mono leading-relaxed">
-              {job.jobDescription}
-            </pre>
+        <div className="mt-4">
+          <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-3">Job Description</p>
+          <div
+            className="overflow-y-auto rounded-lg px-6 py-5"
+            style={{
+              maxHeight: "500px",
+              background: "#F9FAFB",
+              border: "1px solid #E5E7EB",
+              scrollbarWidth: "thin",
+              scrollbarColor: "#D1D5DB transparent",
+            }}
+          >
+            {(job.jobDescription ?? "").split(/\n\n+/).map((para, pi) => (
+              <p
+                key={pi}
+                className="mb-3 last:mb-0 text-[13px] leading-[1.7] text-[#374151]"
+              >
+                {para.split(/\n/).map((line, li, arr) => (
+                  <span key={li}>
+                    {line}
+                    {li < arr.length - 1 && <br />}
+                  </span>
+                ))}
+              </p>
+            ))}
           </div>
         </div>
       )}
