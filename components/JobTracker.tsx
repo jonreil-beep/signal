@@ -109,7 +109,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
   const isScoreStale = !!profileUpdatedAt && new Date(job.scoredAt) < profileUpdatedAt;
 
   return (
-    <div className="group relative bg-white rounded-xl px-7 pt-6 pb-6 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div className="group relative bg-white rounded-xl px-4 sm:px-7 pt-5 sm:pt-6 pb-5 sm:pb-6 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -466,8 +466,8 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
       </div>
 
       {/* ── Status filter pills + sort toggle ── */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mb-1 scrollbar-none" style={{ scrollbarWidth: "none" }}>
         {(["All", ...APPLICATION_STATUSES] as StatusFilter[]).map((s) => {
           const isActive = statusFilter === s;
           const cfg = s !== "All" ? STATUS_CONFIG[s] : null;
@@ -475,7 +475,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`text-[13px] font-[400] px-3 py-1 rounded-full transition-all ${
+              className={`shrink-0 text-[13px] font-[400] px-3 py-1 rounded-full transition-all ${
                 isActive
                   ? s === "All"
                     ? "bg-[#F3F4F6] text-[#111827] border border-[#D1D5DB]"
@@ -494,7 +494,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
         })}
         </div>
         {/* Sort toggle */}
-        <div className="flex items-center gap-1 bg-white rounded-lg border border-[#E5E7EB] p-1 shrink-0">
+        <div className="flex items-center gap-1 bg-white rounded-lg border border-[#E5E7EB] p-1 shrink-0 self-start sm:self-auto">
           {(["date", "score", "deadline"] as SortBy[]).map((s) => (
             <button
               key={s}

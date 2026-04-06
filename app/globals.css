@@ -34,12 +34,16 @@
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
     font-family: 'Inter', system-ui, sans-serif !important;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
     font-family: 'Inter', system-ui, sans-serif !important;
     background-color: #FFFFFF;
     color: #111827;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   /* Scrollbar styling */

@@ -900,7 +900,7 @@ export default function Home() {
   // ── App shell ──
   const guestBanner = !user ? (
     <div className="border-b border-[#E5E7EB] bg-white">
-      <div className="max-w-[1280px] mx-auto px-12 py-4">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-12 py-4">
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
@@ -909,7 +909,7 @@ export default function Home() {
                 Enter your email to save your profile, scores, and prep guides — free, no password.
               </p>
             </div>
-            <div className="flex flex-col gap-1.5 shrink-0">
+            <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-auto">
               <div className="flex gap-2">
                 <input
                   type="email"
@@ -917,7 +917,7 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="w-48 px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+                  className="flex-1 sm:w-48 sm:flex-none px-3 py-2 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}

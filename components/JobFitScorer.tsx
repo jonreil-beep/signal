@@ -606,7 +606,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           </div>
 
           {/* Bottom nav CTAs — three-column row */}
-          <div className="flex items-center justify-between gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
             <button
               onClick={handleReset}
               className="text-[14px] text-[#6B7280] hover:text-[#111827] transition-colors"

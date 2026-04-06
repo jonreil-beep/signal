@@ -743,7 +743,7 @@ export default function TailoringBrief({
           <button
             key={stage.id}
             onClick={() => setAppStage(stage.id)}
-            className={`flex-1 rounded-full px-4 py-2.5 text-center text-[14px] transition-all duration-150 focus:outline-none focus:ring-0 ${
+            className={`flex-1 rounded-full px-2 sm:px-4 py-2 sm:py-2.5 text-center text-[11px] sm:text-[14px] transition-all duration-150 focus:outline-none focus:ring-0 ${
               appStage === stage.id
                 ? "bg-white font-[500] text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
                 : "font-[400] text-[#9CA3AF] hover:bg-white/50 hover:text-[#6B7280]"

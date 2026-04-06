@@ -260,7 +260,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MAIN CONTENT — flat content area on #F9FAFB background
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 md:pl-[72px] lg:pl-60" style={{ background: "linear-gradient(to bottom, #ffffff 0%, #EDEDF3 100%)", minHeight: "100vh" }}>
+      <div className="flex-1 md:pl-[72px] lg:pl-60 overflow-x-hidden" style={{ background: "linear-gradient(to bottom, #ffffff 0%, #EDEDF3 100%)", minHeight: "100vh" }}>
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 
@@ -268,7 +268,7 @@ export default function AppShell({
         {guestBanner}
 
         {/* Content */}
-        <main className="max-w-[1280px] mx-auto px-12 py-10">
+        <main className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-12 py-6 lg:py-10">
           {children}
         </main>
       </div>
