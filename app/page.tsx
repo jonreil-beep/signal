@@ -841,21 +841,21 @@ export default function Home() {
 
           {!magicLinkSent ? (
             <div className="space-y-3">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3 md:flex-row md:gap-2 md:items-center">
                 <input
                   type="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="w-full px-5 py-3.5 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-full text-base focus:outline-none focus:ring-0 focus:border-white/50 transition-colors"
+                  className="w-full md:flex-1 px-5 py-3.5 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-full text-base focus:outline-none focus:ring-0 focus:border-white/50 transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="w-full px-6 py-3 bg-white text-[#111827] text-base font-semibold rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="w-full md:w-auto px-8 py-3 bg-white text-[#111827] text-base font-semibold rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
-                  {sendingMagicLink ? "Sending…" : "Send magic link →"}
+                  {sendingMagicLink ? "Sending…" : "Continue with email →"}
                 </button>
               </div>
               {magicLinkError && (
