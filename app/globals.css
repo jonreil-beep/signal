@@ -82,6 +82,19 @@
   to   { transform: rotate(360deg); }
 }
 
+/* ── Hero card animated gradient ──────────────────────────────────── */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-card-animated {
+  background: linear-gradient(135deg, #0e2035 0%, #1a3a5c 33%, #0f2744 66%, #162d4a 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease-in-out infinite;
+}
+
 /* ── Card entrance stagger ─────────────────────────────────────────── */
 @keyframes cardEntrance {
   from { opacity: 0; transform: translateY(8px); }

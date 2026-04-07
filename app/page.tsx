@@ -1162,7 +1162,7 @@ export default function Home() {
               <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline hero card — full width ── */}
-                <div id="profile-result" className="relative overflow-hidden rounded-xl result-scroll-target" style={{ background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", padding: "28px 32px" }}>
+                <div id="profile-result" className="hero-card-animated relative overflow-hidden rounded-xl result-scroll-target" style={{ padding: "28px 32px" }}>
                   {/* Atmospheric glow */}
                   <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
                   <p className="relative text-[11px] font-[500] uppercase tracking-[0.05em] mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
