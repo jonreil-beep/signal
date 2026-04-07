@@ -910,7 +910,7 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-auto">
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="your@email.com"
