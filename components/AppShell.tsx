@@ -65,7 +65,7 @@ export default function AppShell({
           showLabel ? "gap-3 px-3 py-2" : "justify-center px-0 py-2.5"
         } ${
           isActive
-            ? "bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white font-[500]"
+            ? "bg-[#E5E7EB] text-[#111827] font-[500]"
             : "text-[#6B7280] hover:text-[#111827] hover:bg-[#F3F4F6] font-[400]"
         }`}
         style={showLabel ? {} : { width: "48px", margin: "0 auto" }}
@@ -79,7 +79,7 @@ export default function AppShell({
           <span className="flex-1">{item.label}</span>
         )}
         {showLabel && item.id === "my-jobs" && jobCount > 0 && (
-          <span className={`min-w-[20px] h-5 flex items-center justify-center text-[11px] font-[500] px-1.5 rounded-full ${isActive ? "bg-white/20 text-white" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
+          <span className={`min-w-[20px] h-5 flex items-center justify-center text-[11px] font-[500] px-1.5 rounded-full ${isActive ? "bg-[#D1D5DB] text-[#374151]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
             {jobCount}
           </span>
         )}
