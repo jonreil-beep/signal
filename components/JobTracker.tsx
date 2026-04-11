@@ -163,7 +163,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors whitespace-nowrap"
+            className="shrink-0 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors whitespace-nowrap"
           >
             Go to Prep →
           </button>
@@ -396,7 +396,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
             >
               Add your profile
             </button>
@@ -406,7 +406,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <p className="text-[14px] text-[#6B7280] mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
             >
               Score a job
             </button>

@@ -131,7 +131,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
         >
           Go to Profile →
         </button>

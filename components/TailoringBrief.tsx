@@ -342,7 +342,7 @@ export default function TailoringBrief({
         <p className="text-sm text-[#9CA3AF] mt-2">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
         >
           Go to Profile →
         </button>
@@ -359,7 +359,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
         >
           Go to Job Fit →
         </button>
@@ -799,7 +799,7 @@ export default function TailoringBrief({
                 )}
                 <button
                   onClick={handleGenerate}
-                  className="px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                  className="px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
                 >
                   {result ? "Rebuild" : "Build Prep Guide"}
                 </button>
@@ -1007,7 +1007,7 @@ export default function TailoringBrief({
                     </p>
                     <button
                       onClick={handleGenerate}
-                      className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                      className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
                     >
                       Rebuild →
                     </button>
@@ -1187,7 +1187,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>
@@ -1358,7 +1358,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
               >
                 Go to Preparing to Apply →
               </button>

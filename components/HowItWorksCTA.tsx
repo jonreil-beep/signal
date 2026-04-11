@@ -47,7 +47,7 @@ export default function HowItWorksCTA() {
       <div className="flex flex-col items-start gap-3 pb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
         >
           Go to app →
         </Link>
@@ -91,7 +91,7 @@ export default function HowItWorksCTA() {
         <button
           onClick={handleSend}
           disabled={sending || !email.trim()}
-          className="w-full px-6 py-3 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white text-[14px] font-[500] rounded-full hover:from-[#1E40AF] hover:to-[#3730A3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          className="w-full px-6 py-3 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         >
           {sending ? "Sending…" : "Get started →"}
         </button>

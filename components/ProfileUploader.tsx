@@ -198,7 +198,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             className={`px-5 py-2 rounded-full text-[14px] font-[500] transition-all ${
               confirmed
                 ? "bg-[#4B9B7E] text-white cursor-default"
-                : "bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] text-white hover:from-[#1E40AF] hover:to-[#3730A3]"
+                : "bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white hover:from-[#3A3A3C] hover:to-[#242424]"
             }`}
           >
             {confirmed ? "✓ Profile confirmed" : "Confirm Profile"}
