@@ -394,8 +394,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {/* Re-scoring in-progress banner — shown at top so it's always visible */}
           {isRescoring && (
-            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(37,99,235,0.06)] rounded-xl border border-[rgba(37,99,235,0.12)]">
-              <svg className="animate-spin shrink-0 w-4 h-4 text-[#2563EB]" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 px-4 py-3 bg-[rgba(0,0,0,0.04)] rounded-xl border border-[rgba(0,0,0,0.08)]">
+              <svg className="animate-spin shrink-0 w-4 h-4 text-[#6B7280]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
               </svg>
@@ -424,7 +424,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               {/* Score + recommendation */}
               <div id="score-result" className="hero-card-animated relative overflow-hidden rounded-xl result-scroll-target" style={{ padding: "28px 32px" }}>
                 {/* Atmospheric glow */}
-                <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
+                <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
                 <p className="relative text-[11px] font-[500] tracking-[0.05em] uppercase mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                   Overall Fit
                 </p>
@@ -590,7 +590,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         <span className="text-[13px] text-[#9CA3AF] line-through leading-snug">{item}</span>
                         <button
                           onClick={() => handleUndoItem(item)}
-                          className="shrink-0 text-[13px] text-[#2563EB] hover:text-[#4338CA] transition-colors font-medium"
+                          className="shrink-0 text-[13px] text-[#374151] hover:text-[#111827] transition-colors font-medium"
                         >
                           Undo
                         </button>
@@ -607,7 +607,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                     ) : (
                       <button
                         onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                        className="w-full px-4 py-2 border border-[#2563EB] text-[#2563EB] text-[14px] font-[500] rounded-full hover:bg-[rgba(37,99,235,0.05)] transition-colors"
+                        className="w-full px-4 py-2 border border-[#374151] text-[#374151] text-[14px] font-[500] rounded-full hover:bg-[rgba(55,65,81,0.05)] transition-colors"
                       >
                         Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
                       </button>

@@ -118,7 +118,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
               isDragging
-                ? "border-[rgba(37,99,235,0.5)] bg-[rgba(37,99,235,0.04)]"
+                ? "border-[rgba(55,65,81,0.5)] bg-[rgba(55,65,81,0.04)]"
                 : "border-[#D1D5DB] hover:border-[#6B7280] hover:bg-[#F9FAFB]"
             }`}
           >
@@ -137,7 +137,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
               </div>
               <div>
                 <p className="text-[14px] font-medium text-[#374151]">
-                  <span className="text-[#2563EB]">Click to upload</span> or drag and drop
+                  <span className="text-[#374151]">Click to upload</span> or drag and drop
                 </p>
                 <p className="text-[13px] text-[#9CA3AF] mt-1">PDF or DOCX · max 4MB</p>
               </div>

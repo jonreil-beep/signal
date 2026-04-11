@@ -1017,7 +1017,7 @@ export default function Home() {
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        className="text-sm font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
+                        className="text-sm font-[500] text-[#374151] hover:text-[#111827] transition-colors"
                       >
                         Analyze →
                       </button>
@@ -1164,7 +1164,7 @@ export default function Home() {
                 {/* ── Recommended LinkedIn Headline hero card — full width ── */}
                 <div id="profile-result" className="hero-card-animated relative overflow-hidden rounded-xl result-scroll-target" style={{ padding: "28px 32px" }}>
                   {/* Atmospheric glow */}
-                  <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
+                  <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
                   <p className="relative text-[11px] font-[500] uppercase tracking-[0.05em] mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
                     Your Recommended LinkedIn Headline
                   </p>
@@ -1453,7 +1453,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
     <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
       {/* Angle label + char count */}
       <div className="flex items-center justify-between gap-3 mb-2.5">
-        <span className="text-xs font-medium text-[#2563EB] bg-[rgba(37,99,235,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(37,99,235,0.15)]">
+        <span className="text-xs font-medium text-[#374151] bg-[rgba(55,65,81,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(55,65,81,0.15)]">
           {headline.angle}
         </span>
         <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
@@ -1465,7 +1465,7 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 text-sm font-medium text-[#2563EB] hover:text-[#4338CA] transition-colors"
+        className="flex items-center gap-1.5 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors"
       >
         {copied ? (
           <>

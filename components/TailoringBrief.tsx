@@ -176,7 +176,7 @@ function ActionSection({
         {!isLoading && (
           <button
             onClick={onAction}
-            className="shrink-0 text-[14px] font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
+            className="shrink-0 text-[14px] font-[500] text-[#374151] hover:text-[#111827] transition-colors"
           >
             {hasResult ? "Re-generate →" : `${buttonLabel} →`}
           </button>
@@ -226,7 +226,7 @@ function ActionSection({
               <div className="flex justify-end">
                 <button
                   onClick={onAction}
-                  className="text-[14px] font-[500] text-[#2563EB] hover:text-[#4338CA] transition-colors"
+                  className="text-[14px] font-[500] text-[#374151] hover:text-[#111827] transition-colors"
                 >
                   Re-generate →
                 </button>
@@ -758,7 +758,7 @@ export default function TailoringBrief({
       {result?.honest_take && (
         <div id="prep-result" className="hero-card-animated relative overflow-hidden rounded-xl result-scroll-target honest-take-entrance" style={{ padding: "28px 32px" }}>
           {/* Atmospheric glow */}
-          <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(29,78,216,0.15) 0%, transparent 70%)" }} />
+          <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
           <p className="relative text-[11px] font-[500] uppercase tracking-[0.05em] mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
             Honest Take
           </p>
@@ -856,7 +856,7 @@ export default function TailoringBrief({
                     {result.lead_strengths.map((s, i) => {
                       const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
                       return (
-                        <div key={i} className="border-l-2 border-[#2563EB]/30 pl-3.5">
+                        <div key={i} className="border-l-2 border-[#374151]/30 pl-3.5">
                           <div className="flex items-center gap-2">
                             <p className="text-[14px] font-[500] text-[#111827]">{s.strength}</p>
                             {matchStyle && (
@@ -967,8 +967,8 @@ export default function TailoringBrief({
                 {/* Cover Letter */}
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1 h-4 bg-gradient-to-br from-[#1D4ED8] to-[#4338CA] rounded-full" />
-                    <p className="text-xs font-[500] uppercase tracking-[0.08em] text-[#2563EB]">Start here</p>
+                    <div className="w-1 h-4 bg-[#374151] rounded-full" />
+                    <p className="text-xs font-[500] uppercase tracking-[0.08em] text-[#374151]">Start here</p>
                   </div>
                 )}
                 <ActionSection
@@ -1331,7 +1331,7 @@ export default function TailoringBrief({
                       />
                       <div className="space-y-4">
                         {cr.questions_to_test.map((q, i) => (
-                          <div key={i} className="border-l-2 border-[#2563EB]/30 pl-3.5">
+                          <div key={i} className="border-l-2 border-[#374151]/30 pl-3.5">
                             <p className="text-[14px] font-[500] text-[#111827]">{q.question}</p>
                             <p className="text-[13px] text-[#6B7280] mt-0.5">{q.what_youre_probing}</p>
                           </div>

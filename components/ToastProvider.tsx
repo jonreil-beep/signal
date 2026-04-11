@@ -51,7 +51,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       >
         <div
           style={{
-            background: "linear-gradient(to bottom right, #1D4ED8, #4338CA)",
+            background: "linear-gradient(to bottom right, #2C2C2E, #1A1A1A)",
             color: "white",
             fontSize: "13px",
             fontWeight: 500,

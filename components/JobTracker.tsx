@@ -24,7 +24,7 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
 
 const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string; border: string }> = {
   "Tracking":     { bg: "bg-white",                           text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
-  "Applied":      { bg: "bg-[rgba(37,99,235,0.08)]",           text: "text-[#2563EB]",  border: "border-0" },
+  "Applied":      { bg: "bg-[rgba(55,65,81,0.08)]",            text: "text-[#374151]",  border: "border-0" },
   "Phone Screen": { bg: "bg-[rgba(124,139,154,0.08)]",        text: "text-[#7C8B9A]",  border: "border-0" },
   "Interview":    { bg: "bg-[rgba(75,155,126,0.08)]",         text: "text-[#4B9B7E]",  border: "border-0" },
   "Offer":        { bg: "bg-[rgba(75,155,126,0.12)]",         text: "text-[#4B9B7E]",  border: "border-0" },
@@ -131,7 +131,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="text-[15px] font-[500] text-[#111827] hover:text-[#2563EB] transition-colors leading-snug truncate text-left"
+              className="text-[15px] font-[500] text-[#111827] hover:text-[#374151] transition-colors leading-snug truncate text-left"
             >
               {job.label}
             </button>
@@ -519,7 +519,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           </p>
           <button
             onClick={clearFilters}
-            className="text-[14px] text-[#2563EB] hover:text-[#4338CA] transition-colors"
+            className="text-[14px] text-[#374151] hover:text-[#111827] transition-colors"
           >
             Clear filters
           </button>
@@ -547,7 +547,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           {!isFiltered && (
             <button
               onClick={onScoreNewJob}
-              className="group/add w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-solid hover:border-[#D1D5DB] hover:text-[#1D4ED8] hover:bg-[rgba(29,78,216,0.02)] hover:scale-[1.005] transition-all duration-200 ease-out"
+              className="group/add w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-solid hover:border-[#D1D5DB] hover:text-[#374151] hover:bg-[rgba(55,65,81,0.02)] hover:scale-[1.005] transition-all duration-200 ease-out"
             >
               Score a job →
             </button>
@@ -558,7 +558,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           <p className="text-[14px] text-[#9CA3AF]">No jobs match your filters.</p>
           <button
             onClick={clearFilters}
-            className="mt-2 text-[14px] text-[#2563EB] hover:text-[#4338CA] transition-colors"
+            className="mt-2 text-[14px] text-[#374151] hover:text-[#111827] transition-colors"
           >
             Clear filters →
           </button>
