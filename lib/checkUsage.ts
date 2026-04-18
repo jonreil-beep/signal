@@ -12,6 +12,7 @@ const DAILY_LIMITS: Record<string, number> = {
   "/api/company-research":    10,
   "/api/suggest-resume-updates": 10,
   "/api/linkedin-headline":   10,
+  "/api/send-brief":          20,
 };
 
 export async function checkAndLogUsage(

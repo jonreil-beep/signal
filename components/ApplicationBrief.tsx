@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { TrackedJob } from "@/types";
+import { formatBrief } from "@/lib/formatBrief";
 
 interface ApplicationBriefProps {
   job: TrackedJob;
@@ -55,8 +56,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+type EmailState = "idle" | "sending" | "sent" | "error";
+
 export default function ApplicationBrief({ job, onGoToPrep, onClose }: ApplicationBriefProps) {
   const [copied, setCopied] = useState(false);
+  const [emailState, setEmailState] = useState<EmailState>("idle");
+  const [sentToEmail, setSentToEmail] = useState("");
 
   const { jobFitResult, tailoringResult, applicationStatus } = job;
   const recStyle = RECOMMENDATION_STYLES[jobFitResult.recommendation] ??
@@ -64,58 +69,37 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
   const statusStyle = STATUS_LABEL_STYLES[applicationStatus] ??
     { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" };
 
-  /* ── Build plain-text brief for clipboard ── */
-  function buildPlainText(): string {
-    const title = jobFitResult.job_title || job.label;
-    if (!tailoringResult) {
-      return `${title} — Application Brief\nNo tailoring brief generated yet.`;
-    }
-
-    const { lead_strengths, jd_language_to_mirror, what_to_deemphasize, recruiter_concern_to_preempt, outreach_angle } = tailoringResult;
-
-    const leadLines = lead_strengths
-      .map((s) => `• ${s.strength}: ${s.framing_language}`)
-      .join("\n");
-
-    const mirrorPhrases = jd_language_to_mirror.map((p) => p.phrase).join(", ");
-
-    const actionItems: string[] = [];
-    lead_strengths.forEach((s) =>
-      actionItems.push(`Lead with ${s.strength} — ${s.framing_language}`)
-    );
-    actionItems.push(
-      `Address this directly: ${recruiter_concern_to_preempt.suggested_response}`
-    );
-    what_to_deemphasize.forEach((d) =>
-      actionItems.push(`De-emphasize ${d.item} — ${d.reason}`)
-    );
-    if (outreach_angle) actionItems.push(`Outreach angle: ${outreach_angle}`);
-
-    const actionLines = actionItems.map((item, i) => `${i + 1}. ${item}`).join("\n");
-
-    return `${title} — Application Brief
-Scored: ${jobFitResult.overall_fit}/10 · ${jobFitResult.recommendation}
-
-RECRUITER CONCERN
-${recruiter_concern_to_preempt.concern}
-
-LEAD WITH
-${leadLines}
-
-MIRROR THIS LANGUAGE
-${mirrorPhrases}
-
-YOUR ACTION PLAN
-${actionLines}`;
-  }
-
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(buildPlainText());
+      await navigator.clipboard.writeText(
+        formatBrief(job.label, jobFitResult, tailoringResult)
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // clipboard unavailable — silently no-op
+    }
+  }
+
+  async function handleEmailSend() {
+    if (emailState === "sending") return;
+    setEmailState("sending");
+    try {
+      const res = await fetch("/api/send-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId: job.id }),
+      });
+      const data = await res.json() as { success?: boolean; email?: string; error?: string };
+      if (!res.ok || !data.success) {
+        throw new Error(data.error ?? "Send failed");
+      }
+      setSentToEmail(data.email ?? "your email");
+      setEmailState("sent");
+      setTimeout(() => { setEmailState("idle"); setSentToEmail(""); }, 4000);
+    } catch {
+      setEmailState("error");
+      setTimeout(() => setEmailState("idle"), 4000);
     }
   }
 
@@ -288,7 +272,7 @@ ${actionLines}`;
       </div>
 
       {/* ── Footer actions ── */}
-      <div className="px-6 py-4 border-t border-[#F3F4F6] flex items-center gap-3">
+      <div className="px-6 py-4 border-t border-[#F3F4F6] flex items-center gap-3 flex-wrap">
         <button
           onClick={handleCopy}
           className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[13px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors min-w-[100px] justify-center"
@@ -296,11 +280,18 @@ ${actionLines}`;
           {copied ? "Copied ✓" : "Copy brief"}
         </button>
         <button
-          disabled
-          title="Coming soon"
-          className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[13px] font-[500] rounded-full opacity-40 cursor-not-allowed"
+          onClick={handleEmailSend}
+          disabled={emailState === "sending"}
+          className={`flex items-center gap-1.5 px-4 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[13px] font-[500] rounded-full transition-colors ${
+            emailState === "sending"
+              ? "opacity-60 cursor-not-allowed"
+              : "hover:from-[#3A3A3C] hover:to-[#242424]"
+          }`}
         >
-          Email me this →
+          {emailState === "sending" && "Sending…"}
+          {emailState === "sent"    && `Sent to ${sentToEmail} ✓`}
+          {emailState === "error"   && "Couldn't send — try copying instead"}
+          {emailState === "idle"    && "Email me this →"}
         </button>
       </div>
     </div>
