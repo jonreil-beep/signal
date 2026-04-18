@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { TrackedJob, ApplicationStatus } from "@/types";
+import ApplicationBrief from "@/components/ApplicationBrief";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
@@ -73,6 +74,7 @@ interface JobCardProps {
   staggerIndex: number;
   profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
+  onOpenBrief: (job: TrackedJob) => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
@@ -80,7 +82,7 @@ interface JobCardProps {
   onDeadlineChange: (id: string, deadline: string | null) => void;
 }
 
-function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
+function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief, onRemoveJob, onRenameJob, onStatusChange, onNotesChange, onDeadlineChange }: JobCardProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
   const showNotes = expanded === "notes";
@@ -151,6 +153,14 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onRemoveJob
             </button>
           )}
         </div>
+
+        {/* View Brief link */}
+        <button
+          onClick={() => onOpenBrief(job)}
+          className="shrink-0 text-xs font-[400] text-[#6B7280] hover:text-[#111827] transition-colors whitespace-nowrap self-center"
+        >
+          View Brief →
+        </button>
 
         {/* Primary CTA */}
         {isScoreStale ? (
@@ -348,6 +358,17 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
+  const [briefJob, setBriefJob] = useState<TrackedJob | null>(null);
+
+  // ESC key closes the brief panel
+  useEffect(() => {
+    if (!briefJob) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setBriefJob(null);
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [briefJob]);
 
   if (jobs.length === 0) {
     return (
@@ -438,6 +459,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
   }
 
   return (
+    <>
     <div className="space-y-5">
       {/* ── Search row ── */}
       <div className="relative">
@@ -536,6 +558,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               staggerIndex={i}
               profileUpdatedAt={profileUpdatedAt}
               onSelectJob={onSelectJob}
+              onOpenBrief={setBriefJob}
               onRemoveJob={onRemoveJob}
               onRenameJob={onRenameJob}
               onStatusChange={onStatusChange}
@@ -565,5 +588,35 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
         </div>
       )}
     </div>
+
+    {/* ── Application Brief slide-over ── */}
+    {briefJob && (
+      <>
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 bg-black/30 z-40"
+          onClick={() => setBriefJob(null)}
+          aria-hidden="true"
+        />
+        {/* Panel */}
+        <div
+          className="fixed top-0 right-0 h-full bg-white z-50 overflow-hidden flex flex-col"
+          style={{
+            width: "min(480px, 100vw)",
+            boxShadow: "-4px 0 24px rgba(0,0,0,0.12), -1px 0 0 rgba(0,0,0,0.06)",
+          }}
+        >
+          <ApplicationBrief
+            job={briefJob}
+            onGoToPrep={(job) => {
+              setBriefJob(null);
+              onSelectJob(job, "tailoring-brief");
+            }}
+            onClose={() => setBriefJob(null)}
+          />
+        </div>
+      </>
+    )}
+    </>
   );
 }
