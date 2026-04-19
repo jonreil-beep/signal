@@ -1,4 +1,4 @@
-# FEATURES.md — Signal
+# FEATURES.md — Claro
 
 ## Current Feature Set (v1 — built and deployed)
 

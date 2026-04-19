@@ -1,4 +1,4 @@
-// Shared TypeScript types for Signal
+// Shared TypeScript types for Claro
 
 export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs" | "discover";
 

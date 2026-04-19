@@ -64,7 +64,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { error: sendError } = await resend.emails.send({
       from: fromAddress,
       to: user.email,
-      subject: `Your Signal brief: ${jobTitle}`,
+      subject: `Your Claro brief: ${jobTitle}`,
       text: plainText,
       html: `<pre style="font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap;max-width:640px;color:#111">${plainText.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>`,
     });

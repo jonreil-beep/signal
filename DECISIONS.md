@@ -1,4 +1,4 @@
-# DECISIONS.md — Signal
+# DECISIONS.md — Claro
 
 A running log of key product, UX, and technical decisions with reasoning. Reference this before making changes that touch established patterns.
 
@@ -8,7 +8,7 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ### The profile layer is the core differentiator
 **Decision:** Build persistent profile analysis as the foundation, not one-off job scoring.
-**Reasoning:** Without a profile layer, Signal is just a prompt wrapper. With it, every output is personalized to the user's actual background — which is what makes it different from generic AI tools. The profile → role targeting → fit scoring → prep loop is where the business value is.
+**Reasoning:** Without a profile layer, Claro is just a prompt wrapper. With it, every output is personalized to the user's actual background — which is what makes it different from generic AI tools. The profile → role targeting → fit scoring → prep loop is where the business value is.
 
 ### Progressive disclosure on Prep tab
 **Decision:** Three-stage selector (Preparing to Apply / Applied / Heard Back / Post-Interview) shows only relevant tools per stage.
@@ -20,15 +20,15 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ### Second person for analysis, first person for documents
 **Decision:** Analysis outputs use "you/your." Sendable documents use "I/my."
-**Reasoning:** Analysis is Signal talking to the user about themselves. Documents are the user talking to someone else. Applying "you/your" globally made cover letters and outreach read as if someone else wrote them — which they'd then have to manually rewrite before sending.
+**Reasoning:** Analysis is Claro talking to the user about themselves. Documents are the user talking to someone else. Applying "you/your" globally made cover letters and outreach read as if someone else wrote them — which they'd then have to manually rewrite before sending.
 
 ### No fabricated metrics in resume bullets
 **Decision:** Hard prohibition in the suggest-resume-updates prompt against inventing numbers.
-**Reasoning:** Holly caught this — Signal was adding percentages and dollar figures that didn't exist in her resume. This is a trust-killer. If she submits a resume with invented metrics and gets asked about them in an interview, it damages her credibility. Better to strengthen through specificity of action and outcome than through invented data.
+**Reasoning:** Holly caught this — Claro was adding percentages and dollar figures that didn't exist in her resume. This is a trust-killer. If she submits a resume with invented metrics and gets asked about them in an interview, it damages her credibility. Better to strengthen through specificity of action and outcome than through invented data.
 
 ### Recruiter concern always visible on Job Fit
 **Decision:** The recruiter concern flag sits immediately below the score card, never hidden.
-**Reasoning:** This is Signal's most differentiated output. Nothing on LinkedIn does this. Burying it in the dimension scores made it easy to miss. It should feel like a callout, not a footnote.
+**Reasoning:** This is Claro's most differentiated output. Nothing on LinkedIn does this. Burying it in the dimension scores made it easy to miss. It should feel like a callout, not a footnote.
 
 ### What's Missing dismissal without modal
 **Decision:** Dismissing items from What's Missing has no confirmation modal. Re-score is an explicit separate action.
@@ -44,10 +44,10 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ### Dark atmospheric background for landing + welcome screens
 **Decision:** Deep dark navy gradient (not flat color) for all pre-login screens.
-**Reasoning:** Matches the "quiet intention" photography direction. Creates a distinct mood that separates Signal from generic SaaS. The atmospheric quality signals premium and deliberate — which matches the target user's expectations.
+**Reasoning:** Matches the "quiet intention" photography direction. Creates a distinct mood that separates Claro from generic SaaS. The atmospheric quality signals premium and deliberate — which matches the target user's expectations.
 
 ### Burnt amber G in wordmark
-**Decision:** The "G" in SIGNAL is rendered in burnt amber (#A86B2D). Everything else is white.
+**Decision:** The "G" in CLARO is rendered in burnt amber (#A86B2D). Everything else is white.
 **Reasoning:** Creates a distinctive wordmark that's recognizable at small sizes. The G's open counter has a visual quality that reads as a partial circle or refresh arc — a nice double meaning.
 
 ### S favicon with atmospheric gradient
@@ -99,7 +99,7 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 ## Decisions Still Open
 
 - **Custom domain:** getsignal.co / trysignal.io / signalhq.co — check availability tonight
-- **Trademark:** Search USPTO Class 042 for "Signal" — determine if name is defensible
+- **Trademark:** Search USPTO Class 042 for "Claro" — determine if name is defensible
 - **Pricing:** $79 vs $99 vs $149 for 90-day sprint — needs validation with first paying users
 - **First paying customer:** Ask Holly directly this week
 - **B2C vs B2B2C:** Individual user vs career coach as primary buyer — needs more data

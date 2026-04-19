@@ -1,4 +1,4 @@
-# Signal — Job Search Copilot
+# Claro — Job Search Copilot
 
 An AI-powered job search copilot for experienced professionals. Upload your resume, score job postings against your profile, and get a full prep package before each application.
 

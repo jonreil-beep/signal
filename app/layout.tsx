@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Signal – Smarter search for experienced professionals",
+  title: "Claro – Smarter search for experienced professionals",
   description: "Job search intelligence for experienced professionals — honest fit scoring, targeted prep, and resume guidance.",
   icons: {
     icon: "/icon.svg",

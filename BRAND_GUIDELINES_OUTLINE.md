@@ -1,7 +1,7 @@
-# Signal — Brand Guidelines Outline
+# Claro — Brand Guidelines Outline
 **Version 1.0 | Working Document**
 
-This outline defines the full scope of Signal's brand guidelines. Each section includes the content to be written, decisions already made (from BRAND.md), and open items still requiring resolution. Hand this document to a designer or use it to direct Claude Code session by session.
+This outline defines the full scope of Claro's brand guidelines. Each section includes the content to be written, decisions already made (from BRAND.md), and open items still requiring resolution. Hand this document to a designer or use it to direct Claude Code session by session.
 
 ---
 
@@ -16,24 +16,24 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 *Purpose: Establishes the "why" behind every visual and verbal decision. Every downstream choice should be traceable back to this section.*
 
 ### 1.1 Brand Story
-- What Signal is and why it exists
+- What Claro is and why it exists
 - The problem it solves (experienced professionals with broad profiles getting silence, not interviews)
 - The core insight: these people don't need motivation, they need clarity
 - **Status: ✅ Decided** — pull from PRODUCT.md and BRAND.md positioning section
 
 ### 1.2 Brand Position Statement
-- Single paragraph stating what Signal is, who it's for, and what makes it different
-- Format: "For [user], Signal is [category] that [unique value] unlike [alternative]."
+- Single paragraph stating what Claro is, who it's for, and what makes it different
+- Format: "For [user], Claro is [category] that [unique value] unlike [alternative]."
 - **Status: ✅ Decided** — draft from BRAND.md brand position section
 
 ### 1.3 Brand Personality
-- The five adjectives that define Signal's character
-- The four "Signal is / Signal is not" contrasts
+- The five adjectives that define Claro's character
+- The four "Claro is / Claro is not" contrasts
 - The reference archetype: sharp strategy consultant
 - **Status: ✅ Decided** — pull directly from BRAND.md
 
 ### 1.4 Brand Promise
-- One sentence. What Signal commits to delivering every time.
+- One sentence. What Claro commits to delivering every time.
 - Suggested: "Clarity over noise. Every time."
 - **Status: 🔲 Open** — needs final wording decision
 
@@ -138,15 +138,15 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 ### 4.1 Primary Typeface Selection
 - Candidates: Inter (free), DM Sans (free), Söhne (premium)
 - Decision criteria: legibility at small sizes, warmth, distinctiveness, licensing
-- Recommendation: DM Sans for MVP (warmer than Inter, less ubiquitous, free); upgrade to Söhne if Signal goes public
+- Recommendation: DM Sans for MVP (warmer than Inter, less ubiquitous, free); upgrade to Söhne if Claro goes public
 - Decision: DM Sans
 
 ### 4.2 Secondary Typeface (Optional)
 - Optional serif for wordmark or editorial headlines only
 - Candidates: Fraunces, Lora, Canela
-- Use: wordmark only, or large display headlines if Signal produces editorial content
+- Use: wordmark only, or large display headlines if Claro produces editorial content
 - Do not use for UI, body copy, or data outputs
-- **Status: ⏳ Defer** — not needed for v1; revisit if Signal goes public
+- **Status: ⏳ Defer** — not needed for v1; revisit if Claro goes public
 
 ### 4.3 Type Scale
 - Define a modular scale for: Display, H1, H2, H3, Body Large, Body, Body Small, Label, Caption
@@ -179,7 +179,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 
 ## 5. Tone of Voice
 
-*Purpose: Gives any writer, Claude prompt, or collaborator the tools to write in Signal's voice consistently.*
+*Purpose: Gives any writer, Claude prompt, or collaborator the tools to write in Claro's voice consistently.*
 
 ### 5.1 Voice Principles (The Four Rules)
 1. Say what you mean
@@ -194,7 +194,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 - **Status: 🔲 Open** — starter list in BRAND.md; expand to a full preferred/avoid word list
 
 ### 5.3 Voice Examples Table
-- Before/after table showing Signal's voice vs. default job-search language
+- Before/after table showing Claro's voice vs. default job-search language
 - **Status: ✅ Decided** — four examples in BRAND.md; expand to 8–10
 
 ### 5.4 Writing for Specific Contexts
@@ -205,7 +205,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 - Onboarding: how to set expectations without over-promising
 - **Status: 🔲 Open** — direction is clear from BRAND.md; each context needs 2–3 written examples
 
-### 5.5 What Signal Never Says
+### 5.5 What Claro Never Says
 - A list of banned phrases and constructions
 - Examples: "You've got this." / "Great news!" / "Your dream job is waiting." / "Based on your unique background..."
 - **Status: 🔲 Open** — expand from BRAND.md voice examples
@@ -237,7 +237,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 
 ## 7. Illustration
 
-*Purpose: Defines illustration style for when Signal goes public. Not needed for v1.*
+*Purpose: Defines illustration style for when Claro goes public. Not needed for v1.*
 
 ### 7.1 Illustration Style Direction
 - Style: diagrammatic, abstract, information-design-adjacent
@@ -255,7 +255,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 
 ## 8. UI and Product Design Principles
 
-*Purpose: Extends the brand into the product itself — how Signal looks and behaves as a tool.*
+*Purpose: Extends the brand into the product itself — how Claro looks and behaves as a tool.*
 
 ### 8.1 Layout Principles
 - Information hierarchy over decoration
@@ -305,7 +305,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 - **Status: 🔲 Open** — pending final color and type decisions
 
 ### 9.4 Email / Outbound Template
-- If Signal sends any notification or summary emails
+- If Claro sends any notification or summary emails
 - **Status: ⏳ Defer**
 
 ---
@@ -316,7 +316,7 @@ Sections marked **✅ Decided** have clear direction from BRAND.md and can be ex
 
 ### 10.1 Who Can Approve Brand Changes
 - v1: Jon only
-- v2+: define if Signal takes on collaborators or contractors
+- v2+: define if Claro takes on collaborators or contractors
 - **Status: ✅ Decided** (implicit)
 
 ### 10.2 Asset Storage and Versioning

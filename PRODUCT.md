@@ -1,4 +1,4 @@
-# PRODUCT.md — Signal
+# PRODUCT.md — Claro
 
 ## One-line pitch
 AI-powered career positioning and job search copilot for experienced professionals with complex backgrounds — so you apply smarter, not more.
@@ -69,7 +69,7 @@ A job search copilot that does five things well:
 - **Second person for analysis, first person for documents.** Analysis outputs (fit scores, clusters, risks) address the user directly as "you." Sendable documents (cover letters, outreach, follow-ups) are written in first person "I/my."
 - **Speed.** Each core feature should return results in one interaction.
 - **Output-first UI.** Show analysis results by default. Hide inputs unless the user is editing.
-- **Signal gives you the raw material. You bring the judgment.**
+- **Claro gives you the raw material. You bring the judgment.**
 
 ---
 
@@ -94,4 +94,4 @@ A job search copilot that does five things well:
 - Will output quality hold across diverse backgrounds beyond Holly?
 - Which features do users actually act on vs. admire?
 - Is the individual or the coach the better first paying customer?
-- Can "Signal" be trademarked in Class 042? (check in progress)
+- Can "Claro" be trademarked in Class 042? (check in progress)

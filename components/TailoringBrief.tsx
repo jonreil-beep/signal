@@ -529,7 +529,7 @@ export default function TailoringBrief({
     const sep = "─".repeat(60);
     const displayName = cr?.company_name ?? jobLabel ?? "Prep Guide";
 
-    lines.push("SIGNAL — PREP GUIDE");
+    lines.push("CLARO — PREP GUIDE");
     lines.push(displayName);
     lines.push(
       `Exported ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`

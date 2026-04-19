@@ -1,7 +1,7 @@
-# BRAND.md — Signal
+# BRAND.md — Claro
 
 ## Brand in one sentence
-Signal is an AI career strategist for experienced professionals — not a job board, not a resume writer, not a generic AI tool.
+Claro is an AI career strategist for experienced professionals — not a job board, not a resume writer, not a generic AI tool.
 
 ---
 
@@ -17,26 +17,26 @@ The job search is a signal problem. Every application sends signals about your f
 To turn experienced professionals from reactive applicants into deliberate strategists — so they pursue fewer roles with more confidence, and land the ones that actually fit.
 
 **Brand Promise**
-An honest read, every time. Signal tells you the fit before you invest the time.
+An honest read, every time. Claro tells you the fit before you invest the time.
 
 **Brand Position**
-For experienced professionals who are selective about their next move, Signal is the only job search tool that gives you an honest, specific fit assessment — not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it.
+For experienced professionals who are selective about their next move, Claro is the only job search tool that gives you an honest, specific fit assessment — not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it.
 
 ---
 
 ## Brand Pillars
 
 **01 — Honest over comfortable**
-Signal doesn't tell you you're doing great. It tells you what's true: the fit score, the gaps, the recruiter concern. No softening. Truth is the service.
+Claro doesn't tell you you're doing great. It tells you what's true: the fit score, the gaps, the recruiter concern. No softening. Truth is the service.
 
 **02 — Specific over general**
 Every output is for this job, this profile, this moment — not "candidates like you." The exact language to mirror. The concern to preempt. The strength to lead with.
 
 **03 — Strategist over applicant**
-Signal reframes the search from passive (apply, wait, hope) to active (evaluate, position, decide). You're not a job seeker. You're a professional choosing where to spend your leverage.
+Claro reframes the search from passive (apply, wait, hope) to active (evaluate, position, decide). You're not a job seeker. You're a professional choosing where to spend your leverage.
 
 **04 — Precision over volume**
-Signal isn't built to help you apply to more jobs. It's built to help you apply to the right ones. Fewer applications, better positioned, higher confidence.
+Claro isn't built to help you apply to more jobs. It's built to help you apply to the right ones. Fewer applications, better positioned, higher confidence.
 
 ---
 
@@ -78,15 +78,14 @@ Signal isn't built to help you apply to more jobs. It's built to help you apply 
 
 ## Wordmark
 
-**SIGNAL** — all caps, tracked, font-weight 700
-The "G" is rendered in burnt amber (#A86B2D) — the only color break in the wordmark.
-Everything else is white on the dark nav background.
+**CLARO** — all caps, tracked, font-weight 700
+Everything is white on the dark nav background.
 
 ---
 
 ## Tone of Voice
 
-Signal is a sharp strategy consultant who knows the hiring market cold. It speaks plainly. It names things directly.
+Claro is a sharp strategy consultant who knows the hiring market cold. It speaks plainly. It names things directly.
 
 **Four principles:**
 
@@ -97,10 +96,10 @@ No softening, no qualifications that dilute the point. If a job is a stretch, sa
 Especially for outputs the user acts on. Long sentences create doubt. Short sentences create clarity.
 
 **Skip the encouragement.**
-Signal doesn't tell you you're doing great. It tells you what to do next. That is the encouragement.
+Claro doesn't tell you you're doing great. It tells you what to do next. That is the encouragement.
 
 **Be specific.**
-Not "strong analytical background" — "seven years of structured research and executive synthesis." Vague language is noise. Signal cuts noise.
+Not "strong analytical background" — "seven years of structured research and executive synthesis." Vague language is noise. Claro cuts noise.
 
 ### Voice examples
 
@@ -128,7 +127,7 @@ Not "strong analytical background" — "seven years of structured research and e
 
 ## UI Design Principles
 
-**Minimal but not dense.** Apple's minimalism works because every element that remains is given more room and weight. Signal should be minimal in color and ornamentation but generous in spacing and type scale.
+**Minimal but not dense.** Apple's minimalism works because every element that remains is given more room and weight. Claro should be minimal in color and ornamentation but generous in spacing and type scale.
 
 **One hero per screen.** On every screen, one element should be unmistakably the most important thing. Fit score on Job Fit. Honest Take on Prep. Recommended headline on Profile.
 
@@ -157,7 +156,7 @@ Not "strong analytical background" — "seven years of structured research and e
 
 ---
 
-## What Signal is NOT
+## What Claro is NOT
 
 - Not a job board
 - Not LinkedIn
@@ -166,4 +165,4 @@ Not "strong analytical background" — "seven years of structured research and e
 - Not a generic AI assistant applied to job search
 
 **The differentiation without naming competitors:**
-Signal tells you what recruiters are actually thinking — not just whether you match keywords, but the specific concern a hiring manager is likely to raise about your background for this specific role. Every output is built from your profile and the specific job. Not a template. Not generic advice.
+Claro tells you what recruiters are actually thinking — not just whether you match keywords, but the specific concern a hiring manager is likely to raise about your background for this specific role. Every output is built from your profile and the specific job. Not a template. Not generic advice.

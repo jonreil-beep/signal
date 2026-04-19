@@ -1,6 +1,6 @@
-# Signal — Job Search Copilot
+# Claro — Job Search Copilot
 
-You are building Signal, a Claude-powered job search copilot for experienced professionals.
+You are building Claro, a Claude-powered job search copilot for experienced professionals.
 
 ## Before every session
 Read these files in order before writing any code:

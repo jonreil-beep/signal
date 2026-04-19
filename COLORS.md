@@ -1,4 +1,4 @@
-# Signal — Color Tokens
+# Claro — Color Tokens
 **Status: Locked v1.0**
 
 ---

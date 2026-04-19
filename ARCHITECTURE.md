@@ -1,4 +1,4 @@
-# ARCHITECTURE.md — Signal
+# ARCHITECTURE.md — Claro
 
 ## Stack
 

@@ -1,10 +1,10 @@
-# SESSIONS.md — Signal Build Plan
+# SESSIONS.md — Claro Build Plan
 
 ## How to start every session
 
 ### In Claude Code:
 ```
-We are building Signal — a job search copilot for experienced professionals. 
+We are building Claro — a job search copilot for experienced professionals. 
 Read PRODUCT.md, FEATURES.md, ARCHITECTURE.md, BRAND.md, and DECISIONS.md 
 before doing anything.
 ```
@@ -130,7 +130,7 @@ All context is loaded. Just describe what you want to build or fix.
 ### Session: Stripe integration (when ready to charge)
 **Goal:** Gate Claude API calls behind payment.
 **Tell Claude Code:**
-> "I want to add Stripe to Signal. Create a single product at $[price] for a 90-day search sprint. Add a payment gate to the app — unauthenticated or unpaid users see a paywall after [N] free uses. Paid users get full access. Use Stripe Checkout for the payment flow. Store payment status in Supabase on the user record."
+> "I want to add Stripe to Claro. Create a single product at $[price] for a 90-day search sprint. Add a payment gate to the app — unauthenticated or unpaid users see a paywall after [N] free uses. Paid users get full access. Use Stripe Checkout for the payment flow. Store payment status in Supabase on the user record."
 
 ### Session: Per-cluster regenerate (v2 consideration)
 **Goal:** Let users refresh one cluster without full reanalysis.

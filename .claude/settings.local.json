@@ -8,7 +8,18 @@
       "Bash(npx tsc:*)",
       "Bash(npx next:*)",
       "Bash(npm install:*)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "Bash(node -e \"require\\('resend'\\); console.log\\('ok'\\)\")",
+      "mcp__Control_Chrome__open_url",
+      "mcp__Control_Chrome__get_current_tab",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(npx next *)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s http://localhost:3000)",
+      "mcp__Claude_in_Chrome__tabs_create_mcp",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(pkill -f \"next dev\")"
     ]
   }
 }

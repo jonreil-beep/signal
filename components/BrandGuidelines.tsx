@@ -76,7 +76,7 @@ const TYPE_SCALE = [
     lineHeight: "1.2",
     tracking: "−0.02em",
     className: "text-[2.25rem] font-bold leading-[1.2] tracking-[-0.02em]",
-    sample: "Signal",
+    sample: "Claro",
     sampleNode: <SignalWordmark />,
   },
   {
@@ -166,15 +166,15 @@ const BRAND_HOUSE = {
     "To turn experienced professionals from reactive applicants into deliberate strategists \u2014 so they pursue fewer roles with more confidence, and land the ones that actually fit.",
 
   promise:
-    "An honest read, every time. Signal tells you the fit before you invest the time.",
+    "An honest read, every time. Claro tells you the fit before you invest the time.",
 
   position:
-    "For experienced professionals who are selective about their next move, Signal is the only job search tool that gives you an honest, specific fit assessment \u2014 not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it. Unlike Indeed or LinkedIn, which optimize for volume and visibility, Signal optimizes for precision.",
+    "For experienced professionals who are selective about their next move, Claro is the only job search tool that gives you an honest, specific fit assessment \u2014 not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it. Unlike Indeed or LinkedIn, which optimize for volume and visibility, Claro optimizes for precision.",
 
   pillars: [
     {
       label: "Honest over comfortable",
-      body: "Signal doesn\u2019t tell you you\u2019re doing great. It tells you what\u2019s true: the fit score, the gaps, the recruiter concern. No softening. Truth is the service.",
+      body: "Claro doesn\u2019t tell you you\u2019re doing great. It tells you what\u2019s true: the fit score, the gaps, the recruiter concern. No softening. Truth is the service.",
     },
     {
       label: "Specific over general",
@@ -182,11 +182,11 @@ const BRAND_HOUSE = {
     },
     {
       label: "Strategist over applicant",
-      body: "Signal reframes the search from passive (apply, wait, hope) to active (evaluate, position, decide). You\u2019re not a job seeker. You\u2019re a professional choosing where to spend your leverage.",
+      body: "Claro reframes the search from passive (apply, wait, hope) to active (evaluate, position, decide). You\u2019re not a job seeker. You\u2019re a professional choosing where to spend your leverage.",
     },
     {
       label: "Precision over volume",
-      body: "Signal isn\u2019t built to help you apply to more jobs. It\u2019s built to help you apply to the right ones. Fewer applications, better positioned, higher confidence.",
+      body: "Claro isn\u2019t built to help you apply to more jobs. It\u2019s built to help you apply to the right ones. Fewer applications, better positioned, higher confidence.",
     },
   ],
 };
@@ -266,11 +266,11 @@ const VOICE_PRINCIPLES = [
   },
   {
     title: "Skip the encouragement.",
-    body: "Signal doesn't tell you you're doing great. It tells you what to do next. That is the encouragement.",
+    body: "Claro doesn't tell you you're doing great. It tells you what to do next. That is the encouragement.",
   },
   {
     title: "Be specific.",
-    body: "Not \u201cstrong analytical background\u201d \u2014 \u201cseven years of structured research and executive synthesis.\u201d Vague language is noise. Signal cuts noise.",
+    body: "Not \u201cstrong analytical background\u201d \u2014 \u201cseven years of structured research and executive synthesis.\u201d Vague language is noise. Claro cuts noise.",
   },
 ];
 
@@ -328,10 +328,10 @@ export default function BrandGuidelines() {
           Brand Guidelines · v1.0
         </p>
         <h1 className="text-[20px] font-[500] leading-[1.2] text-brand-text mb-4">
-          Signal Brand
+          Claro Brand
         </h1>
         <p className="text-lg font-normal leading-[1.6] text-brand-text/60 max-w-2xl">
-          Living reference for Signal&apos;s visual and verbal identity. This page is itself built using every token it documents.
+          Living reference for Claro&apos;s visual and verbal identity. This page is itself built using every token it documents.
         </p>
       </div>
 
@@ -526,7 +526,7 @@ export default function BrandGuidelines() {
           The Four Principles
         </h2>
         <p className="text-base font-normal leading-[1.6] text-brand-text/50 mb-8">
-          Signal is a sharp strategy consultant who knows the hiring market cold. It speaks plainly. It names things directly.
+          Claro is a sharp strategy consultant who knows the hiring market cold. It speaks plainly. It names things directly.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
@@ -779,7 +779,7 @@ export default function BrandGuidelines() {
 
       {/* ── Footer note ── */}
       <div className="mt-20 pt-8 border-t border-[#E2E2E8]">
-        <p className="text-xs text-brand-text/30">Signal Brand Guidelines · v1.0</p>
+        <p className="text-xs text-brand-text/30">Claro Brand Guidelines · v1.0</p>
       </div>
 
     </div>

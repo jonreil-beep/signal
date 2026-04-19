@@ -866,7 +866,7 @@ export default function Home() {
                   href="/how-it-works"
                   className="text-sm text-white/55 hover:text-white/80 transition-colors"
                 >
-                  How Signal works →
+                  How Claro works →
                 </Link>
                 <button
                   onClick={() => { setShowLanding(false); setActiveTab("my-jobs"); }}
@@ -976,7 +976,7 @@ export default function Home() {
                 <div className="mb-7">
                   <h2 className="text-[20px] font-[500] text-[#111827]">Step 1 — Clarify your positioning</h2>
                   <p className="text-base text-brand-text/50 mt-1">
-                    Upload your resume once. Signal identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
+                    Upload your resume once. Claro identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
                 </div>
                 <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
@@ -1098,7 +1098,7 @@ export default function Home() {
                       <textarea
                         value={writingSample}
                         onChange={(e) => setWritingSample(e.target.value)}
-                        placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Signal uses this to match your voice in cover letters, outreach, and follow-ups."
+                        placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
                         rows={3}
                         className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
                       />

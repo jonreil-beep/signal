@@ -1,4 +1,4 @@
-// Shared SIGNAL wordmark — monochrome, inherits color from parent wrapper
+// Shared CLARO wordmark — monochrome, inherits color from parent wrapper
 export default function SignalWordmark() {
-  return <>SIGNAL</>;
+  return <>CLARO</>;
 }

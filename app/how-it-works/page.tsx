@@ -2,8 +2,8 @@ import AppHeader, { LogoLink, BackToAppLink } from "@/components/AppHeader";
 import HowItWorksCTA from "@/components/HowItWorksCTA";
 
 export const metadata = {
-  title: "How it works — Signal",
-  description: "Signal helps experienced professionals cut through the noise — score roles honestly, prepare fast, and focus on the ones worth pursuing.",
+  title: "How it works — Claro",
+  description: "Claro helps experienced professionals cut through the noise — score roles honestly, prepare fast, and focus on the ones worth pursuing.",
 };
 
 export default function HowItWorksPage() {
@@ -25,7 +25,7 @@ export default function HowItWorksPage() {
           </h1>
           <p className="text-[14px] font-[400] text-[#6B7280] leading-relaxed max-w-xl">
             Strong backgrounds get passed over every day because the fit is unclear or the framing is generic.
-            Signal gives you an honest read on every role — and a full prep pack for the ones worth pursuing.
+            Claro gives you an honest read on every role — and a full prep pack for the ones worth pursuing.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ export default function HowItWorksPage() {
               {
                 n: 1,
                 title: "Clarify your positioning",
-                body: "Upload your resume once — Signal maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
+                body: "Upload your resume once — Claro maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
               },
               {
                 n: 2,
@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
               {
                 n: 3,
                 title: "Prepare for the ones worth pursuing",
-                body: "For roles that score well, Signal builds a full prep pack — cover letter, outreach, resume edits, interview questions, and company research.",
+                body: "For roles that score well, Claro builds a full prep pack — cover letter, outreach, resume edits, interview questions, and company research.",
               },
               {
                 n: 4,

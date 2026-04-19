@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Signal Dev",
+      "name": "Claro Dev",
       "runtimeExecutable": "/usr/local/bin/node",
       "runtimeArgs": ["node_modules/.bin/next", "dev", "--webpack"],
       "port": 3000
