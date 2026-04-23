@@ -1,16 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <clipPath id="shape">
-      <rect width="100" height="100" rx="22"/>
-    </clipPath>
-    <radialGradient id="bg" cx="58%" cy="5%" r="80%" fx="58%" fy="5%">
-      <stop offset="0%" stop-color="#1a3a5c"/>
-      <stop offset="40%" stop-color="#0e2035"/>
-      <stop offset="100%" stop-color="#080f18"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" rx="22" fill="url(#bg)" clip-path="url(#shape)"/>
-  <text x="50" y="47" font-family="DM Sans, system-ui, sans-serif"
-    font-weight="700" font-size="68" fill="white"
+  <rect width="100" height="100" rx="22" fill="#F6F0E4"/>
+  <text x="50" y="50" font-family="Instrument Serif, Georgia, serif"
+    font-style="italic" font-size="72" fill="#231812"
     text-anchor="middle" dominant-baseline="central">C</text>
 </svg>
