@@ -140,9 +140,9 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       </div>
 
       {/* Right column — Strengths + Risks + optional extra */}
-      <div className="space-y-4">
-        <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 card-entrance" style={{ animationDelay: "50ms" }}>
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
+      <div className="space-y-0">
+        <div className="py-7 card-entrance" style={{ animationDelay: "50ms" }}>
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
             Core Strengths
           </p>
           <ul className="space-y-2">
@@ -155,8 +155,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
           </ul>
         </div>
 
-        <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 card-entrance" style={{ animationDelay: "100ms" }}>
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
+        <div className="border-t border-[rgba(26,26,26,0.10)] py-7 card-entrance" style={{ animationDelay: "100ms" }}>
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
             Positioning Risks
           </p>
           <ul className="space-y-3.5">
