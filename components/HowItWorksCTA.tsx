@@ -41,34 +41,32 @@ export default function HowItWorksCTA() {
 
   if (!checked) return null;
 
-  // Signed-in user
   if (user) {
     return (
       <div className="flex flex-col items-start gap-3 pb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
         >
           Go to app →
         </Link>
-        <p className="text-[13px] text-[#9CA3AF]">Signed in as {user.email}</p>
+        <p className="font-jetbrains-mono text-[11px] text-[#8A857F]">Signed in as {user.email}</p>
       </div>
     );
   }
 
-  // Sent confirmation
   if (sent) {
     return (
       <div className="flex flex-col gap-3 pb-4 max-w-md">
-        <p className="text-[15px] font-[500] text-[#111827]">Check your inbox</p>
-        <p className="text-[14px] text-[#6B7280] leading-relaxed">
+        <p className="font-sans text-[15px] font-medium text-[#231812]">Check your inbox</p>
+        <p className="font-sans text-[14px] text-[#4A3C34] leading-relaxed">
           We sent a sign-in link to{" "}
-          <span className="font-[500] text-[#111827]">{email}</span>.
+          <span className="font-medium text-[#231812]">{email}</span>.
           Click it to get started — your progress will be saved automatically.
         </p>
         <button
           onClick={() => { setSent(false); setEmail(""); }}
-          className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors w-fit"
+          className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors w-fit"
         >
           Use a different email
         </button>
@@ -76,7 +74,6 @@ export default function HowItWorksCTA() {
     );
   }
 
-  // Sign-up form — stacked vertical pills, full-width
   return (
     <div className="flex flex-col gap-4 pb-4">
       <div className="flex flex-col gap-2 max-w-md w-full">
@@ -86,18 +83,18 @@ export default function HowItWorksCTA() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          className="w-full px-5 py-3.5 border border-[#D1D5DB] rounded-full text-[14px] text-[#111827] bg-white placeholder:text-[#9CA3AF] focus:outline-none focus:ring-0 focus:border-[#6B7280] transition-colors"
+          className="w-full px-4 py-3 border border-[rgba(26,26,26,0.18)] rounded-[2px] font-sans text-[14px] text-[#231812] bg-[#FDF7EA] placeholder:text-[#8A857F] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.4)] transition-colors"
         />
         <button
           onClick={handleSend}
           disabled={sending || !email.trim()}
-          className="w-full px-6 py-3 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          className="w-full px-4 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {sending ? "Sending…" : "Get started →"}
         </button>
       </div>
-      {error && <p className="text-[13px] text-red-500">{error}</p>}
-      <Link href="/?skip=1" className="text-[13px] text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
+      {error && <p className="font-sans text-[13px] text-red-600">{error}</p>}
+      <Link href="/?skip=1" className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors">
         Try without signing up
       </Link>
     </div>

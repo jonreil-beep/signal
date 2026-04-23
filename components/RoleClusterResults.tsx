@@ -11,18 +11,18 @@ interface RoleClusterResultsProps {
   rightColumnExtra?: React.ReactNode;
 }
 
-const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], string> = {
-  Strong:   "bg-[rgba(75,155,126,0.10)] text-[#4B9B7E] ring-1 ring-[rgba(75,155,126,0.25)]",
-  Moderate: "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A] ring-1 ring-[rgba(124,139,154,0.25)]",
-  Stretch:  "bg-[rgba(176,144,110,0.10)] text-[#B0906E] ring-1 ring-[rgba(176,144,110,0.25)]",
+const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], { color: string; border: string }> = {
+  Strong:   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
+  Moderate: { color: "#A86B2D", border: "1px solid #A86B2D" },
+  Stretch:  { color: "#C4622D", border: "1px solid #C4622D" },
 };
 
-const RECOMMENDATION_STYLES: Record<RoleRecommendation, { pill: string; label: string }> = {
-  "Pursue":                  { pill: "bg-[#4B9B7E] text-white",                                                                         label: "Pursue" },
-  "Pursue Selectively":      { pill: "bg-[#7C8B9A] text-white",                                                                         label: "Pursue Selectively" },
-  "Stretch — Prep Required": { pill: "bg-[#B0906E] text-white",                                                                         label: "Stretch — Prep Required" },
-  "Avoid":                   { pill: "bg-[rgba(163,163,163,0.10)] text-[#A3A3A3] rounded-full px-2.5 py-0.5 text-[12px]",               label: "Avoid" },
-  "Reframe First":           { pill: "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A] rounded-full px-2.5 py-0.5 text-[12px]",               label: "Reframe First" },
+const RECOMMENDATION_STYLES: Record<RoleRecommendation, { color: string; border: string }> = {
+  "Pursue":                  { color: "#2D6A4F", border: "1px solid #2D6A4F" },
+  "Pursue Selectively":      { color: "#A86B2D", border: "1px solid #A86B2D" },
+  "Stretch — Prep Required": { color: "#C4622D", border: "1px solid #C4622D" },
+  "Avoid":                   { color: "#6B6660", border: "1px solid #6B6660" },
+  "Reframe First":           { color: "#8A857F", border: "1px solid #8A857F" },
 };
 
 export default function RoleClusterResults({ result, resumeText, onClusterUpdate, rightColumnExtra }: RoleClusterResultsProps) {
@@ -62,46 +62,49 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Left column — Role clusters */}
       <div>
-        <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
+        <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
           Best-Fit Role Clusters
         </p>
-        <div className="space-y-4">
+        <div className="space-y-0">
           {result.role_clusters.map((cluster, i) => {
             const rec = cluster.recommendation
               ? RECOMMENDATION_STYLES[cluster.recommendation]
               : null;
+            const conf = CONFIDENCE_STYLES[cluster.confidence];
             return (
               <div
                 key={i}
-                className="bg-white rounded-xl p-7 card-entrance"
-                style={{
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
-                  animationDelay: `${Math.min(i, 5) * 50}ms`,
-                }}
+                className="border-b border-[rgba(26,26,26,0.10)] py-7 card-entrance"
+                style={{ animationDelay: `${Math.min(i, 5) * 50}ms` }}
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <h4 className="text-base font-[500] text-[#111827] leading-snug">{cluster.name}</h4>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <h4 className="font-sans text-base font-[500] text-[#231812] leading-snug">{cluster.name}</h4>
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                     {rec && (
                       <span
-                        className={`text-xs font-[500] px-2.5 py-1 rounded-full ${rec.pill}`}
+                        className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
                         style={{
+                          color: rec.color,
+                          border: rec.border,
                           animation: "badgePulse 400ms ease-in-out both",
                           animationDelay: `${Math.min(i, 5) * 50 + 200}ms`,
                         }}
                       >
-                        {rec.label}
+                        {cluster.recommendation}
                       </span>
                     )}
-                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${CONFIDENCE_STYLES[cluster.confidence]}`}>
+                    <span
+                      className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
+                      style={{ color: conf.color, border: conf.border }}
+                    >
                       {cluster.confidence}
                     </span>
                     {resumeText && onClusterUpdate && (
                       <button
                         onClick={() => handleRegenerate(i, cluster.name)}
                         disabled={regeneratingIndex === i}
-                        className="text-xs text-[#9CA3AF] hover:text-[#6B7280] transition-colors disabled:opacity-40 whitespace-nowrap"
+                        className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors disabled:opacity-40 whitespace-nowrap"
                       >
                         {regeneratingIndex === i ? "Regenerating…" : "Regenerate →"}
                       </button>
@@ -111,7 +114,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
                 {/* Market read — primary descriptor */}
                 {cluster.market_read && (
-                  <p className="text-[14px] text-[#6B7280] leading-snug mb-3">
+                  <p className="font-sans text-[14px] text-[#4A3C34] leading-snug mb-3">
                     {cluster.market_read}
                   </p>
                 )}
@@ -119,8 +122,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 {cluster.signals.length > 0 && (
                   <ul className="space-y-1.5">
                     {cluster.signals.slice(0, 3).map((signal, j) => (
-                      <li key={j} className="flex items-start gap-2 text-[14px] text-[#6B7280]">
-                        <span className="mt-1.5 shrink-0 w-1 h-1 rounded-full bg-[#9CA3AF]" />
+                      <li key={j} className="flex items-start gap-2 font-sans text-[14px] text-[#4A3C34]">
+                        <span className="mt-2 shrink-0 w-1 h-1 bg-[#8A857F]" />
                         {signal}
                       </li>
                     ))}
@@ -128,7 +131,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 )}
 
                 {regenErrors[i] && (
-                  <p className="mt-2 text-xs text-[#888888]">{regenErrors[i]}</p>
+                  <p className="mt-2 font-sans text-xs text-[#C4622D]">{regenErrors[i]}</p>
                 )}
               </div>
             );
@@ -138,46 +141,45 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Right column — Strengths + Risks + optional extra */}
       <div className="space-y-4">
-        <div className="bg-white rounded-xl p-7 card-entrance" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: "50ms" }}>
-          <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
+        <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 card-entrance" style={{ animationDelay: "50ms" }}>
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
             Core Strengths
           </p>
           <ul className="space-y-2">
             {result.core_strengths.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#374151] leading-relaxed">
-                <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-[#4B9B7E]" />
+              <li key={i} className="flex items-start gap-2.5 font-sans text-[14px] text-[#4A3C34] leading-relaxed">
+                <span className="mt-2 shrink-0 w-1.5 h-1.5 bg-[#2D6A4F]" />
                 {s}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl p-7 card-entrance" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: "100ms" }}>
-          <p className="text-[12px] font-medium tracking-[0.05em] uppercase text-[#6B7280] mb-3">
+        <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 card-entrance" style={{ animationDelay: "100ms" }}>
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
             Positioning Risks
           </p>
           <ul className="space-y-3.5">
             {result.positioning_risks.map((r, i) => {
-              // Support legacy format where risks were plain strings
               const isLegacy = typeof r === "string";
               const riskText = isLegacy ? (r as unknown as string) : r.risk;
               const actionText = isLegacy ? null : r.what_to_do;
               const isOpen = expandedRisk === i;
               return (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#9CA3AF]" />
+                  <span className="mt-2 shrink-0 w-1.5 h-1.5 bg-[#8A857F]" />
                   <div>
-                    <p className="text-[14px] font-medium text-[#111827] leading-relaxed">{riskText}</p>
+                    <p className="font-sans text-[14px] font-medium text-[#231812] leading-relaxed">{riskText}</p>
                     {actionText && (
                       <>
                         {isOpen && (
-                          <p className="text-[14px] text-[#6B7280] mt-1.5 leading-snug">
+                          <p className="font-sans text-[14px] text-[#4A3C34] mt-1.5 leading-snug">
                             {actionText}
                           </p>
                         )}
                         <button
                           onClick={() => toggleRisk(i)}
-                          className="mt-1 text-xs text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                          className="mt-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
                         >
                           {isOpen ? "Hide ↑" : "How to address →"}
                         </button>

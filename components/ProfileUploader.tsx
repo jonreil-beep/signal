@@ -91,16 +91,16 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
 
   return (
     <div className="space-y-5">
-      {/* Mode toggle */}
-      <div className="flex gap-1 bg-[#F3F4F6] rounded-lg p-1 w-fit">
+      {/* Mode toggle — underline tabs */}
+      <div className="flex gap-0 border-b border-[rgba(26,26,26,0.10)]">
         {(["upload", "paste"] as InputMode[]).map((m) => (
           <button
             key={m}
             onClick={() => { setMode(m); setError(""); }}
-            className={`px-4 py-1.5 rounded-md text-[14px] font-medium transition-all ${
+            className={`px-4 py-2 font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] transition-all border-b-2 -mb-px ${
               mode === m
-                ? "bg-white text-[#111827] shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
-                : "text-[#6B7280] hover:text-[#111827]"
+                ? "border-[#231812] text-[#231812]"
+                : "border-transparent text-[#8A857F] hover:text-[#4A3C34]"
             }`}
           >
             {m === "upload" ? "Upload file" : "Paste text"}
@@ -116,10 +116,10 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
+            className={`border-2 border-dashed p-12 text-center cursor-pointer transition-all ${
               isDragging
-                ? "border-[rgba(55,65,81,0.5)] bg-[rgba(55,65,81,0.04)]"
-                : "border-[#D1D5DB] hover:border-[#6B7280] hover:bg-[#F9FAFB]"
+                ? "border-[rgba(26,26,26,0.40)] bg-[rgba(26,26,26,0.03)]"
+                : "border-[rgba(26,26,26,0.15)] hover:border-[rgba(26,26,26,0.30)] hover:bg-[rgba(26,26,26,0.02)]"
             }`}
           >
             <input
@@ -130,16 +130,16 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
               className="hidden"
             />
             <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#6B7280]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 bg-[rgba(26,26,26,0.04)] border border-[rgba(26,26,26,0.08)] flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#8A857F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 16v-8m0 0l-3 3m3-3l3 3M6 20h12a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
               <div>
-                <p className="text-[14px] font-medium text-[#374151]">
-                  <span className="text-[#374151]">Click to upload</span> or drag and drop
+                <p className="font-sans text-[14px] font-medium text-[#4A3C34]">
+                  Click to upload or drag and drop
                 </p>
-                <p className="text-[13px] text-[#9CA3AF] mt-1">PDF or DOCX · max 4MB</p>
+                <p className="font-sans text-[13px] text-[#8A857F] mt-1">PDF or DOCX · max 4MB</p>
               </div>
             </div>
           </div>
@@ -147,17 +147,17 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
           {isLoading && <LoadingState message="Extracting text from file…" />}
 
           {error && (
-            <div className="mt-3 p-4 bg-[rgba(220,38,38,0.05)] rounded-lg border border-[rgba(220,38,38,0.15)]">
-              <p className="text-[14px] text-[#DC2626]">{error}</p>
-              <button onClick={handleReset} className="mt-1 text-[13px] text-[#DC2626] underline hover:no-underline">
+            <div className="mt-3 p-4 bg-[rgba(196,98,45,0.05)] border border-[rgba(196,98,45,0.20)]">
+              <p className="font-sans text-[14px] text-[#C4622D]">{error}</p>
+              <button onClick={handleReset} className="mt-1 font-sans text-[13px] text-[#C4622D] underline hover:no-underline">
                 Try again
               </button>
             </div>
           )}
 
           {fileName && !isLoading && !error && (
-            <p className="mt-2.5 text-[13px] text-[#6B7280]">
-              <span className="font-medium text-[#374151]">{fileName}</span> loaded
+            <p className="mt-2.5 font-sans text-[13px] text-[#8A857F]">
+              <span className="font-medium text-[#4A3C34]">{fileName}</span> loaded
             </p>
           )}
         </div>
@@ -171,7 +171,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             onChange={(e) => { setPastedText(e.target.value); setConfirmed(false); }}
             placeholder="Paste the full text of your resume here…"
             rows={14}
-            className="w-full border border-[#D1D5DB] rounded-lg p-4 text-[14px] text-[#374151] font-mono leading-relaxed bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB] resize-y placeholder:text-[#9CA3AF] transition-colors"
+            className="w-full border border-[rgba(26,26,26,0.12)] rounded-[2px] p-4 font-mono text-[14px] text-[#4A3C34] leading-relaxed bg-[#FDF7EA] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.30)] resize-y placeholder:text-[#8A857F] transition-colors"
           />
         </div>
       )}
@@ -179,12 +179,12 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
       {/* Extracted text preview */}
       {mode === "upload" && extractedText && !isLoading && (
         <div>
-          <p className="text-[13px] font-medium text-[#6B7280] mb-2">Extracted text: confirm it looks right</p>
+          <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mb-2">Extracted text — confirm it looks right</p>
           <textarea
             readOnly
             value={extractedText}
             rows={14}
-            className="w-full border border-[#E5E7EB] rounded-lg p-4 text-[14px] text-[#6B7280] font-mono leading-relaxed bg-[#F9FAFB] resize-y"
+            className="w-full border border-[rgba(26,26,26,0.10)] rounded-[2px] p-4 font-mono text-[14px] text-[#4A3C34] leading-relaxed bg-[#F6F0E4] resize-y"
           />
         </div>
       )}
@@ -195,21 +195,21 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
           <button
             onClick={handleConfirm}
             disabled={confirmed}
-            className={`px-5 py-2 rounded-full text-[14px] font-[500] transition-all ${
+            className={`px-5 py-2.5 font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] transition-all ${
               confirmed
-                ? "bg-[#4B9B7E] text-white cursor-default"
-                : "bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white hover:from-[#3A3A3C] hover:to-[#242424]"
+                ? "bg-[rgba(45,106,79,0.12)] text-[#2D6A4F] cursor-default"
+                : "bg-[#231812] text-[#FDF7EA] hover:bg-[#3D2A22]"
             }`}
           >
             {confirmed ? "✓ Profile confirmed" : "Confirm Profile"}
           </button>
 
           {confirmed && (
-            <p className="text-[14px] text-[#4B9B7E] font-medium">Ready to score jobs.</p>
+            <p className="font-sans text-[14px] text-[#2D6A4F] font-medium">Ready to score jobs.</p>
           )}
 
           {!confirmed && (
-            <button onClick={handleReset} className="text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors">
+            <button onClick={handleReset} className="font-sans text-[14px] text-[#8A857F] hover:text-[#4A3C34] transition-colors">
               Clear
             </button>
           )}

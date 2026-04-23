@@ -164,3 +164,4 @@ All context is loaded. Just describe what you want to build or fix.
 - **Pricing:** $79–149 for 90-day sprint (to be validated)
 - **Domain:** Not yet purchased — check getsignal.co, trysignal.io, signalhq.co
 - **Trademark:** Not yet checked — USPTO Class 042
+

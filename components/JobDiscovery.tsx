@@ -8,7 +8,6 @@ interface JobDiscoveryProps {
   onGoToProfile: () => void;
 }
 
-// ── Query construction (never shown to user) ──────────────────────────────────
 function primaryTitle(clusterName: string): string {
   return clusterName.split(/[,\/|]/)[0].trim();
 }
@@ -33,7 +32,6 @@ function buildLinkedInUrl(clusterName: string, modifier: string): string {
   return `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(keywords)}`;
 }
 
-// ── X-Ray ATS URL builders ────────────────────────────────────────────────────
 const ATS_PLATFORMS = [
   { label: "Workday",    domain: "myworkdayjobs.com" },
   { label: "Greenhouse", domain: "boards.greenhouse.io" },
@@ -49,24 +47,28 @@ function buildXRayUrl(domain: string, clusterName: string, modifier: string): st
   return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
 }
 
-// ── Confidence badge ──────────────────────────────────────────────────────────
-const CONFIDENCE_STYLES: Record<string, string> = {
-  "Strong":   "bg-[rgba(75,155,126,0.10)] text-[#4B9B7E]",
-  "Moderate": "bg-[rgba(124,139,154,0.10)] text-[#7C8B9A]",
-  "Stretch":  "bg-[rgba(176,144,110,0.10)] text-[#B0906E]",
+const CONFIDENCE_STYLES: Record<string, { color: string; border: string }> = {
+  "Strong":   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
+  "Moderate": { color: "#A86B2D", border: "1px solid #A86B2D" },
+  "Stretch":  { color: "#C4622D", border: "1px solid #C4622D" },
 };
 
-// ── Cluster card ──────────────────────────────────────────────────────────────
 function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: string; confidence: string; staggerIndex: number }) {
   const [modifier, setModifier] = useState("");
-  const confStyle = CONFIDENCE_STYLES[confidence] ?? "bg-[rgba(136,136,136,0.10)] text-[#888888]";
+  const confStyle = CONFIDENCE_STYLES[confidence] ?? { color: "#8A857F", border: "1px solid #8A857F" };
 
   return (
-    <div className="bg-white rounded-xl p-7 space-y-5 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div
+      className="border-b border-[rgba(26,26,26,0.10)] py-7 space-y-5 card-entrance"
+      style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
+    >
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[16px] font-[500] text-[#111827] leading-snug">{clusterName}</p>
-        <span className={`shrink-0 text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${confStyle}`}>
+        <p className="font-sans text-[16px] font-[500] text-[#231812] leading-snug">{clusterName}</p>
+        <span
+          className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
+          style={{ color: confStyle.color, border: confStyle.border }}
+        >
           {confidence}
         </span>
       </div>
@@ -77,31 +79,32 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
         value={modifier}
         onChange={(e) => setModifier(e.target.value)}
         placeholder="Add a city or industry (optional)"
-        className="w-full border border-[#D1D5DB] rounded-xl px-3 py-2 text-[14px] bg-[#F9FAFB] focus:outline-none focus:border-[#2563EB] placeholder:text-[#9CA3AF] transition-colors"
+        className="w-full border border-[rgba(26,26,26,0.12)] rounded-[2px] px-3 py-2 font-sans text-[14px] bg-[#F6F0E4] focus:outline-none focus:border-[rgba(26,26,26,0.30)] placeholder:text-[#8A857F] transition-colors text-[#4A3C34]"
       />
 
-      {/* Search buttons — equal visual weight */}
+      {/* Search buttons */}
       <div className="flex items-center gap-2 pt-1">
         <a
           href={buildGoogleUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[rgba(26,26,26,0.15)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.25)] transition-colors"
         >
-          Search Google →
+          Google →
         </a>
         <a
           href={buildLinkedInUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[#D1D5DB] text-[#374151] text-[14px] font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[rgba(26,26,26,0.15)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.25)] transition-colors"
         >
-          Search LinkedIn →
+          LinkedIn →
         </a>
       </div>
 
       {/* X-Ray ATS buttons */}
       <div className="mt-2">
+        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mb-2">X-Ray search</p>
         <div className="flex items-center gap-2 flex-wrap">
           {ATS_PLATFORMS.map((ats) => (
             <a
@@ -109,7 +112,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
               href={buildXRayUrl(ats.domain, clusterName, modifier)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center px-3 py-1 border border-[#D1D5DB] text-[#374151] text-xs font-[500] rounded-full hover:bg-[#F9FAFB] transition-colors"
+              className="flex items-center justify-center px-3 py-1 border border-[rgba(26,26,26,0.12)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.20)] transition-colors"
             >
               {ats.label}
             </a>
@@ -120,18 +123,17 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
   );
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscoveryProps) {
   if (!clusterResult) {
     return (
       <div className="text-center py-20">
-        <p className="text-base font-[500] text-[#111827]">Analyze your profile first</p>
-        <p className="text-sm text-[#9CA3AF] mt-2 max-w-xs mx-auto">
+        <p className="font-sans text-base font-[500] text-[#231812]">Analyze your profile first</p>
+        <p className="font-sans text-sm text-[#8A857F] mt-2 max-w-xs mx-auto">
           Run the profile analysis to get role clusters — this tab uses them to build your search terms.
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
         >
           Go to Profile →
         </button>
@@ -145,11 +147,11 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
 
   return (
     <div className="space-y-6">
-      <p className="text-[14px] text-[#6B7280]">
+      <p className="font-sans text-[14px] text-[#4A3C34]">
         Your best-fit role clusters — search for open positions directly from here.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="space-y-0">
         {clusters.map((cluster, i) => (
           <ClusterCard key={i} clusterName={cluster.name} confidence={cluster.confidence} staggerIndex={i} />
         ))}

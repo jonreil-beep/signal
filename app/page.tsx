@@ -768,8 +768,8 @@ export default function Home() {
   // ── Auth loading screen ──
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-brand-text flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#F6F0E4] flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-[rgba(35,24,18,0.15)] border-t-[#231812] rounded-full animate-spin" />
       </div>
     );
   }
@@ -779,30 +779,28 @@ export default function Home() {
     // Signed in — show welcome (new) or welcome back (returning) view
     if (user) {
       return (
-        <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
-          <div className="landing-gradient-spinner" aria-hidden="true" />
-          <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
-            <div className="mb-8">
-              <h1 className="text-[18px] font-[700] text-white tracking-[0.14em]">
-                <span className="text-[18px] font-[700] text-white tracking-[0.14em]"><SignalWordmark /></span>
+        <div className="min-h-screen bg-[#F6F0E4] flex items-center px-6">
+          <div className="max-w-2xl mx-auto w-full py-20">
+            <div className="mb-10 pb-6 border-b-2 border-[#231812]">
+              <h1 className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
+                <SignalWordmark />
               </h1>
-              <p className="text-[16px] font-[400] text-[rgba(255,255,255,0.6)] mt-2">Smarter search for experienced professionals</p>
             </div>
-            <p className="text-[24px] font-[500] text-white leading-snug mb-8">
+            <p className="font-instrument-serif text-[40px] font-normal text-[#231812] leading-[1.1] mb-10">
               {isNewSignup
                 ? "Welcome. You're all set."
                 : `Welcome back. You have ${trackedJobs.length} job${trackedJobs.length === 1 ? "" : "s"} scored.`}
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-5">
               <button
                 onClick={() => setShowLanding(false)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[#111827] text-base font-semibold rounded-full hover:bg-white/90 transition-colors"
+                className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
               >
                 {isNewSignup ? "Get started →" : "Go to my jobs →"}
               </button>
               <button
                 onClick={handleSignOut}
-                className="text-[14px] text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.6)] transition-colors"
+                className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
               >
                 Sign out
               </button>
@@ -814,63 +812,68 @@ export default function Home() {
 
     // Not signed in — show magic link form
     return (
-      <div className="min-h-screen bg-brand-text relative overflow-hidden flex items-center px-6">
-        <div className="landing-gradient-spinner" aria-hidden="true" />
-        <div className="relative z-10 max-w-2xl mx-auto w-full py-20">
-          <div className="mb-10">
-            <h1 className="text-[18px] font-[700] text-white tracking-[0.14em]"><SignalWordmark /></h1>
-            <p className="text-[16px] font-[400] text-[rgba(255,255,255,0.6)] mt-2">Smarter search for experienced professionals</p>
+      <div className="min-h-screen bg-[#F6F0E4] flex items-center px-6">
+        <div className="max-w-2xl mx-auto w-full py-20">
+          <div className="mb-10 pb-6 border-b-2 border-[#231812]">
+            <div className="flex items-baseline justify-between gap-4">
+              <h1 className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
+                <SignalWordmark />
+              </h1>
+              <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">
+                Career Copilot
+              </span>
+            </div>
           </div>
 
-          <p className="text-[28px] font-[500] text-white/85 leading-snug mb-8">
-            Score your fit. Build your prep. Apply to fewer, better-matched roles.
+          <p className="font-instrument-serif italic text-[48px] sm:text-[64px] font-normal text-[#231812] leading-[1.0] mb-10">
+            Score your fit. Build your prep. Apply smarter.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 border-t border-[rgba(26,26,26,0.10)] pt-8">
             {[
-              { step: "1", label: "Upload your resume" },
-              { step: "2", label: "Score any job description" },
-              { step: "3", label: "Get a targeted prep guide" },
+              { step: "01", label: "Upload your resume" },
+              { step: "02", label: "Score any job description" },
+              { step: "03", label: "Get a targeted prep guide" },
             ].map(({ step, label }) => (
-              <div key={step} className="rounded-xl bg-white/6 border border-white/10 px-4 py-3">
-                <p className="text-xs text-white/35 mb-1">Step {step}</p>
-                <p className="text-sm font-[500] text-white/80">{label}</p>
+              <div key={step} className="flex gap-3">
+                <span className="font-jetbrains-mono text-[11px] text-[#8A857F] shrink-0 pt-0.5">{step}</span>
+                <p className="font-sans text-[15px] text-[#4A3C34]">{label}</p>
               </div>
             ))}
           </div>
 
           {!magicLinkSent ? (
-            <div className="space-y-3">
-              <div className="flex flex-col gap-3 md:flex-row md:gap-2 md:items-center">
+            <div className="space-y-4">
+              <div className="flex flex-col gap-2 md:flex-row md:gap-2 md:items-center max-w-md">
                 <input
                   type="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="w-full md:flex-1 px-5 py-3.5 bg-white/10 text-white placeholder-white/30 border border-white/20 rounded-full text-base focus:outline-none focus:ring-0 focus:border-white/50 transition-colors"
+                  className="w-full md:flex-1 px-4 py-3 bg-[#FDF7EA] text-[#231812] placeholder:text-[#8A857F] border border-[rgba(26,26,26,0.18)] rounded-[2px] font-sans text-[15px] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.4)] transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="w-full md:w-auto px-8 py-3 bg-white text-[#111827] text-base font-semibold rounded-full hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="w-full md:w-auto px-4 py-3 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Continue with email →"}
                 </button>
               </div>
               {magicLinkError && (
-                <p className="text-sm text-red-400">{magicLinkError}</p>
+                <p className="font-sans text-[13px] text-red-600">{magicLinkError}</p>
               )}
-              <div className="flex flex-wrap items-center gap-5 !mt-6">
+              <div className="flex flex-wrap items-center gap-5 pt-2">
                 <Link
                   href="/how-it-works"
-                  className="text-sm text-white/55 hover:text-white/80 transition-colors"
+                  className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                 >
                   How Claro works →
                 </Link>
                 <button
                   onClick={() => { setShowLanding(false); setActiveTab("my-jobs"); }}
-                  className="text-sm text-white/55 hover:text-white/80 transition-colors"
+                  className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                 >
                   Try without signing up
                 </button>
@@ -878,15 +881,15 @@ export default function Home() {
             </div>
           ) : (
             <div className="space-y-3">
-              <p className="text-base text-white/80">
-                Check your inbox. We sent a link to <span className="text-white font-medium">{email}</span>.
+              <p className="font-sans text-[16px] text-[#231812]">
+                Check your inbox. We sent a link to <span className="font-medium">{email}</span>.
               </p>
-              <p className="text-sm text-white/40">
+              <p className="font-sans text-[14px] text-[#8A857F]">
                 Click the link in the email to sign in. It may take a minute to arrive.
               </p>
               <button
                 onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
-                className="text-sm text-white/30 hover:text-white/50 transition-colors"
+                className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
               >
                 Use a different email
               </button>
@@ -899,13 +902,13 @@ export default function Home() {
 
   // ── App shell ──
   const guestBanner = !user ? (
-    <div className="border-b border-[#E5E7EB] bg-white">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-12 py-4">
+    <div className="border-b border-[rgba(26,26,26,0.08)] bg-[#FDF7EA]">
+      <div className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-[72px] py-3">
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-brand-text">Want to save your work?</p>
-              <p className="text-xs text-brand-text/50 mt-0.5">
+              <p className="font-sans text-[13px] font-medium text-[#231812]">Want to save your work?</p>
+              <p className="font-sans text-[12px] text-[#8A857F] mt-0.5">
                 Enter your email to save your profile, scores, and prep guides — free, no password.
               </p>
             </div>
@@ -917,30 +920,29 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="flex-1 h-10 px-3 text-sm border border-brand-text/15 rounded-xl bg-white focus:outline-none focus:ring-0 focus:border-brand-text/30 transition-colors"
+                  className="flex-1 h-9 px-3 font-sans text-[13px] border border-[rgba(26,26,26,0.15)] rounded-[2px] bg-[#FDF7EA] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.35)] transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="h-10 px-4 shrink-0 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-sm font-semibold rounded-xl hover:from-[#3A3A3C] hover:to-[#242424] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="h-9 px-3 shrink-0 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save progress"}
                 </button>
               </div>
               {magicLinkError && (
-                <p className="text-xs text-red-500 max-w-xs">{magicLinkError}</p>
+                <p className="font-sans text-[11px] text-red-600 max-w-xs">{magicLinkError}</p>
               )}
             </div>
           </div>
         ) : (
           <div className="flex items-center justify-between gap-4">
-            <p className="text-sm text-brand-text/70">
-              Check your inbox — we sent a link to <span className="font-medium text-brand-text">{email}</span>.
-              Click it to sign in and save everything.
+            <p className="font-sans text-[13px] text-[#4A3C34]">
+              Check your inbox — we sent a link to <span className="font-medium text-[#231812]">{email}</span>.
             </p>
             <button
               onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
-              className="shrink-0 text-xs text-brand-text/40 hover:text-brand-text/70 transition-colors"
+              className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
             >
               Use different email
             </button>
@@ -966,16 +968,20 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
-            <div className="mb-7">
-              <h2 className="text-[20px] font-[500] text-[#111827]">Profile</h2>
+            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Profile</h2>
+                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Your background</span>
+              </div>
+              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Map your strongest role clusters and positioning risks.</p>
             </div>
 
             {/* No profile yet: onboarding header + uploader */}
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="text-[20px] font-[500] text-[#111827]">Step 1 — Clarify your positioning</h2>
-                  <p className="text-base text-brand-text/50 mt-1">
+                  <h2 className="font-sans text-[16px] font-medium text-[#231812]">Step 1 — Clarify your positioning</h2>
+                  <p className="font-sans text-[15px] text-[#4A3C34] mt-1">
                     Upload your resume once. Claro identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
                 </div>
@@ -987,29 +993,29 @@ export default function Home() {
             {profileText && (
               <div className="mb-6">
                 {/* ── Summary bar ── */}
-                <div className="flex items-center justify-between gap-3 py-3.5 px-5 bg-white rounded-xl border border-[rgba(26,26,26,0.12)]">
-                  <div className="flex items-center gap-2 flex-wrap text-sm min-w-0">
-                    <span className="font-[500] text-brand-text">Your profile</span>
-                    <span className="text-brand-text/20">·</span>
-                    <span className="text-brand-text/50">
+                <div className="flex items-center justify-between gap-3 py-3 px-4 bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] rounded-[2px]">
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <span className="font-sans text-[13px] font-medium text-[#231812]">Your profile</span>
+                    <span className="text-[#8A857F]">·</span>
+                    <span className="font-sans text-[13px] text-[#8A857F]">
                       {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
                     </span>
                     {writingSample.trim() && (
                       <>
-                        <span className="text-brand-text/20">·</span>
-                        <span className="text-brand-text/50">Writing sample added</span>
+                        <span className="text-[#8A857F]">·</span>
+                        <span className="font-sans text-[13px] text-[#8A857F]">Writing sample added</span>
                       </>
                     )}
                     {pivotTarget.trim() && (
                       <>
-                        <span className="text-brand-text/20">·</span>
-                        <span className="text-brand-text/50">Pivot target set</span>
+                        <span className="text-[#8A857F]">·</span>
+                        <span className="font-sans text-[13px] text-[#8A857F]">Pivot target set</span>
                       </>
                     )}
                     {clusterResult && (
                       <>
-                        <span className="text-brand-text/20">·</span>
-                        <span className="text-xs text-brand-text/35">Analyzed</span>
+                        <span className="text-[#8A857F]">·</span>
+                        <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F]">Analyzed</span>
                       </>
                     )}
                   </div>
@@ -1017,20 +1023,20 @@ export default function Home() {
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        className="text-sm font-[500] text-[#374151] hover:text-[#111827] transition-colors"
+                        className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
                       >
                         Analyze →
                       </button>
                     )}
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
-                      className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
+                      className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                     >
                       {profileExpanded === "view" ? "Hide" : "View"}
                     </button>
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
-                      className="text-sm text-brand-text/40 hover:text-brand-text/70 font-medium transition-colors"
+                      className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                     >
                       {profileExpanded === "update" ? "Cancel" : "Update"}
                     </button>
@@ -1041,20 +1047,20 @@ export default function Home() {
                 {profileExpanded === "view" && (
                   <div className="mt-3">
                     <div
-                      className="overflow-y-auto rounded-lg p-6"
+                      className="overflow-y-auto p-6"
                       style={{
                         maxHeight: "400px",
-                        background: "#F9FAFB",
-                        border: "1px solid #E5E7EB",
+                        background: "#FDF7EA",
+                        border: "1px solid rgba(26,26,26,0.12)",
                         scrollbarWidth: "thin",
-                        scrollbarColor: "#D1D5DB transparent",
+                        scrollbarColor: "rgba(26,26,26,0.15) transparent",
                       }}
                     >
                       {profileText.split(/\n\n+/).map((para, pi) => (
                         <p
                           key={pi}
-                          className="mb-4 last:mb-0 text-[13px] leading-[1.6] text-[#374151]"
-                          style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+                          className="mb-4 last:mb-0 font-sans text-[13px] leading-[1.6] text-[#4A3C34]"
+                          style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}
                         >
                           {para.split(/\n/).map((line, li, arr) => (
                             <span key={li}>
@@ -1072,14 +1078,14 @@ export default function Home() {
                 {profileExpanded === "update" && (
                   <div className="mt-3 space-y-4">
                     {/* Resume uploader */}
-                    <div className="rounded-xl bg-white p-5 border border-[rgba(26,26,26,0.12)]">
-                      <p className="text-sm text-brand-text/50 mb-4">Upload or paste a new resume to replace the saved one.</p>
+                    <div className="bg-[#FDF7EA] p-5 border border-[rgba(26,26,26,0.12)]">
+                      <p className="font-sans text-[13px] text-[#8A857F] mb-4">Upload or paste a new resume to replace the saved one.</p>
                       <ProfileUploader onProfileConfirmed={(text, source, fileName) => {
                         handleProfileConfirmed(text, source, fileName);
                         setProfileExpanded("none");
                       }} />
                       {!user && resumeSource === "file" && (
-                        <p className="mt-2 text-xs text-brand-text/40">
+                        <p className="mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">
                           Uploaded from file — re-upload if you refresh the page.
                         </p>
                       )}
@@ -1088,11 +1094,11 @@ export default function Home() {
                     {/* Writing sample */}
                     <div>
                       <div className="flex items-baseline justify-between mb-1.5">
-                        <label className="block text-sm font-medium text-brand-text">
-                          Writing sample <span className="font-normal text-brand-text/40">(optional)</span>
+                        <label className="block font-sans text-[13px] font-medium text-[#231812]">
+                          Writing sample <span className="font-normal text-[#8A857F]">(optional)</span>
                         </label>
                         {writingSample.trim() && (
-                          <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                          <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1100,18 +1106,18 @@ export default function Home() {
                         onChange={(e) => setWritingSample(e.target.value)}
                         placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
                         rows={3}
-                        className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                        className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#FDF7EA] rounded-[2px] px-3.5 py-3 border border-[rgba(26,26,26,0.15)] focus:border-[rgba(26,26,26,0.35)] focus:outline-none focus:ring-0 resize-none placeholder:text-[#8A857F]"
                       />
                     </div>
 
                     {/* Pivot target */}
                     <div>
                       <div className="flex items-baseline justify-between mb-1.5">
-                        <label className="block text-sm font-medium text-brand-text">
-                          Targeting a pivot? <span className="font-normal text-brand-text/40">(optional)</span>
+                        <label className="block font-sans text-[13px] font-medium text-[#231812]">
+                          Targeting a pivot? <span className="font-normal text-[#8A857F]">(optional)</span>
                         </label>
                         {pivotTarget.trim() && (
-                          <span className="text-xs text-brand-text/35">Auto-saved · used on next generation</span>
+                          <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1119,7 +1125,7 @@ export default function Home() {
                         onChange={(e) => setPivotTarget(e.target.value)}
                         placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
                         rows={3}
-                        className="w-full text-sm text-brand-text/80 bg-white rounded-xl px-3.5 py-3 border border-brand-text/12 focus:border-brand-text/30 focus:outline-none focus:ring-0 resize-none placeholder:text-brand-text/30 shadow-sm"
+                        className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#FDF7EA] rounded-[2px] px-3.5 py-3 border border-[rgba(26,26,26,0.15)] focus:border-[rgba(26,26,26,0.35)] focus:outline-none focus:ring-0 resize-none placeholder:text-[#8A857F]"
                       />
                     </div>
 
@@ -1127,13 +1133,13 @@ export default function Home() {
                     <div className="flex items-center gap-4 pt-2">
                       <button
                         onClick={() => { setProfileExpanded("none"); handleAnalyze(); }}
-                        className="px-5 py-2.5 text-sm font-[500] rounded-2xl sm:rounded-full bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+                        className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
                       >
                         Save &amp; Reanalyze
                       </button>
                       <button
                         onClick={() => setProfileExpanded("none")}
-                        className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                        className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                       >
                         Cancel
                       </button>
@@ -1150,9 +1156,9 @@ export default function Home() {
             )}
 
             {analyzeError && !isAnalyzing && (
-              <div className="mb-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                <p className="text-sm text-red-700">{analyzeError}</p>
-                <button onClick={handleAnalyze} className="mt-1.5 text-xs text-red-600 underline hover:no-underline">
+              <div className="mb-4 p-4 border-l-2 border-red-400">
+                <p className="font-sans text-[14px] text-[#4A3C34]">{analyzeError}</p>
+                <button onClick={handleAnalyze} className="mt-1.5 font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors">
                   Try again
                 </button>
               </div>
@@ -1161,14 +1167,12 @@ export default function Home() {
             {clusterResult && !isAnalyzing && (
               <div className="space-y-6">
 
-                {/* ── Recommended LinkedIn Headline hero card — full width ── */}
-                <div id="profile-result" className="hero-card-animated relative overflow-hidden rounded-xl result-scroll-target" style={{ padding: "28px 32px" }}>
-                  {/* Atmospheric glow */}
-                  <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style={{ background: "radial-gradient(circle at top right, rgba(255,255,255,0.04) 0%, transparent 70%)" }} />
-                  <p className="relative text-[11px] font-[500] uppercase tracking-[0.05em] mb-2.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+                {/* ── Recommended LinkedIn Headline ── */}
+                <div id="profile-result" className="result-scroll-target border-t-2 border-[#231812] pt-6">
+                  <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
                     Your Recommended LinkedIn Headline
                   </p>
-                  <p className="relative text-[19px] font-[500] text-white leading-[1.45]">
+                  <p className="font-instrument-serif text-[28px] font-normal text-[#231812] leading-[1.3]">
                     {clusterResult.recommended_headline}
                   </p>
                 </div>
@@ -1187,12 +1191,12 @@ export default function Home() {
                   }}
                   rightColumnExtra={
                     /* ── LinkedIn Headline Generator — 3rd card in right column ── */
-                    <div className="bg-white rounded-xl border border-[rgba(26,26,26,0.12)] overflow-hidden">
-                      <div className="px-6 py-5 border-b border-brand-text/8">
+                    <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] overflow-hidden">
+                      <div className="px-5 py-4 border-b border-[rgba(26,26,26,0.08)]">
                         <div className="flex items-center justify-between gap-4">
                           <div>
-                            <p className="text-[0.8125rem] font-medium tracking-[0.06em] uppercase text-brand-text/45 mb-1">LinkedIn Headlines</p>
-                            <p className="text-sm text-brand-text/50 leading-snug">
+                            <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-1">LinkedIn Headlines</p>
+                            <p className="font-sans text-[13px] text-[#4A3C34] leading-snug">
                               {headlineResult
                                 ? "Pick the angle that fits where you're headed."
                                 : "4 positioning angles calibrated to your career story."}
@@ -1201,30 +1205,30 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-sm font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+                              className="shrink-0 px-3 py-1.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
                           )}
                         </div>
                       </div>
-                      <div className="px-6 py-5">
+                      <div className="px-5 py-4">
                         {isGeneratingHeadlines && (
                           <LoadingState message="Writing headline angles from your career story…" />
                         )}
                         {headlineError && !isGeneratingHeadlines && (
-                          <div className="p-4 bg-red-50 rounded-xl ring-1 ring-red-100">
-                            <p className="text-sm text-red-700">{headlineError}</p>
+                          <div className="p-4 border-l-2 border-red-400">
+                            <p className="font-sans text-[13px] text-[#4A3C34]">{headlineError}</p>
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="mt-1 text-xs text-red-500 underline hover:no-underline"
+                              className="mt-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
                             >
                               Try again
                             </button>
                           </div>
                         )}
                         {!headlineResult && !isGeneratingHeadlines && !headlineError && (
-                          <p className="text-sm text-brand-text/35 italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
+                          <p className="font-sans text-[13px] text-[#8A857F] italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
                         )}
                         {headlineResult && !isGeneratingHeadlines && (
                           <div className="space-y-3">
@@ -1241,18 +1245,18 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && (
-              <div className="mt-8 pt-6 border-t border-brand-text/8 flex items-center justify-between gap-4">
-                <p className="text-sm text-brand-text/40">Ready to evaluate a role?</p>
-                <div className="flex items-center gap-4 shrink-0">
+              <div className="mt-10 pt-6 border-t border-[rgba(26,26,26,0.10)] flex items-center justify-between gap-4">
+                <p className="font-sans text-[13px] text-[#8A857F]">Ready to evaluate a role?</p>
+                <div className="flex items-center gap-5 shrink-0">
                   <button
                     onClick={() => setActiveTab("discover")}
-                    className="text-sm text-brand-text/40 hover:text-brand-text/70 transition-colors"
+                    className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
                   >
                     Discover jobs →
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="inline-flex items-center gap-1 px-5 py-2.5 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-base font-[500] rounded-2xl sm:rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+                    className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
                   >
                     Score a job →
                   </button>
@@ -1274,29 +1278,33 @@ export default function Home() {
               />
             ) : (
               <div>
-                <div className="mb-7">
-                  <h2 className="text-[20px] font-[500] text-[#111827]">Job Fit</h2>
+                <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Job Fit</h2>
+                    <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Score a role</span>
+                  </div>
+                  <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-                  <div className="flex items-center justify-between gap-4 mb-6">
+                  <div className="flex items-center justify-between gap-4 mb-8">
                     <JobLabelEditor
                       id={activeJobId}
                       label={trackedJobs.find(j => j.id === activeJobId)!.label}
                       onRename={handleRenameJob}
-                      className="text-2xl font-[500]"
+                      className="font-sans text-[18px] font-medium text-[#231812]"
                     />
                     <div className="flex items-center gap-3 shrink-0">
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-5 py-2.5 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-base font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors whitespace-nowrap"
+                          className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors whitespace-nowrap"
                         >
                           Go to Prep →
                         </button>
                       )}
                       <button
                         onClick={handleJobFitReset}
-                        className="px-4 py-2 bg-brand-text/8 text-brand-text/60 text-sm font-medium rounded-xl hover:bg-brand-text/14 transition-colors whitespace-nowrap"
+                        className="px-3 py-1.5 border border-[rgba(26,26,26,0.15)] text-[#231812] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[rgba(26,26,26,0.04)] transition-colors whitespace-nowrap"
                       >
                         + Score another job
                       </button>
@@ -1324,8 +1332,12 @@ export default function Home() {
         {/* ── Discover tab ── */}
         {activeTab === "discover" && (
           <div>
-            <div className="mb-7">
-              <h2 className="text-[20px] font-[500] text-[#111827]">Discover</h2>
+            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Discover</h2>
+                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Find roles</span>
+              </div>
+              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Search directly from your best-fit role clusters.</p>
             </div>
             <JobDiscovery
               clusterResult={clusterResult}
@@ -1337,8 +1349,12 @@ export default function Home() {
         {/* ── Prep tab ── */}
         {activeTab === "tailoring-brief" && (
           <div>
-            <div className="mb-7">
-              <h2 className="text-[20px] font-[500] text-[#111827]">Prep</h2>
+            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Prep</h2>
+                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Application prep</span>
+              </div>
+              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Full application brief, cover letter, outreach, and interview prep.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">
@@ -1346,7 +1362,7 @@ export default function Home() {
                   id={activeJobId}
                   label={trackedJobs.find(j => j.id === activeJobId)!.label}
                   onRename={handleRenameJob}
-                  className="text-2xl font-[500]"
+                  className="font-sans text-[18px] font-medium text-[#231812]"
                 />
               </div>
             )}
@@ -1380,16 +1396,22 @@ export default function Home() {
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
           <div>
-            <div className="flex items-center justify-between gap-4 mb-7">
-              <h2 className="text-[20px] font-[500] text-[#111827]">My Jobs</h2>
-              {trackedJobs.length > 0 && (
-                <button
-                  onClick={resetAndNavigateToJobFit}
-                  className="shrink-0 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-sm font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
-                >
-                  Score a job →
-                </button>
-              )}
+            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">My Jobs</h2>
+                <div className="flex items-center gap-4 shrink-0">
+                  <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F]">Pipeline</span>
+                  {trackedJobs.length > 0 && (
+                    <button
+                      onClick={resetAndNavigateToJobFit}
+                      className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                    >
+                      Score a job →
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
             </div>
             <JobTracker
               jobs={trackedJobs}
@@ -1426,11 +1448,11 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="text-base font-[500] text-[#111827]">{message}</p>
-      <p className="text-sm text-[#9CA3AF] mt-2 max-w-xs mx-auto">{sub}</p>
+      <p className="font-sans text-[16px] font-medium text-[#231812]">{message}</p>
+      <p className="font-sans text-[14px] text-[#8A857F] mt-2 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-5 inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-sm font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+        className="mt-6 px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
       >
         {action} →
       </button>
@@ -1450,22 +1472,22 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
   }
 
   return (
-    <div className="rounded-2xl bg-white p-5 ring-1 ring-brand-text/8">
+    <div className="bg-[#FDF7EA] p-4 border border-[rgba(26,26,26,0.10)]">
       {/* Angle label + char count */}
-      <div className="flex items-center justify-between gap-3 mb-2.5">
-        <span className="text-xs font-medium text-[#374151] bg-[rgba(55,65,81,0.08)] px-2.5 py-0.5 rounded-full ring-1 ring-[rgba(55,65,81,0.15)]">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F]">
           {headline.angle}
         </span>
-        <span className="text-xs text-brand-text/30 tabular-nums">{headline.text.length} chars</span>
+        <span className="font-jetbrains-mono text-[10px] text-[#8A857F] tabular-nums">{headline.text.length} chars</span>
       </div>
       {/* Headline text */}
-      <p className="text-base font-[500] text-brand-text leading-snug mb-2">{headline.text}</p>
+      <p className="font-sans text-[15px] font-medium text-[#231812] leading-snug mb-1.5">{headline.text}</p>
       {/* Best for */}
-      <p className="text-sm text-brand-text/45 leading-snug mb-3">{headline.best_for}</p>
+      <p className="font-sans text-[13px] text-[#8A857F] leading-snug mb-3">{headline.best_for}</p>
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 text-sm font-medium text-[#374151] hover:text-[#111827] transition-colors"
+        className="flex items-center gap-1.5 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
       >
         {copied ? (
           <>

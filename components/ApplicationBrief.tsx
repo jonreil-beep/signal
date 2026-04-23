@@ -10,27 +10,21 @@ interface ApplicationBriefProps {
   onClose: () => void;
 }
 
-const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string }> = {
-  "Apply Now":                   { bg: "bg-[rgba(75,155,126,0.10)]",  text: "text-[#4B9B7E]" },
-  "Apply with Tailoring":        { bg: "bg-[rgba(124,139,154,0.10)]", text: "text-[#7C8B9A]" },
-  "Stretch — Proceed Carefully": { bg: "bg-[rgba(176,144,110,0.10)]", text: "text-[#B0906E]" },
-  "Skip":                        { bg: "bg-[rgba(163,163,163,0.10)]", text: "text-[#A3A3A3]" },
+const RECOMMENDATION_STYLES: Record<string, { color: string; border: string }> = {
+  "Apply Now":                   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
+  "Apply with Tailoring":        { color: "#A86B2D", border: "1px solid #A86B2D" },
+  "Stretch — Proceed Carefully": { color: "#C4622D", border: "1px solid #C4622D" },
+  "Skip":                        { color: "#6B6660", border: "1px solid #6B6660" },
 };
 
-const STATUS_LABEL_STYLES: Record<string, { bg: string; text: string }> = {
-  "Tracking":     { bg: "bg-white border border-[#E5E7EB]",          text: "text-[#374151]" },
-  "Applied":      { bg: "bg-[rgba(55,65,81,0.08)]",                   text: "text-[#374151]" },
-  "Phone Screen": { bg: "bg-[rgba(124,139,154,0.08)]",                text: "text-[#7C8B9A]" },
-  "Interview":    { bg: "bg-[rgba(75,155,126,0.08)]",                 text: "text-[#4B9B7E]" },
-  "Offer":        { bg: "bg-[rgba(75,155,126,0.12)]",                 text: "text-[#4B9B7E]" },
-  "Rejected":     { bg: "bg-[rgba(163,163,163,0.08)]",                text: "text-[#9CA3AF]" },
+const STATUS_LABEL_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  "Tracking":     { bg: "bg-[#FDF7EA]",                      text: "text-[#4A3C34]",  border: "border border-[rgba(26,26,26,0.15)]" },
+  "Applied":      { bg: "bg-[rgba(26,26,26,0.04)]",          text: "text-[#231812]",  border: "border-0" },
+  "Phone Screen": { bg: "bg-[rgba(138,133,127,0.10)]",       text: "text-[#4A3C34]",  border: "border-0" },
+  "Interview":    { bg: "bg-[rgba(45,106,79,0.08)]",         text: "text-[#2D6A4F]",  border: "border-0" },
+  "Offer":        { bg: "bg-[rgba(45,106,79,0.12)]",         text: "text-[#2D6A4F]",  border: "border-0" },
+  "Rejected":     { bg: "bg-[rgba(107,102,96,0.08)]",        text: "text-[#6B6660]",  border: "border-0" },
 };
-
-function scoreColor(score: number) {
-  if (score >= 7) return "text-[#4B9B7E]";
-  if (score >= 5) return "text-[#B0906E]";
-  return "text-[#C45C5C]";
-}
 
 /* ── Close button ── */
 function CloseButton({ onClick }: { onClick: () => void }) {
@@ -38,7 +32,7 @@ function CloseButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       aria-label="Close brief"
-      className="shrink-0 p-1.5 rounded-lg text-[#9CA3AF] hover:text-[#6B7280] hover:bg-[#F3F4F6] transition-colors"
+      className="shrink-0 p-1.5 text-[#8A857F] hover:text-[#4A3C34] hover:bg-[rgba(26,26,26,0.04)] transition-colors"
     >
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
         <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -50,7 +44,7 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 /* ── Section label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-[500] tracking-[0.05em] uppercase text-[#9CA3AF] mb-3">
+    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
       {children}
     </p>
   );
@@ -65,9 +59,9 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
 
   const { jobFitResult, tailoringResult, applicationStatus } = job;
   const recStyle = RECOMMENDATION_STYLES[jobFitResult.recommendation] ??
-    { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" };
+    { color: "#8A857F", border: "1px solid #8A857F" };
   const statusStyle = STATUS_LABEL_STYLES[applicationStatus] ??
-    { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" };
+    { bg: "bg-[rgba(26,26,26,0.04)]", text: "text-[#4A3C34]", border: "border-0" };
 
   async function handleCopy() {
     try {
@@ -108,12 +102,12 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
     return (
       <div className="h-full flex flex-col">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[#F3F4F6]">
+        <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[rgba(26,26,26,0.08)]">
           <div className="min-w-0">
-            <p className="text-[11px] font-[500] uppercase tracking-[0.05em] text-[#9CA3AF] mb-1">
+            <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F] mb-1">
               Application Brief
             </p>
-            <h2 className="text-[17px] font-[600] text-[#111827] leading-snug truncate">
+            <h2 className="font-sans text-[17px] font-[600] text-[#231812] leading-snug truncate">
               {jobFitResult.job_title || job.label}
             </h2>
           </div>
@@ -122,19 +116,19 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
 
         {/* Fallback body */}
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-4">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#9CA3AF]" aria-hidden="true">
+          <div className="w-12 h-12 bg-[rgba(26,26,26,0.04)] border border-[rgba(26,26,26,0.08)] flex items-center justify-center mb-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#8A857F]" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <p className="text-[15px] font-[500] text-[#111827] mb-2">No brief yet</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed mb-6 max-w-[280px]">
+          <p className="font-sans text-[15px] font-[500] text-[#231812] mb-2">No brief yet</p>
+          <p className="font-sans text-[14px] text-[#4A3C34] leading-relaxed mb-6 max-w-[280px]">
             Generate a tailoring brief first to unlock the full action plan.
           </p>
           <button
             onClick={() => onGoToPrep(job)}
-            className="px-5 py-2.5 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+            className="px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
           >
             Go to Prep →
           </button>
@@ -168,16 +162,16 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
     <div className="h-full flex flex-col">
 
       {/* ── Panel header ── */}
-      <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[#F3F4F6]">
+      <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[rgba(26,26,26,0.08)]">
         <div className="min-w-0">
-          <p className="text-[11px] font-[500] uppercase tracking-[0.05em] text-[#9CA3AF] mb-1">
+          <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F] mb-1">
             Application Brief
           </p>
-          <h2 className="text-[17px] font-[600] text-[#111827] leading-snug">
+          <h2 className="font-sans text-[17px] font-[600] text-[#231812] leading-snug">
             {jobFitResult.job_title || job.label}
           </h2>
           {/* Status badge */}
-          <span className={`inline-block mt-2 text-[11px] font-[500] px-2.5 py-0.5 rounded-full ${statusStyle.bg} ${statusStyle.text}`}>
+          <span className={`inline-block mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px] ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}>
             {applicationStatus}
           </span>
         </div>
@@ -187,32 +181,29 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
       {/* ── Scrollable content ── */}
       <div
         className="flex-1 overflow-y-auto px-6 py-6 space-y-7"
-        style={{ scrollbarWidth: "thin", scrollbarColor: "#D1D5DB transparent" }}
+        style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(26,26,26,0.12) transparent" }}
       >
 
         {/* ── 1. Score + recommendation ── */}
         <div className="flex items-center gap-3 flex-wrap">
-          <span className={`text-[28px] font-[600] tabular-nums leading-none ${scoreColor(jobFitResult.overall_fit)}`}>
+          <span className="font-instrument-serif text-[48px] leading-none text-[#231812]">
             {jobFitResult.overall_fit}
-            <span className="text-[14px] font-normal text-[#9CA3AF]">/10</span>
+            <span className="font-sans text-[16px] font-normal text-[#8A857F] ml-1">/10</span>
           </span>
-          <span className={`text-[12px] font-[500] px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}>
+          <span
+            className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
+            style={{ color: recStyle.color, border: recStyle.border }}
+          >
             {jobFitResult.recommendation}
           </span>
         </div>
 
         {/* ── 2. Recruiter concern ── */}
-        <div
-          className="rounded-xl p-5"
-          style={{
-            background: "rgba(124,139,154,0.04)",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
-          }}
-        >
-          <p className="text-[11px] font-[500] tracking-[0.05em] uppercase text-[#7C8B9A] mb-2">
-            ▸ Recruiter Concern to Address
+        <div style={{ borderLeft: "2px solid #A86B2D", paddingLeft: "16px" }}>
+          <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#A86B2D] mb-2">
+            Recruiter Concern to Address
           </p>
-          <p className="text-[14px] text-[#374151] leading-relaxed">
+          <p className="font-sans text-[14px] text-[#4A3C34] leading-relaxed">
             {recruiter_concern_to_preempt.concern}
           </p>
         </div>
@@ -224,12 +215,11 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
             {lead_strengths.map((s, i) => (
               <div
                 key={i}
-                className="rounded-xl p-4 bg-white"
-                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}
+                className="border border-[rgba(26,26,26,0.08)] bg-[#F6F0E4] p-4"
               >
-                <p className="text-[14px] font-[500] text-[#111827] mb-1">{s.strength}</p>
-                <p className="text-[13px] text-[#6B7280] leading-snug">{s.framing_language}</p>
-                <span className="inline-block mt-2 text-[11px] font-[400] px-2 py-0.5 rounded-full bg-[rgba(55,65,81,0.06)] text-[#9CA3AF]">
+                <p className="font-sans text-[14px] font-[500] text-[#231812] mb-1">{s.strength}</p>
+                <p className="font-sans text-[13px] text-[#4A3C34] leading-snug">{s.framing_language}</p>
+                <span className="inline-block mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px] bg-[rgba(26,26,26,0.04)] text-[#8A857F]">
                   {s.match_type}
                 </span>
               </div>
@@ -245,7 +235,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
               {jd_language_to_mirror.map((p, i) => (
                 <span
                   key={i}
-                  className="text-[13px] font-[400] px-3 py-1.5 rounded-full bg-[#F3F4F6] text-[#374151]"
+                  className="font-sans text-[13px] px-3 py-1.5 border border-[rgba(26,26,26,0.12)] bg-[#F6F0E4] text-[#4A3C34]"
                 >
                   &ldquo;{p.phrase}&rdquo;
                 </span>
@@ -260,10 +250,10 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
           <ol className="space-y-3">
             {actionPlan.map((item, i) => (
               <li key={i} className="flex gap-3">
-                <span className="shrink-0 w-5 h-5 rounded-full bg-[#374151] text-white text-[11px] font-[500] flex items-center justify-center mt-0.5 tabular-nums">
-                  {i + 1}
+                <span className="shrink-0 font-jetbrains-mono text-[10px] text-[#8A857F] pt-0.5 tabular-nums w-5">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="text-[14px] text-[#374151] leading-snug">{item}</p>
+                <p className="font-sans text-[14px] text-[#4A3C34] leading-snug">{item}</p>
               </li>
             ))}
           </ol>
@@ -272,25 +262,25 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
       </div>
 
       {/* ── Footer actions ── */}
-      <div className="px-6 py-4 border-t border-[#F3F4F6] flex items-center gap-3 flex-wrap">
+      <div className="px-6 py-4 border-t border-[rgba(26,26,26,0.08)] flex items-center gap-3 flex-wrap">
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[13px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors min-w-[100px] justify-center"
+          className="flex items-center gap-1.5 px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors min-w-[100px] justify-center"
         >
           {copied ? "Copied ✓" : "Copy brief"}
         </button>
         <button
           onClick={handleEmailSend}
           disabled={emailState === "sending"}
-          className={`flex items-center gap-1.5 px-4 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[13px] font-[500] rounded-full transition-colors ${
+          className={`flex items-center gap-1.5 px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] rounded-[2px] transition-colors ${
             emailState === "sending"
               ? "opacity-60 cursor-not-allowed"
-              : "hover:from-[#3A3A3C] hover:to-[#242424]"
+              : "hover:bg-[#3D2A22]"
           }`}
         >
           {emailState === "sending" && "Sending…"}
           {emailState === "sent"    && `Sent to ${sentToEmail} ✓`}
-          {emailState === "error"   && "Couldn't send — try copying instead"}
+          {emailState === "error"   && "Couldn't send — try copying"}
           {emailState === "idle"    && "Email me this →"}
         </button>
       </div>
