@@ -1,31 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Google Fonts loaded via next/font in layout.tsx */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Manuscript design tokens ──────────────────────────────────────── */
 :root {
-  /* Legacy CSS variables — kept for landing page compatibility */
-  --color-bg:             #F8F7F4;
-  --color-text:           #1A1A1A;
-  --color-accent:         #4F46E5;
-  --color-status-apply:   #4B9B7E;
-  --color-status-tailor:  #7C8B9A;
-  --color-status-stretch: #B0906E;
-  --color-status-skip:    #A3A3A3;
+  --bg:      #F6F0E4;
+  --surface: #FDF7EA;
+  --ink:     #231812;
+  --ink2:    #4A3C34;
+  --mute:    #8A857F;
+  --rule:    rgba(26,26,26,0.12);
+  --apply:   #2D6A4F;
+  --tailor:  #A86B2D;
+  --stretch: #C4622D;
+  --skip:    #6B6660;
+  --accent:  #8C3B1F;
 
-  /* New design system variables */
-  --color-surface:        #F9FAFB;
-  --color-border:         #E5E7EB;
-  --color-border-strong:  #D1D5DB;
-  --color-text-primary:   #111827;
-  --color-text-secondary: #6B7280;
-  --color-text-tertiary:  #9CA3AF;
-  --color-text-body:      #374151;
-  --color-accent-slate:   #4F46E5;
-
-  /* Override Tailwind's default ring color — use brand slate */
-  --tw-ring-color: rgba(61, 90, 76, 0.3);
+  --tw-ring-color: rgba(35,24,18,0.2);
 }
 
 @layer base {
@@ -33,20 +26,19 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
-    font-family: 'Inter', system-ui, sans-serif !important;
+    font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif !important;
     overflow-x: hidden;
     max-width: 100vw;
   }
 
   body {
-    font-family: 'Inter', system-ui, sans-serif !important;
-    background-color: #FFFFFF;
-    color: #111827;
+    font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif !important;
+    background-color: #F6F0E4;
+    color: #231812;
     overflow-x: hidden;
     max-width: 100vw;
   }
 
-  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -55,44 +47,45 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #D1D5DB;
+    background-color: rgba(26,26,26,0.15);
     border-radius: 3px;
   }
 
-  /* Strip all browser-default blue focus outlines globally */
   *:focus {
     outline: none;
   }
 
-  /* Replace with on-brand slate focus ring for keyboard nav */
   *:focus-visible {
-    outline: 2px solid #4F46E5;
+    outline: 2px solid #231812;
     outline-offset: 2px;
   }
 
-  /* Global transition default */
   button, a, input, textarea, select {
     transition-duration: 150ms;
     transition-timing-function: ease-out;
   }
 }
 
-@keyframes gradient-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+/* ── Manuscript nav numbered items via CSS counter ─────────────────── */
+nav.manuscript-nav {
+  counter-reset: nav-item;
+}
+nav.manuscript-nav button.nav-item-btn {
+  counter-increment: nav-item;
+}
+nav.manuscript-nav button.nav-item-btn::before {
+  content: counter(nav-item, decimal-leading-zero);
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #8A857F;
+  margin-right: 10px;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
 }
 
-/* ── Hero card animated gradient ──────────────────────────────────── */
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* ── Hero score card — transparent float on page bg ───────────────── */
 .hero-card-animated {
-  background: linear-gradient(135deg, #0e2035 0%, #1a3a5c 33%, #0f2744 66%, #162d4a 100%);
-  background-size: 300% 300%;
-  animation: gradientShift 12s ease-in-out infinite;
+  background: transparent;
 }
 
 /* ── Card entrance stagger ─────────────────────────────────────────── */
@@ -102,13 +95,6 @@
 }
 .card-entrance {
   animation: cardEntrance 300ms ease-out both;
-}
-
-/* ── Cluster badge pulse ───────────────────────────────────────────── */
-@keyframes badgePulse {
-  0%   { transform: scale(1);    }
-  50%  { transform: scale(1.08); }
-  100% { transform: scale(1);    }
 }
 
 /* ── Honest Take entrance ──────────────────────────────────────────── */
@@ -127,7 +113,7 @@
   30%           { transform: translateY(-4px); }
 }
 
-/* ── Score reveal fade-ins ─────────────────────────────────────────── */
+/* ── Score reveal animations ───────────────────────────────────────── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0);   }
@@ -137,11 +123,16 @@
   to   { opacity: 1; transform: translateX(0);    }
 }
 
-/* ── Scroll offset for anchored targets ───────────────────────────── */
+@keyframes gradient-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .result-scroll-target {
   scroll-margin-top: 24px;
 }
 
+/* Landing gradient spinner kept for structural use */
 .landing-gradient-spinner {
   position: absolute;
   inset: -100%;
@@ -149,11 +140,11 @@
   height: 300%;
   background: conic-gradient(
     from 0deg at 45% 55%,
-    #1A1A1A   0deg,
-    #1C2535  90deg,
-    #1A1A1A 180deg,
-    #1E1B2C 270deg,
-    #1A1A1A 360deg
+    #E8DFD0   0deg,
+    #DDD4C4  90deg,
+    #E8DFD0 180deg,
+    #E2D8C8 270deg,
+    #E8DFD0 360deg
   );
   animation: gradient-spin 28s linear infinite;
   pointer-events: none;

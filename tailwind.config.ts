@@ -9,38 +9,50 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-      },
-      boxShadow: {
-        card: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+        sans:               ["var(--font-dm-sans)", "DM Sans", "system-ui", "sans-serif"],
+        inter:              ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        "instrument-serif": ["var(--font-instrument-serif)", "Georgia", "serif"],
+        "jetbrains-mono":   ["var(--font-jetbrains-mono)", "monospace"],
+        mono:               ["var(--font-jetbrains-mono)", "monospace"],
       },
       colors: {
-        // Legacy brand tokens — kept for landing page compatibility
-        brand: {
-          bg:     "#F8F7F4",
-          text:   "#1A1A1A",
-          accent: "#4F46E5",
-          g:      "#C5892D",
-        },
+        // Manuscript design tokens
+        "ms-bg":      "#F6F0E4",
+        "ms-surface": "#FDF7EA",
+        "ms-ink":     "#231812",
+        "ms-ink2":    "#4A3C34",
+        "ms-mute":    "#8A857F",
+        "ms-accent":  "#8C3B1F",
+
+        // Status tokens (Manuscript)
         status: {
-          apply:   "#4B9B7E",
-          tailor:  "#7C8B9A",
-          stretch: "#B0906E",
-          skip:    "#A3A3A3",
+          apply:   "#2D6A4F",
+          tailor:  "#A86B2D",
+          stretch: "#C4622D",
+          skip:    "#6B6660",
         },
-        // CTA colors
-        "brand-cta":       "#4F46E5",
-        "brand-cta-hover": "#4338CA",
-        // New design system tokens
-        surface:       "#F9FAFB",
-        "border-default": "#E5E7EB",
-        "border-strong":  "#D1D5DB",
-        "text-primary":   "#111827",
-        "text-secondary": "#6B7280",
-        "text-tertiary":  "#9CA3AF",
-        "text-body":      "#374151",
-        "accent-slate":      "#4F46E5",
-        "accent-slate-hover": "#4338CA",
+
+        // Legacy aliases kept for backward compatibility
+        brand: {
+          bg:     "#F6F0E4",
+          text:   "#231812",
+          accent: "#8C3B1F",
+          g:      "#A86B2D",
+        },
+        "brand-cta":       "#231812",
+        "brand-cta-hover": "#3D2A22",
+        surface:           "#FDF7EA",
+        "border-default":  "rgba(26,26,26,0.12)",
+        "border-strong":   "rgba(26,26,26,0.24)",
+        "text-primary":    "#231812",
+        "text-secondary":  "#4A3C34",
+        "text-tertiary":   "#8A857F",
+        "text-body":       "#4A3C34",
+        "accent-slate":    "#8C3B1F",
+        "accent-slate-hover": "#6B2E18",
+      },
+      boxShadow: {
+        card: "none",
       },
     },
   },

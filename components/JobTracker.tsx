@@ -24,33 +24,26 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
 ];
 
 const STATUS_CONFIG: Record<ApplicationStatus, { bg: string; text: string; border: string }> = {
-  "Tracking":     { bg: "bg-white",                           text: "text-[#374151]",  border: "border border-[#E5E7EB]" },
-  "Applied":      { bg: "bg-[rgba(55,65,81,0.08)]",            text: "text-[#374151]",  border: "border-0" },
-  "Phone Screen": { bg: "bg-[rgba(124,139,154,0.08)]",        text: "text-[#7C8B9A]",  border: "border-0" },
-  "Interview":    { bg: "bg-[rgba(75,155,126,0.08)]",         text: "text-[#4B9B7E]",  border: "border-0" },
-  "Offer":        { bg: "bg-[rgba(75,155,126,0.12)]",         text: "text-[#4B9B7E]",  border: "border-0" },
-  "Rejected":     { bg: "bg-[rgba(163,163,163,0.08)]",        text: "text-[#9CA3AF]",  border: "border-0" },
+  "Tracking":     { bg: "bg-[#FDF7EA]",                      text: "text-[#4A3C34]",  border: "border border-[rgba(26,26,26,0.15)]" },
+  "Applied":      { bg: "bg-[rgba(26,26,26,0.04)]",          text: "text-[#231812]",  border: "border-0" },
+  "Phone Screen": { bg: "bg-[rgba(138,133,127,0.10)]",       text: "text-[#4A3C34]",  border: "border-0" },
+  "Interview":    { bg: "bg-[rgba(45,106,79,0.08)]",         text: "text-[#2D6A4F]",  border: "border-0" },
+  "Offer":        { bg: "bg-[rgba(45,106,79,0.12)]",         text: "text-[#2D6A4F]",  border: "border-0" },
+  "Rejected":     { bg: "bg-[rgba(107,102,96,0.08)]",        text: "text-[#6B6660]",  border: "border-0" },
 };
 
-const RECOMMENDATION_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
-  "Apply Now":                   { bg: "bg-[rgba(75,155,126,0.10)]",   text: "text-[#4B9B7E]", ring: "" },
-  "Apply with Tailoring":        { bg: "bg-[rgba(124,139,154,0.10)]",  text: "text-[#7C8B9A]", ring: "" },
-  "Stretch — Proceed Carefully": { bg: "bg-[rgba(176,144,110,0.10)]",  text: "text-[#B0906E]", ring: "" },
-  "Skip":                        { bg: "bg-[rgba(163,163,163,0.10)]",  text: "text-[#A3A3A3]", ring: "" },
+const RECOMMENDATION_STYLES: Record<string, { color: string; border: string }> = {
+  "Apply Now":                   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
+  "Apply with Tailoring":        { color: "#A86B2D", border: "1px solid #A86B2D" },
+  "Stretch — Proceed Carefully": { color: "#C4622D", border: "1px solid #C4622D" },
+  "Skip":                        { color: "#6B6660", border: "1px solid #6B6660" },
 };
-
-function scoreColor(score: number) {
-  if (score >= 7) return "text-[#4B9B7E]";
-  if (score >= 5) return "text-[#B0906E]";
-  return "text-[#C45C5C]";
-}
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(date));
 }
 
 function formatDeadlineDate(deadline: string): string {
-  // Parse as local date to avoid UTC offset shifting the day
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(
     new Date(deadline + "T00:00:00")
   );
@@ -66,7 +59,7 @@ function deadlineUrgency(deadline: string): { textClass: string; label: string }
   if (diffDays === 0) return { textClass: "text-status-skip",    label: "Due today" };
   if (diffDays <= 3)  return { textClass: "text-status-stretch", label: `Due in ${diffDays}d` };
   if (diffDays <= 7)  return { textClass: "text-status-tailor",  label: `Due ${formatDeadlineDate(deadline)}` };
-  return                     { textClass: "text-[#9CA3AF]",  label: `Due ${formatDeadlineDate(deadline)}` };
+  return                     { textClass: "text-[#8A857F]",      label: `Due ${formatDeadlineDate(deadline)}` };
 }
 
 interface JobCardProps {
@@ -106,12 +99,15 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
 
   const recStyle =
     RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
-    { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]", ring: "ring-[#E5E7EB]" };
+    { color: "#8A857F", border: "1px solid #8A857F" };
   const statusStyle = STATUS_CONFIG[job.applicationStatus] ?? STATUS_CONFIG["Tracking"];
   const isScoreStale = !!profileUpdatedAt && new Date(job.scoredAt) < profileUpdatedAt;
 
   return (
-    <div className="group relative bg-white rounded-xl px-4 sm:px-7 pt-5 sm:pt-6 pb-5 sm:pb-6 card-entrance transition-all duration-150 hover:-translate-y-px" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)", animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06)"; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)"; }}>
+    <div
+      className="group relative bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] px-4 sm:px-7 pt-5 sm:pt-6 pb-5 sm:pb-6 card-entrance"
+      style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
+    >
 
       {/* ── ROW 1: Title + Primary CTA ── */}
       <div className="flex items-start justify-between gap-4">
@@ -128,21 +124,20 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
                 if (e.key === "Enter") commitLabel();
                 if (e.key === "Escape") { setLabelValue(job.label); setEditingLabel(false); }
               }}
-              className="text-[15px] font-[500] text-[#111827] bg-transparent border-b border-[#D1D5DB] outline-none w-full leading-snug focus:ring-0"
+              className="text-[15px] font-[500] text-[#231812] bg-transparent border-b border-[rgba(26,26,26,0.20)] outline-none w-full leading-snug focus:ring-0"
             />
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="text-[15px] font-[500] text-[#111827] hover:text-[#374151] transition-colors leading-snug truncate text-left"
+              className="text-[15px] font-[500] text-[#231812] hover:text-[#4A3C34] transition-colors leading-snug truncate text-left"
             >
               {job.label}
             </button>
           )}
-          {/* Pencil — only visible on card hover, not when editing */}
           {!editingLabel && (
             <button
               onClick={() => setEditingLabel(true)}
-              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#9CA3AF] hover:text-[#6B7280]"
+              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#8A857F] hover:text-[#4A3C34]"
               aria-label="Rename job"
             >
               <svg style={{ width: "0.8rem", height: "0.8rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -157,7 +152,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
         {/* View Brief link */}
         <button
           onClick={() => onOpenBrief(job)}
-          className="shrink-0 text-xs font-[400] text-[#6B7280] hover:text-[#111827] transition-colors whitespace-nowrap self-center"
+          className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors whitespace-nowrap self-center"
         >
           View Brief →
         </button>
@@ -166,14 +161,14 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
         {isScoreStale ? (
           <button
             onClick={() => onSelectJob(job, "job-fit")}
-            className="shrink-0 text-sm font-[500] text-[#B0906E] hover:text-[#B0906E]/70 transition-colors whitespace-nowrap"
+            className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#A86B2D] hover:text-[#8C5520] transition-colors whitespace-nowrap"
           >
             Re-score →
           </button>
         ) : (
           <button
             onClick={() => onSelectJob(job, "tailoring-brief")}
-            className="shrink-0 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors whitespace-nowrap"
+            className="shrink-0 px-4 py-1.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors whitespace-nowrap"
           >
             Go to Prep →
           </button>
@@ -184,23 +179,26 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
       <div className="flex items-center justify-between gap-3 mt-3.5">
         <div className="flex items-center gap-2 flex-wrap">
           {/* Score */}
-          <span className={`text-xl font-semibold tabular-nums leading-none ${scoreColor(job.jobFitResult.overall_fit)}`}>
+          <span className="font-instrument-serif text-[28px] leading-none text-[#231812]">
             {job.jobFitResult.overall_fit}
-            <span className="text-xs font-normal text-[#9CA3AF]">/10</span>
+            <span className="font-sans text-[11px] font-normal text-[#8A857F] ml-0.5">/10</span>
           </span>
-          <span className="text-[#9CA3AF] text-xs">·</span>
+          <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
           {/* Recommendation badge */}
-          <span className={`text-[12px] font-medium px-2.5 py-0.5 rounded-full ${recStyle.bg} ${recStyle.text}`}>
+          <span
+            className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
+            style={{ color: recStyle.color, border: recStyle.border }}
+          >
             {job.jobFitResult.recommendation}
           </span>
-          <span className="text-[#9CA3AF] text-xs">·</span>
+          <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
           {/* Status dropdown */}
           <div className="relative inline-flex items-center">
             <select
               value={job.applicationStatus}
               onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className={`text-[12px] font-[400] pl-2.5 pr-6 py-1 rounded-full cursor-pointer border border-[#D1D5DB] outline-none appearance-none hover:opacity-80 focus:ring-0 focus:border-[#2563EB] ${statusStyle.bg} ${statusStyle.text}`}
-              style={{ transition: "background-color 200ms ease-out, color 200ms ease-out, border-color 200ms ease-out" }}
+              className={`font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] pl-2.5 pr-6 py-1 rounded-[2px] cursor-pointer outline-none appearance-none hover:opacity-80 focus:ring-0 ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
+              style={{ transition: "background-color 200ms ease-out, color 200ms ease-out" }}
             >
               {APPLICATION_STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -213,21 +211,21 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
               <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <span className="text-[#9CA3AF] text-xs">·</span>
+          <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
           {/* Scored date */}
-          <span className="text-xs text-[#9CA3AF]">{formatDate(job.scoredAt)}</span>
+          <span className="font-jetbrains-mono text-[10px] text-[#8A857F]">{formatDate(job.scoredAt)}</span>
           {/* Prep ready */}
           {job.tailoringResult && !isScoreStale && (
             <>
-              <span className="text-[#9CA3AF] text-xs">·</span>
-              <span className="text-[12px] text-[#4B9B7E] font-medium">Prep ready</span>
+              <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
+              <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#2D6A4F]">Prep ready</span>
             </>
           )}
           {/* Profile updated */}
           {isScoreStale && (
             <>
-              <span className="text-[#9CA3AF] text-xs">·</span>
-              <span className="text-[12px] text-[#B0906E] font-medium">Profile updated</span>
+              <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
+              <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#A86B2D]">Profile updated</span>
             </>
           )}
           {/* Deadline — only shown if set */}
@@ -235,8 +233,8 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
             const { textClass, label } = deadlineUrgency(job.deadline);
             return (
               <>
-                <span className="text-[#9CA3AF] text-xs">·</span>
-                <span className={`text-xs font-medium ${textClass}`}>{label}</span>
+                <span className="text-[rgba(26,26,26,0.2)] text-xs">·</span>
+                <span className={`font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] ${textClass}`}>{label}</span>
               </>
             );
           })()}
@@ -245,23 +243,23 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
       </div>
 
       {/* ── ROW 3: always-visible action row ── */}
-      <div className="flex items-center mt-3 pt-3 border-t border-[#F3F4F6]">
+      <div className="flex items-center mt-3 pt-3 border-t border-[rgba(26,26,26,0.08)]">
         {/* Left group: Notes · View JD · Deadline */}
         <div className="flex items-center gap-1.5 flex-1">
           <button
             onClick={() => toggleExpanded("notes")}
-            className={`text-xs font-[400] transition-colors ${showNotes ? "text-[#111827]" : "text-[#6B7280] hover:text-[#111827]"}`}
+            className={`font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${showNotes ? "text-[#231812]" : "text-[#8A857F] hover:text-[#231812]"}`}
           >
             {showNotes ? "Hide Notes" : job.notes?.trim() ? "Notes (1)" : "Notes"}
           </button>
-          <span className="text-[#D1D5DB] text-xs mx-1">·</span>
+          <span className="text-[rgba(26,26,26,0.15)] text-xs mx-1">·</span>
           <button
             onClick={() => toggleExpanded("jd")}
-            className={`text-xs font-[400] transition-colors ${showJD ? "text-[#111827]" : "text-[#6B7280] hover:text-[#111827]"}`}
+            className={`font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${showJD ? "text-[#231812]" : "text-[#8A857F] hover:text-[#231812]"}`}
           >
             {showJD ? "Hide JD" : "View JD"}
           </button>
-          <span className="text-[#D1D5DB] text-xs mx-1">·</span>
+          <span className="text-[rgba(26,26,26,0.15)] text-xs mx-1">·</span>
           {showDeadlineInput ? (
             <input
               type="date"
@@ -273,21 +271,21 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
                 setExpanded("none");
               }}
               onBlur={() => setExpanded("none")}
-              className="text-xs border border-[#D1D5DB] rounded-md px-2 py-0.5 bg-white focus:outline-none focus:ring-0 focus:border-[#2563EB]"
+              className="font-jetbrains-mono text-[10px] border border-[rgba(26,26,26,0.15)] rounded-[2px] px-2 py-0.5 bg-[#FDF7EA] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.35)] text-[#231812]"
             />
           ) : job.deadline ? (
             <button
               onClick={() => onDeadlineChange(job.id, null)}
-              className="flex items-center gap-1 text-xs text-[#6B7280] hover:text-[#111827] transition-colors group/dl"
+              className="flex items-center gap-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#231812] transition-colors group/dl"
               title="Clear deadline"
             >
               <span>{formatDeadlineDate(job.deadline)}</span>
-              <span className="opacity-0 group-hover/dl:opacity-100 transition-opacity text-[#9CA3AF]">×</span>
+              <span className="opacity-0 group-hover/dl:opacity-100 transition-opacity text-[#8A857F]">×</span>
             </button>
           ) : (
             <button
               onClick={() => toggleExpanded("deadline")}
-              className="text-xs font-[400] text-[#6B7280] hover:text-[#111827] transition-colors"
+              className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#231812] transition-colors"
             >
               + Deadline
             </button>
@@ -296,7 +294,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
         {/* Right: Remove */}
         <button
           onClick={() => onRemoveJob(job.id)}
-          className="text-xs font-[400] text-[#DC2626] hover:bg-[rgba(220,38,38,0.05)] transition-colors px-2 py-0.5 rounded"
+          className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#C4622D] transition-colors px-2 py-0.5"
           aria-label="Remove job"
         >
           Remove
@@ -312,7 +310,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
             onBlur={() => onNotesChange(job.id, notesValue)}
             placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
             rows={3}
-            className="w-full rounded-lg bg-[#F9FAFB] border border-[#D1D5DB] px-3.5 py-3 text-[13px] text-[#374151] placeholder:text-[#9CA3AF] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[#2563EB] transition-colors"
+            className="w-full rounded-[2px] bg-[#F6F0E4] border border-[rgba(26,26,26,0.12)] px-3.5 py-3 font-sans text-[13px] text-[#4A3C34] placeholder:text-[#8A857F] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.30)] transition-colors"
           />
         </div>
       )}
@@ -320,21 +318,21 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
       {/* ── Expandable JD ── */}
       {showJD && (
         <div className="mt-4">
-          <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-3">Job Description</p>
+          <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">Job Description</p>
           <div
-            className="overflow-y-auto rounded-lg px-6 py-5"
+            className="overflow-y-auto px-6 py-5"
             style={{
               maxHeight: "500px",
-              background: "#F9FAFB",
-              border: "1px solid #E5E7EB",
+              background: "#F6F0E4",
+              border: "1px solid rgba(26,26,26,0.10)",
               scrollbarWidth: "thin",
-              scrollbarColor: "#D1D5DB transparent",
+              scrollbarColor: "rgba(26,26,26,0.15) transparent",
             }}
           >
             {(job.jobDescription ?? "").split(/\n\n+/).map((para, pi) => (
               <p
                 key={pi}
-                className="mb-3 last:mb-0 text-[13px] leading-[1.7] text-[#374151]"
+                className="mb-3 last:mb-0 font-sans text-[13px] leading-[1.7] text-[#4A3C34]"
               >
                 {para.split(/\n/).map((line, li, arr) => (
                   <span key={li}>
@@ -360,7 +358,6 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
   const [sortBy, setSortBy] = useState<SortBy>("date");
   const [briefJob, setBriefJob] = useState<TrackedJob | null>(null);
 
-  // ESC key closes the brief panel
   useEffect(() => {
     if (!briefJob) return;
     function handleKey(e: KeyboardEvent) {
@@ -377,36 +374,36 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
           {[
             {
-              step: "1",
+              step: "01",
               title: "Add your profile",
               body: "Upload your resume or paste the text. Your background is the foundation for all scoring and prep.",
               done: hasProfile,
             },
             {
-              step: "2",
+              step: "02",
               title: "Score a job",
               body: "Paste any job description. Get an honest fit score with clear reasoning in about 20 seconds.",
               done: false,
             },
             {
-              step: "3",
+              step: "03",
               title: "Build your prep",
               body: "Get a targeted prep guide covering what to emphasize, what to drop, and how to position yourself.",
               done: false,
             },
           ].map(({ step, title, body, done }) => (
-            <div key={step} className={`rounded-xl p-5 ${done ? "bg-[rgba(75,155,126,0.06)]" : "bg-white"}`} style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-[500] shrink-0 ${done ? "bg-[#4B9B7E] text-white" : "bg-[#374151] text-white"}`}>
+            <div key={step} className={`border px-5 py-5 ${done ? "bg-[rgba(45,106,79,0.04)] border-[rgba(45,106,79,0.15)]" : "bg-[#FDF7EA] border-[rgba(26,26,26,0.10)]"}`}>
+              <div className="flex items-center gap-3 mb-3">
+                <span className={`font-jetbrains-mono text-[10px] px-1.5 py-0.5 rounded-[2px] shrink-0 ${done ? "bg-[rgba(45,106,79,0.12)] text-[#2D6A4F]" : "bg-[rgba(26,26,26,0.06)] text-[#8A857F]"}`}>
                   {done ? (
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="inline">
                       <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ) : step}
                 </span>
-                <p className={`text-sm font-[500] ${done ? "text-[#4B9B7E]" : "text-[#111827]"}`}>{title}</p>
+                <p className={`font-sans text-[14px] font-[500] ${done ? "text-[#2D6A4F]" : "text-[#231812]"}`}>{title}</p>
               </div>
-              <p className="text-sm text-[#6B7280] leading-relaxed">{body}</p>
+              <p className="font-sans text-[13px] text-[#4A3C34] leading-relaxed">{body}</p>
             </div>
           ))}
         </div>
@@ -414,20 +411,20 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
         {/* CTA */}
         {!hasProfile ? (
           <div className="text-center">
-            <p className="text-[14px] text-[#6B7280] mb-4">Start by uploading your resume. Everything else follows from there.</p>
+            <p className="font-sans text-[14px] text-[#4A3C34] mb-4">Start by uploading your resume. Everything else follows from there.</p>
             <button
               onClick={onGoToProfile}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
             >
               Add your profile
             </button>
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-[14px] text-[#6B7280] mb-4">Profile saved. Score your first job to get started.</p>
+            <p className="font-sans text-[14px] text-[#4A3C34] mb-4">Profile saved. Score your first job to get started.</p>
             <button
               onClick={onGoToJobFit}
-              className="inline-flex items-center gap-1 px-5 py-2 bg-gradient-to-b from-[#2C2C2E] to-[#1A1A1A] text-white text-[14px] font-[500] rounded-full hover:from-[#3A3A3C] hover:to-[#242424] transition-colors"
+              className="inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
             >
               Score a job
             </button>
@@ -437,7 +434,6 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
     );
   }
 
-  // Compute filtered + sorted list
   const filtered = jobs
     .filter((j) => statusFilter === "All" || j.applicationStatus === statusFilter)
     .filter((j) => !searchQuery.trim() || j.label.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -463,7 +459,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
     <div className="space-y-5">
       {/* ── Search row ── */}
       <div className="relative">
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A857F] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
         </svg>
         <input
@@ -471,13 +467,12 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs..."
-          className="w-full pl-9 pr-4 py-2 rounded-xl bg-white text-[14px] text-[#374151] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-colors"
-          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}
+          className="w-full pl-9 pr-4 py-2 rounded-[2px] bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] font-sans text-[14px] text-[#4A3C34] placeholder:text-[#8A857F] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.30)] transition-colors"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8A857F] hover:text-[#4A3C34] transition-colors"
             aria-label="Clear search"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 10 10" stroke="currentColor">
@@ -497,12 +492,12 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`shrink-0 text-[13px] font-[400] px-3 py-1 rounded-full transition-all ${
+              className={`shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2.5 py-1 rounded-[2px] transition-all ${
                 isActive
                   ? s === "All"
-                    ? "bg-[#F3F4F6] text-[#111827] border border-[#D1D5DB]"
-                    : `${cfg!.bg} ${cfg!.text} border border-current/20`
-                  : "bg-white text-[#6B7280] border border-[#E5E7EB] hover:text-[#111827] hover:bg-[#F9FAFB]"
+                    ? "bg-[rgba(26,26,26,0.06)] text-[#231812] border border-[rgba(26,26,26,0.15)]"
+                    : `${cfg!.bg} ${cfg!.text} ${cfg!.border}`
+                  : "bg-[#FDF7EA] text-[#8A857F] border border-[rgba(26,26,26,0.10)] hover:text-[#231812] hover:border-[rgba(26,26,26,0.20)]"
               }`}
             >
               {s}
@@ -516,13 +511,13 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
         })}
         </div>
         {/* Sort toggle */}
-        <div className="flex items-center gap-1 bg-white rounded-lg border border-[#E5E7EB] p-1 shrink-0 self-start sm:self-auto">
+        <div className="flex items-center gap-0 bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] p-1 shrink-0 self-start sm:self-auto">
           {(["date", "score", "deadline"] as SortBy[]).map((s) => (
             <button
               key={s}
               onClick={() => setSortBy(s)}
-              className={`px-3 py-1 rounded-md text-[13px] font-[400] transition-all ${
-                sortBy === s ? "bg-[#F3F4F6] text-[#111827] border border-[#D1D5DB]" : "text-[#9CA3AF] hover:text-[#6B7280]"
+              className={`px-3 py-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] transition-all ${
+                sortBy === s ? "bg-[rgba(26,26,26,0.06)] text-[#231812]" : "text-[#8A857F] hover:text-[#4A3C34]"
               }`}
             >
               {s === "date" ? "Date" : s === "score" ? "Score" : "Due"}
@@ -534,14 +529,14 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
       {/* ── Result count when filtered ── */}
       {isFiltered && (
         <div className="flex items-center justify-between">
-          <p className="text-[14px] text-[#6B7280]">
+          <p className="font-sans text-[14px] text-[#4A3C34]">
             {filtered.length === 0
               ? "No jobs match your filters."
               : `${filtered.length} of ${jobs.length} job${jobs.length !== 1 ? "s" : ""}`}
           </p>
           <button
             onClick={clearFilters}
-            className="text-[14px] text-[#374151] hover:text-[#111827] transition-colors"
+            className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
           >
             Clear filters
           </button>
@@ -550,7 +545,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
 
       {/* ── Job cards ── */}
       {filtered.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filtered.map((job, i) => (
             <JobCard
               key={job.id}
@@ -566,22 +561,22 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
               onDeadlineChange={onDeadlineChange}
             />
           ))}
-          {/* Score another job — dashed card at bottom of list */}
+          {/* Score another job */}
           {!isFiltered && (
             <button
               onClick={onScoreNewJob}
-              className="group/add w-full py-4 rounded-xl border-[1.5px] border-dashed border-[#E5E7EB] text-[14px] font-[400] text-[#9CA3AF] hover:border-solid hover:border-[#D1D5DB] hover:text-[#374151] hover:bg-[rgba(55,65,81,0.02)] hover:scale-[1.005] transition-all duration-200 ease-out"
+              className="group/add w-full py-4 border border-dashed border-[rgba(26,26,26,0.15)] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:border-solid hover:border-[rgba(26,26,26,0.25)] hover:text-[#4A3C34] hover:bg-[rgba(26,26,26,0.02)] transition-all duration-200 ease-out"
             >
               Score a job →
             </button>
           )}
         </div>
       ) : (
-        <div className="py-8 text-center bg-white rounded-xl" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" }}>
-          <p className="text-[14px] text-[#9CA3AF]">No jobs match your filters.</p>
+        <div className="py-8 text-center bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)]">
+          <p className="font-sans text-[14px] text-[#8A857F]">No jobs match your filters.</p>
           <button
             onClick={clearFilters}
-            className="mt-2 text-[14px] text-[#374151] hover:text-[#111827] transition-colors"
+            className="mt-2 font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#4A3C34] hover:text-[#231812] transition-colors"
           >
             Clear filters →
           </button>
@@ -594,16 +589,15 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
       <>
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-black/30 z-40"
+          className="fixed inset-0 bg-[rgba(26,26,26,0.25)] z-40"
           onClick={() => setBriefJob(null)}
           aria-hidden="true"
         />
         {/* Panel */}
         <div
-          className="fixed top-0 right-0 h-full bg-white z-50 overflow-hidden flex flex-col"
+          className="fixed top-0 right-0 h-full bg-[#FDF7EA] border-l border-[rgba(26,26,26,0.10)] z-50 overflow-hidden flex flex-col"
           style={{
             width: "min(480px, 100vw)",
-            boxShadow: "-4px 0 24px rgba(0,0,0,0.12), -1px 0 0 rgba(0,0,0,0.06)",
           }}
         >
           <ApplicationBrief

@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F6F0E4]">
 
       <AppHeader
         light
@@ -16,62 +16,69 @@ export default function HowItWorksPage() {
         rightSlot={<BackToAppLink light />}
       />
 
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="max-w-4xl mx-auto px-6 py-16">
 
-        {/* Section 1 — Hero */}
-        <div className="mb-10">
-          <h1 className="text-[20px] font-[500] text-[#111827] mb-3">
-            A better way to job search
-          </h1>
-          <p className="text-[14px] font-[400] text-[#6B7280] leading-relaxed max-w-xl">
+        {/* Masthead */}
+        <div className="mb-14 pb-6 border-b-2 border-[#231812]">
+          <div className="flex items-baseline justify-between gap-4 mb-3">
+            <h1 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">
+              How it works
+            </h1>
+            <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">
+              Overview
+            </span>
+          </div>
+          <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] leading-snug max-w-[540px]">
             Strong backgrounds get passed over every day because the fit is unclear or the framing is generic.
-            Claro gives you an honest read on every role — and a full prep pack for the ones worth pursuing.
           </p>
         </div>
 
-        {/* Section 2 — How It Works */}
-        <section className="mb-10">
-          <p className="text-[12px] font-[500] tracking-[0.05em] uppercase text-[#6B7280] mb-6">
-            How it works
+        {/* Steps */}
+        <section className="mb-14">
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-6">
+            The process
           </p>
-          <div className="space-y-6">
+          <div className="space-y-10">
             {[
               {
-                n: 1,
+                n: "01",
                 title: "Clarify your positioning",
                 body: "Upload your resume once — Claro maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
               },
               {
-                n: 2,
+                n: "02",
                 title: "Score any job honestly",
                 body: "Paste a job description and get a 1–10 fit score with the specific recruiter concern most likely to sink your application.",
               },
               {
-                n: 3,
+                n: "03",
                 title: "Prepare for the ones worth pursuing",
                 body: "For roles that score well, Claro builds a full prep pack — cover letter, outreach, resume edits, interview questions, and company research.",
               },
               {
-                n: 4,
+                n: "04",
                 title: "Keep your search organized",
                 body: "Every scored job saves with its fit score, prep guide, and pipeline status — no spreadsheet required.",
               },
             ].map(({ n, title, body }) => (
-              <div key={n} className="flex gap-4">
-                <div className="shrink-0 w-8 h-8 rounded-full bg-[#374151] flex items-center justify-center text-white text-sm font-[500] mt-0.5">
-                  {n}
-                </div>
+              <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(26,26,26,0.08)] last:border-0 last:pb-0">
+                <span className="font-jetbrains-mono text-[11px] text-[#8A857F] shrink-0 pt-1">{n}</span>
                 <div>
-                  <p className="text-[14px] font-[400] text-[#111827] mb-0.5">{title}</p>
-                  <p className="text-[14px] font-[400] text-[#6B7280] leading-relaxed">{body}</p>
+                  <p className="font-sans text-[16px] font-medium text-[#231812] mb-1">{title}</p>
+                  <p className="font-sans text-[15px] text-[#4A3C34] leading-relaxed">{body}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Section 3 — CTA */}
-        <HowItWorksCTA />
+        {/* CTA */}
+        <section>
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-6">
+            Get started
+          </p>
+          <HowItWorksCTA />
+        </section>
 
       </main>
     </div>
