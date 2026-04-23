@@ -751,9 +751,9 @@ export default function TailoringBrief({
       {result?.honest_take && (
         <div
           id="prep-result"
-          className="result-scroll-target honest-take-entrance border-t-2 border-[#231812] bg-[#FDF7EA] px-8 py-7"
+          className="result-scroll-target honest-take-entrance border-b border-[rgba(26,26,26,0.10)] px-8 py-7"
         >
-          <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F] mb-2.5">
+          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-2.5">
             Honest Take
           </p>
           <p className="font-instrument-serif italic text-[18px] text-[#231812] leading-snug">{result.honest_take}</p>
