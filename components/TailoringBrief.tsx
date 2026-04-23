@@ -150,7 +150,7 @@ function ActionSection({
   error,
   noteValue,
   onNoteChange,
-  bgClass = "bg-[#FDF7EA]",
+  bgClass = "",
   children,
 }: {
   title: string;
@@ -167,7 +167,7 @@ function ActionSection({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`${bgClass} border border-[rgba(26,26,26,0.10)] overflow-hidden`}>
+    <div className={`${bgClass} border-b border-[rgba(26,26,26,0.10)] overflow-hidden`}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
         <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#231812]">{title}</p>
@@ -957,7 +957,7 @@ export default function TailoringBrief({
               </div>
 
               {/* Right column — Cover Letter + Outreach + Resume Bullets */}
-              <div className="space-y-5">
+              <div className="space-y-0">
                 {/* Cover Letter */}
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">

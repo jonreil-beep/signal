@@ -65,7 +65,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
         <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
           Best-Fit Role Clusters
         </p>
-        <div className="space-y-4">
+        <div className="space-y-0">
           {result.role_clusters.map((cluster, i) => {
             const rec = cluster.recommendation
               ? RECOMMENDATION_STYLES[cluster.recommendation]
@@ -74,7 +74,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
             return (
               <div
                 key={i}
-                className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 card-entrance"
+                className="border-b border-[rgba(26,26,26,0.10)] py-7 card-entrance"
                 style={{ animationDelay: `${Math.min(i, 5) * 50}ms` }}
               >
                 {/* Header row */}

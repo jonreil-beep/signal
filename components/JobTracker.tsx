@@ -105,7 +105,7 @@ function JobCard({ job, staggerIndex, profileUpdatedAt, onSelectJob, onOpenBrief
 
   return (
     <div
-      className="group relative bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] px-4 sm:px-7 pt-5 sm:pt-6 pb-5 sm:pb-6 card-entrance"
+      className="group relative border-b border-[rgba(26,26,26,0.10)] py-6 card-entrance"
       style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
     >
 
@@ -545,7 +545,7 @@ export default function JobTracker({ jobs, hasProfile, profileUpdatedAt, onSelec
 
       {/* ── Job cards ── */}
       {filtered.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-0">
           {filtered.map((job, i) => (
             <JobCard
               key={job.id}

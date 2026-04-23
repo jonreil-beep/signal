@@ -59,7 +59,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
 
   return (
     <div
-      className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7 space-y-5 card-entrance"
+      className="border-b border-[rgba(26,26,26,0.10)] py-7 space-y-5 card-entrance"
       style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
     >
       {/* Name + confidence */}
@@ -151,7 +151,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
         Your best-fit role clusters — search for open positions directly from here.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="space-y-0">
         {clusters.map((cluster, i) => (
           <ClusterCard key={i} clusterName={cluster.name} confidence={cluster.confidence} staggerIndex={i} />
         ))}
