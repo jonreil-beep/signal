@@ -544,7 +544,6 @@ function EmailForm({
             </button>
           </form>
           {magicLinkError && <p className="cl-magic-error">{magicLinkError}</p>}
-          <hr className="cl-rule" />
           <button className="cl-guest-link" onClick={onSkip}>
             Try without signing up →
           </button>
