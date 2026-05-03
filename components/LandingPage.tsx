@@ -23,7 +23,7 @@ html { scroll-behavior: smooth; }
   justify-content: space-between;
   padding: 0 48px;
   height: 58px;
-  background: rgba(246,240,228,0.92);
+  background: rgba(253,247,234,0.97);
   backdrop-filter: blur(14px);
 }
 .cl-nav-wordmark {
@@ -354,6 +354,150 @@ html { scroll-behavior: smooth; }
   text-transform: uppercase;
   color: #8A857F;
   opacity: 0.6;
+}
+
+/* ── MOBILE ─────────────────────────────────── */
+@media (max-width: 768px) {
+
+  .cl-wrap {
+    padding: 0 24px;
+  }
+
+  /* Nav */
+  .cl-nav {
+    padding: 0 20px;
+    height: 52px;
+  }
+
+  .cl-nav-links {
+    display: none;
+  }
+
+  .cl-nav-cta {
+    font-size: 10px;
+    padding: 6px 14px 9px;
+    letter-spacing: 0.08em;
+  }
+
+  /* Hero */
+  .cl-hero {
+    padding-top: 88px;
+    padding-bottom: 40px;
+  }
+
+  .cl-hero-hed {
+    font-size: clamp(36px, 10vw, 52px);
+    margin-bottom: 20px;
+  }
+
+  .cl-hero-sub {
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .cl-cta-group {
+    max-width: 100%;
+  }
+
+  .cl-email-form {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cl-email-input {
+    border-right: 1px solid rgba(26,26,26,0.12);
+    border-bottom: none;
+    padding: 13px 16px;
+    width: 100%;
+  }
+
+  .cl-email-submit {
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px 15px;
+    border-radius: 0 0 2px 2px;
+  }
+
+  /* Screenshot */
+  .cl-screenshot-wrap {
+    padding: 0 16px 32px;
+  }
+
+  .cl-screenshot-inner {
+    border-radius: 10px;
+  }
+
+  /* Proof strip */
+  .cl-proof {
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .cl-proof-item {
+    padding: 14px 0;
+    border-left: none !important;
+    border-bottom: 1px solid rgba(26,26,26,0.12);
+    width: 100%;
+    text-align: center;
+  }
+
+  .cl-proof-item:last-child {
+    border-bottom: none;
+  }
+
+  /* How it works */
+  .cl-section {
+    padding: 56px 0;
+  }
+
+  .cl-how-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  /* Features */
+  .cl-feature-block {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 0;
+  }
+
+  .cl-feature-block.flip .cl-ft { order: 1; }
+  .cl-feature-block.flip .cl-fv { order: 2; }
+
+  .cl-feature-title {
+    font-size: 26px;
+  }
+
+  /* Final CTA */
+  .cl-final-cta {
+    padding: 64px 0;
+  }
+
+  .cl-cta-hed {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+
+  .cl-cta-sub {
+    font-size: 14px;
+  }
+}
+
+/* ── SMALL MOBILE ────────────────────────────── */
+@media (max-width: 480px) {
+
+  .cl-hero-hed {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+
+  .cl-wrap {
+    padding: 0 20px;
+  }
+
+  .cl-screenshot-wrap {
+    padding: 0 12px 28px;
+  }
 }
 `;
 
