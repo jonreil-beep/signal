@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 const CSS = `
+html { scroll-behavior: smooth; }
 .claro-landing * { box-sizing: border-box; margin: 0; padding: 0; }
 .claro-landing h1, .claro-landing h2, .claro-landing h3 { font-weight: normal; }
 .claro-landing {
@@ -356,7 +357,7 @@ const CSS = `
 }
 `;
 
-interface LandingPageProps {
+interface EmailFormProps {
   email: string;
   setEmail: (v: string) => void;
   onSendMagicLink: () => void;
@@ -364,19 +365,22 @@ interface LandingPageProps {
   magicLinkSent: boolean;
   magicLinkError: string;
   onSkip: () => void;
+  style?: React.CSSProperties;
 }
 
-export default function LandingPage({
+// Defined at module scope so React never treats it as a new component type on re-render.
+// If it were defined inside LandingPage, every keystroke (setEmail → re-render) would
+// create a new function reference, causing React to unmount+remount the input and kill focus.
+function EmailForm({
   email, setEmail, onSendMagicLink,
-  sendingMagicLink, magicLinkSent, magicLinkError, onSkip,
-}: LandingPageProps) {
-
+  sendingMagicLink, magicLinkSent, magicLinkError, onSkip, style,
+}: EmailFormProps) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onSendMagicLink();
   }
 
-  const EmailForm = ({ style }: { style?: React.CSSProperties }) => (
+  return (
     <div className="cl-cta-group" style={style}>
       {magicLinkSent ? (
         <p className="cl-magic-sent">Check your email for a sign-in link.</p>
@@ -404,6 +408,22 @@ export default function LandingPage({
       )}
     </div>
   );
+}
+
+interface LandingPageProps {
+  email: string;
+  setEmail: (v: string) => void;
+  onSendMagicLink: () => void;
+  sendingMagicLink: boolean;
+  magicLinkSent: boolean;
+  magicLinkError: string;
+  onSkip: () => void;
+}
+
+export default function LandingPage({
+  email, setEmail, onSendMagicLink,
+  sendingMagicLink, magicLinkSent, magicLinkError, onSkip,
+}: LandingPageProps) {
 
   return (
     <div className="claro-landing">
@@ -427,7 +447,7 @@ export default function LandingPage({
           <p className="cl-eyebrow">Career Copilot</p>
           <h1 className="cl-hero-hed">Know your fit<br />before you write<br />a single word.</h1>
           <p className="cl-hero-sub">Claro reads your resume, scores any job description against your actual background, and tells you exactly what a recruiter will think — and what to do about it.</p>
-          <EmailForm />
+          <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
         </div>
       </div>
 
@@ -543,7 +563,7 @@ export default function LandingPage({
         <div className="cl-final-cta">
           <h2 className="cl-cta-hed">Apply to fewer jobs.<br />Land the right ones.</h2>
           <p className="cl-cta-sub">Free to start. No resume builder, no job board, no generic advice. Just a clear read on where you fit and exactly what to do about it.</p>
-          <EmailForm style={{maxWidth: 530}} />
+          <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} style={{maxWidth: 530}} />
         </div>
         <footer className="cl-footer">
           <div className="cl-footer-note">© 2026 Claro. All rights reserved.</div>
