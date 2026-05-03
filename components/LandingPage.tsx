@@ -23,7 +23,7 @@ html { scroll-behavior: smooth; }
   justify-content: space-between;
   padding: 0 48px;
   height: 58px;
-  background: rgba(253,247,234,0.97);
+  background: #F6F0E4;
   backdrop-filter: blur(14px);
 }
 .cl-nav-wordmark {
