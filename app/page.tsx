@@ -11,10 +11,9 @@ import JobDiscovery from "@/components/JobDiscovery";
 import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
-import SignalWordmark from "@/components/SignalWordmark";
-import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
+import LandingPage from "@/components/LandingPage";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -779,124 +778,44 @@ export default function Home() {
     // Signed in — show welcome (new) or welcome back (returning) view
     if (user) {
       return (
-        <div className="min-h-screen bg-[#F6F0E4] flex items-center px-6">
-          <div className="max-w-2xl mx-auto w-full py-20">
-            <div className="mb-10 pb-6 border-b-2 border-[#231812]">
-              <h1 className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
-                <SignalWordmark />
-              </h1>
-            </div>
-            <p className="font-instrument-serif text-[40px] font-normal text-[#231812] leading-[1.1] mb-10">
-              {isNewSignup
-                ? "Welcome. You're all set."
-                : `Welcome back. You have ${trackedJobs.length} job${trackedJobs.length === 1 ? "" : "s"} scored.`}
-            </p>
-            <div className="flex items-center gap-5">
-              <button
-                onClick={() => setShowLanding(false)}
-                className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
-              >
-                {isNewSignup ? "Get started →" : "Go to my jobs →"}
-              </button>
-              <button
-                onClick={handleSignOut}
-                className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
+        <div style={{minHeight:'100vh', background:'#EDE7D9', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-dm-sans, 'DM Sans', system-ui, sans-serif)"}}>
+          <a href="/" style={{fontFamily:"var(--font-instrument-serif, 'Instrument Serif', Georgia, serif)", fontStyle:'italic', fontSize:24, color:'#231812', textDecoration:'none', marginBottom:48}}>Claro</a>
+          <h1 style={{fontFamily:"var(--font-instrument-serif, 'Instrument Serif', Georgia, serif)", fontStyle:'italic', fontSize:'clamp(36px, 5vw, 56px)', fontWeight:'normal', color:'#231812', marginBottom:16, textAlign:'center'}}>
+            Welcome back.
+          </h1>
+          <p style={{fontFamily:"var(--font-dm-sans, 'DM Sans', system-ui, sans-serif)", fontSize:16, fontWeight:300, color:'#4A3C34', marginBottom:40, textAlign:'center'}}>
+            {trackedJobs.length === 1 ? 'You have 1 job scored.' : `You have ${trackedJobs.length} jobs scored.`}
+          </p>
+          <button
+            onClick={() => setShowLanding(false)}
+            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'#FDF7EA', background:'#231812', border:'none', padding:'11px 28px 15px', borderRadius:2, cursor:'pointer', marginBottom:24}}
+          >
+            Go to my jobs →
+          </button>
+          <button
+            onClick={handleSignOut}
+            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'#8A857F', background:'none', border:'none', cursor:'pointer', padding:0}}
+          >
+            Sign out
+          </button>
         </div>
       );
     }
 
-    // Not signed in — show magic link form
+    // Not signed in — show full landing page
     return (
-      <div className="min-h-screen bg-[#F6F0E4] flex items-center px-6">
-        <div className="max-w-2xl mx-auto w-full py-20">
-          <div className="mb-10 pb-6 border-b-2 border-[#231812]">
-            <div className="flex items-baseline justify-between gap-4">
-              <h1 className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
-                <SignalWordmark />
-              </h1>
-              <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">
-                Career Copilot
-              </span>
-            </div>
-          </div>
-
-          <p className="font-instrument-serif italic text-[48px] sm:text-[64px] font-normal text-[#231812] leading-[1.0] mb-10">
-            Score your fit. Build your prep. Apply smarter.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 border-t border-[rgba(26,26,26,0.10)] pt-8">
-            {[
-              { step: "01", label: "Upload your resume" },
-              { step: "02", label: "Score any job description" },
-              { step: "03", label: "Get a targeted prep guide" },
-            ].map(({ step, label }) => (
-              <div key={step} className="flex gap-3">
-                <span className="font-jetbrains-mono text-[11px] text-[#8A857F] shrink-0 pt-0.5">{step}</span>
-                <p className="font-sans text-[15px] text-[#4A3C34]">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {!magicLinkSent ? (
-            <div className="space-y-4">
-              <div className="flex flex-col gap-2 md:flex-row md:gap-2 md:items-center max-w-md">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="w-full md:flex-1 px-4 py-3 bg-[#FDF7EA] text-[#231812] placeholder:text-[#8A857F] border border-[rgba(26,26,26,0.18)] rounded-[2px] font-sans text-[15px] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.4)] transition-colors"
-                />
-                <button
-                  onClick={handleSendMagicLink}
-                  disabled={sendingMagicLink || !email.trim()}
-                  className="w-full md:w-auto px-4 py-3 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                >
-                  {sendingMagicLink ? "Sending…" : "Continue with email →"}
-                </button>
-              </div>
-              {magicLinkError && (
-                <p className="font-sans text-[13px] text-red-600">{magicLinkError}</p>
-              )}
-              <div className="flex flex-wrap items-center gap-5 pt-2">
-                <Link
-                  href="/how-it-works"
-                  className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
-                >
-                  How Claro works →
-                </Link>
-                <button
-                  onClick={() => { setShowLanding(false); setActiveTab("my-jobs"); }}
-                  className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
-                >
-                  Try without signing up
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <p className="font-sans text-[16px] text-[#231812]">
-                Check your inbox. We sent a link to <span className="font-medium">{email}</span>.
-              </p>
-              <p className="font-sans text-[14px] text-[#8A857F]">
-                Click the link in the email to sign in. It may take a minute to arrive.
-              </p>
-              <button
-                onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
-                className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
-              >
-                Use a different email
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      <LandingPage
+        email={email}
+        setEmail={setEmail}
+        onSendMagicLink={handleSendMagicLink}
+        sendingMagicLink={sendingMagicLink}
+        magicLinkSent={magicLinkSent}
+        magicLinkError={magicLinkError}
+        onSkip={() => {
+          setShowLanding(false);
+          sessionStorage.setItem("signal-show-landing", "false");
+        }}
+      />
     );
   }
 
