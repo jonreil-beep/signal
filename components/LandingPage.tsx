@@ -171,7 +171,7 @@ html { scroll-behavior: smooth; }
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #2D6A4F;
+  color: #231812;
   text-align: center;
 }
 .cl-magic-error {

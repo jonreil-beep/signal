@@ -788,7 +788,7 @@ export default function Home() {
           </p>
           <button
             onClick={() => setShowLanding(false)}
-            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'#FDF7EA', background:'#231812', border:'none', padding:'11px 28px 15px', borderRadius:2, cursor:'pointer', marginBottom:24}}
+            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'#FDF7EA', background:'#231812', border:'none', padding:'13px 28px', borderRadius:2, cursor:'pointer', marginBottom:24}}
           >
             Go to my jobs →
           </button>
