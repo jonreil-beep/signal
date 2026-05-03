@@ -431,7 +431,7 @@ export default function LandingPage({
 
       {/* NAV */}
       <nav className="cl-nav">
-        <a href="/" className="cl-nav-wordmark">Claro</a>
+        <a href="/" className="cl-nav-wordmark" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Claro</a>
         <ul className="cl-nav-links">
           <li><a href="#how-it-works">How it works</a></li>
           <li><a href="#features">Features</a></li>
