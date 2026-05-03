@@ -396,7 +396,7 @@ function EmailForm({
               required
             />
             <button type="submit" className="cl-email-submit" disabled={sendingMagicLink}>
-              {sendingMagicLink ? "Sending..." : <>Get started free <span style={{fontSize:14}}>→</span></>}
+              {sendingMagicLink ? "Sending..." : <>Continue with email <span style={{fontSize:14}}>→</span></>}
             </button>
           </form>
           {magicLinkError && <p className="cl-magic-error">{magicLinkError}</p>}
@@ -437,7 +437,7 @@ export default function LandingPage({
           <li><a href="#features">Features</a></li>
         </ul>
         <a href="#get-started" className="cl-nav-cta">
-          Get started free <span style={{fontSize:14}}>→</span>
+          Continue with email <span style={{fontSize:14}}>→</span>
         </a>
       </nav>
 
