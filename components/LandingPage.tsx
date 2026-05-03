@@ -7,7 +7,7 @@ html { scroll-behavior: smooth; }
 .claro-landing * { box-sizing: border-box; margin: 0; padding: 0; }
 .claro-landing h1, .claro-landing h2, .claro-landing h3 { font-weight: normal; }
 .claro-landing {
-  background: #EDE7D9;
+  background: #F6F0E4;
   color: #231812;
   font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
   font-size: 15px;
