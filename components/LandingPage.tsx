@@ -357,6 +357,18 @@ html { scroll-behavior: smooth; }
 }
 
 /* ── MOBILE ─────────────────────────────────── */
+.cl-privacy {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8A857F;
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 4px;
+}
+
+
 @media (max-width: 768px) {
 
   .cl-wrap {
@@ -547,6 +559,7 @@ function EmailForm({
           <button className="cl-guest-link" onClick={onSkip}>
             Try without signing up →
           </button>
+          <p className="cl-privacy">Your resume stays private. We never share or sell your data.</p>
         </>
       )}
     </div>
@@ -615,7 +628,6 @@ export default function LandingPage({
           <div className="cl-proof-item">Honest scores, not encouragement</div>
           <div className="cl-proof-item">Recruiter concern flag on every score</div>
           <div className="cl-proof-item">Full application brief to act on</div>
-          <div className="cl-proof-item">Free to start</div>
         </div>
       </div>
 
@@ -705,7 +717,7 @@ export default function LandingPage({
       <div className="cl-wrap" id="get-started">
         <div className="cl-final-cta">
           <h2 className="cl-cta-hed">Apply to fewer jobs.<br />Land the right ones.</h2>
-          <p className="cl-cta-sub">Free to start. No resume builder, no job board, no generic advice. Just a clear read on where you fit and exactly what to do about it.</p>
+          <p className="cl-cta-sub">Completely free. No resume builder, no job board, no generic advice. Just a clear read on where you fit and exactly what to do about it.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} style={{maxWidth: 530}} />
         </div>
         <footer className="cl-footer">
