@@ -56,12 +56,12 @@ export default function AppShell({
         key={item.id}
         onClick={() => handleNav(item.id)}
         title={!showLabel ? item.label : undefined}
-        className={`nav-item-btn w-full flex items-center text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2 transition-colors ${
-          showLabel ? "gap-0 px-3 py-2 rounded-[4px]" : "justify-center px-0 py-2.5"
+        className={`w-full flex items-center text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors ${
+          showLabel ? "gap-0 px-3 py-[9px] rounded-[7px]" : "justify-center px-0 py-2.5"
         } ${
           isActive
-            ? "bg-[rgba(26,26,26,0.06)] text-[#231812]"
-            : "text-[#8A857F] hover:text-[#231812] hover:bg-[rgba(26,26,26,0.03)]"
+            ? "bg-[rgba(28,35,51,0.06)] text-[#1C2333]"
+            : "text-[rgba(28,35,51,0.65)] hover:text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)]"
         }`}
         style={showLabel ? {} : { width: "48px", margin: "0 auto" }}
       >
@@ -74,7 +74,7 @@ export default function AppShell({
           <span className="flex-1 font-sans text-[15px]">{item.label}</span>
         )}
         {showLabel && item.id === "my-jobs" && jobCount > 0 && (
-          <span className="font-jetbrains-mono text-[11px] text-[#8A857F]">
+          <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: "10.5px", color: "rgba(28,35,51,0.45)" }}>
             {jobCount}
           </span>
         )}
@@ -86,9 +86,10 @@ export default function AppShell({
     return (
       <button
         onClick={handleScoreJob}
-        className={`w-full bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2 ${
-          compact ? "flex items-center justify-center p-2.5" : "px-4 py-2"
+        className={`w-full font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 ${
+          compact ? "flex items-center justify-center p-2.5" : ""
         }`}
+        style={compact ? {} : { height: "44px" }}
       >
         {compact ? <Plus size={16} strokeWidth={1.5} /> : "Score a job →"}
       </button>
@@ -101,15 +102,16 @@ export default function AppShell({
     return (
       <div className="px-4 pb-6">
         {displayName && (
-          <p className="font-sans text-[13px] text-[#231812] truncate mb-0.5">{displayName}</p>
+          <p className="font-sans text-[13px] text-[#1C2333] truncate mb-0.5">{displayName}</p>
         )}
-        <p className="font-jetbrains-mono text-[11px] text-[#8A857F] truncate mb-2">
+        <p style={{ fontFamily: "var(--font-geist-mono)", fontSize: "11px", color: "rgba(28,35,51,0.65)" }} className="truncate mb-2">
           {user.email ?? ""}
         </p>
-        <div className="border-t border-[rgba(26,26,26,0.08)] mb-2" />
+        <div className="border-t border-[rgba(28,35,51,0.08)] mb-2" />
         <button
           onClick={onSignOut}
-          className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors focus:outline-none"
+          style={{ fontFamily: "var(--font-geist-mono)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(28,35,51,0.45)" }}
+          className="hover:text-[#1C2333] transition-colors focus:outline-none"
         >
           Sign out
         </button>
@@ -118,33 +120,33 @@ export default function AppShell({
   }
 
   return (
-    <div className="min-h-screen flex bg-[#F6F0E4]">
+    <div className="min-h-screen flex bg-white">
 
       {/* ═══════════════════════════════════════════════════════════════
-          DESKTOP SIDEBAR (lg: 1024px+) — 240px, #FDF7EA, fixed
+          DESKTOP SIDEBAR (lg: 1024px+) — 240px, white, fixed
          ═══════════════════════════════════════════════════════════════ */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 bg-[#FDF7EA] border-r border-[rgba(26,26,26,0.08)]">
+      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
         {/* Wordmark */}
         <div style={{ padding: "28px 24px 32px 24px" }}>
           <button
             onClick={onLogoClick}
-            className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2 rounded"
+            className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
           >
-            <span className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
+            <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "15px", letterSpacing: "-0.025em", color: "#1C2333" }}>
               <SignalWordmark />
             </span>
           </button>
         </div>
 
         {/* Nav items */}
-        <nav className="manuscript-nav flex-1 px-3 space-y-0.5">
+        <nav className="flex-1 px-3 space-y-0.5">
           {NAV_ITEMS.map((item) => (
             <NavItem key={item.id} item={item} showLabel />
           ))}
         </nav>
 
         {/* Divider */}
-        <div className="mx-4 border-t border-[rgba(26,26,26,0.08)] my-4" />
+        <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] my-4" />
 
         {/* Score a job CTA */}
         <div className="px-4 pb-4">
@@ -152,7 +154,7 @@ export default function AppShell({
         </div>
 
         {/* Divider above user */}
-        <div className="mx-4 border-t border-[rgba(26,26,26,0.08)] mb-4" />
+        <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] mb-4" />
 
         {/* User info */}
         <UserInfo />
@@ -161,18 +163,19 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           TABLET SIDEBAR (md: 768px–1024px) — 72px, icons only
          ═══════════════════════════════════════════════════════════════ */}
-      <aside className="hidden md:flex lg:hidden md:flex-col md:w-[72px] md:fixed md:inset-y-0 z-30 items-center bg-[#FDF7EA] border-r border-[rgba(26,26,26,0.08)]">
+      <aside className="hidden md:flex lg:hidden md:flex-col md:w-[72px] md:fixed md:inset-y-0 z-30 items-center bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
         {/* C lettermark */}
         <div className="pt-5 pb-4">
           <button
             onClick={onLogoClick}
-            className="font-instrument-serif italic text-[24px] text-[#231812] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2 rounded"
+            style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "18px", letterSpacing: "-0.025em", color: "#1C2333" }}
+            className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
           >
             C
           </button>
         </div>
 
-        {/* Nav — icons only (shown as minimal dots on tablet) */}
+        {/* Nav — icons only */}
         <nav className="flex-1 space-y-1 flex flex-col items-center w-full px-3">
           {NAV_ITEMS.map((item) => (
             <NavItem key={item.id} item={item} showLabel={false} />
@@ -188,19 +191,20 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MOBILE TOP BAR (below 768px)
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-[#FDF7EA] border-b border-[rgba(26,26,26,0.08)]">
+      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-white border-b border-[rgba(28,35,51,0.08)]">
         <button
           onClick={onLogoClick}
-          className="font-instrument-serif italic text-[24px] text-[#231812] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2 rounded"
+          style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "17px", letterSpacing: "-0.025em", color: "#1C2333" }}
+          className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
         >
           C
         </button>
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="p-2 rounded hover:bg-[rgba(26,26,26,0.04)] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#231812] focus-visible:outline-offset-2"
+          className="p-2 rounded hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2"
           aria-label="Open navigation"
         >
-          <Menu size={20} strokeWidth={1.5} className="text-[#8A857F]" />
+          <Menu size={20} strokeWidth={1.5} className="text-[rgba(28,35,51,0.65)]" />
         </button>
       </div>
 
@@ -211,36 +215,36 @@ export default function AppShell({
         <>
           <div
             className="fixed inset-0 z-40 lg:hidden"
-            style={{ background: "rgba(35,24,18,0.3)" }}
+            style={{ background: "rgba(28,35,51,0.3)" }}
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-[#FDF7EA] border-r border-[rgba(26,26,26,0.08)]">
+          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
             <div style={{ padding: "28px 24px 32px 24px" }} className="flex items-center justify-between">
-              <span className="font-instrument-serif italic text-[32px] font-normal text-[#231812] leading-none">
+              <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "15px", letterSpacing: "-0.025em", color: "#1C2333" }}>
                 <SignalWordmark />
               </span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded hover:bg-[rgba(26,26,26,0.04)] transition-colors focus:outline-none"
+                className="p-1.5 rounded hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
                 aria-label="Close navigation"
               >
-                <X size={18} strokeWidth={1.5} className="text-[#8A857F]" />
+                <X size={18} strokeWidth={1.5} className="text-[rgba(28,35,51,0.65)]" />
               </button>
             </div>
 
-            <nav className="manuscript-nav flex-1 px-3 space-y-0.5">
+            <nav className="flex-1 px-3 space-y-0.5">
               {NAV_ITEMS.map((item) => (
                 <NavItem key={item.id} item={item} showLabel />
               ))}
             </nav>
 
-            <div className="mx-4 border-t border-[rgba(26,26,26,0.08)] my-4" />
+            <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] my-4" />
 
             <div className="px-4 pb-4">
               <ScoreJobCTA />
             </div>
 
-            <div className="mx-4 border-t border-[rgba(26,26,26,0.08)] mb-4" />
+            <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] mb-4" />
 
             <UserInfo />
           </div>
@@ -250,7 +254,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MAIN CONTENT
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 md:pl-[72px] lg:pl-60 overflow-x-hidden bg-[#F6F0E4]" style={{ minHeight: "100vh" }}>
+      <div className="flex-1 md:pl-[72px] lg:pl-60 overflow-x-hidden bg-[#FAFAFA]" style={{ minHeight: "100vh" }}>
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 

@@ -10,7 +10,7 @@ interface AppHeaderProps {
 
 export default function AppHeader({ logoSlot, rightSlot, compact, light }: AppHeaderProps) {
   return (
-    <header className={light ? "bg-[#FDF7EA] border-b border-[rgba(26,26,26,0.10)]" : "bg-[#F6F0E4]"}>
+    <header className={light ? "bg-white border-b border-[rgba(28,35,51,0.08)]" : "bg-white border-b border-[rgba(28,35,51,0.08)]"}>
       <div className={`max-w-4xl mx-auto px-6 flex items-center justify-between ${compact ? "py-[14px]" : "py-5"}`}>
         {logoSlot}
         {rightSlot}
@@ -22,7 +22,7 @@ export default function AppHeader({ logoSlot, rightSlot, compact, light }: AppHe
 export function LogoLink({ light }: { light?: boolean }) {
   return (
     <Link href="/" className="block group">
-      <p className="font-instrument-serif italic text-[28px] font-normal text-[#231812] leading-none group-hover:text-[#4A3C34] transition-colors">
+      <p className="font-sans font-semibold text-[18px] text-[#1C2333] leading-none tracking-[-0.025em] group-hover:opacity-70 transition-opacity">
         <SignalWordmark />
       </p>
     </Link>
@@ -32,7 +32,7 @@ export function LogoLink({ light }: { light?: boolean }) {
 export function LogoStatic({ light }: { light?: boolean }) {
   return (
     <div>
-      <p className="font-instrument-serif italic text-[28px] font-normal text-[#231812] leading-none">
+      <p className="font-sans font-semibold text-[18px] text-[#1C2333] leading-none tracking-[-0.025em]">
         <SignalWordmark />
       </p>
     </div>
@@ -43,7 +43,7 @@ export function BackToAppLink({ light }: { light?: boolean }) {
   return (
     <Link
       href="/"
-      className="font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] text-[#8A857F] hover:text-[#231812] transition-colors"
+      className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
     >
       ← Back to app
     </Link>

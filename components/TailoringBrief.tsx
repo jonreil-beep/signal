@@ -6,10 +6,10 @@ import TypingIndicator from "./TypingIndicator";
 import { useToast } from "./ToastProvider";
 import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, StrengthMatchType } from "@/types";
 
-const MATCH_TYPE_STYLES: Record<StrengthMatchType, string> = {
-  "Direct match":     "bg-status-apply/10 text-status-apply ring-1 ring-status-apply/20",
-  "Strong inference": "bg-status-tailor/10 text-status-tailor ring-1 ring-status-tailor/20",
-  "Reframe":          "bg-status-stretch/10 text-status-stretch ring-1 ring-status-stretch/20",
+const MATCH_TYPE_STYLES: Record<StrengthMatchType, { color: string; bg: string }> = {
+  "Direct match":     { color: "#7A8B73", bg: "rgba(122,139,115,0.10)" },
+  "Strong inference": { color: "#9B8E73", bg: "rgba(155,142,115,0.10)" },
+  "Reframe":          { color: "#8A7373", bg: "rgba(138,115,115,0.10)" },
 };
 
 type ApplicationStage = "preparing" | "applied" | "post-interview";
@@ -59,14 +59,14 @@ function CopyButton({ getText }: { getText: () => string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+      className="flex items-center gap-1 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
     >
       {copied ? (
         <>
-          <svg className="w-3.5 h-3.5 text-status-apply" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-3.5 h-3.5 text-[#7A8B73]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <span className="text-status-apply">Copied</span>
+          <span className="text-[#7A8B73]">Copied</span>
         </>
       ) : (
         <>
@@ -94,10 +94,10 @@ function PrimaryCopyButton({ getText, label = "Copy" }: { getText: () => string;
   return (
     <button
       onClick={handleCopy}
-      className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] transition-colors ${
+      className={`flex items-center gap-1.5 px-3 py-1 rounded-[6px] font-sans text-[11px] transition-colors ${
         copied
-          ? "bg-status-apply/10 text-status-apply"
-          : "bg-[rgba(26,26,26,0.04)] border border-[rgba(26,26,26,0.10)] text-[#4A3C34] hover:bg-[rgba(26,26,26,0.06)]"
+          ? "bg-[rgba(122,139,115,0.10)] text-[#7A8B73]"
+          : "bg-[rgba(28,35,51,0.05)] border border-[rgba(28,35,51,0.10)] text-[rgba(28,35,51,0.55)] hover:text-[#1C2333] hover:bg-[rgba(28,35,51,0.08)]"
       }`}
     >
       {copied ? (
@@ -129,9 +129,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-7">
+    <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-7" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
       <div className="flex items-center justify-between mb-4">
-        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">{title}</p>
+        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">{title}</p>
         <CopyButton getText={() => copyText} />
       </div>
       {children}
@@ -167,14 +167,14 @@ function ActionSection({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`${bgClass} border-b border-[rgba(26,26,26,0.10)] overflow-hidden`}>
+    <div className={`${bgClass} border-b border-[rgba(28,35,51,0.08)] overflow-hidden`}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
-        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#231812]">{title}</p>
+        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.55)]">{title}</p>
         {!isLoading && (
           <button
             onClick={onAction}
-            className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#231812] transition-colors"
+            className="shrink-0 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
           >
             {hasResult ? "Re-generate →" : `${buttonLabel} →`}
           </button>
@@ -183,7 +183,7 @@ function ActionSection({
 
       {/* Body */}
       {!hasResult && !isLoading && !error && (
-        <p className="px-5 pb-4 -mt-1 font-sans text-[14px] text-[#8A857F]">{description}</p>
+        <p className="px-5 pb-4 -mt-1 font-sans text-[14px] text-[rgba(28,35,51,0.45)]">{description}</p>
       )}
 
       {isLoading && (
@@ -194,10 +194,10 @@ function ActionSection({
 
       {error && !isLoading && (
         <div className="px-5 pb-4 -mt-1 space-y-2.5">
-          <p className="font-sans text-[14px] text-[#C4622D]">{error}</p>
+          <p className="font-sans text-[14px] text-[#8A7373]">{error}</p>
           <button
             onClick={onAction}
-            className="px-3.5 py-1.5 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] border border-[rgba(196,98,45,0.30)] text-[#C4622D] rounded-[2px] hover:bg-[rgba(196,98,45,0.05)] transition-colors"
+            className="px-3.5 py-1.5 font-sans text-[12px] border border-[rgba(138,115,115,0.30)] text-[#8A7373] rounded-[6px] hover:bg-[rgba(138,115,115,0.05)] transition-colors"
           >
             Try again
           </button>
@@ -205,11 +205,11 @@ function ActionSection({
       )}
 
       {hasResult && !isLoading && (
-        <div className="border-t border-[rgba(26,26,26,0.08)] px-5 py-5 space-y-6">
+        <div className="border-t border-[rgba(28,35,51,0.08)] px-5 py-5 space-y-6">
           {children}
           {noteValue !== undefined && onNoteChange && (
-            <div className="border-t border-[rgba(26,26,26,0.08)] pt-4 space-y-2">
-              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">
+            <div className="border-t border-[rgba(28,35,51,0.08)] pt-4 space-y-2">
+              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
                 Anything to correct or adjust?
               </p>
               <textarea
@@ -218,12 +218,12 @@ function ActionSection({
                 placeholder='e.g. "Make it more direct" or "I was VP level, not Director"'
                 maxLength={300}
                 rows={2}
-                className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#F6F0E4] rounded-[2px] px-3 py-2.5 resize-none border border-[rgba(26,26,26,0.12)] focus:border-[rgba(26,26,26,0.30)] focus:outline-none focus:ring-0 placeholder:text-[#8A857F] leading-relaxed transition-colors"
+                className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed transition-colors"
               />
               <div className="flex justify-end">
                 <button
                   onClick={onAction}
-                  className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#231812] transition-colors"
+                  className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                 >
                   Re-generate →
                 </button>
@@ -239,7 +239,7 @@ function ActionSection({
 function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">{label}</p>
+      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">{label}</p>
       {copyText !== undefined && <CopyButton getText={() => copyText} />}
     </div>
   );
@@ -331,11 +331,12 @@ export default function TailoringBrief({
   if (!profileText) {
     return (
       <div className="text-center py-20">
-        <p className="font-sans text-base font-[500] text-[#231812]">Profile required</p>
-        <p className="font-sans text-sm text-[#8A857F] mt-2">Upload your resume in the Profile tab first.</p>
+        <p className="font-sans text-base font-medium text-[#1C2333]">Profile required</p>
+        <p className="font-sans text-sm text-[rgba(28,35,51,0.55)] mt-2">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          style={{ height: 40 }}
         >
           Go to Profile →
         </button>
@@ -346,13 +347,14 @@ export default function TailoringBrief({
   if (!jobDescription) {
     return (
       <div className="text-center py-20">
-        <p className="font-sans text-[14px] font-[500] text-[#231812]">Score a job first</p>
-        <p className="font-sans text-[14px] text-[#8A857F] mt-1 max-w-xs mx-auto">
+        <p className="font-sans text-[14px] font-medium text-[#1C2333]">Score a job first</p>
+        <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
           Score a job in the Job Fit tab, then come back to generate your prep.
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          style={{ height: 40 }}
         >
           Go to Job Fit →
         </button>
@@ -731,15 +733,15 @@ export default function TailoringBrief({
     <div className="space-y-6">
 
       {/* ── Stage selector — underline tabs ── */}
-      <div className="flex gap-0 border-b border-[rgba(26,26,26,0.10)]">
+      <div className="flex gap-0 border-b border-[rgba(28,35,51,0.08)]">
         {APPLICATION_STAGES.map((stage) => (
           <button
             key={stage.id}
             onClick={() => setAppStage(stage.id)}
-            className={`px-4 py-2.5 font-jetbrains-mono text-[10px] sm:text-[11px] uppercase tracking-[0.08em] transition-all border-b-2 -mb-px focus:outline-none focus:ring-0 ${
+            className={`px-4 py-2.5 font-sans text-[13px] transition-all border-b-2 -mb-px focus:outline-none focus:ring-0 ${
               appStage === stage.id
-                ? "border-[#231812] text-[#231812]"
-                : "border-transparent text-[#8A857F] hover:text-[#4A3C34]"
+                ? "border-[#1C2333] text-[#1C2333]"
+                : "border-transparent text-[rgba(28,35,51,0.45)] hover:text-[#1C2333]"
             }`}
           >
             {stage.label}
@@ -751,12 +753,12 @@ export default function TailoringBrief({
       {result?.honest_take && (
         <div
           id="prep-result"
-          className="result-scroll-target honest-take-entrance border-b border-[rgba(26,26,26,0.10)] px-8 py-7"
+          className="result-scroll-target honest-take-entrance border-b border-[rgba(28,35,51,0.08)] px-8 py-7"
         >
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-2.5">
+          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2.5">
             Honest Take
           </p>
-          <p className="font-instrument-serif italic text-[18px] text-[#231812] leading-snug">{result.honest_take}</p>
+          <p className="font-sans text-[18px] font-medium text-[#1C2333] leading-snug" style={{ letterSpacing: "-0.02em" }}>{result.honest_take}</p>
         </div>
       )}
 
@@ -776,14 +778,15 @@ export default function TailoringBrief({
                   placeholder="Anything to correct before rebuilding? (optional)"
                   maxLength={300}
                   rows={briefNoteExpanded ? 3 : 1}
-                  className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#F6F0E4] rounded-[2px] px-3 py-2.5 resize-none border border-[rgba(26,26,26,0.12)] focus:border-[rgba(26,26,26,0.30)] focus:outline-none focus:ring-0 placeholder:text-[#8A857F] leading-relaxed transition-all"
+                  className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed transition-all"
                 />
               )}
               <div className="flex justify-end gap-2">
                 {hasAnyContent && (
                   <button
                     onClick={handleExport}
-                    className="flex items-center gap-1.5 px-5 py-2 border border-[rgba(26,26,26,0.15)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] rounded-[2px] hover:border-[rgba(26,26,26,0.25)] hover:text-[#231812] transition-colors"
+                    className="flex items-center gap-1.5 px-4 font-sans font-medium text-[13px] text-[rgba(28,35,51,0.65)] border border-[rgba(28,35,51,0.12)] rounded-[8px] hover:border-[rgba(28,35,51,0.25)] hover:text-[#1C2333] transition-colors"
+                    style={{ height: 36 }}
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -793,7 +796,8 @@ export default function TailoringBrief({
                 )}
                 <button
                   onClick={handleGenerate}
-                  className="px-5 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                  className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                  style={{ height: 36 }}
                 >
                   {result ? "Rebuild" : "Build Prep Guide"}
                 </button>
@@ -804,9 +808,9 @@ export default function TailoringBrief({
           {isGenerating && <TypingIndicator message="Building your prep guide. This takes about 20 seconds…" />}
 
           {error && !isGenerating && (
-            <div className="p-4 bg-[rgba(196,98,45,0.04)] border border-[rgba(196,98,45,0.15)]">
-              <p className="font-sans text-[14px] text-[#C4622D]">{error}</p>
-              <button onClick={handleGenerate} className="mt-1 font-sans text-[13px] text-[#C4622D] underline hover:no-underline">
+            <div className="p-4 border-l-2 border-[#8A7373]">
+              <p className="font-sans text-[14px] text-[#1C2333]">{error}</p>
+              <button onClick={handleGenerate} className="mt-1 font-sans text-[13px] text-[#8A7373] hover:text-[#1C2333] transition-colors">
                 Try again
               </button>
             </div>
@@ -814,11 +818,11 @@ export default function TailoringBrief({
 
           {/* Profile staleness banner */}
           {isProfileStale && result && !isGenerating && (
-            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(168,107,45,0.06)] border border-[rgba(168,107,45,0.15)]">
-              <p className="font-sans text-[14px] text-[#4A3C34]">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
+            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(28,35,51,0.03)] border border-[rgba(28,35,51,0.08)] rounded-[8px]">
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
               <button
                 onClick={onGoToJobFit}
-                className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#A86B2D] hover:text-[#8C5520] transition-colors whitespace-nowrap"
+                className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.55)] hover:text-[#1C2333] transition-colors whitespace-nowrap"
               >
                 Re-score →
               </button>
@@ -827,9 +831,9 @@ export default function TailoringBrief({
 
           {/* No brief yet */}
           {!result && !isGenerating && (
-            <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-8 text-center">
-              <p className="font-sans text-[14px] font-[500] text-[#231812]">No brief yet</p>
-              <p className="font-sans text-[14px] text-[#8A857F] mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
+            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <p className="font-sans text-[14px] font-medium text-[#1C2333]">No brief yet</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
             </div>
           )}
 
@@ -838,33 +842,36 @@ export default function TailoringBrief({
             <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
               {/* Left column — Brief sections */}
-              <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] overflow-hidden divide-y divide-[rgba(26,26,26,0.08)]">
+              <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] overflow-hidden divide-y divide-[rgba(28,35,51,0.08)]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
 
                 {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">Lead Strengths to Emphasize</p>
+                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Lead Strengths to Emphasize</p>
                     <CopyButton getText={() => result.lead_strengths.map((s) => `• [${s.match_type ?? ""}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")} />
                   </div>
                   <div className="space-y-3">
                     {result.lead_strengths.map((s, i) => {
                       const matchStyle = s.match_type ? MATCH_TYPE_STYLES[s.match_type] : null;
                       return (
-                        <div key={i} className="border-l-2 border-[rgba(26,26,26,0.15)] pl-3.5">
-                          <div className="flex items-center gap-2">
-                            <p className="font-sans text-[14px] font-[500] text-[#231812]">{s.strength}</p>
+                        <div key={i} className="border-l-2 border-[rgba(28,35,51,0.15)] pl-3.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-sans text-[14px] font-medium text-[#1C2333]">{s.strength}</p>
                             {matchStyle && (
-                              <span className={`shrink-0 font-jetbrains-mono text-[0.6rem] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px] ${matchStyle}`}>
+                              <span
+                                className="shrink-0 font-sans text-[11px] px-2 py-0.5"
+                                style={{ color: matchStyle.color, background: matchStyle.bg, borderRadius: "9999px" }}
+                              >
                                 {s.match_type}
                               </span>
                             )}
                           </div>
                           {expandedStrengths.has(i) && (
-                            <p className="font-sans text-[13px] text-[#4A3C34] italic leading-snug mt-1.5">{s.framing_language}</p>
+                            <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug mt-1.5">{s.framing_language}</p>
                           )}
                           <button
                             onClick={() => toggleStrength(i)}
-                            className="mt-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                            className="mt-1 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                           >
                             {expandedStrengths.has(i) ? "Hide ↑" : "See framing →"}
                           </button>
@@ -877,23 +884,23 @@ export default function TailoringBrief({
                 {/* ── Recruiter Concern to Preempt ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#A86B2D]">
+                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
                       Recruiter Concern to Preempt
                     </p>
                     <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
                   </div>
-                  <div style={{ borderLeft: "2px solid #A86B2D", paddingLeft: "16px" }} className="space-y-3">
+                  <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: "16px" }} className="space-y-3">
                     <div>
-                      <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#A86B2D] mb-1">
+                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
                         Likely concern
                       </p>
-                      <p className="font-sans text-[14px] text-[#4A3C34]">{result.recruiter_concern_to_preempt.concern}</p>
+                      <p className="font-sans text-[14px] text-[#1C2333]">{result.recruiter_concern_to_preempt.concern}</p>
                     </div>
                     <div>
-                      <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#A86B2D] mb-1">
+                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
                         How to address it
                       </p>
-                      <p className="font-sans text-[14px] text-[#4A3C34]">{result.recruiter_concern_to_preempt.suggested_response}</p>
+                      <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">{result.recruiter_concern_to_preempt.suggested_response}</p>
                     </div>
                   </div>
                 </div>
@@ -901,26 +908,26 @@ export default function TailoringBrief({
                 {/* ── JD Language to Mirror ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">JD Language to Mirror</p>
+                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">JD Language to Mirror</p>
                     <CopyButton getText={() => result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")} />
                   </div>
                   <div className="space-y-2.5">
                     {result.jd_language_to_mirror.map((p, i) => (
                       <div key={i}>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="inline-block bg-[rgba(26,26,26,0.04)] border border-[rgba(26,26,26,0.10)] text-[#4A3C34] font-sans text-[14px] font-[500] px-2.5 py-1">
+                          <span className="inline-block font-sans text-[14px] font-medium text-[#1C2333] px-2.5 py-1" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
                             &ldquo;{p.phrase}&rdquo;
                           </span>
                           <CopyButton getText={() => p.phrase} />
                           <button
                             onClick={() => togglePhrase(i)}
-                            className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                            className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                           >
                             {expandedPhrases.has(i) ? "Hide ↑" : "Why →"}
                           </button>
                         </div>
                         {expandedPhrases.has(i) && (
-                          <p className="mt-1.5 font-sans text-[13px] text-[#4A3C34] leading-snug">{p.context}</p>
+                          <p className="mt-1.5 font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{p.context}</p>
                         )}
                       </div>
                     ))}
@@ -930,14 +937,14 @@ export default function TailoringBrief({
                 {/* ── What to De-emphasize ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">What to De-emphasize</p>
+                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">What to De-emphasize</p>
                     <CopyButton getText={() => result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")} />
                   </div>
                   <div className="space-y-2.5">
                     {result.what_to_deemphasize.map((d, i) => (
-                      <div key={i} className="border-l-2 border-[rgba(26,26,26,0.15)] pl-3.5">
-                        <p className="font-sans text-[14px] font-[500] text-[#231812]">{d.item}</p>
-                        <p className="font-sans text-[13px] text-[#4A3C34] mt-0.5 leading-snug">{d.reason}</p>
+                      <div key={i} className="border-l-2 border-[rgba(28,35,51,0.15)] pl-3.5">
+                        <p className="font-sans text-[14px] font-medium text-[#1C2333]">{d.item}</p>
+                        <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] mt-0.5 leading-snug">{d.reason}</p>
                       </div>
                     ))}
                   </div>
@@ -947,10 +954,10 @@ export default function TailoringBrief({
                 {result.outreach_angle && (
                   <div className="px-6 py-5">
                     <div className="flex items-center justify-between mb-4">
-                      <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">Outreach Angle</p>
+                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Outreach Angle</p>
                       <CopyButton getText={() => result.outreach_angle!} />
                     </div>
-                    <p className="font-sans text-[14px] text-[#4A3C34] leading-[1.7]">{result.outreach_angle}</p>
+                    <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{result.outreach_angle}</p>
                   </div>
                 )}
 
@@ -961,8 +968,8 @@ export default function TailoringBrief({
                 {/* Cover Letter */}
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-1 h-4 bg-[#231812]" />
-                    <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#231812]">Start here</p>
+                    <div className="w-1 h-4 bg-[#1C2333]" />
+                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[#1C2333]">Start here</p>
                   </div>
                 )}
                 <ActionSection
@@ -980,11 +987,11 @@ export default function TailoringBrief({
                   {coverLetterResult && (
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">Cover Letter</p>
+                        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Cover Letter</p>
                         <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
                       </div>
-                      <div className="border border-[rgba(26,26,26,0.10)] bg-[#F6F0E4] p-6">
-                        <pre className="font-sans text-[14px] text-[#4A3C34] leading-[1.7] whitespace-pre-wrap">
+                      <div className="border border-[rgba(28,35,51,0.08)] bg-[#FAFAFA] rounded-[8px] p-6">
+                        <pre className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7] whitespace-pre-wrap">
                           {coverLetterResult.cover_letter}
                         </pre>
                       </div>
@@ -994,14 +1001,15 @@ export default function TailoringBrief({
 
                 {/* Outreach */}
                 {!result.outreach_angle ? (
-                  <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-8 text-center">
-                    <p className="font-sans text-[14px] font-[500] text-[#231812]">No outreach angle in brief</p>
-                    <p className="font-sans text-[14px] text-[#8A857F] mt-1 max-w-xs mx-auto">
+                  <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+                    <p className="font-sans text-[14px] font-medium text-[#1C2333]">No outreach angle in brief</p>
+                    <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                       The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
                     </p>
                     <button
                       onClick={handleGenerate}
-                      className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                      className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                      style={{ height: 40 }}
                     >
                       Rebuild →
                     </button>
@@ -1033,42 +1041,42 @@ export default function TailoringBrief({
                         <>
                           <div>
                             <div className="flex items-center justify-between mb-3">
-                              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">Cold Email</p>
+                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Cold Email</p>
                               <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
                             </div>
-                            <p className="font-sans text-[14px] font-[500] text-[#4A3C34] mb-1">{emailSubject}</p>
+                            <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{emailSubject}</p>
                             {emailExpanded ? (
-                              <pre className="font-sans text-[14px] text-[#4A3C34] leading-[1.7] whitespace-pre-wrap">
+                              <pre className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7] whitespace-pre-wrap">
                                 {emailBody}
                               </pre>
                             ) : (
-                              <p className="font-sans text-[14px] text-[#4A3C34] leading-[1.7]">{emailFirstSentence}{emailFirstSentence !== emailBody ? "…" : ""}</p>
+                              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{emailFirstSentence}{emailFirstSentence !== emailBody ? "…" : ""}</p>
                             )}
                             <button
                               onClick={() => setEmailExpanded(p => !p)}
-                              className="mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                              className="mt-2 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                             >
                               {emailExpanded ? "Collapse ↑" : "Read full message →"}
                             </button>
                           </div>
-                          <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                          <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                             <div className="flex items-center justify-between mb-3">
-                              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.10em] text-[#8A857F]">LinkedIn Message</p>
+                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">LinkedIn Message</p>
                               <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
                             </div>
                             {linkedInExpanded ? (
-                              <p className="font-sans text-[14px] text-[#4A3C34] leading-[1.7]">{outreachResult.linkedin_message}</p>
+                              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{outreachResult.linkedin_message}</p>
                             ) : (
-                              <p className="font-sans text-[14px] text-[#4A3C34] leading-[1.7]">{linkedInFirstSentence}{linkedInFirstSentence !== outreachResult.linkedin_message ? "…" : ""}</p>
+                              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{linkedInFirstSentence}{linkedInFirstSentence !== outreachResult.linkedin_message ? "…" : ""}</p>
                             )}
                             <div className="flex items-center justify-between mt-2">
                               <button
                                 onClick={() => setLinkedInExpanded(p => !p)}
-                                className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                                className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                               >
                                 {linkedInExpanded ? "Collapse ↑" : "Read full message →"}
                               </button>
-                              <p className="font-jetbrains-mono text-[10px] text-[#8A857F]">{outreachResult.linkedin_message.length} / 280 chars</p>
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)]">{outreachResult.linkedin_message.length} / 280 chars</p>
                             </div>
                           </div>
                         </>
@@ -1092,10 +1100,10 @@ export default function TailoringBrief({
                     <>
                       <div>
                         <SubHeading label="Summary Rewrite" copyText={resumeUpdateResult.summary_rewrite} />
-                        <p className="font-sans text-[14px] text-[#4A3C34] leading-[1.7]">{resumeUpdateResult.summary_rewrite}</p>
+                        <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{resumeUpdateResult.summary_rewrite}</p>
                       </div>
 
-                      <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                         <SubHeading
                           label="Resume Bullets to Update"
                           copyText={resumeUpdateResult.bullet_updates
@@ -1105,19 +1113,19 @@ export default function TailoringBrief({
                         <div className="space-y-4">
                           {resumeUpdateResult.bullet_updates.map((b, i) => (
                             <div key={i} className="space-y-1.5">
-                              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F]">
+                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
                                 {b.section}
                               </p>
-                              <div className="border border-[rgba(26,26,26,0.10)] overflow-hidden">
+                              <div className="border border-[rgba(28,35,51,0.08)] rounded-[8px] overflow-hidden">
                                 {/* Suggested rewrite */}
-                                <div className="px-3.5 py-3 bg-[#FDF7EA]">
+                                <div className="px-3.5 py-3 bg-white">
                                   <div className="flex items-start justify-between gap-3">
-                                    <p className="font-sans text-[14px] text-[#4A3C34] leading-snug flex-1">{b.suggested}</p>
+                                    <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug flex-1">{b.suggested}</p>
                                     <CopyButton getText={() => b.suggested} />
                                   </div>
                                   <button
                                     onClick={() => toggleBullet(i)}
-                                    className="mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                                    className="mt-2 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                                   >
                                     {expandedBullets.has(i) ? "Hide original ↑" : "Compare with original →"}
                                   </button>
@@ -1125,13 +1133,13 @@ export default function TailoringBrief({
                                 {/* Original + What changed */}
                                 {expandedBullets.has(i) && (
                                   <>
-                                    <div className="px-3.5 py-3 bg-[#F6F0E4] border-t border-[rgba(26,26,26,0.08)]">
-                                      <p className="font-jetbrains-mono text-[9px] uppercase tracking-[0.08em] text-[#8A857F] mb-1.5">Original</p>
-                                      <p className="font-sans text-[13px] text-[#4A3C34] leading-relaxed">{b.original}</p>
+                                    <div className="px-3.5 py-3 bg-[#FAFAFA] border-t border-[rgba(28,35,51,0.08)]">
+                                      <p className="font-sans text-[10px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mb-1.5">Original</p>
+                                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{b.original}</p>
                                     </div>
-                                    <div className="px-3.5 py-2.5 bg-[#F6F0E4] border-t border-[rgba(26,26,26,0.08)]">
-                                      <p className="font-jetbrains-mono text-[9px] uppercase tracking-[0.08em] text-[#8A857F] mb-1">What changed</p>
-                                      <p className="font-sans text-[13px] text-[#4A3C34] leading-relaxed">{b.what_changed}</p>
+                                    <div className="px-3.5 py-2.5 bg-[#FAFAFA] border-t border-[rgba(28,35,51,0.08)]">
+                                      <p className="font-sans text-[10px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mb-1">What changed</p>
+                                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{b.what_changed}</p>
                                     </div>
                                   </>
                                 )}
@@ -1141,7 +1149,7 @@ export default function TailoringBrief({
                         </div>
                       </div>
 
-                      <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                         <SubHeading
                           label="Keywords to Weave In"
                           copyText={resumeUpdateResult.keywords_to_weave_in
@@ -1150,10 +1158,10 @@ export default function TailoringBrief({
                         />
                         <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: "12px 16px", alignItems: "start" }}>
                           {resumeUpdateResult.keywords_to_weave_in.flatMap((k, i) => [
-                            <span key={`pill-${i}`} className="inline-block bg-[rgba(26,26,26,0.04)] border border-[rgba(26,26,26,0.10)] text-[#4A3C34] font-sans text-[14px] font-[500] px-2.5 py-1 justify-self-start">
+                            <span key={`pill-${i}`} className="inline-block font-sans text-[13px] font-medium text-[#1C2333] px-2.5 py-1 justify-self-start" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
                               {k.keyword}
                             </span>,
-                            <p key={`desc-${i}`} className="font-sans text-[14px] text-[#4A3C34] leading-snug mt-1">{k.suggested_context}</p>,
+                            <p key={`desc-${i}`} className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug mt-1">{k.suggested_context}</p>,
                           ])}
                         </div>
                       </div>
@@ -1171,14 +1179,15 @@ export default function TailoringBrief({
       {appStage === "applied" && (
         <>
           {!result ? (
-            <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-8 text-center">
-              <p className="font-sans text-[14px] font-[500] text-[#231812]">Build your prep guide first</p>
-              <p className="font-sans text-[14px] text-[#8A857F] mt-1 max-w-xs mx-auto">
+            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <p className="font-sans text-[14px] font-medium text-[#1C2333]">Build your prep guide first</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for interview questions.
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                style={{ height: 40 }}
               >
                 Go to Preparing to Apply →
               </button>
@@ -1200,36 +1209,36 @@ export default function TailoringBrief({
                 {interviewPrepResult && (
                   <div className="space-y-3">
                     {interviewPrepResult.questions.map((q, i) => (
-                      <div key={i} className="border border-[rgba(26,26,26,0.10)] overflow-hidden">
+                      <div key={i} className="border border-[rgba(28,35,51,0.08)] rounded-[8px] overflow-hidden">
                         <button
                           onClick={() => setExpandedQuestions(prev => {
                             const next = new Set(prev);
                             if (next.has(i)) { next.delete(i); } else { next.add(i); }
                             return next;
                           })}
-                          className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[rgba(26,26,26,0.02)] transition-colors bg-[#FDF7EA]"
+                          className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-[rgba(28,35,51,0.02)] transition-colors bg-white"
                         >
-                          <p className="font-sans text-[14px] font-[500] text-[#231812] pr-4 leading-snug">{q.question}</p>
+                          <p className="font-sans text-[14px] font-medium text-[#1C2333] pr-4 leading-snug">{q.question}</p>
                           <svg
-                            className={`shrink-0 w-4 h-4 text-[#8A857F] transition-transform ${expandedQuestions.has(i) ? "rotate-180" : ""}`}
+                            className={`shrink-0 w-4 h-4 text-[rgba(28,35,51,0.35)] transition-transform ${expandedQuestions.has(i) ? "rotate-180" : ""}`}
                             fill="none" viewBox="0 0 24 24" stroke="currentColor"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </button>
                         {expandedQuestions.has(i) && (
-                          <div className="px-4 pb-4 pt-3 space-y-3 border-t border-[rgba(26,26,26,0.08)] bg-[#FDF7EA]">
+                          <div className="px-4 pb-4 pt-3 space-y-3 border-t border-[rgba(28,35,51,0.08)] bg-[#FAFAFA]">
                             <div>
-                              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mb-1.5">
+                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1.5">
                                 Why likely
                               </p>
-                              <p className="font-sans text-[13px] text-[#4A3C34] leading-relaxed">{q.why_likely}</p>
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-relaxed">{q.why_likely}</p>
                             </div>
                             <div>
-                              <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mb-1.5">
+                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1.5">
                                 Suggested approach
                               </p>
-                              <p className="font-sans text-[14px] text-[#4A3C34] leading-relaxed">{q.suggested_approach}</p>
+                              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">{q.suggested_approach}</p>
                             </div>
                           </div>
                         )}
@@ -1254,29 +1263,29 @@ export default function TailoringBrief({
                   <>
                     <div>
                       <div className="mb-2">
-                        <p className="font-sans text-[14px] font-[500] text-[#231812]">{cr.company_name}</p>
-                        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mt-0.5" style={{ whiteSpace: "normal" }}>
+                        <p className="font-sans text-[14px] font-medium text-[#1C2333]">{cr.company_name}</p>
+                        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mt-0.5" style={{ whiteSpace: "normal" }}>
                           {cr.what_we_know.sources}
                         </p>
                       </div>
-                      <p className="font-sans text-[14px] text-[#4A3C34] leading-relaxed">{cr.what_we_know.summary}</p>
+                      <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">{cr.what_we_know.summary}</p>
                     </div>
 
                     {cr.caveat && (
-                      <div style={{ borderLeft: "2px solid #A86B2D", paddingLeft: "16px" }}>
-                        <p className="font-sans text-[13px] text-[#A86B2D] leading-snug">{cr.caveat}</p>
+                      <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: "16px" }}>
+                        <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{cr.caveat}</p>
                       </div>
                     )}
 
                     {cr.what_we_re_reading.length > 0 && (
-                      <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                         <div className="mb-3">
                           <SubHeading label="What We're Reading" />
                         </div>
                         <ul className="space-y-2">
                           {cr.what_we_re_reading.map((item, i) => (
-                            <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#4A3C34] italic leading-relaxed">
-                              <span className="mt-2 w-1 h-1 bg-[#8A857F] shrink-0" />
+                            <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">
+                              <span className="mt-2 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)] shrink-0" />
                               {item}
                             </li>
                           ))}
@@ -1285,12 +1294,12 @@ export default function TailoringBrief({
                     )}
 
                     {cr.culture_signals.length > 0 && (
-                      <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                         <SubHeading label="Culture Signals" />
                         <ul className="space-y-1.5">
                           {cr.culture_signals.map((s, i) => (
-                            <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#4A3C34]">
-                              <span className="mt-1.5 w-1 h-1 bg-[#8A857F] shrink-0" />
+                            <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)] shrink-0" />
                               {s}
                             </li>
                           ))}
@@ -1299,20 +1308,20 @@ export default function TailoringBrief({
                     )}
 
                     {cr.red_flags_to_probe.length > 0 && (
-                      <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                         <SubHeading label="Worth Probing" />
                         <div className="space-y-3">
                           {cr.red_flags_to_probe.map((f, i) => (
-                            <div key={i} style={{ borderLeft: "2px solid #A86B2D", paddingLeft: "12px" }} className="space-y-1">
-                              <p className="font-sans text-[13px] font-[500] text-[#A86B2D]">{f.flag}</p>
-                              <p className="font-sans text-[13px] text-[#4A3C34]">{f.how_to_probe}</p>
+                            <div key={i} style={{ borderLeft: "2px solid #8A7373", paddingLeft: "12px" }} className="space-y-1">
+                              <p className="font-sans text-[13px] font-medium text-[#1C2333]">{f.flag}</p>
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)]">{f.how_to_probe}</p>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                    <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                       <SubHeading
                         label="Questions to Test"
                         copyText={cr.questions_to_test
@@ -1321,9 +1330,9 @@ export default function TailoringBrief({
                       />
                       <div className="space-y-4">
                         {cr.questions_to_test.map((q, i) => (
-                          <div key={i} className="border-l-2 border-[rgba(26,26,26,0.15)] pl-3.5">
-                            <p className="font-sans text-[14px] font-[500] text-[#231812]">{q.question}</p>
-                            <p className="font-sans text-[13px] text-[#4A3C34] mt-0.5">{q.what_youre_probing}</p>
+                          <div key={i} className="border-l-2 border-[rgba(28,35,51,0.15)] pl-3.5">
+                            <p className="font-sans text-[14px] font-medium text-[#1C2333]">{q.question}</p>
+                            <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] mt-0.5">{q.what_youre_probing}</p>
                           </div>
                         ))}
                       </div>
@@ -1341,14 +1350,15 @@ export default function TailoringBrief({
         <div className="space-y-5">
 
           {!result ? (
-            <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.10)] p-8 text-center">
-              <p className="font-sans text-[14px] font-[500] text-[#231812]">Build your prep guide first</p>
-              <p className="font-sans text-[14px] text-[#8A857F] mt-1 max-w-xs mx-auto">
+            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <p className="font-sans text-[14px] font-medium text-[#1C2333]">Build your prep guide first</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for follow-up templates.
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                style={{ height: 40 }}
               >
                 Go to Preparing to Apply →
               </button>
@@ -1368,13 +1378,13 @@ export default function TailoringBrief({
                 <>
                   <div>
                     <SubHeading label="Thank-You Note" copyText={followUpResult.thank_you_note} />
-                    <pre className="font-sans text-[14px] text-[#4A3C34] leading-[1.7] whitespace-pre-wrap">
+                    <pre className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7] whitespace-pre-wrap">
                       {followUpResult.thank_you_note}
                     </pre>
                   </div>
-                  <div className="border-t border-[rgba(26,26,26,0.08)] pt-6">
+                  <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                     <SubHeading label="Check-In Email" copyText={followUpResult.check_in_email} />
-                    <pre className="font-sans text-[14px] text-[#4A3C34] leading-[1.7] whitespace-pre-wrap">
+                    <pre className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7] whitespace-pre-wrap">
                       {followUpResult.check_in_email}
                     </pre>
                   </div>

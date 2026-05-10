@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-[#F6F0E4]">
+    <div className="min-h-screen bg-[#FFFFFF]">
 
       <AppHeader
         light
@@ -19,23 +19,23 @@ export default function HowItWorksPage() {
       <main className="max-w-4xl mx-auto px-6 py-16">
 
         {/* Masthead */}
-        <div className="mb-14 pb-6 border-b-2 border-[#231812]">
+        <div className="mb-14 pb-6 border-b-2 border-[#1C2333]">
           <div className="flex items-baseline justify-between gap-4 mb-3">
-            <h1 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">
+            <h1 className="font-sans text-[40px] font-medium leading-[1.0] tracking-[-0.03em] text-[#1C2333]">
               How it works
             </h1>
-            <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">
+            <span className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] shrink-0">
               Overview
             </span>
           </div>
-          <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] leading-snug max-w-[540px]">
+          <p className="font-sans text-[18px] text-[rgba(28,35,51,0.65)] leading-snug max-w-[540px]">
             Strong backgrounds get passed over every day because the fit is unclear or the framing is generic.
           </p>
         </div>
 
         {/* Steps */}
         <section className="mb-14">
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-6">
+          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-6">
             The process
           </p>
           <div className="space-y-10">
@@ -61,11 +61,11 @@ export default function HowItWorksPage() {
                 body: "Every scored job saves with its fit score, prep guide, and pipeline status — no spreadsheet required.",
               },
             ].map(({ n, title, body }) => (
-              <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(26,26,26,0.08)] last:border-0 last:pb-0">
-                <span className="font-jetbrains-mono text-[11px] text-[#8A857F] shrink-0 pt-1">{n}</span>
+              <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(28,35,51,0.08)] last:border-0 last:pb-0">
+                <span className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] shrink-0 pt-1">{n}</span>
                 <div>
-                  <p className="font-sans text-[16px] font-medium text-[#231812] mb-1">{title}</p>
-                  <p className="font-sans text-[15px] text-[#4A3C34] leading-relaxed">{body}</p>
+                  <p className="font-sans text-[16px] font-medium text-[#1C2333] mb-1">{title}</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] leading-relaxed">{body}</p>
                 </div>
               </div>
             ))}
@@ -74,7 +74,7 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section>
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-6">
+          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-6">
             Get started
           </p>
           <HowItWorksCTA />

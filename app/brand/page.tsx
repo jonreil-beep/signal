@@ -3,7 +3,7 @@ import BrandGuidelines from "@/components/BrandGuidelines";
 
 export default function BrandPage() {
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(to bottom, #ffffff 0%, #EDEDF3 100%)" }}>
+    <div className="min-h-screen bg-white">
 
       <AppHeader light logoSlot={<LogoStatic light />} rightSlot={<BackToAppLink light />} />
 

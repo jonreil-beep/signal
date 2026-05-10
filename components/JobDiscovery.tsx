@@ -47,27 +47,27 @@ function buildXRayUrl(domain: string, clusterName: string, modifier: string): st
   return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
 }
 
-const CONFIDENCE_STYLES: Record<string, { color: string; border: string }> = {
-  "Strong":   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
-  "Moderate": { color: "#A86B2D", border: "1px solid #A86B2D" },
-  "Stretch":  { color: "#C4622D", border: "1px solid #C4622D" },
+const CONFIDENCE_STYLES: Record<string, { color: string; border: string; bg: string }> = {
+  "Strong":   { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)", bg: "rgba(122,139,115,0.08)" },
+  "Moderate": { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)", bg: "rgba(155,142,115,0.10)" },
+  "Stretch":  { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)", bg: "rgba(138,115,115,0.10)" },
 };
 
 function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: string; confidence: string; staggerIndex: number }) {
   const [modifier, setModifier] = useState("");
-  const confStyle = CONFIDENCE_STYLES[confidence] ?? { color: "#8A857F", border: "1px solid #8A857F" };
+  const confStyle = CONFIDENCE_STYLES[confidence] ?? { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" };
 
   return (
     <div
-      className="border-b border-[rgba(26,26,26,0.10)] py-7 space-y-5 card-entrance"
+      className="border-b border-[rgba(28,35,51,0.08)] py-7 space-y-5 card-entrance"
       style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
     >
       {/* Name + confidence */}
       <div className="flex items-start justify-between gap-3">
-        <p className="font-sans text-[16px] font-[500] text-[#231812] leading-snug">{clusterName}</p>
+        <p className="font-sans text-[16px] font-medium text-[#1C2333] leading-snug">{clusterName}</p>
         <span
-          className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
-          style={{ color: confStyle.color, border: confStyle.border }}
+          className="shrink-0 font-sans text-[11px] px-2.5 py-0.5"
+          style={{ color: confStyle.color, border: confStyle.border, background: confStyle.bg, borderRadius: "9999px" }}
         >
           {confidence}
         </span>
@@ -79,7 +79,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
         value={modifier}
         onChange={(e) => setModifier(e.target.value)}
         placeholder="Add a city or industry (optional)"
-        className="w-full border border-[rgba(26,26,26,0.12)] rounded-[2px] px-3 py-2 font-sans text-[14px] bg-[#F6F0E4] focus:outline-none focus:border-[rgba(26,26,26,0.30)] placeholder:text-[#8A857F] transition-colors text-[#4A3C34]"
+        className="w-full border border-[rgba(28,35,51,0.08)] rounded-[8px] px-3 py-2 font-sans text-[14px] bg-[#FAFAFA] focus:outline-none focus:border-[rgba(28,35,51,0.20)] placeholder:text-[rgba(28,35,51,0.35)] transition-colors text-[#1C2333]"
       />
 
       {/* Search buttons */}
@@ -88,7 +88,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
           href={buildGoogleUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[rgba(26,26,26,0.15)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.25)] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 font-sans text-[13px] font-medium border border-[rgba(28,35,51,0.12)] text-[rgba(28,35,51,0.65)] rounded-[8px] hover:bg-[rgba(28,35,51,0.03)] hover:border-[rgba(28,35,51,0.20)] hover:text-[#1C2333] transition-colors"
         >
           Google →
         </a>
@@ -96,7 +96,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
           href={buildLinkedInUrl(clusterName, modifier)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 border border-[rgba(26,26,26,0.15)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.25)] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 font-sans text-[13px] font-medium border border-[rgba(28,35,51,0.12)] text-[rgba(28,35,51,0.65)] rounded-[8px] hover:bg-[rgba(28,35,51,0.03)] hover:border-[rgba(28,35,51,0.20)] hover:text-[#1C2333] transition-colors"
         >
           LinkedIn →
         </a>
@@ -104,7 +104,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
 
       {/* X-Ray ATS buttons */}
       <div className="mt-2">
-        <p className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] mb-2">X-Ray search</p>
+        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2">X-Ray search</p>
         <div className="flex items-center gap-2 flex-wrap">
           {ATS_PLATFORMS.map((ats) => (
             <a
@@ -112,7 +112,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
               href={buildXRayUrl(ats.domain, clusterName, modifier)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center px-3 py-1 border border-[rgba(26,26,26,0.12)] text-[#4A3C34] font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] rounded-[2px] hover:bg-[rgba(26,26,26,0.03)] hover:border-[rgba(26,26,26,0.20)] transition-colors"
+              className="flex items-center justify-center px-3 py-1 font-sans text-[12px] border border-[rgba(28,35,51,0.10)] text-[rgba(28,35,51,0.55)] rounded-[6px] hover:bg-[rgba(28,35,51,0.03)] hover:border-[rgba(28,35,51,0.18)] hover:text-[#1C2333] transition-colors"
             >
               {ats.label}
             </a>
@@ -127,13 +127,14 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
   if (!clusterResult) {
     return (
       <div className="text-center py-20">
-        <p className="font-sans text-base font-[500] text-[#231812]">Analyze your profile first</p>
-        <p className="font-sans text-sm text-[#8A857F] mt-2 max-w-xs mx-auto">
+        <p className="font-sans text-base font-medium text-[#1C2333]">Analyze your profile first</p>
+        <p className="font-sans text-sm text-[rgba(28,35,51,0.55)] mt-2 max-w-xs mx-auto">
           Run the profile analysis to get role clusters — this tab uses them to build your search terms.
         </p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 py-2.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          style={{ height: 40 }}
         >
           Go to Profile →
         </button>
@@ -147,7 +148,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
 
   return (
     <div className="space-y-6">
-      <p className="font-sans text-[14px] text-[#4A3C34]">
+      <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
         Your best-fit role clusters — search for open positions directly from here.
       </p>
 

@@ -11,18 +11,18 @@ interface RoleClusterResultsProps {
   rightColumnExtra?: React.ReactNode;
 }
 
-const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], { color: string; border: string }> = {
-  Strong:   { color: "#2D6A4F", border: "1px solid #2D6A4F" },
-  Moderate: { color: "#A86B2D", border: "1px solid #A86B2D" },
-  Stretch:  { color: "#C4622D", border: "1px solid #C4622D" },
+const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], { color: string; border: string; bg: string }> = {
+  Strong:   { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
+  Moderate: { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
+  Stretch:  { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
 };
 
-const RECOMMENDATION_STYLES: Record<RoleRecommendation, { color: string; border: string }> = {
-  "Pursue":                  { color: "#2D6A4F", border: "1px solid #2D6A4F" },
-  "Pursue Selectively":      { color: "#A86B2D", border: "1px solid #A86B2D" },
-  "Stretch — Prep Required": { color: "#C4622D", border: "1px solid #C4622D" },
-  "Avoid":                   { color: "#6B6660", border: "1px solid #6B6660" },
-  "Reframe First":           { color: "#8A857F", border: "1px solid #8A857F" },
+const RECOMMENDATION_STYLES: Record<RoleRecommendation, { color: string; border: string; bg: string }> = {
+  "Pursue":                  { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
+  "Pursue Selectively":      { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
+  "Stretch — Prep Required": { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
+  "Avoid":                   { color: "rgba(28,35,51,0.35)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
+  "Reframe First":           { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
 };
 
 export default function RoleClusterResults({ result, resumeText, onClusterUpdate, rightColumnExtra }: RoleClusterResultsProps) {
@@ -62,7 +62,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Left column — Role clusters */}
       <div>
-        <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.10em] text-[#8A857F] mb-3">
+        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
           Best-Fit Role Clusters
         </p>
         <div className="space-y-0">
@@ -74,29 +74,29 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
             return (
               <div
                 key={i}
-                className="border-b border-[rgba(26,26,26,0.10)] py-7 card-entrance"
+                className="border-b border-[rgba(28,35,51,0.08)] py-7 card-entrance"
                 style={{ animationDelay: `${Math.min(i, 5) * 50}ms` }}
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <h4 className="font-sans text-base font-[500] text-[#231812] leading-snug">{cluster.name}</h4>
+                  <h4 className="font-sans text-base font-medium text-[#1C2333] leading-snug">{cluster.name}</h4>
                   <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                     {rec && (
                       <span
-                        className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
+                        className="font-sans text-[11px] px-2.5 py-0.5"
                         style={{
                           color: rec.color,
                           border: rec.border,
-                          animation: "badgePulse 400ms ease-in-out both",
-                          animationDelay: `${Math.min(i, 5) * 50 + 200}ms`,
+                          background: rec.bg,
+                          borderRadius: "9999px",
                         }}
                       >
                         {cluster.recommendation}
                       </span>
                     )}
                     <span
-                      className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] px-2 py-0.5 rounded-[2px]"
-                      style={{ color: conf.color, border: conf.border }}
+                      className="font-sans text-[11px] px-2.5 py-0.5"
+                      style={{ color: conf.color, border: conf.border, background: conf.bg, borderRadius: "9999px" }}
                     >
                       {cluster.confidence}
                     </span>
@@ -104,7 +104,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                       <button
                         onClick={() => handleRegenerate(i, cluster.name)}
                         disabled={regeneratingIndex === i}
-                        className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors disabled:opacity-40 whitespace-nowrap"
+                        className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors disabled:opacity-40 whitespace-nowrap"
                       >
                         {regeneratingIndex === i ? "Regenerating…" : "Regenerate →"}
                       </button>
@@ -112,9 +112,9 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                   </div>
                 </div>
 
-                {/* Market read — primary descriptor */}
+                {/* Market read */}
                 {cluster.market_read && (
-                  <p className="font-sans text-[14px] text-[#4A3C34] leading-snug mb-3">
+                  <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug mb-3">
                     {cluster.market_read}
                   </p>
                 )}
@@ -122,8 +122,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 {cluster.signals.length > 0 && (
                   <ul className="space-y-1.5">
                     {cluster.signals.slice(0, 3).map((signal, j) => (
-                      <li key={j} className="flex items-start gap-2 font-sans text-[14px] text-[#4A3C34]">
-                        <span className="mt-2 shrink-0 w-1 h-1 bg-[#8A857F]" />
+                      <li key={j} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                        <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)]" />
                         {signal}
                       </li>
                     ))}
@@ -131,7 +131,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 )}
 
                 {regenErrors[i] && (
-                  <p className="mt-2 font-sans text-xs text-[#C4622D]">{regenErrors[i]}</p>
+                  <p className="mt-2 font-sans text-xs text-[#8A7373]">{regenErrors[i]}</p>
                 )}
               </div>
             );
@@ -142,21 +142,21 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       {/* Right column — Strengths + Risks + optional extra */}
       <div className="space-y-0">
         <div className="py-7 card-entrance" style={{ animationDelay: "50ms" }}>
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
+          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
             Core Strengths
           </p>
           <ul className="space-y-2">
             {result.core_strengths.map((s, i) => (
-              <li key={i} className="flex items-start gap-2.5 font-sans text-[14px] text-[#4A3C34] leading-relaxed">
-                <span className="mt-2 shrink-0 w-1.5 h-1.5 bg-[#2D6A4F]" />
+              <li key={i} className="flex items-start gap-2.5 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">
+                <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#7A8B73]" />
                 {s}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="border-t border-[rgba(26,26,26,0.10)] py-7 card-entrance" style={{ animationDelay: "100ms" }}>
-          <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
+        <div className="border-t border-[rgba(28,35,51,0.08)] py-7 card-entrance" style={{ animationDelay: "100ms" }}>
+          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
             Positioning Risks
           </p>
           <ul className="space-y-3.5">
@@ -167,19 +167,19 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
               const isOpen = expandedRisk === i;
               return (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="mt-2 shrink-0 w-1.5 h-1.5 bg-[#8A857F]" />
+                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[rgba(28,35,51,0.35)]" />
                   <div>
-                    <p className="font-sans text-[14px] font-medium text-[#231812] leading-relaxed">{riskText}</p>
+                    <p className="font-sans text-[14px] font-medium text-[#1C2333] leading-relaxed">{riskText}</p>
                     {actionText && (
                       <>
                         {isOpen && (
-                          <p className="font-sans text-[14px] text-[#4A3C34] mt-1.5 leading-snug">
+                          <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mt-1.5 leading-snug">
                             {actionText}
                           </p>
                         )}
                         <button
                           onClick={() => toggleRisk(i)}
-                          className="mt-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F] hover:text-[#4A3C34] transition-colors"
+                          className="mt-1 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                         >
                           {isOpen ? "Hide ↑" : "How to address →"}
                         </button>

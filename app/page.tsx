@@ -767,8 +767,8 @@ export default function Home() {
   // ── Auth loading screen ──
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#F6F0E4] flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-[rgba(35,24,18,0.15)] border-t-[#231812] rounded-full animate-spin" />
+      <div style={{minHeight:'100vh', background:'#FFFFFF', display:'flex', alignItems:'center', justifyContent:'center'}}>
+        <div style={{width:20, height:20, border:'2px solid rgba(28,35,51,0.12)', borderTopColor:'#1C2333', borderRadius:'50%', animation:'spin 0.7s linear infinite'}} />
       </div>
     );
   }
@@ -778,23 +778,23 @@ export default function Home() {
     // Signed in — show welcome (new) or welcome back (returning) view
     if (user) {
       return (
-        <div style={{minHeight:'100vh', background:'#EDE7D9', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-dm-sans, 'DM Sans', system-ui, sans-serif)"}}>
-          <a href="/" style={{fontFamily:"var(--font-instrument-serif, 'Instrument Serif', Georgia, serif)", fontStyle:'italic', fontSize:24, color:'#231812', textDecoration:'none', marginBottom:48}}>Claro</a>
-          <h1 style={{fontFamily:"var(--font-instrument-serif, 'Instrument Serif', Georgia, serif)", fontStyle:'italic', fontSize:'clamp(36px, 5vw, 56px)', fontWeight:'normal', color:'#231812', marginBottom:16, textAlign:'center'}}>
+        <div style={{minHeight:'100vh', background:'#1C2333', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif)"}}>
+          <a href="/" style={{fontFamily:"var(--font-geist-sans)", fontWeight:600, fontSize:17, letterSpacing:'-0.02em', color:'#fff', textDecoration:'none', marginBottom:48}}>Claro</a>
+          <h1 style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:'clamp(40px, 5vw, 64px)', lineHeight:1, letterSpacing:'-0.03em', color:'#fff', marginBottom:16, textAlign:'center'}}>
             Welcome back.
           </h1>
-          <p style={{fontFamily:"var(--font-dm-sans, 'DM Sans', system-ui, sans-serif)", fontSize:16, fontWeight:300, color:'#4A3C34', marginBottom:40, textAlign:'center'}}>
+          <p style={{fontFamily:"var(--font-geist-sans)", fontSize:16, fontWeight:400, color:'rgba(255,255,255,0.55)', marginBottom:44, textAlign:'center'}}>
             {trackedJobs.length === 1 ? 'You have 1 job scored.' : `You have ${trackedJobs.length} jobs scored.`}
           </p>
           <button
             onClick={() => setShowLanding(false)}
-            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'#FDF7EA', background:'#231812', border:'none', padding:'13px 28px', borderRadius:2, cursor:'pointer', marginBottom:24}}
+            style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:14, letterSpacing:'-0.005em', color:'#1C2333', background:'#fff', border:'none', padding:'0 24px', height:44, borderRadius:8, cursor:'pointer', marginBottom:24}}
           >
             Go to my jobs →
           </button>
           <button
             onClick={handleSignOut}
-            style={{fontFamily:"var(--font-jetbrains-mono, 'JetBrains Mono', monospace)", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'#8A857F', background:'none', border:'none', cursor:'pointer', padding:0}}
+            style={{fontFamily:"var(--font-geist-mono)", fontSize:11, letterSpacing:'0.05em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:0}}
           >
             Sign out
           </button>
@@ -821,13 +821,13 @@ export default function Home() {
 
   // ── App shell ──
   const guestBanner = !user ? (
-    <div className="border-b border-[rgba(26,26,26,0.08)] bg-[#FDF7EA]">
+    <div className="border-b border-[rgba(28,35,51,0.08)] bg-white">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-[72px] py-3">
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="font-sans text-[13px] font-medium text-[#231812]">Want to save your work?</p>
-              <p className="font-sans text-[12px] text-[#8A857F] mt-0.5">
+              <p className="font-sans text-[13px] font-medium text-[#1C2333]">Want to save your work?</p>
+              <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)] mt-0.5">
                 Enter your email to save your profile, scores, and prep guides — free, no password.
               </p>
             </div>
@@ -839,12 +839,12 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMagicLink()}
-                  className="flex-1 h-9 px-3 font-sans text-[13px] border border-[rgba(26,26,26,0.15)] rounded-[2px] bg-[#FDF7EA] focus:outline-none focus:ring-0 focus:border-[rgba(26,26,26,0.35)] transition-colors"
+                  className="flex-1 h-9 px-3 font-sans text-[13px] border border-[rgba(28,35,51,0.12)] rounded-[8px] bg-[#FAFAFA] focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.32)] transition-colors"
                 />
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="h-9 px-3 shrink-0 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="h-9 px-3 shrink-0 bg-[#1C2333] text-white font-sans font-medium text-[13px] rounded-[8px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                 >
                   {sendingMagicLink ? "Sending…" : "Save progress"}
                 </button>
@@ -856,12 +856,12 @@ export default function Home() {
           </div>
         ) : (
           <div className="flex items-center justify-between gap-4">
-            <p className="font-sans text-[13px] text-[#4A3C34]">
-              Check your inbox — we sent a link to <span className="font-medium text-[#231812]">{email}</span>.
+            <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)]">
+              Check your inbox — we sent a link to <span className="font-medium text-[#1C2333]">{email}</span>.
             </p>
             <button
               onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
-              className="shrink-0 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
+              className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
             >
               Use different email
             </button>
@@ -887,20 +887,20 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
-            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Profile</h2>
-                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Your background</span>
+                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Profile</h2>
+                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Your background</span>
               </div>
-              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Map your strongest role clusters and positioning risks.</p>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Map your strongest role clusters and positioning risks.</p>
             </div>
 
             {/* No profile yet: onboarding header + uploader */}
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="font-sans text-[16px] font-medium text-[#231812]">Step 1 — Clarify your positioning</h2>
-                  <p className="font-sans text-[15px] text-[#4A3C34] mt-1">
+                  <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Step 1 — Clarify your positioning</h2>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-1">
                     Upload your resume once. Claro identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
                 </div>
@@ -912,29 +912,29 @@ export default function Home() {
             {profileText && (
               <div className="mb-6">
                 {/* ── Summary bar ── */}
-                <div className="flex items-center justify-between gap-3 py-3 px-4 bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] rounded-[2px]">
+                <div className="flex items-center justify-between gap-3 py-3 px-4 bg-white border border-[rgba(28,35,51,0.10)] rounded-[10px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
                   <div className="flex items-center gap-2 flex-wrap min-w-0">
-                    <span className="font-sans text-[13px] font-medium text-[#231812]">Your profile</span>
-                    <span className="text-[#8A857F]">·</span>
-                    <span className="font-sans text-[13px] text-[#8A857F]">
+                    <span className="font-sans text-[13px] font-medium text-[#1C2333]">Your profile</span>
+                    <span className="text-[rgba(28,35,51,0.45)]">·</span>
+                    <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">
                       {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
                     </span>
                     {writingSample.trim() && (
                       <>
-                        <span className="text-[#8A857F]">·</span>
-                        <span className="font-sans text-[13px] text-[#8A857F]">Writing sample added</span>
+                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
+                        <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Writing sample added</span>
                       </>
                     )}
                     {pivotTarget.trim() && (
                       <>
-                        <span className="text-[#8A857F]">·</span>
-                        <span className="font-sans text-[13px] text-[#8A857F]">Pivot target set</span>
+                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
+                        <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Pivot target set</span>
                       </>
                     )}
                     {clusterResult && (
                       <>
-                        <span className="text-[#8A857F]">·</span>
-                        <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F]">Analyzed</span>
+                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
+                        <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Analyzed</span>
                       </>
                     )}
                   </div>
@@ -942,20 +942,20 @@ export default function Home() {
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
+                        className="font-sans text-[12px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity"
                       >
                         Analyze →
                       </button>
                     )}
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
-                      className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
+                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "view" ? "Hide" : "View"}
                     </button>
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
-                      className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
+                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "update" ? "Cancel" : "Update"}
                     </button>
@@ -969,17 +969,17 @@ export default function Home() {
                       className="overflow-y-auto p-6"
                       style={{
                         maxHeight: "400px",
-                        background: "#FDF7EA",
-                        border: "1px solid rgba(26,26,26,0.12)",
+                        background: "#FAFAFA",
+                        border: "1px solid rgba(28,35,51,0.08)",
+                        borderRadius: "10px",
                         scrollbarWidth: "thin",
-                        scrollbarColor: "rgba(26,26,26,0.15) transparent",
+                        scrollbarColor: "rgba(28,35,51,0.15) transparent",
                       }}
                     >
                       {profileText.split(/\n\n+/).map((para, pi) => (
                         <p
                           key={pi}
-                          className="mb-4 last:mb-0 font-sans text-[13px] leading-[1.6] text-[#4A3C34]"
-                          style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}
+                          className="mb-4 last:mb-0 font-sans text-[13px] leading-[1.6] text-[rgba(28,35,51,0.65)]"
                         >
                           {para.split(/\n/).map((line, li, arr) => (
                             <span key={li}>
@@ -997,14 +997,14 @@ export default function Home() {
                 {profileExpanded === "update" && (
                   <div className="mt-3 space-y-4">
                     {/* Resume uploader */}
-                    <div className="bg-[#FDF7EA] p-5 border border-[rgba(26,26,26,0.12)]">
-                      <p className="font-sans text-[13px] text-[#8A857F] mb-4">Upload or paste a new resume to replace the saved one.</p>
+                    <div className="bg-[#FAFAFA] p-5 border border-[rgba(28,35,51,0.08)] rounded-[10px]">
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] mb-4">Upload or paste a new resume to replace the saved one.</p>
                       <ProfileUploader onProfileConfirmed={(text, source, fileName) => {
                         handleProfileConfirmed(text, source, fileName);
                         setProfileExpanded("none");
                       }} />
                       {!user && resumeSource === "file" && (
-                        <p className="mt-2 font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">
+                        <p className="mt-2 font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
                           Uploaded from file — re-upload if you refresh the page.
                         </p>
                       )}
@@ -1013,11 +1013,11 @@ export default function Home() {
                     {/* Writing sample */}
                     <div>
                       <div className="flex items-baseline justify-between mb-1.5">
-                        <label className="block font-sans text-[13px] font-medium text-[#231812]">
-                          Writing sample <span className="font-normal text-[#8A857F]">(optional)</span>
+                        <label className="block font-sans text-[13px] font-medium text-[#1C2333]">
+                          Writing sample <span className="font-normal text-[rgba(28,35,51,0.45)]">(optional)</span>
                         </label>
                         {writingSample.trim() && (
-                          <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">Auto-saved</span>
+                          <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1025,18 +1025,18 @@ export default function Home() {
                         onChange={(e) => setWritingSample(e.target.value)}
                         placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
                         rows={3}
-                        className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#FDF7EA] rounded-[2px] px-3.5 py-3 border border-[rgba(26,26,26,0.15)] focus:border-[rgba(26,26,26,0.35)] focus:outline-none focus:ring-0 resize-none placeholder:text-[#8A857F]"
+                        className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[10px] px-3.5 py-3 border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 resize-none placeholder:text-[rgba(28,35,51,0.35)]"
                       />
                     </div>
 
                     {/* Pivot target */}
                     <div>
                       <div className="flex items-baseline justify-between mb-1.5">
-                        <label className="block font-sans text-[13px] font-medium text-[#231812]">
-                          Targeting a pivot? <span className="font-normal text-[#8A857F]">(optional)</span>
+                        <label className="block font-sans text-[13px] font-medium text-[#1C2333]">
+                          Targeting a pivot? <span className="font-normal text-[rgba(28,35,51,0.45)]">(optional)</span>
                         </label>
                         {pivotTarget.trim() && (
-                          <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.06em] text-[#8A857F]">Auto-saved</span>
+                          <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1044,7 +1044,7 @@ export default function Home() {
                         onChange={(e) => setPivotTarget(e.target.value)}
                         placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
                         rows={3}
-                        className="w-full font-sans text-[14px] text-[#4A3C34] bg-[#FDF7EA] rounded-[2px] px-3.5 py-3 border border-[rgba(26,26,26,0.15)] focus:border-[rgba(26,26,26,0.35)] focus:outline-none focus:ring-0 resize-none placeholder:text-[#8A857F]"
+                        className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[10px] px-3.5 py-3 border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 resize-none placeholder:text-[rgba(28,35,51,0.35)]"
                       />
                     </div>
 
@@ -1052,13 +1052,14 @@ export default function Home() {
                     <div className="flex items-center gap-4 pt-2">
                       <button
                         onClick={() => { setProfileExpanded("none"); handleAnalyze(); }}
-                        className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                        style={{ height: 40 }}
                       >
                         Save &amp; Reanalyze
                       </button>
                       <button
                         onClick={() => setProfileExpanded("none")}
-                        className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
+                        className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                       >
                         Cancel
                       </button>
@@ -1075,9 +1076,9 @@ export default function Home() {
             )}
 
             {analyzeError && !isAnalyzing && (
-              <div className="mb-4 p-4 border-l-2 border-red-400">
-                <p className="font-sans text-[14px] text-[#4A3C34]">{analyzeError}</p>
-                <button onClick={handleAnalyze} className="mt-1.5 font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors">
+              <div className="mb-4 p-4 border-l-2 border-[#8A7373]">
+                <p className="font-sans text-[14px] text-[#1C2333]">{analyzeError}</p>
+                <button onClick={handleAnalyze} className="mt-1.5 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors">
                   Try again
                 </button>
               </div>
@@ -1087,11 +1088,11 @@ export default function Home() {
               <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline ── */}
-                <div id="profile-result" className="result-scroll-target border-t-2 border-[#231812] pt-6">
-                  <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-3">
+                <div id="profile-result" className="result-scroll-target border-t border-[rgba(28,35,51,0.10)] pt-6">
+                  <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-3 uppercase tracking-[0.08em]">
                     Your Recommended LinkedIn Headline
                   </p>
-                  <p className="font-instrument-serif text-[28px] font-normal text-[#231812] leading-[1.3]">
+                  <p className="font-sans font-medium text-[24px] text-[#1C2333] leading-[1.25] tracking-[-0.02em]">
                     {clusterResult.recommended_headline}
                   </p>
                 </div>
@@ -1110,12 +1111,12 @@ export default function Home() {
                   }}
                   rightColumnExtra={
                     /* ── LinkedIn Headline Generator — 3rd card in right column ── */
-                    <div className="bg-[#FDF7EA] border border-[rgba(26,26,26,0.12)] overflow-hidden">
-                      <div className="px-5 py-4 border-b border-[rgba(26,26,26,0.08)]">
+                    <div className="bg-white border border-[rgba(28,35,51,0.08)] overflow-hidden rounded-[14px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+                      <div className="px-5 py-4 border-b border-[rgba(28,35,51,0.08)]">
                         <div className="flex items-center justify-between gap-4">
                           <div>
-                            <p className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] mb-1">LinkedIn Headlines</p>
-                            <p className="font-sans text-[13px] text-[#4A3C34] leading-snug">
+                            <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">LinkedIn Headlines</p>
+                            <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
                               {headlineResult
                                 ? "Pick the angle that fits where you're headed."
                                 : "4 positioning angles calibrated to your career story."}
@@ -1124,7 +1125,8 @@ export default function Home() {
                           {!isGeneratingHeadlines && (
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="shrink-0 px-3 py-1.5 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[10px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                              className="shrink-0 px-3 font-sans font-medium text-[12px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                              style={{ height: 32 }}
                             >
                               {headlineResult ? "Regenerate" : "Try 4 angles →"}
                             </button>
@@ -1136,18 +1138,18 @@ export default function Home() {
                           <LoadingState message="Writing headline angles from your career story…" />
                         )}
                         {headlineError && !isGeneratingHeadlines && (
-                          <div className="p-4 border-l-2 border-red-400">
-                            <p className="font-sans text-[13px] text-[#4A3C34]">{headlineError}</p>
+                          <div className="p-4 border-l-2 border-[#8A7373]">
+                            <p className="font-sans text-[13px] text-[#1C2333]">{headlineError}</p>
                             <button
                               onClick={handleGenerateHeadlines}
-                              className="mt-1 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
+                              className="mt-1 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors"
                             >
                               Try again
                             </button>
                           </div>
                         )}
                         {!headlineResult && !isGeneratingHeadlines && !headlineError && (
-                          <p className="font-sans text-[13px] text-[#8A857F] italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
+                          <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
                         )}
                         {headlineResult && !isGeneratingHeadlines && (
                           <div className="space-y-3">
@@ -1164,18 +1166,19 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && (
-              <div className="mt-10 pt-6 border-t border-[rgba(26,26,26,0.10)] flex items-center justify-between gap-4">
-                <p className="font-sans text-[13px] text-[#8A857F]">Ready to evaluate a role?</p>
+              <div className="mt-10 pt-6 border-t border-[rgba(28,35,51,0.08)] flex items-center justify-between gap-4">
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Ready to evaluate a role?</p>
                 <div className="flex items-center gap-5 shrink-0">
                   <button
                     onClick={() => setActiveTab("discover")}
-                    className="font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] text-[#8A857F] hover:text-[#231812] transition-colors"
+                    className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
                   >
                     Discover jobs →
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                    className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                    style={{ height: 36 }}
                   >
                     Score a job →
                   </button>
@@ -1197,12 +1200,12 @@ export default function Home() {
               />
             ) : (
               <div>
-                <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+                <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
                   <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Job Fit</h2>
-                    <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Score a role</span>
+                    <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Job Fit</h2>
+                    <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Score a role</span>
                   </div>
-                  <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-8">
@@ -1210,20 +1213,22 @@ export default function Home() {
                       id={activeJobId}
                       label={trackedJobs.find(j => j.id === activeJobId)!.label}
                       onRename={handleRenameJob}
-                      className="font-sans text-[18px] font-medium text-[#231812]"
+                      className="font-sans text-[18px] font-medium text-[#1C2333]"
                     />
                     <div className="flex items-center gap-3 shrink-0">
                       {jobFitResult && (
                         <button
                           onClick={() => setActiveTab("tailoring-brief")}
-                          className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors whitespace-nowrap"
+                          className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity whitespace-nowrap"
+                          style={{ height: 36 }}
                         >
                           Go to Prep →
                         </button>
                       )}
                       <button
                         onClick={handleJobFitReset}
-                        className="px-3 py-1.5 border border-[rgba(26,26,26,0.15)] text-[#231812] font-jetbrains-mono text-[11px] uppercase tracking-[0.08em] rounded-[2px] hover:bg-[rgba(26,26,26,0.04)] transition-colors whitespace-nowrap"
+                        className="px-3 border border-[rgba(28,35,51,0.12)] text-[#1C2333] font-sans text-[13px] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap"
+                        style={{ height: 36 }}
                       >
                         + Score another job
                       </button>
@@ -1251,12 +1256,12 @@ export default function Home() {
         {/* ── Discover tab ── */}
         {activeTab === "discover" && (
           <div>
-            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Discover</h2>
-                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Find roles</span>
+                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Discover</h2>
+                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Find roles</span>
               </div>
-              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Search directly from your best-fit role clusters.</p>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Search directly from your best-fit role clusters.</p>
             </div>
             <JobDiscovery
               clusterResult={clusterResult}
@@ -1268,12 +1273,12 @@ export default function Home() {
         {/* ── Prep tab ── */}
         {activeTab === "tailoring-brief" && (
           <div>
-            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">Prep</h2>
-                <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F] shrink-0">Application prep</span>
+                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Prep</h2>
+                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Application prep</span>
               </div>
-              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Full application brief, cover letter, outreach, and interview prep.</p>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Full application brief, cover letter, outreach, and interview prep.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">
@@ -1315,22 +1320,23 @@ export default function Home() {
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
           <div>
-            <div className="mb-10 pb-5 border-b-2 border-[#231812]">
+            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-instrument-serif text-[56px] font-normal leading-[0.95] tracking-[-0.02em] text-[#231812]">My Jobs</h2>
+                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">My Jobs</h2>
                 <div className="flex items-center gap-4 shrink-0">
-                  <span className="font-jetbrains-mono text-[11px] uppercase tracking-[0.12em] text-[#8A857F]">Pipeline</span>
+                  <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Pipeline</span>
                   {trackedJobs.length > 0 && (
                     <button
                       onClick={resetAndNavigateToJobFit}
-                      className="px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+                      className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                      style={{ height: 36 }}
                     >
                       Score a job →
                     </button>
                   )}
                 </div>
               </div>
-              <p className="font-instrument-serif italic text-[19px] text-[#4A3C34] mt-3 max-w-[540px]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
             </div>
             <JobTracker
               jobs={trackedJobs}
@@ -1367,11 +1373,12 @@ function EmptyState({
 }) {
   return (
     <div className="text-center py-20">
-      <p className="font-sans text-[16px] font-medium text-[#231812]">{message}</p>
-      <p className="font-sans text-[14px] text-[#8A857F] mt-2 max-w-xs mx-auto">{sub}</p>
+      <p className="font-sans text-[16px] font-medium text-[#1C2333]">{message}</p>
+      <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-2 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-6 px-4 py-2 bg-[#231812] text-[#FDF7EA] font-jetbrains-mono text-[11px] uppercase tracking-[0.1em] rounded-[2px] hover:bg-[#3D2A22] transition-colors"
+        className="mt-6 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+        style={{ height: 40 }}
       >
         {action} →
       </button>
@@ -1391,22 +1398,22 @@ function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
   }
 
   return (
-    <div className="bg-[#FDF7EA] p-4 border border-[rgba(26,26,26,0.10)]">
+    <div className="bg-white p-4 border border-[rgba(28,35,51,0.08)] rounded-[10px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
       {/* Angle label + char count */}
       <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8A857F]">
+        <span className="font-sans text-[11px] uppercase tracking-[0.06em] text-[rgba(28,35,51,0.45)]">
           {headline.angle}
         </span>
-        <span className="font-jetbrains-mono text-[10px] text-[#8A857F] tabular-nums">{headline.text.length} chars</span>
+        <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] tabular-nums">{headline.text.length} chars</span>
       </div>
       {/* Headline text */}
-      <p className="font-sans text-[15px] font-medium text-[#231812] leading-snug mb-1.5">{headline.text}</p>
+      <p className="font-sans text-[15px] font-medium text-[#1C2333] leading-snug mb-1.5">{headline.text}</p>
       {/* Best for */}
-      <p className="font-sans text-[13px] text-[#8A857F] leading-snug mb-3">{headline.best_for}</p>
+      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-snug mb-3">{headline.best_for}</p>
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className="flex items-center gap-1.5 font-jetbrains-mono text-[10px] uppercase tracking-[0.08em] text-[#8C3B1F] hover:text-[#231812] transition-colors"
+        className="flex items-center gap-1.5 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
       >
         {copied ? (
           <>

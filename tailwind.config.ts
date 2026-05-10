@@ -9,50 +9,31 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans:               ["var(--font-dm-sans)", "DM Sans", "system-ui", "sans-serif"],
-        inter:              ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-        "instrument-serif": ["var(--font-instrument-serif)", "Georgia", "serif"],
-        "jetbrains-mono":   ["var(--font-jetbrains-mono)", "monospace"],
-        mono:               ["var(--font-jetbrains-mono)", "monospace"],
+        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
-        // Manuscript design tokens
-        "ms-bg":      "#F6F0E4",
-        "ms-surface": "#FDF7EA",
-        "ms-ink":     "#231812",
-        "ms-ink2":    "#4A3C34",
-        "ms-mute":    "#8A857F",
-        "ms-accent":  "#8C3B1F",
-
-        // Status tokens (Manuscript)
+        dark:       '#1C2333',
+        'dark-alt': '#0F1923',
+        bg:         '#FFFFFF',
+        'bg-alt':   '#FAFAFA',
+        'bg-sunk':  '#F4F4F5',
+        fg:         '#1C2333',
         status: {
-          apply:   "#2D6A4F",
-          tailor:  "#A86B2D",
-          stretch: "#C4622D",
-          skip:    "#6B6660",
+          strong:   '#7A8B73',
+          moderate: '#9B8E73',
+          stretch:  '#8A7373',
         },
-
-        // Legacy aliases kept for backward compatibility
-        brand: {
-          bg:     "#F6F0E4",
-          text:   "#231812",
-          accent: "#8C3B1F",
-          g:      "#A86B2D",
-        },
-        "brand-cta":       "#231812",
-        "brand-cta-hover": "#3D2A22",
-        surface:           "#FDF7EA",
-        "border-default":  "rgba(26,26,26,0.12)",
-        "border-strong":   "rgba(26,26,26,0.24)",
-        "text-primary":    "#231812",
-        "text-secondary":  "#4A3C34",
-        "text-tertiary":   "#8A857F",
-        "text-body":       "#4A3C34",
-        "accent-slate":    "#8C3B1F",
-        "accent-slate-hover": "#6B2E18",
+      },
+      borderRadius: {
+        card:   '14px',
+        inset:  '10px',
+        button: '8px',
+        pill:   '9999px',
       },
       boxShadow: {
-        card: "none",
+        card: '0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)',
+        pop:  '0 1px 2px rgba(15,25,35,0.05), 0 24px 60px rgba(15,25,35,0.16)',
       },
     },
   },
