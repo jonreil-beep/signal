@@ -377,10 +377,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
       {/* Results */}
       {result && recStyle && (
-        <div className="space-y-10">
+        <div className="space-y-0">
 
           {isRescoring && (
-            <div className="flex items-center gap-3 px-4 py-3 border border-[rgba(28,35,51,0.08)] rounded-[10px] bg-[#FAFAFA]">
+            <div className="flex items-center gap-3 px-4 py-3 border border-[rgba(28,35,51,0.08)] rounded-[10px] bg-[#FAFAFA] mb-6">
               <svg className="animate-spin shrink-0 w-4 h-4 text-[rgba(28,35,51,0.45)]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
@@ -390,7 +390,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           )}
 
           {isProfileStale && !isRescoring && (
-            <div className="flex items-center justify-between gap-4 px-4 py-3 border-l-2 border-[#9B8E73]">
+            <div className="flex items-center justify-between gap-4 px-4 py-3 border-l-2 border-[#9B8E73] mb-6">
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score — results may not reflect your current resume.</p>
               <button
                 onClick={handleProfileRescore}
@@ -401,125 +401,135 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           )}
 
-          {/* Two-column layout: Score (320px) + Dimensions (1fr) */}
-          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-14">
+          {/* ── Hero card — sunk full-bleed background ── */}
+          <div
+            id="score-result"
+            className="result-scroll-target -mx-6 sm:-mx-10 lg:-mx-16 px-6 sm:px-10 lg:px-16"
+            style={{ background: "#F4F4F5", paddingTop: 32, paddingBottom: 40 }}
+          >
+            {/* White elevated card */}
+            <div style={{ background: "#ffffff", borderRadius: 14, padding: "40px 44px", boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-14">
 
-            {/* Left column — Score + recruiter concern */}
-            <div className="space-y-10">
-
-              {/* Hero score */}
-              <div id="score-result" className="result-scroll-target">
-                <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
-                  Overall Fit
-                </p>
-                {/* Giant score numeral */}
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span
-                    className="font-sans font-medium tabular-nums text-[#1C2333]"
-                    style={{ fontSize: 132, lineHeight: 0.9, letterSpacing: "-0.06em" }}
-                  >
-                    {displayScore}
-                  </span>
-                  <span
-                    className="font-sans font-medium tabular-nums"
-                    style={isRevealing ? {
-                      fontSize: 32,
-                      letterSpacing: "-0.03em",
-                      color: "rgba(28,35,51,0.35)",
-                      opacity: 0,
-                      animation: "fadeInUp 300ms ease-out forwards",
-                      animationDelay: "400ms",
-                    } : { fontSize: 32, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.35)" }}
-                  >
-                    /10
-                  </span>
-                </div>
-                {/* Recommendation badge */}
-                <span
-                  className="inline-block font-sans text-[12px] font-medium px-3 py-1 mb-4"
-                  style={isRevealing ? {
-                    color: recStyle.color,
-                    border: recStyle.border,
-                    background: recStyle.bg,
-                    borderRadius: "9999px",
-                    opacity: 0,
-                    animation: "slideInRight 300ms ease-out forwards",
-                    animationDelay: "600ms",
-                  } : { color: recStyle.color, border: recStyle.border, background: recStyle.bg, borderRadius: "9999px" }}
-                >
-                  {result.recommendation}
-                </span>
-                {/* Summary line */}
-                <p
-                  className="font-sans text-[16px] text-[rgba(28,35,51,0.65)] leading-snug"
-                  style={isRevealing ? {
-                    opacity: 0,
-                    animation: "fadeInUp 400ms ease-out forwards",
-                    animationDelay: "800ms",
-                  } : {}}
-                >
-                  {result.summary}
-                </p>
-                {/* Mismatch type badges */}
-                {result.mismatch_types?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {result.mismatch_types.map((t) => (
-                      <span key={t} className="font-sans text-[11px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ border: "1px solid rgba(28,35,51,0.10)", borderRadius: "9999px" }}>
-                        {MISMATCH_LABELS[t]}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Recruiter concern */}
-              {result.recruiter_concern && (
-                <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373", marginBottom: 8 }}>
-                    Recruiter Concern
-                  </p>
-                  <p className="font-sans text-[15px] text-[#1C2333] leading-relaxed">{result.recruiter_concern}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Right column — Dimensions */}
-            {(() => {
-              const dims = [
-                ["Functional Fit",  result.dimensions.functional_fit,  0],
-                ["Seniority Fit",   result.dimensions.seniority_fit,   1],
-                ["Industry Fit",    result.dimensions.industry_fit,    2],
-                ["Keyword Overlap", result.dimensions.keyword_overlap, 3],
-              ] as [string, typeof result.dimensions.functional_fit, number][];
-              const lowestScore = Math.min(...dims.map(([, d]) => d.score));
-              return (
+                {/* Left column — Score only */}
                 <div>
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 24 }}>
-                    What Drove This Score
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                    Overall Fit
                   </p>
-                  <div className="space-y-7">
-                    {dims.map(([label, dim, idx]) => {
-                      const isWeakest = dim.score === lowestScore;
-                      return (
-                        <div key={label}>
-                          <div className="flex items-baseline justify-between gap-2 mb-2">
-                            <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
-                            {isWeakest && (
-                              <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373" }}>
-                                Pulling score down
-                              </span>
-                            )}
-                          </div>
-                          <ScoreBar score={dim.score} animate={animateBars} delayMs={BAR_DELAYS[idx] ?? 0} />
-                          <p className="mt-2 font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{dim.reasoning}</p>
-                        </div>
-                      );
-                    })}
+                  {/* Giant score numeral */}
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span
+                      className="font-sans font-medium tabular-nums text-[#1C2333]"
+                      style={{ fontSize: 132, lineHeight: 0.9, letterSpacing: "-0.06em" }}
+                    >
+                      {displayScore}
+                    </span>
+                    <span
+                      className="font-sans font-medium tabular-nums"
+                      style={isRevealing ? {
+                        fontSize: 32,
+                        letterSpacing: "-0.03em",
+                        color: "rgba(28,35,51,0.35)",
+                        opacity: 0,
+                        animation: "fadeInUp 300ms ease-out forwards",
+                        animationDelay: "400ms",
+                      } : { fontSize: 32, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.35)" }}
+                    >
+                      /10
+                    </span>
                   </div>
+                  {/* Recommendation badge */}
+                  <span
+                    className="inline-block font-sans text-[12px] font-medium px-3 py-1 mb-4"
+                    style={isRevealing ? {
+                      color: recStyle.color,
+                      border: recStyle.border,
+                      background: recStyle.bg,
+                      borderRadius: "9999px",
+                      opacity: 0,
+                      animation: "slideInRight 300ms ease-out forwards",
+                      animationDelay: "600ms",
+                    } : { color: recStyle.color, border: recStyle.border, background: recStyle.bg, borderRadius: "9999px" }}
+                  >
+                    {result.recommendation}
+                  </span>
+                  {/* Summary line */}
+                  <p
+                    className="font-sans text-[16px] text-[rgba(28,35,51,0.65)] leading-snug"
+                    style={isRevealing ? {
+                      opacity: 0,
+                      animation: "fadeInUp 400ms ease-out forwards",
+                      animationDelay: "800ms",
+                    } : {}}
+                  >
+                    {result.summary}
+                  </p>
+                  {/* Mismatch type badges */}
+                  {result.mismatch_types?.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {result.mismatch_types.map((t) => (
+                        <span key={t} className="font-sans text-[11px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ border: "1px solid rgba(28,35,51,0.10)", borderRadius: "9999px" }}>
+                          {MISMATCH_LABELS[t]}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              );
-            })()}
+
+                {/* Right column — Dimensions + Recruiter concern */}
+                {(() => {
+                  const dims = [
+                    ["Functional Fit",  result.dimensions.functional_fit,  0],
+                    ["Seniority Fit",   result.dimensions.seniority_fit,   1],
+                    ["Industry Fit",    result.dimensions.industry_fit,    2],
+                    ["Keyword Overlap", result.dimensions.keyword_overlap, 3],
+                  ] as [string, typeof result.dimensions.functional_fit, number][];
+                  const lowestScore = Math.min(...dims.map(([, d]) => d.score));
+                  return (
+                    <div className="space-y-10">
+                      <div>
+                        <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 24 }}>
+                          What Drove This Score
+                        </p>
+                        <div className="space-y-7">
+                          {dims.map(([label, dim, idx]) => {
+                            const isWeakest = dim.score === lowestScore;
+                            return (
+                              <div key={label}>
+                                <div className="flex items-baseline justify-between gap-2 mb-2">
+                                  <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
+                                  {isWeakest && (
+                                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373" }}>
+                                      Pulling score down
+                                    </span>
+                                  )}
+                                </div>
+                                <ScoreBar score={dim.score} animate={animateBars} delayMs={BAR_DELAYS[idx] ?? 0} />
+                                <p className="mt-2 font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{dim.reasoning}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Recruiter concern — inside card, below dimensions */}
+                      {result.recruiter_concern && (
+                        <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
+                          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373", marginBottom: 8 }}>
+                            Recruiter Concern
+                          </p>
+                          <p className="font-sans text-[15px] text-[#1C2333] leading-relaxed">{result.recruiter_concern}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
           </div>
+
+          {/* ── Below-card section — white background ── */}
+          <div style={{ background: "#ffffff", paddingTop: 48 }}>
 
           {/* Full-width: What You Have + What's Missing */}
           <div className="grid grid-cols-1 lg:grid-cols-2 border-t border-[rgba(28,35,51,0.08)] pt-10" style={{ gap: 56 }}>
@@ -638,6 +648,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               Search for similar roles →
             </button>
           </div>
+
+          </div>{/* end below-card white section */}
         </div>
       )}
     </div>
