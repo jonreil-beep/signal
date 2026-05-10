@@ -405,7 +405,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           <div
             id="score-result"
             className="result-scroll-target -mx-6 sm:-mx-10 lg:-mx-16 px-6 sm:px-10 lg:px-16"
-            style={{ paddingTop: 32, paddingBottom: 40 }}
+            style={{ paddingTop: 20, paddingBottom: 26 }}
           >
             {/* White elevated card */}
             <div style={{ background: "#ffffff", borderRadius: 14, padding: "40px 44px", boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
@@ -529,10 +529,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           </div>
 
           {/* ── Below-card section — white background ── */}
-          <div style={{ background: "#ffffff", paddingTop: 48 }}>
+          <div style={{ background: "#ffffff", paddingTop: 32 }}>
 
           {/* Full-width: What You Have + What's Missing */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 border-t border-[rgba(28,35,51,0.08)] pt-10" style={{ gap: 56 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 pb-12" style={{ gap: 56 }}>
             {/* What You Have */}
             <div>
               <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
