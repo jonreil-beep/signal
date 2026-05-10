@@ -343,7 +343,7 @@ export default function AppShell({
          ═══════════════════════════════════════════════════════════════ */}
       <div
         className="flex-1 md:pl-16 lg:pl-60 overflow-x-hidden"
-        style={{ minHeight: "100vh", background: "#FAFAFA" }}
+        style={{ minHeight: "100vh", background: "#FFFFFF" }}
       >
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
