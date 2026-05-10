@@ -37,7 +37,14 @@ const MISMATCH_LABELS: Record<MismatchType, string> = {
 
 const BAR_DELAYS = [200, 950, 1700, 2450];
 
+function scoreToFill(score: number): string {
+  if (score >= 7) return "#7A8B73";
+  if (score >= 5) return "#9B8E73";
+  return "#8A7373";
+}
+
 function ScoreBar({ score, animate, delayMs }: { score: number; animate: boolean; delayMs: number }) {
+  const fill = scoreToFill(score);
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 relative" style={{ height: "6px", background: "rgba(28,35,51,0.08)", borderRadius: "3px" }}>
@@ -47,7 +54,7 @@ function ScoreBar({ score, animate, delayMs }: { score: number; animate: boolean
             top: 0,
             left: 0,
             height: "6px",
-            background: "#1C2333",
+            background: fill,
             borderRadius: "3px",
             width: animate ? `${score * 10}%` : "0%",
             transition: `width 600ms ease-out`,
@@ -394,56 +401,54 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           )}
 
-          {/* Two-column layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-10">
+          {/* Two-column layout: Score (320px) + Dimensions (1fr) */}
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-14">
 
-            {/* Left column */}
+            {/* Left column — Score + recruiter concern */}
             <div className="space-y-10">
 
               {/* Hero score */}
-              <div id="score-result" className="result-scroll-target" style={{ padding: "0" }}>
-                <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-4">
+              <div id="score-result" className="result-scroll-target">
+                <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                   Overall Fit
                 </p>
                 {/* Giant score numeral */}
-                <div className="flex items-baseline gap-2 mb-3">
+                <div className="flex items-baseline gap-2 mb-4">
                   <span
                     className="font-sans font-medium tabular-nums text-[#1C2333]"
-                    style={{ fontSize: "120px", lineHeight: 1, letterSpacing: "-0.05em" }}
+                    style={{ fontSize: 132, lineHeight: 0.9, letterSpacing: "-0.06em" }}
                   >
                     {displayScore}
                   </span>
                   <span
-                    className="font-sans font-medium text-[40px] text-[rgba(28,35,51,0.28)]"
+                    className="font-sans font-medium tabular-nums"
                     style={isRevealing ? {
+                      fontSize: 32,
                       letterSpacing: "-0.03em",
+                      color: "rgba(28,35,51,0.35)",
                       opacity: 0,
                       animation: "fadeInUp 300ms ease-out forwards",
                       animationDelay: "400ms",
-                    } : { letterSpacing: "-0.03em" }}
+                    } : { fontSize: 32, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.35)" }}
                   >
                     /10
                   </span>
                 </div>
                 {/* Recommendation badge */}
-                {(() => {
-                  return (
-                    <span
-                      className="inline-block font-sans text-[12px] font-medium px-3 py-1 rounded-pill mb-3"
-                      style={isRevealing ? {
-                        color: recStyle.color,
-                        border: recStyle.border,
-                        background: recStyle.bg,
-                        borderRadius: "9999px",
-                        opacity: 0,
-                        animation: "slideInRight 300ms ease-out forwards",
-                        animationDelay: "600ms",
-                      } : { color: recStyle.color, border: recStyle.border, background: recStyle.bg, borderRadius: "9999px" }}
-                    >
-                      {result.recommendation}
-                    </span>
-                  );
-                })()}
+                <span
+                  className="inline-block font-sans text-[12px] font-medium px-3 py-1 mb-4"
+                  style={isRevealing ? {
+                    color: recStyle.color,
+                    border: recStyle.border,
+                    background: recStyle.bg,
+                    borderRadius: "9999px",
+                    opacity: 0,
+                    animation: "slideInRight 300ms ease-out forwards",
+                    animationDelay: "600ms",
+                  } : { color: recStyle.color, border: recStyle.border, background: recStyle.bg, borderRadius: "9999px" }}
+                >
+                  {result.recommendation}
+                </span>
                 {/* Summary line */}
                 <p
                   className="font-sans text-[16px] text-[rgba(28,35,51,0.65)] leading-snug"
@@ -469,162 +474,166 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
               {/* Recruiter concern */}
               {result.recruiter_concern && (
-                <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: "16px" }}>
-                  <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2">
-                    Recruiter Concern to Address
+                <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373", marginBottom: 8 }}>
+                    Recruiter Concern
                   </p>
                   <p className="font-sans text-[15px] text-[#1C2333] leading-relaxed">{result.recruiter_concern}</p>
                 </div>
               )}
-
-              {/* Dimensions */}
-              {(() => {
-                const dims = [
-                  ["Functional Fit",  result.dimensions.functional_fit,  0],
-                  ["Seniority Fit",   result.dimensions.seniority_fit,   1],
-                  ["Industry Fit",    result.dimensions.industry_fit,    2],
-                  ["Keyword Overlap", result.dimensions.keyword_overlap, 3],
-                ] as [string, typeof result.dimensions.functional_fit, number][];
-                const lowestScore = Math.min(...dims.map(([, d]) => d.score));
-                return (
-                  <div className="border-t border-[rgba(28,35,51,0.08)] pt-8">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-6">
-                      What Drove This Score
-                    </p>
-                    <div className="space-y-7">
-                      {dims.map(([label, dim, idx]) => {
-                        const isWeakest = dim.score === lowestScore;
-                        return (
-                          <div key={label}>
-                            <div className="flex items-baseline justify-between gap-2 mb-2">
-                              <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
-                              {isWeakest && (
-                                <span className="font-sans text-[11px] text-[#8A7373]">
-                                  Pulling score down
-                                </span>
-                              )}
-                            </div>
-                            <ScoreBar score={dim.score} animate={animateBars} delayMs={BAR_DELAYS[idx] ?? 0} />
-                            <p className="mt-2 font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{dim.reasoning}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
             </div>
 
-            {/* Right column — What you have / Missing */}
-            <div className="space-y-8">
-              <div className="border-t border-[rgba(28,35,51,0.08)] pt-8">
-                <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-4">
-                  What You Have
-                </p>
-                <ul className="space-y-3">
-                  {result.what_you_have.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                      <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#7A8B73]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="border-t border-[rgba(28,35,51,0.08)] pt-8">
-                <div className="flex items-baseline justify-between gap-2 mb-4">
-                  <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
-                    What&apos;s Missing
+            {/* Right column — Dimensions */}
+            {(() => {
+              const dims = [
+                ["Functional Fit",  result.dimensions.functional_fit,  0],
+                ["Seniority Fit",   result.dimensions.seniority_fit,   1],
+                ["Industry Fit",    result.dimensions.industry_fit,    2],
+                ["Keyword Overlap", result.dimensions.keyword_overlap, 3],
+              ] as [string, typeof result.dimensions.functional_fit, number][];
+              const lowestScore = Math.min(...dims.map(([, d]) => d.score));
+              return (
+                <div>
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 24 }}>
+                    What Drove This Score
                   </p>
-                  <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)]">Tap × to remove</p>
-                </div>
-
-                {(() => {
-                  const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
-                  return activeItems.length === 0 && dismissedItems.length === 0 ? (
-                    <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] italic">All items dismissed.</p>
-                  ) : (
-                    <ul className="space-y-3">
-                      {activeItems.map((item, i) => (
-                        <li key={i} className="flex items-start justify-between gap-2 group">
-                          <div className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                            <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#8A7373]" />
-                            {item}
+                  <div className="space-y-7">
+                    {dims.map(([label, dim, idx]) => {
+                      const isWeakest = dim.score === lowestScore;
+                      return (
+                        <div key={label}>
+                          <div className="flex items-baseline justify-between gap-2 mb-2">
+                            <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
+                            {isWeakest && (
+                              <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373" }}>
+                                Pulling score down
+                              </span>
+                            )}
                           </div>
-                          <button
-                            onClick={() => handleDismissItem(item)}
-                            title="Dismiss — I actually have this"
-                            className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center text-[rgba(28,35,51,0.35)] hover:text-[#8A7373] transition-colors"
-                          >
-                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                              <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                            </svg>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                })()}
-
-                {dismissedItems.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-1.5">
-                    {dismissedItems.map(item => (
-                      <div key={item} className="flex items-center justify-between gap-3">
-                        <span className="font-sans text-[13px] text-[rgba(28,35,51,0.35)] line-through leading-snug">{item}</span>
-                        <button
-                          onClick={() => handleUndoItem(item)}
-                          className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
-                        >
-                          Undo
-                        </button>
-                      </div>
-                    ))}
+                          <ScoreBar score={dim.score} animate={animateBars} delayMs={BAR_DELAYS[idx] ?? 0} />
+                          <p className="mt-2 font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{dim.reasoning}</p>
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
+              );
+            })()}
+          </div>
 
-                {dismissedItems.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-2">
-                    {isRescoring ? (
-                      <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] text-center py-1">Re-scoring…</p>
-                    ) : (
-                      <button
-                        onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
-                        className="w-full px-4 border border-[rgba(28,35,51,0.12)] text-[#1C2333] font-sans text-[13px] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
-                        style={{ height: 40 }}
-                      >
-                        Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
-                      </button>
-                    )}
-                    {hasPrepData && !isRescoring && (
-                      <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-center">Re-scoring will clear your existing prep guide.</p>
-                    )}
-                    {rescoreError && !isRescoring && (
-                      <p className="font-sans text-[11px] text-[#8A7373] text-center">{rescoreError}</p>
-                    )}
-                  </div>
-                )}
+          {/* Full-width: What You Have + What's Missing */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 border-t border-[rgba(28,35,51,0.08)] pt-10" style={{ gap: 56 }}>
+            {/* What You Have */}
+            <div>
+              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                What You Have
+              </p>
+              <ul className="space-y-3">
+                {result.what_you_have.map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                    <span className="shrink-0" style={{ width: 6, height: 6, background: "#7A8B73", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* What's Missing */}
+            <div>
+              <div className="flex items-baseline justify-between gap-2 mb-4">
+                <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                  What&apos;s Missing
+                </p>
+                <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)]">Tap × to remove</p>
               </div>
+
+              {(() => {
+                const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
+                return activeItems.length === 0 && dismissedItems.length === 0 ? (
+                  <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] italic">All items dismissed.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {activeItems.map((item, i) => (
+                      <li key={i} className="flex items-start justify-between gap-2 group">
+                        <div className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                          <span className="shrink-0" style={{ width: 6, height: 6, background: "#8A7373", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
+                          {item}
+                        </div>
+                        <button
+                          onClick={() => handleDismissItem(item)}
+                          title="Dismiss — I actually have this"
+                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center text-[rgba(28,35,51,0.35)] hover:text-[#8A7373] transition-colors"
+                        >
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                          </svg>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              })()}
+
+              {dismissedItems.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-1.5">
+                  {dismissedItems.map(item => (
+                    <div key={item} className="flex items-center justify-between gap-3">
+                      <span className="font-sans text-[13px] text-[rgba(28,35,51,0.35)] line-through leading-snug">{item}</span>
+                      <button
+                        onClick={() => handleUndoItem(item)}
+                        className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+                      >
+                        Undo
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {dismissedItems.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-2">
+                  {isRescoring ? (
+                    <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] text-center py-1">Re-scoring…</p>
+                  ) : (
+                    <button
+                      onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
+                      className="w-full px-4 border border-[rgba(28,35,51,0.12)] text-[#1C2333] font-sans text-[13px] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
+                      style={{ height: 40 }}
+                    >
+                      Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
+                    </button>
+                  )}
+                  {hasPrepData && !isRescoring && (
+                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-center">Re-scoring will clear your existing prep guide.</p>
+                  )}
+                  {rescoreError && !isRescoring && (
+                    <p className="font-sans text-[11px] text-[#8A7373] text-center">{rescoreError}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Bottom nav CTAs */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-[rgba(28,35,51,0.08)]">
+          <div className="flex items-center justify-between gap-4 pt-6 border-t border-[rgba(28,35,51,0.08)]">
             <button
               onClick={handleReset}
-              className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+              style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              className="hover:text-[#1C2333] transition-colors"
             >
               ← Score another job
             </button>
             <button
               onClick={onGoToTailoringBrief}
-              className="shrink-0 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
-              style={{ height: 40 }}
+              className="shrink-0 font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
+              style={{ height: 44, padding: "0 20px", borderRadius: 8, fontSize: 14, border: "none", cursor: "pointer" }}
             >
-              Go to Prep →
+              View Application Brief →
             </button>
             <button
               onClick={onSearchSimilarRoles}
-              className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+              style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              className="hover:text-[#1C2333] transition-colors"
             >
               Search for similar roles →
             </button>

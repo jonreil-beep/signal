@@ -1285,7 +1285,7 @@ export default function TailoringBrief({
                         <ul className="space-y-2">
                           {cr.what_we_re_reading.map((item, i) => (
                             <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">
-                              <span className="mt-2 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)] shrink-0" />
+                              <span className="mt-2 shrink-0" style={{ width: 4, height: 4, background: "rgba(28,35,51,0.28)", borderRadius: 1, display: "inline-block" }} />
                               {item}
                             </li>
                           ))}
@@ -1299,7 +1299,7 @@ export default function TailoringBrief({
                         <ul className="space-y-1.5">
                           {cr.culture_signals.map((s, i) => (
                             <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                              <span className="mt-1.5 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)] shrink-0" />
+                              <span className="mt-1.5 shrink-0" style={{ width: 4, height: 4, background: "rgba(28,35,51,0.28)", borderRadius: 1, display: "inline-block" }} />
                               {s}
                             </li>
                           ))}

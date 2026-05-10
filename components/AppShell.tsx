@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, User, Compass, Target, BookOpen, Menu, X, Plus } from "lucide-react";
-import SignalWordmark from "./SignalWordmark";
+import { Menu, X } from "lucide-react";
 import type { TabId } from "@/types";
 
-const NAV_ITEMS: { id: TabId; label: string; icon: typeof Briefcase }[] = [
-  { id: "my-jobs",         label: "My Jobs",   icon: Briefcase },
-  { id: "profile",         label: "Profile",   icon: User },
-  { id: "discover",        label: "Discover",  icon: Compass },
-  { id: "job-fit",         label: "Job Fit",   icon: Target },
-  { id: "tailoring-brief", label: "Prep",      icon: BookOpen },
+const NAV_ITEMS: { id: TabId; label: string; num: string }[] = [
+  { id: "my-jobs",         label: "My Jobs",   num: "01" },
+  { id: "profile",         label: "Profile",   num: "02" },
+  { id: "discover",        label: "Discover",  num: "03" },
+  { id: "job-fit",         label: "Job Fit",   num: "04" },
+  { id: "tailoring-brief", label: "Prep",      num: "05" },
 ];
 
 interface AppShellProps {
@@ -23,6 +22,30 @@ interface AppShellProps {
   user: { email?: string; user_metadata?: Record<string, unknown> } | null;
   guestBanner?: React.ReactNode;
   children: React.ReactNode;
+}
+
+/** 18×18 dark square brandmark with white "C" */
+function Brandmark() {
+  return (
+    <div style={{
+      width: 18, height: 18,
+      background: "#1C2333",
+      borderRadius: 4,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexShrink: 0,
+    }}>
+      <span style={{
+        color: "#fff",
+        fontSize: 10,
+        fontWeight: 600,
+        fontFamily: "var(--font-geist-sans)",
+        lineHeight: 1,
+        letterSpacing: "-0.01em",
+      }}>C</span>
+    </div>
+  );
 }
 
 export default function AppShell({
@@ -48,33 +71,47 @@ export default function AppShell({
     setMobileMenuOpen(false);
   }
 
-  function NavItem({ item, showLabel = true }: { item: typeof NAV_ITEMS[number]; showLabel?: boolean }) {
+  function NavItem({ item }: { item: typeof NAV_ITEMS[number] }) {
     const isActive = activeTab === item.id;
-    const Icon = item.icon;
     return (
       <button
-        key={item.id}
         onClick={() => handleNav(item.id)}
-        title={!showLabel ? item.label : undefined}
-        className={`w-full flex items-center text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors ${
-          showLabel ? "gap-0 px-3 py-[9px] rounded-[7px]" : "justify-center px-0 py-2.5"
-        } ${
+        className={`w-full flex items-center text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors px-3 rounded-[7px] ${
           isActive
-            ? "bg-[rgba(28,35,51,0.06)] text-[#1C2333]"
+            ? "bg-[#F4F4F5] text-[#1C2333]"
             : "text-[rgba(28,35,51,0.65)] hover:text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)]"
         }`}
-        style={showLabel ? {} : { width: "48px", margin: "0 auto" }}
+        style={{ gap: 10, paddingTop: 9, paddingBottom: 9 }}
       >
-        <Icon
-          size={16}
-          strokeWidth={1.5}
-          className="hidden"
-        />
-        {showLabel && (
-          <span className="flex-1 font-sans text-[15px]">{item.label}</span>
-        )}
-        {showLabel && item.id === "my-jobs" && jobCount > 0 && (
-          <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: "10.5px", color: "rgba(28,35,51,0.45)" }}>
+        {/* Number */}
+        <span style={{
+          fontFamily: "var(--font-geist-mono)",
+          fontSize: 11,
+          fontWeight: 400,
+          width: 16,
+          flexShrink: 0,
+          color: isActive ? "rgba(28,35,51,0.45)" : "rgba(28,35,51,0.28)",
+          lineHeight: 1,
+        }}>
+          {item.num}
+        </span>
+        {/* Label */}
+        <span style={{
+          fontFamily: "var(--font-geist-sans)",
+          fontSize: 14,
+          fontWeight: 400,
+          flex: 1,
+          lineHeight: 1,
+        }}>
+          {item.label}
+        </span>
+        {/* Job count badge */}
+        {item.id === "my-jobs" && jobCount > 0 && (
+          <span style={{
+            fontFamily: "var(--font-geist-mono)",
+            fontSize: "10.5px",
+            color: "rgba(28,35,51,0.45)",
+          }}>
             {jobCount}
           </span>
         )}
@@ -82,39 +119,47 @@ export default function AppShell({
     );
   }
 
-  function ScoreJobCTA({ compact = false }: { compact?: boolean }) {
+  function SidebarBottom() {
     return (
-      <button
-        onClick={handleScoreJob}
-        className={`w-full font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 ${
-          compact ? "flex items-center justify-center p-2.5" : ""
-        }`}
-        style={compact ? {} : { height: "44px" }}
-      >
-        {compact ? <Plus size={16} strokeWidth={1.5} /> : "Score a job →"}
-      </button>
-    );
-  }
-
-  function UserInfo() {
-    if (!user) return null;
-    const displayName = (user.user_metadata?.full_name as string) || "";
-    return (
-      <div className="px-4 pb-6">
-        {displayName && (
-          <p className="font-sans text-[13px] text-[#1C2333] truncate mb-0.5">{displayName}</p>
-        )}
-        <p style={{ fontFamily: "var(--font-geist-mono)", fontSize: "11px", color: "rgba(28,35,51,0.65)" }} className="truncate mb-2">
-          {user.email ?? ""}
-        </p>
-        <div className="border-t border-[rgba(28,35,51,0.08)] mb-2" />
+      <div style={{ padding: "0 24px 24px" }}>
+        {/* Score a job CTA */}
         <button
-          onClick={onSignOut}
-          style={{ fontFamily: "var(--font-geist-mono)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(28,35,51,0.45)" }}
-          className="hover:text-[#1C2333] transition-colors focus:outline-none"
+          onClick={handleScoreJob}
+          className="w-full font-sans font-medium text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2"
+          style={{ height: 44, fontSize: 13, letterSpacing: "-0.005em" }}
         >
-          Sign out
+          Score a job →
         </button>
+        {/* Email + Sign out */}
+        {user && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 2 }}>
+            <p className="truncate" style={{
+              fontFamily: "var(--font-geist-sans)",
+              fontSize: 12,
+              color: "rgba(28,35,51,0.45)",
+              lineHeight: 1.4,
+            }}>
+              {user.email ?? ""}
+            </p>
+            <button
+              onClick={onSignOut}
+              style={{
+                fontFamily: "var(--font-geist-sans)",
+                fontSize: 12,
+                color: "rgba(28,35,51,0.45)",
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                textAlign: "left",
+                lineHeight: 1.4,
+              }}
+              className="hover:text-[#1C2333] transition-colors focus:outline-none"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -123,68 +168,97 @@ export default function AppShell({
     <div className="min-h-screen flex bg-white">
 
       {/* ═══════════════════════════════════════════════════════════════
-          DESKTOP SIDEBAR (lg: 1024px+) — 240px, white, fixed
+          DESKTOP SIDEBAR (lg: 1024px+) — 240px, white
          ═══════════════════════════════════════════════════════════════ */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
-        {/* Wordmark */}
-        <div style={{ padding: "28px 24px 32px 24px" }}>
+      <aside
+        className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 bg-white"
+        style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+      >
+        {/* Brandmark + Wordmark */}
+        <div style={{ padding: "28px 24px 32px" }}>
           <button
             onClick={onLogoClick}
-            className="text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
+            className="flex items-center focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
+            style={{ gap: 8 }}
           >
-            <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "15px", letterSpacing: "-0.025em", color: "#1C2333" }}>
-              <SignalWordmark />
+            <Brandmark />
+            <span style={{
+              fontFamily: "var(--font-geist-sans)",
+              fontWeight: 500,
+              fontSize: 15,
+              letterSpacing: "-0.01em",
+              color: "#1C2333",
+              lineHeight: 1,
+            }}>
+              Claro
             </span>
           </button>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 px-3 space-y-0.5">
+        <nav className="flex-1 px-3" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {NAV_ITEMS.map((item) => (
-            <NavItem key={item.id} item={item} showLabel />
+            <NavItem key={item.id} item={item} />
           ))}
         </nav>
 
-        {/* Divider */}
-        <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] my-4" />
-
-        {/* Score a job CTA */}
-        <div className="px-4 pb-4">
-          <ScoreJobCTA />
-        </div>
-
-        {/* Divider above user */}
-        <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] mb-4" />
-
-        {/* User info */}
-        <UserInfo />
+        {/* Bottom: CTA + user */}
+        <SidebarBottom />
       </aside>
 
       {/* ═══════════════════════════════════════════════════════════════
-          TABLET SIDEBAR (md: 768px–1024px) — 72px, icons only
+          TABLET SIDEBAR (md: 768px–1024px) — 64px, numbers only
          ═══════════════════════════════════════════════════════════════ */}
-      <aside className="hidden md:flex lg:hidden md:flex-col md:w-[72px] md:fixed md:inset-y-0 z-30 items-center bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
-        {/* C lettermark */}
-        <div className="pt-5 pb-4">
+      <aside
+        className="hidden md:flex lg:hidden md:flex-col md:w-16 md:fixed md:inset-y-0 z-30 items-center bg-white"
+        style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+      >
+        {/* Brandmark only */}
+        <div style={{ paddingTop: 28, paddingBottom: 32 }}>
           <button
             onClick={onLogoClick}
-            style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "18px", letterSpacing: "-0.025em", color: "#1C2333" }}
             className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
           >
-            C
+            <Brandmark />
           </button>
         </div>
 
-        {/* Nav — icons only */}
-        <nav className="flex-1 space-y-1 flex flex-col items-center w-full px-3">
-          {NAV_ITEMS.map((item) => (
-            <NavItem key={item.id} item={item} showLabel={false} />
-          ))}
+        {/* Nav — numbers only */}
+        <nav className="flex-1 flex flex-col items-center w-full px-2" style={{ gap: 2 }}>
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNav(item.id)}
+                title={item.label}
+                className={`w-full flex items-center justify-center py-2.5 rounded-[7px] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors ${
+                  isActive ? "bg-[#F4F4F5]" : "hover:bg-[rgba(28,35,51,0.04)]"
+                }`}
+              >
+                <span style={{
+                  fontFamily: "var(--font-geist-mono)",
+                  fontSize: 11,
+                  fontWeight: 400,
+                  color: isActive ? "rgba(28,35,51,0.45)" : "rgba(28,35,51,0.28)",
+                }}>
+                  {item.num}
+                </span>
+              </button>
+            );
+          })}
         </nav>
 
         {/* Score a job — compact */}
-        <div className="px-3 pb-6 pt-2 w-full">
-          <ScoreJobCTA compact />
+        <div className="px-2 pb-6 pt-2 w-full">
+          <button
+            onClick={handleScoreJob}
+            className="w-full flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none"
+            style={{ height: 36 }}
+            title="Score a job"
+          >
+            →
+          </button>
         </div>
       </aside>
 
@@ -194,10 +268,19 @@ export default function AppShell({
       <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-white border-b border-[rgba(28,35,51,0.08)]">
         <button
           onClick={onLogoClick}
-          style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "17px", letterSpacing: "-0.025em", color: "#1C2333" }}
-          className="focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
+          className="flex items-center focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
+          style={{ gap: 8 }}
         >
-          C
+          <Brandmark />
+          <span style={{
+            fontFamily: "var(--font-geist-sans)",
+            fontWeight: 500,
+            fontSize: 15,
+            letterSpacing: "-0.01em",
+            color: "#1C2333",
+          }}>
+            Claro
+          </span>
         </button>
         <button
           onClick={() => setMobileMenuOpen(true)}
@@ -218,11 +301,23 @@ export default function AppShell({
             style={{ background: "rgba(28,35,51,0.3)" }}
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-white" style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}>
-            <div style={{ padding: "28px 24px 32px 24px" }} className="flex items-center justify-between">
-              <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 600, fontSize: "15px", letterSpacing: "-0.025em", color: "#1C2333" }}>
-                <SignalWordmark />
-              </span>
+          <div
+            className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-white"
+            style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+          >
+            <div className="flex items-center justify-between" style={{ padding: "28px 24px 32px" }}>
+              <div className="flex items-center" style={{ gap: 8 }}>
+                <Brandmark />
+                <span style={{
+                  fontFamily: "var(--font-geist-sans)",
+                  fontWeight: 500,
+                  fontSize: 15,
+                  letterSpacing: "-0.01em",
+                  color: "#1C2333",
+                }}>
+                  Claro
+                </span>
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-1.5 rounded hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
@@ -232,21 +327,13 @@ export default function AppShell({
               </button>
             </div>
 
-            <nav className="flex-1 px-3 space-y-0.5">
+            <nav className="flex-1 px-3" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {NAV_ITEMS.map((item) => (
-                <NavItem key={item.id} item={item} showLabel />
+                <NavItem key={item.id} item={item} />
               ))}
             </nav>
 
-            <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] my-4" />
-
-            <div className="px-4 pb-4">
-              <ScoreJobCTA />
-            </div>
-
-            <div className="mx-4 border-t border-[rgba(28,35,51,0.08)] mb-4" />
-
-            <UserInfo />
+            <SidebarBottom />
           </div>
         </>
       )}
@@ -254,7 +341,10 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MAIN CONTENT
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex-1 md:pl-[72px] lg:pl-60 overflow-x-hidden bg-[#FAFAFA]" style={{ minHeight: "100vh" }}>
+      <div
+        className="flex-1 md:pl-16 lg:pl-60 overflow-x-hidden"
+        style={{ minHeight: "100vh", background: "#FAFAFA" }}
+      >
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
 
@@ -262,7 +352,7 @@ export default function AppShell({
         {guestBanner}
 
         {/* Content */}
-        <main className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-[72px] py-14">
+        <main className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-[64px] py-14">
           {children}
         </main>
       </div>

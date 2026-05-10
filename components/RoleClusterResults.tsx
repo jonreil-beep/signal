@@ -58,14 +58,14 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px]" style={{ gap: 64 }}>
 
       {/* Left column — Role clusters */}
       <div>
-        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
+        <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
           Best-Fit Role Clusters
         </p>
-        <div className="space-y-0">
+        <div>
           {result.role_clusters.map((cluster, i) => {
             const rec = cluster.recommendation
               ? RECOMMENDATION_STYLES[cluster.recommendation]
@@ -74,8 +74,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
             return (
               <div
                 key={i}
-                className="border-b border-[rgba(28,35,51,0.08)] py-7 card-entrance"
-                style={{ animationDelay: `${Math.min(i, 5) * 50}ms` }}
+                className="border-t border-[rgba(28,35,51,0.08)] card-entrance"
+                style={{ padding: "28px 0", animationDelay: `${Math.min(i, 5) * 50}ms` }}
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3 mb-3">
@@ -100,15 +100,6 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                     >
                       {cluster.confidence}
                     </span>
-                    {resumeText && onClusterUpdate && (
-                      <button
-                        onClick={() => handleRegenerate(i, cluster.name)}
-                        disabled={regeneratingIndex === i}
-                        className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors disabled:opacity-40 whitespace-nowrap"
-                      >
-                        {regeneratingIndex === i ? "Regenerating…" : "Regenerate →"}
-                      </button>
-                    )}
                   </div>
                 </div>
 
@@ -120,10 +111,10 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 )}
 
                 {cluster.signals.length > 0 && (
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-1.5 mb-3">
                     {cluster.signals.slice(0, 3).map((signal, j) => (
                       <li key={j} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                        <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-[rgba(28,35,51,0.35)]" />
+                        <span className="shrink-0" style={{ width: 5, height: 5, background: "rgba(28,35,51,0.28)", borderRadius: 1, marginTop: 9, flexShrink: 0, display: "inline-block" }} />
                         {signal}
                       </li>
                     ))}
@@ -131,7 +122,20 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                 )}
 
                 {regenErrors[i] && (
-                  <p className="mt-2 font-sans text-xs text-[#8A7373]">{regenErrors[i]}</p>
+                  <p className="mb-2 font-sans text-xs text-[#8A7373]">{regenErrors[i]}</p>
+                )}
+
+                {resumeText && onClusterUpdate && (
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => handleRegenerate(i, cluster.name)}
+                      disabled={regeneratingIndex === i}
+                      style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                      className="hover:text-[#1C2333] transition-colors disabled:opacity-40"
+                    >
+                      {regeneratingIndex === i ? "Regenerating…" : "Regenerate ↓"}
+                    </button>
+                  </div>
                 )}
               </div>
             );
@@ -140,26 +144,26 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       </div>
 
       {/* Right column — Strengths + Risks + optional extra */}
-      <div className="space-y-0">
-        <div className="py-7 card-entrance" style={{ animationDelay: "50ms" }}>
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
+      <div>
+        <div className="card-entrance" style={{ paddingBottom: 28, animationDelay: "50ms" }}>
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
             Core Strengths
           </p>
-          <ul className="space-y-2">
+          <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {result.core_strengths.map((s, i) => (
               <li key={i} className="flex items-start gap-2.5 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">
-                <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[#7A8B73]" />
+                <span className="shrink-0" style={{ width: 5, height: 5, background: "rgba(28,35,51,0.28)", borderRadius: 1, marginTop: 9, flexShrink: 0, display: "inline-block" }} />
                 {s}
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="border-t border-[rgba(28,35,51,0.08)] py-7 card-entrance" style={{ animationDelay: "100ms" }}>
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
+        <div className="border-t border-[rgba(28,35,51,0.08)] card-entrance" style={{ paddingTop: 28, paddingBottom: 28, animationDelay: "100ms" }}>
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
             Positioning Risks
           </p>
-          <ul className="space-y-3.5">
+          <ul style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {result.positioning_risks.map((r, i) => {
               const isLegacy = typeof r === "string";
               const riskText = isLegacy ? (r as unknown as string) : r.risk;
@@ -167,7 +171,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
               const isOpen = expandedRisk === i;
               return (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full bg-[rgba(28,35,51,0.35)]" />
+                  <span className="shrink-0" style={{ width: 5, height: 5, background: "rgba(28,35,51,0.28)", borderRadius: 1, marginTop: 9, flexShrink: 0, display: "inline-block" }} />
                   <div>
                     <p className="font-sans text-[14px] font-medium text-[#1C2333] leading-relaxed">{riskText}</p>
                     {actionText && (
@@ -179,7 +183,8 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                         )}
                         <button
                           onClick={() => toggleRisk(i)}
-                          className="mt-1 font-sans text-[11px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+                          style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 6 }}
+                          className="hover:text-[#1C2333] transition-colors"
                         >
                           {isOpen ? "Hide ↑" : "How to address →"}
                         </button>

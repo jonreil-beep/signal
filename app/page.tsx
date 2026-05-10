@@ -887,12 +887,25 @@ export default function Home() {
         {/* ── Profile tab ── */}
         {activeTab === "profile" && (
           <div>
-            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Profile</h2>
-                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Your background</span>
+            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                    02 / Your Background
+                  </p>
+                  <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
+                </div>
+                <div className="flex items-center gap-3 shrink-0 mt-1">
+                  <button
+                    onClick={resetAndNavigateToJobFit}
+                    className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
+                    style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
+                  >
+                    Score a job →
+                  </button>
+                </div>
               </div>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Map your strongest role clusters and positioning risks.</p>
             </div>
 
             {/* No profile yet: onboarding header + uploader */}
@@ -910,52 +923,59 @@ export default function Home() {
 
             {/* Profile exists — summary row (always visible when profileText set) */}
             {profileText && (
-              <div className="mb-6">
-                {/* ── Summary bar ── */}
-                <div className="flex items-center justify-between gap-3 py-3 px-4 bg-white border border-[rgba(28,35,51,0.10)] rounded-[10px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
-                  <div className="flex items-center gap-2 flex-wrap min-w-0">
-                    <span className="font-sans text-[13px] font-medium text-[#1C2333]">Your profile</span>
-                    <span className="text-[rgba(28,35,51,0.45)]">·</span>
-                    <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">
-                      {resumeSource === "file" && resumeFileName ? resumeFileName : "Resume saved"}
+              <div className="mb-8">
+                {/* ── Resume status bar ── */}
+                <div
+                  className="flex items-center justify-between gap-4"
+                  style={{
+                    borderTop: "1px solid rgba(28,35,51,0.08)",
+                    borderBottom: "1px solid rgba(28,35,51,0.08)",
+                    padding: "14px 0",
+                  }}
+                >
+                  <div className="flex items-center gap-2.5 flex-wrap min-w-0">
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7A8B73", flexShrink: 0, display: "inline-block" }} />
+                    <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                      Resume saved
                     </span>
-                    {writingSample.trim() && (
-                      <>
-                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
-                        <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Writing sample added</span>
-                      </>
-                    )}
-                    {pivotTarget.trim() && (
-                      <>
-                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
-                        <span className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Pivot target set</span>
-                      </>
-                    )}
                     {clusterResult && (
                       <>
-                        <span className="text-[rgba(28,35,51,0.45)]">·</span>
-                        <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Analyzed</span>
+                        <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
+                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                          Analyzed
+                        </span>
+                      </>
+                    )}
+                    {resumeSource === "file" && resumeFileName && (
+                      <>
+                        <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
+                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                          {resumeFileName}
+                        </span>
                       </>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center shrink-0" style={{ gap: 16 }}>
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        className="font-sans text-[12px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity"
+                        style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        className="hover:text-[#1C2333] transition-colors"
                       >
                         Analyze →
                       </button>
                     )}
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
-                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+                      style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "view" ? "Hide" : "View"}
                     </button>
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
-                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+                      style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "update" ? "Cancel" : "Update"}
                     </button>
@@ -1088,13 +1108,22 @@ export default function Home() {
               <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline ── */}
-                <div id="profile-result" className="result-scroll-target border-t border-[rgba(28,35,51,0.10)] pt-6">
-                  <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-3 uppercase tracking-[0.08em]">
-                    Your Recommended LinkedIn Headline
+                <div id="profile-result" className="result-scroll-target border-t border-[rgba(28,35,51,0.08)] pt-8">
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                    Recommended LinkedIn Headline
                   </p>
-                  <p className="font-sans font-medium text-[24px] text-[#1C2333] leading-[1.25] tracking-[-0.02em]">
+                  <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 20 }}>
                     {clusterResult.recommended_headline}
                   </p>
+                  {!headlineResult && !isGeneratingHeadlines && (
+                    <button
+                      onClick={handleGenerateHeadlines}
+                      className="font-sans font-medium text-[#1C2333] border border-[rgba(28,35,51,0.14)] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
+                      style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, cursor: "pointer", background: "white" }}
+                    >
+                      Try 4 angles →
+                    </button>
+                  )}
                 </div>
 
                 {/* ── 58/42 grid: left = clusters, right = strengths + risks + headline generator ── */}
@@ -1110,56 +1139,39 @@ export default function Home() {
                     });
                   }}
                   rightColumnExtra={
-                    /* ── LinkedIn Headline Generator — 3rd card in right column ── */
-                    <div className="bg-white border border-[rgba(28,35,51,0.08)] overflow-hidden rounded-[14px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
-                      <div className="px-5 py-4 border-b border-[rgba(28,35,51,0.08)]">
-                        <div className="flex items-center justify-between gap-4">
-                          <div>
-                            <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">LinkedIn Headlines</p>
-                            <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
-                              {headlineResult
-                                ? "Pick the angle that fits where you're headed."
-                                : "4 positioning angles calibrated to your career story."}
-                            </p>
-                          </div>
-                          {!isGeneratingHeadlines && (
-                            <button
-                              onClick={handleGenerateHeadlines}
-                              className="shrink-0 px-3 font-sans font-medium text-[12px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
-                              style={{ height: 32 }}
-                            >
-                              {headlineResult ? "Regenerate" : "Try 4 angles →"}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <div className="px-5 py-4">
+                    /* ── LinkedIn Headline Angles — inset card in right column ── */
+                    (isGeneratingHeadlines || headlineResult || headlineError) ? (
+                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-7">
+                        <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 14 }}>
+                          LinkedIn Headline Angles
+                        </p>
                         {isGeneratingHeadlines && (
                           <LoadingState message="Writing headline angles from your career story…" />
                         )}
                         {headlineError && !isGeneratingHeadlines && (
-                          <div className="p-4 border-l-2 border-[#8A7373]">
+                          <div className="border-l-2 border-[#8A7373] pl-4">
                             <p className="font-sans text-[13px] text-[#1C2333]">{headlineError}</p>
-                            <button
-                              onClick={handleGenerateHeadlines}
-                              className="mt-1 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors"
-                            >
-                              Try again
-                            </button>
+                            <button onClick={handleGenerateHeadlines} className="mt-1 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors">Try again</button>
                           </div>
-                        )}
-                        {!headlineResult && !isGeneratingHeadlines && !headlineError && (
-                          <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] italic">Hit &ldquo;Try 4 angles →&rdquo; to see more headline options.</p>
                         )}
                         {headlineResult && !isGeneratingHeadlines && (
-                          <div className="space-y-3">
-                            {headlineResult.headlines.map((h, i) => (
-                              <HeadlineCard key={i} headline={h} />
-                            ))}
-                          </div>
+                          <>
+                            <div className="space-y-3 mb-4">
+                              {headlineResult.headlines.map((h, i) => (
+                                <HeadlineCard key={i} headline={h} />
+                              ))}
+                            </div>
+                            <button
+                              onClick={handleGenerateHeadlines}
+                              style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                              className="hover:text-[#1C2333] transition-colors"
+                            >
+                              Regenerate ↓
+                            </button>
+                          </>
                         )}
                       </div>
-                    </div>
+                    ) : null
                   }
                 />
               </div>
@@ -1200,12 +1212,16 @@ export default function Home() {
               />
             ) : (
               <div>
-                <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Job Fit</h2>
-                    <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Score a role</span>
+                <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                        04 / Score Breakdown
+                      </p>
+                      <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Job Fit</h1>
+                      <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
+                    </div>
                   </div>
-                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-8">
@@ -1256,12 +1272,12 @@ export default function Home() {
         {/* ── Discover tab ── */}
         {activeTab === "discover" && (
           <div>
-            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Discover</h2>
-                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Find roles</span>
-              </div>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Search directly from your best-fit role clusters.</p>
+            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                03 / Discover
+              </p>
+              <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Discover</h1>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Search directly from your best-fit role clusters.</p>
             </div>
             <JobDiscovery
               clusterResult={clusterResult}
@@ -1273,12 +1289,12 @@ export default function Home() {
         {/* ── Prep tab ── */}
         {activeTab === "tailoring-brief" && (
           <div>
-            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">Prep</h2>
-                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">Application prep</span>
-              </div>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Full application brief, cover letter, outreach, and interview prep.</p>
+            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                05 / Prep
+              </p>
+              <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Prep</h1>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Full application brief, cover letter, outreach, and interview prep.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="mb-6">
@@ -1320,23 +1336,27 @@ export default function Home() {
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
           <div>
-            <div className="mb-10 pb-5 border-b border-[rgba(28,35,51,0.12)]">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-sans font-medium text-[40px] leading-[1.0] tracking-[-0.03em] text-[#1C2333]">My Jobs</h2>
-                <div className="flex items-center gap-4 shrink-0">
-                  <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Pipeline</span>
-                  {trackedJobs.length > 0 && (
+            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                    01 / Pipeline
+                  </p>
+                  <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
+                </div>
+                {trackedJobs.length > 0 && (
+                  <div className="shrink-0 mt-1">
                     <button
                       onClick={resetAndNavigateToJobFit}
-                      className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
-                      style={{ height: 36 }}
+                      className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
+                      style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
                     >
                       Score a job →
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-2 max-w-[540px]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
             </div>
             <JobTracker
               jobs={trackedJobs}

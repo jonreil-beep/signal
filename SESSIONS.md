@@ -14,7 +14,7 @@ All context is loaded. Just describe what you want to build or fix.
 
 ---
 
-## Current State (as of March 18, 2026)
+## Current State (as of May 10, 2026)
 
 ### What's built and deployed
 - Next.js 14 app deployed on Vercel (signal-zeta-lime.vercel.app)
@@ -102,6 +102,17 @@ All context is loaded. Just describe what you want to build or fix.
 - State persistence across navigation
 - How It Works page rewrite
 - Guest mode
+
+### Session: Layout & Visual Fidelity Pass ✓
+- AppShell: 18×18 brandmark square, numbered nav (no icons), 44px CTA, email/sign out below, sidebar shadow
+- My Jobs: Full table layout (ROLE/FIT/RECOMMENDATION/STAGE/ACTIONS columns), filter pills, "Score another job" dashed card
+- Brief slide-over: min(560px, 92vw), box-shadow only, slideInRight animation, scrim
+- Profile tab: Eyebrow/h1/subtitle header pattern, flat mono resume status bar, open LinkedIn headline (38px), "Try 4 angles" secondary button, rightColumnExtra as open angles section
+- All tab headers: Consistent eyebrow + 36px h1 + subtitle + border-b pattern (My Jobs, Profile, Job Fit, Discover, Prep)
+- RoleClusterResults: 1fr/320px grid, 64px gap, border-top clusters, 5px square bullets, Geist Mono "REGENERATE ↓" right-aligned
+- JobFitScorer: 132px score numeral, 32px /10, 320px/1fr grid, status-colored score bars, square 6px bullets, mono bottom row CTAs
+- ApplicationBrief: 76px score, 28px 36px header/footer padding, 14px radius strength cards with "COPY FRAMING →", two equal footer buttons
+- Cleanup: removed gradients, warm hex values, DM font refs, rounded-full on non-pill elements replaced with 5px square dots
 
 ---
 

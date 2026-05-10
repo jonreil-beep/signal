@@ -44,7 +44,7 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 /* ── Section label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-3">
+    <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
       {children}
     </p>
   );
@@ -102,12 +102,12 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
     return (
       <div className="h-full flex flex-col">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[rgba(28,35,51,0.08)]">
+        <div className="flex items-start justify-between gap-3 border-b border-[rgba(28,35,51,0.08)]" style={{ padding: "28px 36px 24px" }}>
           <div className="min-w-0">
-            <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
+            <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
               Application Brief
             </p>
-            <h2 className="font-sans text-[17px] font-semibold text-[#1C2333] leading-snug truncate">
+            <h2 className="font-sans font-medium text-[#1C2333] leading-snug truncate" style={{ fontSize: 24, letterSpacing: "-0.018em" }}>
               {jobFitResult.job_title || job.label}
             </h2>
           </div>
@@ -163,40 +163,49 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
     <div className="h-full flex flex-col">
 
       {/* ── Panel header ── */}
-      <div className="flex items-start justify-between gap-3 px-6 pt-6 pb-5 border-b border-[rgba(28,35,51,0.08)]">
+      <div className="flex items-start justify-between gap-3 border-b border-[rgba(28,35,51,0.08)]" style={{ padding: "28px 36px 24px" }}>
         <div className="min-w-0">
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
             Application Brief
           </p>
-          <h2 className="font-sans text-[17px] font-semibold text-[#1C2333] leading-snug">
+          <h2 className="font-sans font-medium text-[#1C2333] leading-snug" style={{ fontSize: 24, letterSpacing: "-0.018em", marginBottom: 8 }}>
             {jobFitResult.job_title || job.label}
           </h2>
-          {/* Status badge */}
-          <span
-            className="inline-block mt-2 font-sans text-[11px] px-2.5 py-0.5 rounded-pill"
-            style={{ background: statusStyle.bg, color: statusStyle.text, borderRadius: "9999px" }}
-          >
-            {applicationStatus}
-          </span>
+          {/* Tag + status pills */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span
+              className="inline-block font-sans text-[11px] px-2.5 py-0.5"
+              style={{ background: statusStyle.bg, color: statusStyle.text, borderRadius: "9999px" }}
+            >
+              {applicationStatus}
+            </span>
+          </div>
         </div>
         <CloseButton onClick={onClose} />
       </div>
 
       {/* ── Scrollable content ── */}
       <div
-        className="flex-1 overflow-y-auto px-6 py-6 space-y-7"
-        style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(28,35,51,0.12) transparent" }}
+        className="flex-1 overflow-y-auto space-y-7"
+        style={{ padding: "24px 36px", scrollbarWidth: "thin", scrollbarColor: "rgba(28,35,51,0.12) transparent" }}
       >
 
         {/* ── 1. Score + recommendation ── */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <span
-            className="font-sans font-medium tabular-nums text-[#1C2333]"
-            style={{ fontSize: "48px", lineHeight: 1, letterSpacing: "-0.05em" }}
-          >
-            {jobFitResult.overall_fit}
-            <span className="font-sans text-[16px] font-normal text-[rgba(28,35,51,0.28)] ml-1">/10</span>
-          </span>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-baseline gap-2">
+            <span
+              className="font-sans font-medium tabular-nums text-[#1C2333]"
+              style={{ fontSize: 76, lineHeight: 0.9, letterSpacing: "-0.05em" }}
+            >
+              {jobFitResult.overall_fit}
+            </span>
+            <span
+              className="font-sans font-medium tabular-nums"
+              style={{ fontSize: 24, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.35)" }}
+            >
+              /10
+            </span>
+          </div>
           <span
             className="font-sans text-[12px] font-medium px-3 py-1"
             style={{ color: recStyle.color, border: recStyle.border, background: recStyle.bg, borderRadius: "9999px" }}
@@ -206,8 +215,8 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
         </div>
 
         {/* ── 2. Recruiter concern ── */}
-        <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: "16px" }}>
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2">
+        <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "#8A7373", marginBottom: 8 }}>
             Recruiter Concern to Address
           </p>
           <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
@@ -222,17 +231,28 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
             {lead_strengths.map((s, i) => (
               <div
                 key={i}
-                className="border border-[rgba(28,35,51,0.08)] bg-white p-4 rounded-[12px]"
-                style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}
+                className="bg-white"
+                style={{ borderRadius: 14, padding: "24px 28px", boxShadow: "0 1px 3px rgba(15,25,35,0.06), 0 8px 28px rgba(15,25,35,0.07)", border: "1px solid rgba(28,35,51,0.06)" }}
               >
-                <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{s.strength}</p>
-                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{s.framing_language}</p>
-                <span
-                  className="inline-block mt-2 font-sans text-[11px] px-2 py-0.5"
-                  style={{ background: "rgba(28,35,51,0.05)", color: "rgba(28,35,51,0.45)", borderRadius: "9999px" }}
-                >
-                  {s.match_type}
-                </span>
+                <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1.5">{s.strength}</p>
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug mb-3">{s.framing_language}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <span
+                    className="inline-block font-sans text-[11px] px-2.5 py-0.5"
+                    style={{ background: "rgba(28,35,51,0.05)", color: "rgba(28,35,51,0.45)", borderRadius: "9999px" }}
+                  >
+                    {s.match_type}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      try { await navigator.clipboard.writeText(`${s.strength} — ${s.framing_language}`); } catch { /* no-op */ }
+                    }}
+                    style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                    className="hover:text-[#1C2333] transition-colors"
+                  >
+                    Copy framing →
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -277,28 +297,28 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
       </div>
 
       {/* ── Footer actions ── */}
-      <div className="px-6 py-4 border-t border-[rgba(28,35,51,0.08)] flex items-center gap-3 flex-wrap">
+      <div className="border-t border-[rgba(28,35,51,0.08)] flex items-center gap-3" style={{ padding: "18px 36px 22px" }}>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity min-w-[100px] justify-center"
-          style={{ height: 36 }}
+          className="flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-[#1C2333] border border-[rgba(28,35,51,0.14)] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
+          style={{ height: 44, background: "white" }}
         >
           {copied ? "Copied ✓" : "Copy brief"}
         </button>
         <button
           onClick={handleEmailSend}
           disabled={emailState === "sending"}
-          className={`flex items-center gap-1.5 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity ${
+          className={`flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity ${
             emailState === "sending"
               ? "opacity-60 cursor-not-allowed"
               : "hover:opacity-90"
           }`}
-          style={{ height: 36 }}
+          style={{ height: 44 }}
         >
           {emailState === "sending" && "Sending…"}
           {emailState === "sent"    && `Sent to ${sentToEmail} ✓`}
           {emailState === "error"   && "Couldn't send — try copying"}
-          {emailState === "idle"    && "Email me this →"}
+          {emailState === "idle"    && "Email this →"}
         </button>
       </div>
     </div>
