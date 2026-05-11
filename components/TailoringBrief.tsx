@@ -755,10 +755,10 @@ export default function TailoringBrief({
           id="prep-result"
           className="result-scroll-target honest-take-entrance border-b border-[rgba(28,35,51,0.08)] px-8 py-7"
         >
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2.5">
+          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
             Honest Take
           </p>
-          <p className="font-sans text-[18px] font-medium text-[#1C2333] leading-snug" style={{ letterSpacing: "-0.02em" }}>{result.honest_take}</p>
+          <p className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 38, lineHeight: 1.2, letterSpacing: "-0.025em" }}>{result.honest_take}</p>
         </div>
       )}
 
@@ -842,7 +842,7 @@ export default function TailoringBrief({
             <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
               {/* Left column — Brief sections */}
-              <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] overflow-hidden divide-y divide-[rgba(28,35,51,0.08)]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <div className="bg-white rounded-[10px] overflow-hidden divide-y divide-[rgba(28,35,51,0.08)]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
 
                 {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
