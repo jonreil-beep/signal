@@ -24,10 +24,10 @@ const APPLICATION_STATUSES: ApplicationStatus[] = [
 ];
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; dotColor: string; bg: string; border: string }> = {
-  "Apply Now":                   { color: "#7A8B73", dotColor: "#7A8B73", bg: "rgba(122,139,115,0.08)",  border: "1px solid rgba(122,139,115,0.25)" },
-  "Apply with Tailoring":        { color: "#9B8E73", dotColor: "#9B8E73", bg: "rgba(155,142,115,0.10)", border: "1px solid rgba(155,142,115,0.25)" },
-  "Stretch — Proceed Carefully": { color: "#8A7373", dotColor: "#8A7373", bg: "rgba(138,115,115,0.10)", border: "1px solid rgba(138,115,115,0.25)" },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", dotColor: "rgba(28,35,51,0.28)", bg: "rgba(28,35,51,0.04)", border: "1px solid rgba(28,35,51,0.10)" },
+  "Apply Now":                   { color: "#7A8B73", dotColor: "#7A8B73", bg: "rgba(122,139,115,0.08)",  border: "none" },
+  "Apply with Tailoring":        { color: "#9B8E73", dotColor: "#9B8E73", bg: "rgba(155,142,115,0.10)", border: "none" },
+  "Stretch — Proceed Carefully": { color: "#8A7373", dotColor: "#8A7373", bg: "rgba(138,115,115,0.10)", border: "none" },
+  "Skip":                        { color: "rgba(28,35,51,0.45)", dotColor: "rgba(28,35,51,0.28)", bg: "rgba(28,35,51,0.04)", border: "none" },
 };
 
 function formatDateRelative(date: Date): string {
@@ -111,11 +111,11 @@ function TableRow({
     >
       {/* ── Main table row ── */}
       <div
-        className="group grid items-start border-b border-[rgba(28,35,51,0.08)] hover:bg-[#FAFAFA] transition-colors"
+        className="group grid items-start border-b border-[rgba(28,35,51,0.08)]"
         style={{
           gridTemplateColumns: "3fr 1fr 2fr 2fr 2fr",
           gap: "0 16px",
-          padding: "20px 0",
+          padding: "25px 0",
         }}
       >
         {/* ROLE */}
@@ -274,7 +274,7 @@ function TableRow({
               style={{
                 height: 36,
                 borderRadius: 7,
-                border: "1px solid rgba(28,35,51,0.10)",
+                border: "none",
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: 14,
                 fontWeight: 400,
@@ -544,9 +544,9 @@ export default function JobTracker({
                   height: 32,
                   padding: "0 14px",
                   borderRadius: 9999,
-                  background: isActive ? "#1C2333" : "#fff",
+                  background: isActive ? "#1C2333" : "#F0F0F0",
                   color: isActive ? "#fff" : "rgba(28,35,51,0.65)",
-                  border: isActive ? "none" : "1px solid rgba(28,35,51,0.14)",
+                  border: "none",
                   cursor: "pointer",
                   fontSize: 13,
                 }}
@@ -663,12 +663,15 @@ export default function JobTracker({
 
       {/* ── Score another job card ── */}
       {!isFiltered && filtered.length > 0 && (
-        <div
-          className="flex items-center justify-between"
+        <button
+          onClick={onScoreNewJob}
+          className="w-full flex items-center justify-between text-left group transition-colors hover:bg-[rgba(28,35,51,0.03)]"
           style={{
             border: "1px dashed rgba(28,35,51,0.14)",
             borderRadius: 14,
             padding: "24px 32px",
+            cursor: "pointer",
+            background: "transparent",
           }}
         >
           <div>
@@ -679,14 +682,13 @@ export default function JobTracker({
               Paste a JD or LinkedIn URL — get a 1–10 fit and a tailored brief in 30 seconds.
             </p>
           </div>
-          <button
-            onClick={onScoreNewJob}
-            className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity whitespace-nowrap shrink-0"
-            style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, border: "none", cursor: "pointer" }}
+          <span
+            className="font-sans font-medium text-white bg-[#1C2333] group-hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 flex items-center justify-center"
+            style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13 }}
           >
             Add a job →
-          </button>
-        </div>
+          </span>
+        </button>
       )}
     </div>
 
