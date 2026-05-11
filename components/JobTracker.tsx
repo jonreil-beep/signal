@@ -113,7 +113,7 @@ function TableRow({
       <div
         className="group grid items-start border-b border-[rgba(28,35,51,0.08)] hover:bg-[#FAFAFA] transition-colors"
         style={{
-          gridTemplateColumns: "1fr 64px 160px 160px 180px",
+          gridTemplateColumns: "3fr 1fr 2fr 2fr 2fr",
           gap: "0 16px",
           padding: "20px 0",
         }}
@@ -274,12 +274,12 @@ function TableRow({
               style={{
                 height: 36,
                 borderRadius: 7,
-                border: "1px solid rgba(28,35,51,0.14)",
+                border: "1px solid rgba(28,35,51,0.10)",
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: 14,
                 fontWeight: 400,
                 color: "#1C2333",
-                background: "#fff",
+                background: "#F4F4F5",
                 transition: "border-color 150ms",
               }}
             >
@@ -307,7 +307,7 @@ function TableRow({
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2 pt-0.5">
+        <div className="flex items-center justify-end gap-2 pt-0.5">
           {isScoreStale ? (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
@@ -319,19 +319,20 @@ function TableRow({
             <>
               <button
                 onClick={() => onOpenBrief(job)}
+                className="font-sans hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap"
                 style={{
                   fontFamily: "var(--font-geist-sans)",
                   fontSize: 13,
                   fontWeight: 400,
                   color: "rgba(28,35,51,0.65)",
-                  background: "none",
-                  border: "none",
+                  background: "white",
+                  border: "1px solid rgba(28,35,51,0.14)",
+                  borderRadius: 7,
                   cursor: "pointer",
-                  padding: 0,
+                  height: 36,
+                  padding: "0 12px",
                   whiteSpace: "nowrap",
-                  textDecoration: "none",
                 }}
-                className="hover:underline transition-colors"
               >
                 View brief
               </button>
@@ -608,7 +609,7 @@ export default function JobTracker({
           <div
             className="grid"
             style={{
-              gridTemplateColumns: "1fr 64px 160px 160px 180px",
+              gridTemplateColumns: "3fr 1fr 2fr 2fr 2fr",
               gap: "0 16px",
               paddingBottom: 12,
               borderBottom: "1px solid rgba(28,35,51,0.08)",
@@ -624,6 +625,7 @@ export default function JobTracker({
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   color: "rgba(28,35,51,0.45)",
+                  textAlign: col === "Actions" ? "right" : "left",
                 }}
               >
                 {col}
