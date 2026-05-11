@@ -1220,9 +1220,11 @@ export default function Home() {
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                        04 / Score Breakdown
-                      </p>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                        <button onClick={() => setActiveTab("my-jobs")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">My Jobs</button>
+                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
+                        <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)" }}>Job Fit</span>
+                      </div>
                       <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Job Fit</h1>
                       <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
                     </div>
@@ -1295,9 +1297,13 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                05 / Prep
-              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+                <button onClick={() => setActiveTab("my-jobs")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">My Jobs</button>
+                <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
+                <button onClick={() => setActiveTab("job-fit")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">Job Fit</button>
+                <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
+                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)" }}>Prep</span>
+              </div>
               <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Prep</h1>
               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Full application brief, cover letter, outreach, and interview prep.</p>
             </div>

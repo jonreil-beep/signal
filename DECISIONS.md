@@ -40,6 +40,12 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ---
 
+### Breadcrumb navigation on Job Fit and Prep
+**Decision:** Replaced the static eyebrow label on Job Fit and Prep with a breadcrumb navigation component. My Jobs / Job Fit on the Job Fit screen. My Jobs / Job Fit / Prep on the Prep screen.
+**Reasoning:** With Job Fit and Prep removed from the sidebar, users needed a way to understand where they are in the job workflow and navigate between stages without returning to the sidebar. The breadcrumb makes the job-based hierarchy explicit and allows forward and backward movement within a job.
+
+---
+
 ### Job Fit and Prep removed from sidebar nav
 **Decision:** Job Fit and Prep are not top-level destinations — they are views within a job. Removed from sidebar. Users access Job Fit by clicking a job in My Jobs, and Prep via the Job Fit bottom action row. Sidebar now has three items: My Jobs, Profile, Discover.
 **Reasoning:** The five-item nav implied these were independent tools. They're not — they're always accessed in the context of a specific job. Removing them from the nav corrects the mental model and simplifies the sidebar.
