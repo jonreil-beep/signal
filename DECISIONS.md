@@ -40,6 +40,12 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ---
 
+### Job Fit and Prep removed from sidebar nav
+**Decision:** Job Fit and Prep are not top-level destinations — they are views within a job. Removed from sidebar. Users access Job Fit by clicking a job in My Jobs, and Prep via the Job Fit bottom action row. Sidebar now has three items: My Jobs, Profile, Discover.
+**Reasoning:** The five-item nav implied these were independent tools. They're not — they're always accessed in the context of a specific job. Removing them from the nav corrects the mental model and simplifies the sidebar.
+
+---
+
 ## UX/UI Decisions
 
 ### Dark atmospheric background for landing + welcome screens

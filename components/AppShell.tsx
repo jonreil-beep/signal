@@ -5,11 +5,9 @@ import { Menu, X } from "lucide-react";
 import type { TabId } from "@/types";
 
 const NAV_ITEMS: { id: TabId; label: string; num: string }[] = [
-  { id: "my-jobs",         label: "My Jobs",   num: "01" },
-  { id: "profile",         label: "Profile",   num: "02" },
-  { id: "discover",        label: "Discover",  num: "03" },
-  { id: "job-fit",         label: "Job Fit",   num: "04" },
-  { id: "tailoring-brief", label: "Prep",      num: "05" },
+  { id: "my-jobs",  label: "My Jobs",  num: "01" },
+  { id: "profile",  label: "Profile",  num: "02" },
+  { id: "discover", label: "Discover", num: "03" },
 ];
 
 interface AppShellProps {
