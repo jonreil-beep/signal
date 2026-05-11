@@ -1220,6 +1220,9 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                    01 / Pipeline
+                  </p>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                     <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
                     <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
@@ -1285,6 +1288,9 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
+                01 / Pipeline
+              </p>
               <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                 <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
                 <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
