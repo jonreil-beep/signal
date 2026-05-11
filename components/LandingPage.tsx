@@ -518,7 +518,12 @@ export default function LandingPage({
 
       {/* NAV */}
       <nav className="cl-nav">
-        <a href="/" className="cl-nav-wordmark" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Claro</a>
+        <a href="/" className="cl-nav-wordmark" style={{display:'flex', alignItems:'center', gap:8}} onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <div style={{width:18, height:18, background:'#fff', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+            <span style={{color:'#1C2333', fontSize:10, fontWeight:600, lineHeight:1, letterSpacing:'-0.01em'}}>C</span>
+          </div>
+          Claro
+        </a>
         <ul className="cl-nav-links">
           <li><a href="#how-it-works">How it works</a></li>
           <li><a href="#features">Features</a></li>

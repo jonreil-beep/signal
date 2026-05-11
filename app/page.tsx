@@ -779,7 +779,12 @@ export default function Home() {
     if (user) {
       return (
         <div style={{minHeight:'100vh', background:'#1C2333', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif)"}}>
-          <a href="/" style={{fontFamily:"var(--font-geist-sans)", fontWeight:600, fontSize:17, letterSpacing:'-0.02em', color:'#fff', textDecoration:'none', marginBottom:48}}>Claro</a>
+          <a href="/" style={{display:'flex', alignItems:'center', gap:8, textDecoration:'none', marginBottom:48}}>
+            <div style={{width:18, height:18, background:'#fff', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
+              <span style={{color:'#1C2333', fontSize:10, fontWeight:600, fontFamily:"var(--font-geist-sans)", lineHeight:1, letterSpacing:'-0.01em'}}>C</span>
+            </div>
+            <span style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:17, letterSpacing:'-0.02em', color:'#fff'}}>Claro</span>
+          </a>
           <h1 style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:'clamp(40px, 5vw, 64px)', lineHeight:1, letterSpacing:'-0.03em', color:'#fff', marginBottom:16, textAlign:'center'}}>
             Welcome back.
           </h1>
