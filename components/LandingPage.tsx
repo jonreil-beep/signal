@@ -186,6 +186,8 @@ html { scroll-behavior: smooth; }
   background: none;
   border: none;
   padding: 0;
+  margin-top: 20px;
+  display: block;
   transition: color 150ms;
 }
 .cl-guest-link:hover { color: rgba(255,255,255,0.65); }
