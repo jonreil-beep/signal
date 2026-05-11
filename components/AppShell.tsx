@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { TabId } from "@/types";
 
-const NAV_ITEMS: { id: TabId; label: string; num: string }[] = [
-  { id: "my-jobs",  label: "My Jobs",  num: "01" },
-  { id: "profile",  label: "Profile",  num: "02" },
-  { id: "discover", label: "Discover", num: "03" },
+const NAV_ITEMS: { id: TabId; label: string }[] = [
+  { id: "my-jobs",  label: "My Jobs"  },
+  { id: "profile",  label: "Profile"  },
+  { id: "discover", label: "Discover" },
 ];
 
 interface AppShellProps {
@@ -20,6 +20,26 @@ interface AppShellProps {
   user: { email?: string; user_metadata?: Record<string, unknown> } | null;
   guestBanner?: React.ReactNode;
   children: React.ReactNode;
+}
+
+/** Single-color nav icons — stroke uses currentColor */
+function NavIcon({ id }: { id: TabId }) {
+  if (id === "my-jobs") return (
+    <svg width="14" height="11" viewBox="0 0 14 11" fill="none" aria-hidden="true">
+      <path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+  if (id === "profile") return (
+    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden="true">
+      <path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M9 9l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
 }
 
 /** 18×18 dark square brandmark with white "C" */
@@ -81,17 +101,17 @@ export default function AppShell({
         }`}
         style={{ gap: 10, paddingTop: 9, paddingBottom: 9 }}
       >
-        {/* Number */}
+        {/* Icon */}
         <span style={{
-          fontFamily: "var(--font-geist-mono)",
-          fontSize: 11,
-          fontWeight: 400,
           width: 16,
+          height: 16,
           flexShrink: 0,
-          color: isActive ? "rgba(28,35,51,0.45)" : "rgba(28,35,51,0.28)",
-          lineHeight: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: isActive ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.32)",
         }}>
-          {item.num}
+          <NavIcon id={item.id} />
         </span>
         {/* Label */}
         <span style={{
@@ -142,8 +162,10 @@ export default function AppShell({
             <button
               onClick={onSignOut}
               style={{
-                fontFamily: "var(--font-geist-sans)",
-                fontSize: 12,
+                fontFamily: "var(--font-geist-mono)",
+                fontSize: 11,
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
                 color: "rgba(28,35,51,0.45)",
                 background: "none",
                 border: "none",
@@ -234,13 +256,8 @@ export default function AppShell({
                   isActive ? "bg-[#F4F4F5]" : "hover:bg-[rgba(28,35,51,0.04)]"
                 }`}
               >
-                <span style={{
-                  fontFamily: "var(--font-geist-mono)",
-                  fontSize: 11,
-                  fontWeight: 400,
-                  color: isActive ? "rgba(28,35,51,0.45)" : "rgba(28,35,51,0.28)",
-                }}>
-                  {item.num}
+                <span style={{ color: isActive ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.32)" }}>
+                  <NavIcon id={item.id} />
                 </span>
               </button>
             );
