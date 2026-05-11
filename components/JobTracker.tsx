@@ -608,9 +608,8 @@ export default function JobTracker({
       {!isFiltered && filtered.length > 0 && (
         <button
           onClick={onScoreNewJob}
-          className="w-full flex items-center justify-between text-left group transition-colors hover:bg-[rgba(28,35,51,0.03)]"
+          className="w-full flex items-center justify-between text-left group transition-colors border-2 border-dashed border-[rgba(28,35,51,0.14)] hover:border-[rgba(28,35,51,0.28)] hover:bg-[rgba(28,35,51,0.02)]"
           style={{
-            border: "1px dashed rgba(28,35,51,0.14)",
             borderRadius: 14,
             padding: "24px 32px",
             cursor: "pointer",
