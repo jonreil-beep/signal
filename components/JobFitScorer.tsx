@@ -634,13 +634,6 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               ← Score another job
             </button>
             <button
-              onClick={onGoToTailoringBrief}
-              className="shrink-0 font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
-              style={{ height: 44, padding: "0 20px", borderRadius: 8, fontSize: 14, border: "none", cursor: "pointer" }}
-            >
-              View Application Brief →
-            </button>
-            <button
               onClick={onSearchSimilarRoles}
               style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
               className="hover:text-[#1C2333] transition-colors"

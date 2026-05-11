@@ -98,3 +98,12 @@
 .fade-up { animation: fadeUp 320ms var(--easing) both; }
 
 .result-scroll-target { scroll-margin-top: 24px; }
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}

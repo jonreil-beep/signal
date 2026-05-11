@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { TrackedJob, ApplicationStatus } from "@/types";
-import ApplicationBrief from "@/components/ApplicationBrief";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
@@ -64,7 +63,6 @@ interface TableRowProps {
   staggerIndex: number;
   profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
-  onOpenBrief: (job: TrackedJob) => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onStatusChange: (id: string, status: ApplicationStatus) => void;
@@ -74,7 +72,7 @@ interface TableRowProps {
 
 function TableRow({
   job, staggerIndex, profileUpdatedAt,
-  onSelectJob, onOpenBrief, onRemoveJob, onRenameJob,
+  onSelectJob, onRemoveJob, onRenameJob,
   onStatusChange, onNotesChange, onDeadlineChange,
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
@@ -135,64 +133,61 @@ function TableRow({
               style={{ letterSpacing: "-0.012em" }}
             />
           ) : (
-            <div className="flex items-start gap-1.5 min-w-0">
-              <button
-                onClick={() => onSelectJob(job, "job-fit")}
-                className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left truncate"
-                style={{ fontSize: 17, letterSpacing: "-0.012em" }}
-              >
-                {job.label}
-              </button>
-              <button
-                onClick={() => setEditingLabel(true)}
-                className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[rgba(28,35,51,0.35)] hover:text-[rgba(28,35,51,0.65)] mt-0.5"
-                aria-label="Rename job"
-              >
-                <svg style={{ width: "0.7rem", height: "0.7rem" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 2.828L11.828 15.828a2 2 0 01-1.414.586H9v-2a2 2 0 01.586-1.414z"
-                  />
-                </svg>
-              </button>
-            </div>
+            <button
+              onClick={() => onSelectJob(job, "job-fit")}
+              className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left truncate"
+              style={{ fontSize: 17, letterSpacing: "-0.012em" }}
+            >
+              {job.label}
+            </button>
           )}
           {/* Meta row */}
           <div className="flex items-center gap-1.5 mt-1.5">
             <button
               onClick={() => toggleExpanded("jd")}
-              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: showJD ? "#1C2333" : "rgba(28,35,51,0.45)" }}
-              className="hover:text-[#1C2333] transition-colors"
+              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: showJD ? "var(--fg)" : "var(--fg-3)" }}
+              className="hover:underline hover:text-[var(--fg)] transition-colors"
             >
               {showJD ? "Hide JD" : "View JD"}
             </button>
-            <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
+            <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
             {confirmingRemove ? (
               <>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}>Remove?</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}>Remove?</span>
                 <button
                   onClick={() => onRemoveJob(job.id)}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#8A7373" }}
-                  className="hover:text-[#1C2333] transition-colors"
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "#8A7373" }}
+                  className="hover:underline transition-colors"
                 >
                   Yes
                 </button>
-                <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
+                <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
                 <button
                   onClick={() => setConfirmingRemove(false)}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}
-                  className="hover:text-[#1C2333] transition-colors"
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
+                  className="hover:underline transition-colors"
                 >
                   Cancel
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => setConfirmingRemove(true)}
-                style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)" }}
-                className="hover:text-[#8A7373] transition-colors"
-              >
-                Remove
-              </button>
+              <>
+                <button
+                  onClick={() => setEditingLabel(true)}
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
+                  className="hover:underline hover:text-[var(--fg)] transition-colors"
+                >
+                  Rename
+                </button>
+                <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
+                <button
+                  onClick={() => setConfirmingRemove(true)}
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
+                  className="hover:underline transition-colors"
+                >
+                  Remove
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -293,34 +288,37 @@ function TableRow({
           ) : (
             <>
               <button
-                onClick={() => onOpenBrief(job)}
-                className="font-sans hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap"
+                onClick={() => onSelectJob(job, "job-fit")}
+                className="hover:opacity-90 transition-opacity whitespace-nowrap"
                 style={{
                   fontFamily: "var(--font-geist-sans)",
                   fontSize: 13,
-                  fontWeight: 400,
-                  color: "rgba(28,35,51,0.65)",
-                  background: "white",
-                  border: "1px solid rgba(28,35,51,0.14)",
+                  fontWeight: 500,
+                  color: "#ffffff",
+                  background: "#1C2333",
+                  border: "none",
                   borderRadius: 7,
                   cursor: "pointer",
                   height: 36,
-                  padding: "0 12px",
-                  whiteSpace: "nowrap",
+                  padding: "0 14px",
                 }}
               >
-                View brief
+                View Fit
               </button>
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
-                className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity whitespace-nowrap"
+                className="hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap"
                 style={{
+                  fontFamily: "var(--font-geist-sans)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--fg)",
+                  background: "white",
+                  border: "1px solid var(--line-strong)",
+                  borderRadius: 7,
+                  cursor: "pointer",
                   height: 36,
                   padding: "0 14px",
-                  borderRadius: 7,
-                  fontSize: 13,
-                  border: "none",
-                  cursor: "pointer",
                 }}
               >
                 Prep →
@@ -372,16 +370,6 @@ export default function JobTracker({
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
-  const [briefJob, setBriefJob] = useState<TrackedJob | null>(null);
-
-  useEffect(() => {
-    if (!briefJob) return;
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setBriefJob(null);
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [briefJob]);
 
   /* ── Empty state ── */
   if (jobs.length === 0) {
@@ -603,7 +591,6 @@ export default function JobTracker({
                 staggerIndex={i}
                 profileUpdatedAt={profileUpdatedAt}
                 onSelectJob={onSelectJob}
-                onOpenBrief={setBriefJob}
                 onRemoveJob={onRemoveJob}
                 onRenameJob={onRenameJob}
                 onStatusChange={onStatusChange}
@@ -653,34 +640,6 @@ export default function JobTracker({
       )}
     </div>
 
-    {/* ── Application Brief slide-over ── */}
-    {briefJob && (
-      <>
-        <div
-          className="fixed inset-0 z-40 transition-opacity duration-[240ms]"
-          style={{ background: "rgba(28,35,51,0.18)" }}
-          onClick={() => setBriefJob(null)}
-          aria-hidden="true"
-        />
-        <div
-          className="fixed top-0 right-0 h-full bg-white z-50 overflow-hidden flex flex-col"
-          style={{
-            width: "min(560px, 92vw)",
-            boxShadow: "-24px 0 60px rgba(15,25,35,0.18)",
-            animation: "slideInRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards",
-          }}
-        >
-          <ApplicationBrief
-            job={briefJob}
-            onGoToPrep={(job) => {
-              setBriefJob(null);
-              onSelectJob(job, "tailoring-brief");
-            }}
-            onClose={() => setBriefJob(null)}
-          />
-        </div>
-      </>
-    )}
     </>
   );
 }

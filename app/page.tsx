@@ -14,6 +14,7 @@ import LoadingState from "@/components/LoadingState";
 import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
 import LandingPage from "@/components/LandingPage";
+import YourBriefModal from "@/components/YourBriefModal";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -93,6 +94,7 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
+  const [briefModalOpen, setBriefModalOpen] = useState(false);
 
   // (Discover tab is now search-terms-only — no discovery state needed)
 
@@ -1299,13 +1301,22 @@ export default function Home() {
               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Full application brief, cover letter, outreach, and interview prep.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-              <div className="mb-6">
+              <div className="flex items-center justify-between gap-4 mb-6">
                 <JobLabelEditor
                   id={activeJobId}
                   label={trackedJobs.find(j => j.id === activeJobId)!.label}
                   onRename={handleRenameJob}
                   className="font-sans text-[18px] font-medium text-[#231812]"
                 />
+                {tailoringResult && (
+                  <button
+                    onClick={() => setBriefModalOpen(true)}
+                    className="hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap shrink-0 focus:outline-none"
+                    style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", background: "white", border: "1px solid var(--line-strong)", cursor: "pointer" }}
+                  >
+                    Your brief →
+                  </button>
+                )}
               </div>
             )}
             <TailoringBrief
@@ -1331,9 +1342,13 @@ export default function Home() {
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
               isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
+              onOpenBrief={tailoringResult ? () => setBriefModalOpen(true) : undefined}
             />
           </div>
         )}
+
+        {/* ── Your Brief modal (Prep screen) ── */}
+        {briefModalOpen && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j ? <YourBriefModal job={j} onClose={() => setBriefModalOpen(false)} /> : null; })()}
 
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
