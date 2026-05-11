@@ -768,7 +768,7 @@ export default function TailoringBrief({
 
           {/* Action row */}
           {!isGenerating && (
-            <div className="space-y-2">
+            <div className="space-y-2 pb-6">
               {result && (
                 <textarea
                   value={briefNote}
