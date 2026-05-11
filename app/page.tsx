@@ -917,9 +917,10 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                    02 / Your Background
-                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                    <svg width="9" height="11" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Your Background</span>
+                  </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
                 </div>
@@ -1218,9 +1219,10 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                    01 / Pipeline
-                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                    <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+                  </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                     <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
                     <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
@@ -1269,9 +1271,10 @@ export default function Home() {
         {activeTab === "discover" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                03 / Discover
-              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9 9l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Discover</span>
+              </div>
               <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Discover</h1>
               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Search directly from your best-fit role clusters.</p>
             </div>
@@ -1286,9 +1289,10 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                01 / Pipeline
-              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+              </div>
               <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                 <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
                 <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
@@ -1354,9 +1358,10 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>
-                    01 / Pipeline
-                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                    <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+                  </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
                 </div>
