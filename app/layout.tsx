@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
-import FeedbackButton from "@/components/FeedbackButton";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
@@ -22,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={GeistSans.className}>
         <GoogleAnalytics />
         {children}
-        <FeedbackButton />
+        {/* <FeedbackButton /> */}
       </body>
     </html>
   );
