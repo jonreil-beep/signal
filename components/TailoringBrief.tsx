@@ -766,50 +766,37 @@ export default function TailoringBrief({
       {appStage === "preparing" && (
         <div className="space-y-5">
 
-          {/* Action row */}
-          {!isGenerating && (
+          {/* Action row — only shown when a result exists (for corrections/rebuild) */}
+          {result && !isGenerating && (
             <div className="space-y-2 pb-6">
-              {result && (
-                <textarea
-                  value={briefNote}
-                  onChange={(e) => setBriefNote(e.target.value)}
-                  onFocus={() => setBriefNoteExpanded(true)}
-                  onBlur={() => { if (!briefNote.trim()) setBriefNoteExpanded(false); }}
-                  placeholder="Anything to correct before rebuilding? (optional)"
-                  maxLength={300}
-                  rows={briefNoteExpanded ? 3 : 1}
-                  className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed transition-all"
-                />
-              )}
-              <div className="flex justify-end gap-2">
-                {!result && (
+              <textarea
+                value={briefNote}
+                onChange={(e) => setBriefNote(e.target.value)}
+                onFocus={() => setBriefNoteExpanded(true)}
+                onBlur={() => { if (!briefNote.trim()) setBriefNoteExpanded(false); }}
+                placeholder="Anything to correct before rebuilding? (optional)"
+                maxLength={300}
+                rows={briefNoteExpanded ? 3 : 1}
+                className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed transition-all"
+              />
+              {briefNote.trim() && (
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => { setBriefNote(""); setBriefNoteExpanded(false); }}
+                    className="px-4 font-sans font-medium text-[13px] text-[rgba(28,35,51,0.55)] border border-[rgba(28,35,51,0.12)] rounded-[8px] hover:border-[rgba(28,35,51,0.25)] hover:text-[#1C2333] transition-colors"
+                    style={{ height: 36 }}
+                  >
+                    Nevermind
+                  </button>
                   <button
                     onClick={handleGenerate}
                     className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
                     style={{ height: 36 }}
                   >
-                    Build Prep Guide
+                    Rebuild
                   </button>
-                )}
-                {result && briefNote.trim() && (
-                  <>
-                    <button
-                      onClick={() => { setBriefNote(""); setBriefNoteExpanded(false); }}
-                      className="px-4 font-sans font-medium text-[13px] text-[rgba(28,35,51,0.55)] border border-[rgba(28,35,51,0.12)] rounded-[8px] hover:border-[rgba(28,35,51,0.25)] hover:text-[#1C2333] transition-colors"
-                      style={{ height: 36 }}
-                    >
-                      Nevermind
-                    </button>
-                    <button
-                      onClick={handleGenerate}
-                      className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
-                      style={{ height: 36 }}
-                    >
-                      Rebuild
-                    </button>
-                  </>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -842,6 +829,13 @@ export default function TailoringBrief({
             <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
               <p className="font-sans text-[14px] font-medium text-[#1C2333]">No brief yet</p>
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
+              <button
+                onClick={handleGenerate}
+                className="mt-5 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                style={{ height: 36 }}
+              >
+                Build Prep Guide
+              </button>
             </div>
           )}
 
