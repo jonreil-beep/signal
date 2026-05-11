@@ -5,8 +5,8 @@ import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
-  title: "Claro – Smarter search for experienced professionals",
-  description: "Job search intelligence for experienced professionals — honest fit scoring, targeted prep, and resume guidance.",
+  title: "Claro – Know your fit before you apply",
+  description: "Claro reads your resume, scores any job description against your background, and tells you exactly how a recruiter sees you — and what to do about it.",
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 

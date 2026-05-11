@@ -568,7 +568,7 @@ export default function LandingPage({
         <div className="cl-hero">
           <p className="cl-eyebrow">Career Copilot</p>
           <h1 className="cl-hero-hed">Know your fit<br /><span>before you apply.</span></h1>
-          <p className="cl-hero-sub">Claro reads your resume, scores any job description against your actual background, and tells you exactly what a recruiter will think — and what to do about it.</p>
+          <p className="cl-hero-sub">Claro reads your resume and scores any job description against your actual background. Honest fit score, recruiter concern flag, and a precise action plan — before you write a single word.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
         </div>
       </div>
@@ -586,7 +586,7 @@ export default function LandingPage({
         <div className="cl-proof">
           <div className="cl-proof-item">Honest scores, not encouragement</div>
           <div className="cl-proof-item">Recruiter concern flag on every score</div>
-          <div className="cl-proof-item">Full application brief to act on</div>
+          <div className="cl-proof-item">Full prep guide to act on</div>
         </div>
         <hr className="cl-strip-divider" />
       </div>
@@ -608,8 +608,8 @@ export default function LandingPage({
             </div>
             <div>
               <p className="cl-step-num">03</p>
-              <h3 className="cl-step-title">Get your Application Brief</h3>
-              <p className="cl-step-desc">A consolidated action plan: what to lead with, what language to mirror, what concern to preempt, and a numbered to-do list you can email to yourself and act on anywhere.</p>
+              <h3 className="cl-step-title">Build your prep guide</h3>
+              <p className="cl-step-desc">Generate everything you need to apply — cover letter angle, outreach messages, and interview prep. Your brief assembles automatically and you can email it to yourself in one click.</p>
             </div>
           </div>
         </div>
@@ -629,7 +629,7 @@ export default function LandingPage({
                 <li>Best-fit role clusters with Pursue / Stretch ratings</li>
                 <li>Core strengths framed for the roles you&apos;re targeting</li>
                 <li>Positioning risks with specific guidance on how to address each one</li>
-                <li>Recommended LinkedIn headline, plus four alternatives</li>
+                <li>Recommended LinkedIn headline, optimized for how recruiters search</li>
               </ul>
             </div>
             <div className="cl-fv">
@@ -656,7 +656,7 @@ export default function LandingPage({
 
           <div className="cl-feature-block">
             <div className="cl-ft">
-              <p className="cl-feature-kicker">Application Brief</p>
+              <p className="cl-feature-kicker">Your Brief</p>
               <h2 className="cl-feature-title">A precise plan, not a generic checklist.</h2>
               <p className="cl-feature-desc">The Application Brief is the core thing Claro produces. It tells you exactly what your cover letter, outreach, and resume need to accomplish — so you can write them yourself, armed with the right strategy, in any tool you want.</p>
               <ul className="cl-feature-list">
