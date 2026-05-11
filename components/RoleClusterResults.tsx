@@ -12,17 +12,17 @@ interface RoleClusterResultsProps {
 }
 
 const CONFIDENCE_STYLES: Record<RoleCluster["confidence"], { color: string; border: string; bg: string }> = {
-  Strong:   { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
-  Moderate: { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
-  Stretch:  { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
+  Strong:   { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
+  Moderate: { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
+  Stretch:  { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
 };
 
 const RECOMMENDATION_STYLES: Record<RoleRecommendation, { color: string; border: string; bg: string }> = {
-  "Pursue":                  { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
-  "Pursue Selectively":      { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
-  "Stretch — Prep Required": { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
-  "Avoid":                   { color: "rgba(28,35,51,0.35)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
-  "Reframe First":           { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
+  "Pursue":                  { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
+  "Pursue Selectively":      { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
+  "Stretch — Prep Required": { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
+  "Avoid":                   { color: "rgba(28,35,51,0.35)", border: "none", bg: "rgba(28,35,51,0.04)" },
+  "Reframe First":           { color: "rgba(28,35,51,0.45)", border: "none", bg: "rgba(28,35,51,0.04)" },
 };
 
 export default function RoleClusterResults({ result, resumeText, onClusterUpdate, rightColumnExtra }: RoleClusterResultsProps) {

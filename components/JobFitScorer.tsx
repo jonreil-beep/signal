@@ -21,10 +21,10 @@ interface JobFitScorerProps {
 type InputMode = "paste" | "url";
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; border: string; bg: string }> = {
-  "Apply Now":                   { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
-  "Apply with Tailoring":        { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
-  "Stretch — Proceed Carefully": { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
+  "Apply Now":                   { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
+  "Apply with Tailoring":        { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
+  "Stretch — Proceed Carefully": { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
+  "Skip":                        { color: "rgba(28,35,51,0.45)", border: "none", bg: "rgba(28,35,51,0.04)" },
 };
 
 const MISMATCH_LABELS: Record<MismatchType, string> = {
@@ -264,7 +264,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   }
 
   const recStyle = result
-    ? (RECOMMENDATION_STYLES[result.recommendation] ?? { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" })
+    ? (RECOMMENDATION_STYLES[result.recommendation] ?? { color: "rgba(28,35,51,0.45)", border: "none", bg: "rgba(28,35,51,0.04)" })
     : null;
 
   return (
@@ -468,7 +468,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   {result.mismatch_types?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-3">
                       {result.mismatch_types.map((t) => (
-                        <span key={t} className="font-sans text-[11px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ border: "1px solid rgba(28,35,51,0.10)", borderRadius: "9999px" }}>
+                        <span key={t} className="font-sans text-[11px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
                           {MISMATCH_LABELS[t]}
                         </span>
                       ))}

@@ -11,10 +11,10 @@ interface ApplicationBriefProps {
 }
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; border: string; bg: string }> = {
-  "Apply Now":                   { color: "#7A8B73", border: "1px solid rgba(122,139,115,0.3)",  bg: "rgba(122,139,115,0.08)"  },
-  "Apply with Tailoring":        { color: "#9B8E73", border: "1px solid rgba(155,142,115,0.3)",  bg: "rgba(155,142,115,0.10)"  },
-  "Stretch — Proceed Carefully": { color: "#8A7373", border: "1px solid rgba(138,115,115,0.3)",  bg: "rgba(138,115,115,0.10)"  },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", border: "1px solid rgba(28,35,51,0.12)", bg: "rgba(28,35,51,0.04)" },
+  "Apply Now":                   { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
+  "Apply with Tailoring":        { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
+  "Stretch — Proceed Carefully": { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
+  "Skip":                        { color: "rgba(28,35,51,0.45)", border: "none", bg: "rgba(28,35,51,0.04)" },
 };
 
 const STATUS_LABEL_STYLES: Record<string, { bg: string; text: string }> = {
