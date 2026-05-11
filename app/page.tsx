@@ -1220,17 +1220,12 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-                        <button onClick={() => setActiveTab("my-jobs")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">My Jobs</button>
-                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
-                        <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)" }}>Job Fit</span>
-                      </div>
-                      <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Job Fit</h1>
-                      <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
-                    </div>
+                  <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
+                    <button onClick={() => setActiveTab("my-jobs")} className="hover:underline focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
+                    <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</span>
                   </div>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-8">
@@ -1290,15 +1285,14 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-                <button onClick={() => setActiveTab("my-jobs")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">My Jobs</button>
-                <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
-                <button onClick={() => setActiveTab("job-fit")} style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer" }} className="hover:underline focus:outline-none">Job Fit</button>
-                <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, color: "var(--fg-4)", userSelect: "none" }}>/</span>
-                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)" }}>Prep</span>
+              <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
+                <button onClick={() => setActiveTab("my-jobs")} className="hover:underline focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
+                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
+                <button onClick={() => setActiveTab("job-fit")} className="hover:underline focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</button>
+                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: "clamp(28px, 3.5vw, 40px)", color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Prep</span>
               </div>
-              <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Prep</h1>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Everything you need to apply. Built from your fit score.</p>
+              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>Everything you need to apply. Built from your fit score.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="flex items-center justify-between gap-4 mb-6">
