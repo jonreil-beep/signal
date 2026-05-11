@@ -62,6 +62,12 @@ A running log of key product, UX, and technical decisions with reasoning. Refere
 
 ---
 
+### LinkedIn headline simplified to single optimized output
+**Decision:** Removed "Try 4 angles" feature. The headline route now returns one optimized headline under 120 characters. A "Regenerate →" text link replaces the alternatives UI.
+**Reasoning:** Offering 4 variants offloaded the decision to the user and implied the AI wasn't confident in its output. One headline is more direct and consistent with Claro's personality. Regenerate gives the user control without building a selection UI around uncertainty.
+
+---
+
 ### Job Fit and Prep removed from sidebar nav
 **Decision:** Job Fit and Prep are not top-level destinations — they are views within a job. Removed from sidebar. Users access Job Fit by clicking a job in My Jobs, and Prep via the Job Fit bottom action row. Sidebar now has three items: My Jobs, Profile, Discover.
 **Reasoning:** The five-item nav implied these were independent tools. They're not — they're always accessed in the context of a specific job. Removing them from the nav corrects the mental model and simplifies the sidebar.

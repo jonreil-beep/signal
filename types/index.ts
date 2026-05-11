@@ -172,14 +172,8 @@ export interface CompanyResearchResult {
   caveat?: string;
 }
 
-export interface LinkedInHeadlineOption {
-  text: string;
-  angle: string;
-  best_for: string;
-}
-
 export interface LinkedInHeadlineResult {
-  headlines: LinkedInHeadlineOption[];
+  headline: string;
 }
 
 export interface DiscoveredJob {

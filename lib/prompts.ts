@@ -518,29 +518,22 @@ Candidate Resume:
 ${resumeText.slice(0, 3000)}
 </resume>
 
-Generate 4–5 LinkedIn headline variants for this person. Each should take a distinctly different positioning angle — not just minor wording variations. Return this exact JSON structure — nothing else:
+Write one optimized LinkedIn headline for this person. Return this exact JSON structure — nothing else:
 {
-  "headlines": [
-    {
-      "text": "The complete headline — 220 characters max, ready to paste directly into LinkedIn",
-      "angle": "The positioning strategy this headline takes (e.g. 'Leads with industry expertise', 'Operator framing', 'Outcome-first')",
-      "best_for": "When to use this version — what type of opportunity or audience it's optimized for"
-    }
-  ]
+  "headline": "The complete headline text"
 }
 
 Rules:
-- Each headline must be under 220 characters (LinkedIn's limit) — count carefully
-- Each headline must take a genuinely different positioning angle — vary the emphasis, structure, and target audience across all 5
+- Hard limit: 120 characters maximum. Count carefully before responding.
+- Aim for 100 characters or fewer when possible.
+- Plain declarative statement — no buzzwords, no hype.
+- Banned words (never use): "passionate," "results-driven," "dynamic," "strategic leader," "innovative," "thought leader," "leveraged," "spearheaded," "synergized," "transformative," "game-changing," "seasoned," "driven"
+- Answers one question clearly: what does this person do, and at what level?
+- Written as first-person implied — no "I" — reads as if the candidate wrote it about themselves
 - Use concrete, specific language — name actual functions, industries, or outcomes from their background
-- Do not use filler words or clichés: never use "results-driven", "passionate", "dynamic", "innovative", "leveraged", "spearheaded", "synergized", "transformative", "game-changing", "thought leader", or "seasoned"
 - Do not start with "I" or use first-person pronouns
-- Use the pipe character | or em dash — to separate elements where helpful, but only when it aids clarity
-- The headline should work for someone scanning a search result — it must be immediately legible
-- Priority order within each headline: (1) target role clarity, (2) one concrete proof point, (3) industry or function. Never stack all credentials at once — that is density, not positioning.
-- A headline that clearly says what someone does and who they do it for beats one that tries to say everything.
-- angle: one concise phrase naming the strategic framing (not a description of the text itself)
-- best_for: one sentence on the specific opportunity type or audience this variant targets best
+- The headline must work for someone scanning a search result — immediately legible
+- Priority: (1) role clarity, (2) one concrete differentiator, (3) context. Never stack all credentials at once.
 - Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;

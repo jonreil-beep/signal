@@ -62,7 +62,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    if (!Array.isArray(result.headlines) || result.headlines.length === 0) {
+    if (!result.headline || typeof result.headline !== "string") {
       return NextResponse.json(
         { error: "Response was missing required fields. Try again." },
         { status: 500 }

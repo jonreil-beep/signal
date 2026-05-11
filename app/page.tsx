@@ -15,7 +15,7 @@ import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
 import LandingPage from "@/components/LandingPage";
 import YourBriefModal from "@/components/YourBriefModal";
-import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, LinkedInHeadlineResult, LinkedInHeadlineOption, TrackedJob, ApplicationStatus } from "@/types";
+import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, TrackedJob, ApplicationStatus } from "@/types";
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
   const firstShortLine = jd
@@ -76,8 +76,8 @@ export default function Home() {
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
-  const [headlineResult, setHeadlineResult] = useState<LinkedInHeadlineResult | null>(null);
-  const [isGeneratingHeadlines, setIsGeneratingHeadlines] = useState(false);
+  const [currentHeadline, setCurrentHeadline] = useState<string>("");
+  const [isGeneratingHeadline, setIsGeneratingHeadline] = useState(false);
   const [headlineError, setHeadlineError] = useState<string>("");
 
   const [jobDescription, setJobDescription] = useState<string>("");
@@ -392,7 +392,7 @@ export default function Home() {
     setResumeFileName("");
     setSavedProfileSnapshot(null);
     setClusterResult(null);
-    setHeadlineResult(null);
+    setCurrentHeadline("");
     setHeadlineError("");
     setJobDescription("");
     setJobFitResult(null);
@@ -455,7 +455,7 @@ export default function Home() {
     localStorage.removeItem("signal_profile_snapshot");
     setClusterResult(null);
     setAnalyzeError("");
-    setHeadlineResult(null);
+    setCurrentHeadline("");
     setHeadlineError("");
     setProfileExpanded("none");
     if (user) {
@@ -496,27 +496,26 @@ export default function Home() {
     }
   }
 
-  async function handleGenerateHeadlines() {
+  async function handleRegenerateHeadline() {
     if (!profileText) return;
-    setIsGeneratingHeadlines(true);
+    setIsGeneratingHeadline(true);
     setHeadlineError("");
-    setHeadlineResult(null);
     try {
       const response = await fetch("/api/linkedin-headline", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resumeText: profileText, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined }),
       });
-      const data = await response.json();
-      if (!response.ok) {
-        setHeadlineError(data.error ?? "Failed to generate headlines. Please try again.");
+      const data = await response.json() as { headline?: string; error?: string };
+      if (!response.ok || !data.headline) {
+        setHeadlineError(data.error ?? "Failed to generate headline. Please try again.");
       } else {
-        setHeadlineResult(data as LinkedInHeadlineResult);
+        setCurrentHeadline(data.headline);
       }
     } catch {
       setHeadlineError("Network error. Check your connection and try again.");
     } finally {
-      setIsGeneratingHeadlines(false);
+      setIsGeneratingHeadline(false);
     }
   }
 
@@ -1119,21 +1118,33 @@ export default function Home() {
                   <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                     Recommended LinkedIn Headline
                   </p>
-                  <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 20 }}>
-                    {clusterResult.recommended_headline}
+                  <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 14 }}>
+                    {currentHeadline || clusterResult.recommended_headline}
                   </p>
-                  {!headlineResult && !isGeneratingHeadlines && (
+                  {isGeneratingHeadline ? (
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em" }}>
+                      Regenerating...
+                    </span>
+                  ) : headlineError ? (
                     <button
-                      onClick={handleGenerateHeadlines}
-                      className="font-sans font-medium text-[#1C2333] border border-[rgba(28,35,51,0.14)] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
-                      style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, cursor: "pointer", background: "white" }}
+                      onClick={handleRegenerateHeadline}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--status-stretch)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                      className="hover:underline"
                     >
-                      Try 4 angles →
+                      Try again →
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleRegenerateHeadline}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                      className="hover:underline"
+                    >
+                      Regenerate →
                     </button>
                   )}
                 </div>
 
-                {/* ── 58/42 grid: left = clusters, right = strengths + risks + headline generator ── */}
+                {/* ── 58/42 grid: left = clusters, right = strengths + risks ── */}
                 <RoleClusterResults
                   result={clusterResult}
                   resumeText={profileText || undefined}
@@ -1145,41 +1156,6 @@ export default function Home() {
                       return { ...prev, role_clusters: clusters };
                     });
                   }}
-                  rightColumnExtra={
-                    /* ── LinkedIn Headline Angles — inset card in right column ── */
-                    (isGeneratingHeadlines || headlineResult || headlineError) ? (
-                      <div className="border-t border-[rgba(28,35,51,0.08)] pt-7">
-                        <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 14 }}>
-                          LinkedIn Headline Angles
-                        </p>
-                        {isGeneratingHeadlines && (
-                          <LoadingState message="Writing headline angles from your career story…" />
-                        )}
-                        {headlineError && !isGeneratingHeadlines && (
-                          <div className="border-l-2 border-[#8A7373] pl-4">
-                            <p className="font-sans text-[13px] text-[#1C2333]">{headlineError}</p>
-                            <button onClick={handleGenerateHeadlines} className="mt-1 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors">Try again</button>
-                          </div>
-                        )}
-                        {headlineResult && !isGeneratingHeadlines && (
-                          <>
-                            <div className="space-y-3 mb-4">
-                              {headlineResult.headlines.map((h, i) => (
-                                <HeadlineCard key={i} headline={h} />
-                              ))}
-                            </div>
-                            <button
-                              onClick={handleGenerateHeadlines}
-                              style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                              className="hover:text-[#1C2333] transition-colors"
-                            >
-                              Regenerate ↓
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    ) : null
-                  }
                 />
               </div>
             )}
@@ -1423,51 +1399,3 @@ function EmptyState({
   );
 }
 
-function HeadlineCard({ headline }: { headline: LinkedInHeadlineOption }) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(headline.text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* silently fail */ }
-  }
-
-  return (
-    <div className="bg-white p-4 border border-[rgba(28,35,51,0.08)] rounded-[10px]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
-      {/* Angle label + char count */}
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="font-sans text-[11px] uppercase tracking-[0.06em] text-[rgba(28,35,51,0.45)]">
-          {headline.angle}
-        </span>
-        <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] tabular-nums">{headline.text.length} chars</span>
-      </div>
-      {/* Headline text */}
-      <p className="font-sans text-[15px] font-medium text-[#1C2333] leading-snug mb-1.5">{headline.text}</p>
-      {/* Best for */}
-      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-snug mb-3">{headline.best_for}</p>
-      {/* Copy button */}
-      <button
-        onClick={handleCopy}
-        className="flex items-center gap-1.5 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
-      >
-        {copied ? (
-          <>
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Copied
-          </>
-        ) : (
-          <>
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            Copy to clipboard
-          </>
-        )}
-      </button>
-    </div>
-  );
-}
