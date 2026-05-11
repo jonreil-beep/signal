@@ -956,7 +956,6 @@ export default function Home() {
                   className="flex items-center justify-between gap-4"
                   style={{
                     background: "#fff",
-                    border: "1px solid rgba(28,35,51,0.08)",
                     borderRadius: 10,
                     boxShadow: "0 1px 3px rgba(15,25,35,0.06), 0 8px 28px rgba(15,25,35,0.07)",
                     padding: "14px 20px",
