@@ -782,25 +782,33 @@ export default function TailoringBrief({
                 />
               )}
               <div className="flex justify-end gap-2">
-                {hasAnyContent && (
+                {!result && (
                   <button
-                    onClick={handleExport}
-                    className="flex items-center gap-1.5 px-4 font-sans font-medium text-[13px] text-[rgba(28,35,51,0.65)] border border-[rgba(28,35,51,0.12)] rounded-[8px] hover:border-[rgba(28,35,51,0.25)] hover:text-[#1C2333] transition-colors"
+                    onClick={handleGenerate}
+                    className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
                     style={{ height: 36 }}
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Export
+                    Build Prep Guide
                   </button>
                 )}
-                <button
-                  onClick={handleGenerate}
-                  className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
-                  style={{ height: 36 }}
-                >
-                  {result ? "Rebuild" : "Build Prep Guide"}
-                </button>
+                {result && briefNote.trim() && (
+                  <>
+                    <button
+                      onClick={() => { setBriefNote(""); setBriefNoteExpanded(false); }}
+                      className="px-4 font-sans font-medium text-[13px] text-[rgba(28,35,51,0.55)] border border-[rgba(28,35,51,0.12)] rounded-[8px] hover:border-[rgba(28,35,51,0.25)] hover:text-[#1C2333] transition-colors"
+                      style={{ height: 36 }}
+                    >
+                      Nevermind
+                    </button>
+                    <button
+                      onClick={handleGenerate}
+                      className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                      style={{ height: 36 }}
+                    >
+                      Rebuild
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
