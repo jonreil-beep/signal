@@ -447,6 +447,37 @@ html { scroll-behavior: smooth; }
   .cl-hero-hed { font-size: clamp(32px, 9vw, 44px); }
   .cl-screenshot-wrap { padding: 0 12px 28px; }
 }
+/* Below sm: (640px) — stack input + button vertically as separate full-width elements */
+@media (max-width: 639px) {
+  .cl-email-wrap {
+    flex-direction: column;
+    height: auto;
+    border: none;
+    background: transparent;
+    gap: 8px;
+    overflow: visible;
+  }
+  .cl-email-wrap:focus-within {
+    border-color: transparent;
+    background: transparent;
+  }
+  .cl-email-input {
+    width: 100%;
+    height: 52px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.04);
+    padding: 0 18px;
+    flex: none;
+  }
+  .cl-email-submit {
+    width: 100%;
+    height: 52px;
+    border-radius: 10px;
+    margin: 0;
+    font-size: 15px;
+  }
+}
 `;
 
 interface EmailFormProps {
