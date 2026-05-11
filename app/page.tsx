@@ -1136,7 +1136,7 @@ export default function Home() {
               <div className="space-y-6">
 
                 {/* ── Recommended LinkedIn Headline ── */}
-                <div id="profile-result" className="result-scroll-target border-t border-[rgba(28,35,51,0.08)] pt-8">
+                <div id="profile-result" className="result-scroll-target pt-8">
                   <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                     Recommended LinkedIn Headline
                   </p>
