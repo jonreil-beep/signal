@@ -576,7 +576,7 @@ export default function LandingPage({
       {/* HERO SCREENSHOT */}
       <div className="cl-screenshot-wrap">
         <div className="cl-screenshot-inner">
-          <Image src="/screenshots/app-screenshot.png" alt="Claro app dashboard" width={2880} height={1558} style={{width:'100%',height:'auto'}} priority />
+          <Image src="/screenshots/app-screenshot.png" alt="Claro app dashboard" width={3360} height={1858} style={{width:'100%',height:'auto'}} priority />
         </div>
       </div>
 
@@ -633,7 +633,7 @@ export default function LandingPage({
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/profile-screenshot.png" alt="Claro Profile tab" width={2880} height={3730} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/profile-screenshot.png" alt="Claro Profile tab" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
 
@@ -650,7 +650,7 @@ export default function LandingPage({
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/jobfit-screenshot.png" alt="Claro Job Fit tab" width={2880} height={3194} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/jobfit-screenshot.png" alt="Claro Job Fit tab" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
 
@@ -667,7 +667,7 @@ export default function LandingPage({
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/brief-screenshot.png" alt="Claro Application Brief" width={2880} height={4712} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/brief-screenshot.png" alt="Claro Application Brief" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
         </div>
