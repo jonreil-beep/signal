@@ -509,8 +509,29 @@ export default function Home() {
       const data = await response.json() as { headline?: string; error?: string };
       if (!response.ok || !data.headline) {
         setHeadlineError(data.error ?? "Failed to generate headline. Please try again.");
-      } else {
-        setCurrentHeadline(data.headline);
+        return;
+      }
+
+      const newHeadline = data.headline;
+
+      // Persist headline into the existing cluster_result in Supabase.
+      // Spreads the current cluster_result and overwrites only recommended_headline —
+      // all other cluster fields (role_clusters, core_strengths, positioning_risks) are preserved.
+      if (user && clusterResult) {
+        const { error: dbError } = await supabase
+          .from("profiles")
+          .update({ cluster_result: { ...clusterResult, recommended_headline: newHeadline } })
+          .eq("id", user.id);
+        if (dbError) {
+          setHeadlineError("Couldn't save — try again.");
+          return;
+        }
+      }
+
+      // Update UI and in-memory cluster state only after a successful DB write (or for guests).
+      setCurrentHeadline(newHeadline);
+      if (clusterResult) {
+        setClusterResult({ ...clusterResult, recommended_headline: newHeadline });
       }
     } catch {
       setHeadlineError("Network error. Check your connection and try again.");
