@@ -358,7 +358,7 @@ function TableRow({
   );
 }
 
-type SortBy = "date" | "score" | "deadline";
+type SortBy = "date" | "score";
 type StatusFilter = ApplicationStatus | "All";
 
 export default function JobTracker({
@@ -434,11 +434,6 @@ export default function JobTracker({
     .filter((j) => !searchQuery.trim() || j.label.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
       if (sortBy === "score") return b.jobFitResult.overall_fit - a.jobFitResult.overall_fit;
-      if (sortBy === "deadline") {
-        const aTime = a.deadline ? new Date(a.deadline + "T00:00:00").getTime() : Infinity;
-        const bTime = b.deadline ? new Date(b.deadline + "T00:00:00").getTime() : Infinity;
-        return aTime - bTime;
-      }
       return new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime();
     });
 
@@ -517,7 +512,7 @@ export default function JobTracker({
             padding: 4,
           }}
         >
-          {(["date", "score", "deadline"] as SortBy[]).map((s) => (
+          {(["date", "score"] as SortBy[]).map((s) => (
             <button
               key={s}
               onClick={() => setSortBy(s)}
@@ -531,7 +526,7 @@ export default function JobTracker({
                 cursor: "pointer",
               }}
             >
-              {s === "date" ? "Date" : s === "score" ? "Score" : "Due"}
+              {s === "date" ? "Date" : "Score"}
             </button>
           ))}
         </div>
