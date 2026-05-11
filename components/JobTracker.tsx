@@ -79,6 +79,7 @@ function TableRow({
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
   const [editingLabel, setEditingLabel] = useState(false);
   const [labelValue, setLabelValue] = useState(job.label);
   const labelInputRef = useRef<HTMLInputElement>(null);
@@ -165,13 +166,34 @@ function TableRow({
               {showJD ? "Hide JD" : "View JD"}
             </button>
             <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
-            <button
-              onClick={() => onRemoveJob(job.id)}
-              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)" }}
-              className="hover:text-[#8A7373] transition-colors"
-            >
-              Remove
-            </button>
+            {confirmingRemove ? (
+              <>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}>Remove?</span>
+                <button
+                  onClick={() => onRemoveJob(job.id)}
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#8A7373" }}
+                  className="hover:text-[#1C2333] transition-colors"
+                >
+                  Yes
+                </button>
+                <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
+                <button
+                  onClick={() => setConfirmingRemove(false)}
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}
+                  className="hover:text-[#1C2333] transition-colors"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setConfirmingRemove(true)}
+                style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)" }}
+                className="hover:text-[#8A7373] transition-colors"
+              >
+                Remove
+              </button>
+            )}
           </div>
         </div>
 
