@@ -197,7 +197,7 @@ html { scroll-behavior: smooth; }
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #7A8B73;
+  color: rgba(255,255,255,0.55);
   text-align: center;
 }
 .cl-magic-error {
