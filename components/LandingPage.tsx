@@ -361,7 +361,7 @@ html { scroll-behavior: smooth; }
   letter-spacing: -0.005em;
 }
 .cl-feature-list li::before {
-  content: '—';
+  content: '•';
   position: absolute;
   left: 0;
   color: rgba(255,255,255,0.25);
