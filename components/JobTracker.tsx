@@ -112,13 +112,13 @@ function TableRow({
       <div
         className="group grid items-start border-b border-[rgba(28,35,51,0.08)]"
         style={{
-          gridTemplateColumns: "3fr 1fr 2fr 2fr 2fr",
+          gridTemplateColumns: "1fr 80px 160px 160px 180px",
           gap: "0 16px",
-          padding: "25px 0",
+          padding: "20px 0",
         }}
       >
         {/* ROLE */}
-        <div className="min-w-0">
+        <div style={{ paddingRight: 32 }}>
           {editingLabel ? (
             <input
               ref={labelInputRef}
@@ -135,8 +135,8 @@ function TableRow({
           ) : (
             <button
               onClick={() => onSelectJob(job, "job-fit")}
-              className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left truncate"
-              style={{ fontSize: 17, letterSpacing: "-0.012em" }}
+              className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left"
+              style={{ fontSize: 17, letterSpacing: "-0.012em", whiteSpace: "normal", wordBreak: "break-word", maxWidth: 360, display: "block" }}
             >
               {job.label}
             </button>
@@ -553,7 +553,7 @@ export default function JobTracker({
           <div
             className="grid"
             style={{
-              gridTemplateColumns: "3fr 1fr 2fr 2fr 2fr",
+              gridTemplateColumns: "1fr 80px 160px 160px 180px",
               gap: "0 16px",
               paddingBottom: 12,
               borderBottom: "1px solid rgba(28,35,51,0.08)",
