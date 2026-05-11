@@ -383,8 +383,7 @@ export default function JobTracker({
           ].map(({ step, title, body, done }) => (
             <div
               key={step}
-              className={`border rounded-[10px] px-5 py-5 ${done ? "bg-[rgba(122,139,115,0.06)] border-[rgba(122,139,115,0.20)]" : "bg-white border-[rgba(28,35,51,0.08)]"}`}
-              style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}
+              className={`rounded-[10px] px-5 py-5 ${done ? "bg-[rgba(122,139,115,0.06)]" : "bg-[#F9F9FA]"}`}
             >
               <div className="flex items-center gap-3 mb-3">
                 <span className={`font-sans text-[11px] px-1.5 py-0.5 rounded-[5px] shrink-0 ${done ? "bg-[rgba(122,139,115,0.15)] text-[#7A8B73]" : "bg-[rgba(28,35,51,0.06)] text-[rgba(28,35,51,0.45)]"}`}>

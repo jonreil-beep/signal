@@ -294,7 +294,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               onChange={(e) => { setJdText(e.target.value); }}
               placeholder="Paste the full job description here…"
               rows={14}
-              className="w-full border border-[rgba(28,35,51,0.08)] rounded-[10px] p-4 font-sans text-[14px] text-[#1C2333] leading-relaxed bg-[#FAFAFA] focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.20)] resize-y placeholder:text-[rgba(28,35,51,0.35)] transition-colors"
+              className="w-full border border-[rgba(28,35,51,0.08)] rounded-[10px] p-4 font-sans text-[14px] text-[#1C2333] leading-relaxed bg-[#FAFAFA] hover:border-[rgba(28,35,51,0.20)] hover:bg-[rgba(28,35,51,0.02)] focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.20)] resize-y placeholder:text-[rgba(28,35,51,0.35)] transition-colors"
             />
           )}
 
