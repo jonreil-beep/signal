@@ -829,14 +829,14 @@ export default function TailoringBrief({
           {/* No brief yet */}
           {!result && !isGenerating && (
             <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
-              <p className="font-sans text-[14px] font-medium text-[#1C2333]">No brief yet</p>
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Hit &ldquo;Build Prep Guide&rdquo; to generate your tailored brief.</p>
+              <p className="font-sans text-[14px] font-medium text-[#1C2333]">Ready when you are.</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Generate your full prep guide — what to emphasize, how to position yourself, and what to say — in one shot.</p>
               <button
                 onClick={handleGenerate}
                 className="mt-5 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
                 style={{ height: 36 }}
               >
-                Build Prep Guide
+                Build Prep
               </button>
             </div>
           )}

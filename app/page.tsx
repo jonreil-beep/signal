@@ -1298,7 +1298,7 @@ export default function Home() {
                 <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg)" }}>Prep</span>
               </div>
               <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Prep</h1>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Full application brief, cover letter, outreach, and interview prep.</p>
+              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Everything you need to apply. Built from your fit score.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="flex items-center justify-between gap-4 mb-6">
