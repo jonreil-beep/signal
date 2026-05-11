@@ -522,7 +522,6 @@ function EmailForm({
           <button className="cl-guest-link" onClick={onSkip}>
             Try without signing up →
           </button>
-          <p className="cl-privacy">Your resume stays private. We never share or sell your data.</p>
         </>
       )}
     </div>
@@ -559,7 +558,7 @@ export default function LandingPage({
           <li><a href="#how-it-works">How it works</a></li>
           <li><a href="#features">Features</a></li>
         </ul>
-        <a href="#get-started" className="cl-nav-cta">Get started free →</a>
+        <a href="#get-started" className="cl-nav-cta">Continue with email →</a>
       </nav>
 
       {/* HERO */}
