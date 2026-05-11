@@ -156,15 +156,7 @@ function TableRow({
             </div>
           )}
           {/* Meta row */}
-          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-            <button
-              onClick={() => toggleExpanded("notes")}
-              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: showNotes ? "#1C2333" : "rgba(28,35,51,0.45)" }}
-              className="hover:text-[#1C2333] transition-colors"
-            >
-              {showNotes ? "Hide Notes" : job.notes?.trim() ? "Notes (1)" : "Notes"}
-            </button>
-            <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
+          <div className="flex items-center gap-1.5 mt-1.5">
             <button
               onClick={() => toggleExpanded("jd")}
               style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: showJD ? "#1C2333" : "rgba(28,35,51,0.45)" }}
@@ -172,45 +164,6 @@ function TableRow({
             >
               {showJD ? "Hide JD" : "View JD"}
             </button>
-            <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
-            {showDeadlineInput ? (
-              <input
-                type="date"
-                defaultValue={job.deadline ?? ""}
-                autoFocus
-                onChange={(e) => {
-                  const val = e.target.value || null;
-                  onDeadlineChange(job.id, val);
-                  setExpanded("none");
-                }}
-                onBlur={() => setExpanded("none")}
-                className="font-sans text-[12px] border border-[rgba(28,35,51,0.12)] rounded-[6px] px-2 py-0.5 bg-[#FAFAFA] focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.25)] text-[#1C2333]"
-              />
-            ) : job.deadline ? (
-              <>
-                {(() => {
-                  const { color, label } = deadlineUrgency(job.deadline);
-                  return (
-                    <button
-                      onClick={() => onDeadlineChange(job.id, null)}
-                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color }}
-                      className="hover:text-[#1C2333] transition-colors"
-                      title="Clear deadline"
-                    >
-                      {label} ×
-                    </button>
-                  );
-                })()}
-              </>
-            ) : (
-              <button
-                onClick={() => toggleExpanded("deadline")}
-                style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}
-                className="hover:text-[#1C2333] transition-colors"
-              >
-                + Deadline
-              </button>
-            )}
             <span style={{ color: "rgba(28,35,51,0.18)", fontSize: 10 }}>·</span>
             <button
               onClick={() => onRemoveJob(job.id)}
@@ -354,20 +307,6 @@ function TableRow({
           )}
         </div>
       </div>
-
-      {/* ── Expandable Notes ── */}
-      {showNotes && (
-        <div style={{ padding: "12px 0 16px" }}>
-          <textarea
-            value={notesValue}
-            onChange={(e) => setNotesValue(e.target.value)}
-            onBlur={() => onNotesChange(job.id, notesValue)}
-            placeholder="Recruiter name, contacts, follow-up dates, anything relevant…"
-            rows={3}
-            className="w-full rounded-[8px] bg-[#FAFAFA] border border-[rgba(28,35,51,0.08)] px-3.5 py-3 font-sans text-[13px] text-[#1C2333] placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed resize-none focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.20)] transition-colors"
-          />
-        </div>
-      )}
 
       {/* ── Expandable JD ── */}
       {showJD && (
