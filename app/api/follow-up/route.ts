@@ -45,7 +45,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const prompt = buildFollowUpPrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim(), pivotTarget?.trim());
 
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-5",
       max_tokens: 1024,
       messages: [{ role: "user", content: prompt }],
     });

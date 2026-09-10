@@ -11,7 +11,7 @@ export const maxDuration = 60;
 /** Call Claude and return the stripped raw text. Throws on API/format errors. */
 async function callClaude(prompt: string): Promise<string> {
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-5",
     max_tokens: 2048,
     messages: [{ role: "user", content: prompt }],
   });
