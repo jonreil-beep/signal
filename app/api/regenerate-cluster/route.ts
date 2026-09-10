@@ -34,7 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       messages: [{ role: "user", content: prompt }],
     });
 
-    const content = message.content[0];
+    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
     if (content.type !== "text") {
       return NextResponse.json({ error: "Unexpected response format from Claude." }, { status: 500 });
     }

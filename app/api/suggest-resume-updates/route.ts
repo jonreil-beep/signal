@@ -15,7 +15,7 @@ async function callClaude(prompt: string): Promise<string> {
     max_tokens: 2048,
     messages: [{ role: "user", content: prompt }],
   });
-  const content = message.content[0];
+  const content = message.content.find((b) => b.type === "text") ?? message.content[0];
   if (content.type !== "text") {
     throw new Error("Unexpected response format from Claude.");
   }
