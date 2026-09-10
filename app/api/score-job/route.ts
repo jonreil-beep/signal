@@ -51,31 +51,37 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       typeof previousScore === "number" ? previousScore : undefined
     );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 2048,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
+    async function callClaude(): Promise<string> {
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-5",
+        max_tokens: 2048,
+        system: "You are a JSON API. Return only valid JSON. No explanations, no markdown fences, no preamble, no commentary.",
+        messages: [{ role: "user", content: prompt }],
+      });
+      const content = message.content.find((b) => b.type === "text") ?? message.content[0];
+      if (content.type !== "text") throw new Error("Unexpected response format from Claude.");
+      const t = content.text;
+      const s = t.indexOf("{");
+      const e = t.lastIndexOf("}");
+      return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim();
     }
 
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
+    let raw = await callClaude();
     let result: JobFitResult;
     try {
       result = JSON.parse(raw) as JobFitResult;
     } catch {
-      console.error("[score-job] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
+      console.error("[score-job] Parse attempt 1 failed, retrying. Raw:", raw);
+      raw = await callClaude();
+      try {
+        result = JSON.parse(raw) as JobFitResult;
+      } catch {
+        console.error("[score-job] Parse attempt 2 failed. Raw:", raw);
+        return NextResponse.json(
+          { error: "Claude returned malformed JSON. Try again.", raw },
+          { status: 500 }
+        );
+      }
     }
 
     // Basic shape validation
