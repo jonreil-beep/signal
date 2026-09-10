@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const DAILY_LIMITS: Record<string, number> = {
   "/api/cluster-roles":        3,
-  "/api/score-job":           10,
+  "/api/score-job":           50,
   "/api/tailor":              10,
   "/api/fetch-jd":            20,
   "/api/generate-cover-letter": 10,
