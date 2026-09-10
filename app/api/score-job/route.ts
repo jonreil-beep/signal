@@ -51,41 +51,82 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       typeof previousScore === "number" ? previousScore : undefined
     );
 
-    async function callClaude(): Promise<string> {
-      const message = await anthropic.messages.create({
-        model: "claude-sonnet-5",
-        max_tokens: 2048,
-        system: "You are a JSON API. Return only valid JSON. No explanations, no markdown fences, no preamble, no commentary.",
-        messages: [{ role: "user", content: prompt }],
-      });
-      const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-      if (content.type !== "text") throw new Error("Unexpected response format from Claude.");
-      const t = content.text;
-      const s = t.indexOf("{");
-      const e = t.lastIndexOf("}");
-      return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim();
+    const message = await anthropic.messages.create({
+      model: "claude-sonnet-5",
+      max_tokens: 4096,
+      tools: [
+        {
+          name: "submit_job_fit_result",
+          description: "Submit the completed job fit analysis",
+          input_schema: {
+            type: "object" as const,
+            properties: {
+              job_title: { type: "string" },
+              overall_fit: { type: "integer", minimum: 1, maximum: 10 },
+              summary: { type: "string" },
+              dimensions: {
+                type: "object",
+                properties: {
+                  functional_fit: {
+                    type: "object",
+                    properties: { score: { type: "integer" }, reasoning: { type: "string" } },
+                    required: ["score", "reasoning"],
+                  },
+                  seniority_fit: {
+                    type: "object",
+                    properties: { score: { type: "integer" }, reasoning: { type: "string" } },
+                    required: ["score", "reasoning"],
+                  },
+                  industry_fit: {
+                    type: "object",
+                    properties: { score: { type: "integer" }, reasoning: { type: "string" } },
+                    required: ["score", "reasoning"],
+                  },
+                  keyword_overlap: {
+                    type: "object",
+                    properties: { score: { type: "integer" }, reasoning: { type: "string" } },
+                    required: ["score", "reasoning"],
+                  },
+                },
+                required: ["functional_fit", "seniority_fit", "industry_fit", "keyword_overlap"],
+              },
+              mismatch_types: { type: "array", items: { type: "string" } },
+              what_you_have: { type: "array", items: { type: "string" } },
+              whats_missing: { type: "array", items: { type: "string" } },
+              recommendation: { type: "string" },
+              recruiter_concern: { type: "string" },
+            },
+            required: [
+              "job_title",
+              "overall_fit",
+              "summary",
+              "dimensions",
+              "mismatch_types",
+              "what_you_have",
+              "whats_missing",
+              "recommendation",
+              "recruiter_concern",
+            ],
+          },
+        },
+      ],
+      tool_choice: { type: "tool", name: "submit_job_fit_result" },
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const toolBlock = message.content.find((b) => b.type === "tool_use");
+    if (!toolBlock || toolBlock.type !== "tool_use") {
+      console.error("[score-job] No tool_use block in response. Content:", JSON.stringify(message.content));
+      return NextResponse.json(
+        { error: "Unexpected response format from Claude. Try again." },
+        { status: 500 }
+      );
     }
 
-    let raw = await callClaude();
-    let result: JobFitResult;
-    try {
-      result = JSON.parse(raw) as JobFitResult;
-    } catch {
-      console.error("[score-job] Parse attempt 1 failed, retrying. Raw:", raw);
-      raw = await callClaude();
-      try {
-        result = JSON.parse(raw) as JobFitResult;
-      } catch {
-        console.error("[score-job] Parse attempt 2 failed. Raw:", raw);
-        return NextResponse.json(
-          { error: "Claude returned malformed JSON. Try again.", raw },
-          { status: 500 }
-        );
-      }
-    }
+    const result = toolBlock.input as JobFitResult;
 
-    // Basic shape validation
     if (typeof result.overall_fit !== "number" || !result.recommendation) {
+      console.error("[score-job] Missing required fields. Input:", JSON.stringify(result));
       return NextResponse.json(
         { error: "Response was missing required fields. Try again." },
         { status: 500 }
