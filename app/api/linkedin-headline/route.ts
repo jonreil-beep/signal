@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildLinkedInHeadlinePrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -24,43 +24,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, writingSample, pivotTarget } = body as { resumeText?: string; writingSample?: string; pivotTarget?: string };
+    const { resumeText, writingSample, pivotTarget } = body as {
+      resumeText?: string;
+      writingSample?: string;
+      pivotTarget?: string;
+    };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
-      return NextResponse.json(
-        { error: "Resume text is missing or too short." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Resume text is missing or too short." }, { status: 400 });
     }
 
     const prompt = buildLinkedInHeadlinePrompt(resumeText.trim(), writingSample?.trim(), pivotTarget?.trim());
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: LinkedInHeadlineResult;
-    try {
-      result = JSON.parse(raw) as LinkedInHeadlineResult;
-    } catch {
-      console.error("[linkedin-headline] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
-    }
+    const result = await callClaudeWithTool<LinkedInHeadlineResult>(
+      prompt,
+      "submit_linkedin_headline",
+      {
+        type: "object",
+        properties: {
+          headline: { type: "string" },
+        },
+        required: ["headline"],
+      },
+      512
+    );
 
     if (!result.headline || typeof result.headline !== "string") {
       return NextResponse.json(
@@ -73,10 +60,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (err) {
     console.error("[linkedin-headline] Error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: err instanceof Error ? err.message : "Something went wrong. Please try again." },
       { status: 500 }
     );
   }

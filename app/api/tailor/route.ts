@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildTailoringPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -45,36 +45,75 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const prompt = buildTailoringPrompt(resumeText.trim(), jobDescription.trim(), userNote?.trim(), writingSample?.trim(), pivotTarget?.trim());
+    const prompt = buildTailoringPrompt(
+      resumeText.trim(),
+      jobDescription.trim(),
+      userNote?.trim(),
+      writingSample?.trim(),
+      pivotTarget?.trim()
+    );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 2048,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const result = await callClaudeWithTool<TailoringBriefResult>(
+      prompt,
+      "submit_tailoring_brief",
+      {
+        type: "object",
+        properties: {
+          honest_take: { type: "string" },
+          lead_strengths: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                strength: { type: "string" },
+                match_type: { type: "string", enum: ["Direct match", "Strong inference", "Reframe"] },
+                framing_language: { type: "string" },
+              },
+              required: ["strength", "match_type", "framing_language"],
+            },
+          },
+          jd_language_to_mirror: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                phrase: { type: "string" },
+                context: { type: "string" },
+              },
+              required: ["phrase", "context"],
+            },
+          },
+          what_to_deemphasize: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                item: { type: "string" },
+                reason: { type: "string" },
+              },
+              required: ["item", "reason"],
+            },
+          },
+          recruiter_concern_to_preempt: {
+            type: "object",
+            properties: {
+              concern: { type: "string" },
+              suggested_response: { type: "string" },
+            },
+            required: ["concern", "suggested_response"],
+          },
+          outreach_angle: { type: "string" },
+        },
+        required: [
+          "honest_take",
+          "lead_strengths",
+          "jd_language_to_mirror",
+          "what_to_deemphasize",
+          "recruiter_concern_to_preempt",
+        ],
+      }
+    );
 
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: TailoringBriefResult;
-    try {
-      result = JSON.parse(raw) as TailoringBriefResult;
-    } catch {
-      console.error("[tailor] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
-    }
-
-    // Basic shape validation
     if (!Array.isArray(result.lead_strengths) || !result.recruiter_concern_to_preempt) {
       return NextResponse.json(
         { error: "Response was missing required fields. Try again." },
@@ -86,10 +125,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (err) {
     console.error("[tailor] Error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: err instanceof Error ? err.message : "Something went wrong. Please try again." },
       { status: 500 }
     );
   }

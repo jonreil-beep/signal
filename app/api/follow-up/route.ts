@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildFollowUpPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -34,42 +34,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
       return NextResponse.json({ error: "Resume text is missing or too short." }, { status: 400 });
     }
-
     if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length < 50) {
-      return NextResponse.json(
-        { error: "Job description is missing or too short." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Job description is missing or too short." }, { status: 400 });
     }
 
-    const prompt = buildFollowUpPrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim(), pivotTarget?.trim());
+    const prompt = buildFollowUpPrompt(
+      resumeText.trim(),
+      jobDescription.trim(),
+      writingSample?.trim(),
+      pivotTarget?.trim()
+    );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: FollowUpResult;
-    try {
-      result = JSON.parse(raw) as FollowUpResult;
-    } catch {
-      console.error("[follow-up] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
-    }
+    const result = await callClaudeWithTool<FollowUpResult>(
+      prompt,
+      "submit_follow_up",
+      {
+        type: "object",
+        properties: {
+          thank_you_note: { type: "string" },
+          check_in_email: { type: "string" },
+        },
+        required: ["thank_you_note", "check_in_email"],
+      },
+      2048
+    );
 
     if (typeof result.thank_you_note !== "string" || typeof result.check_in_email !== "string") {
       return NextResponse.json(
@@ -82,10 +70,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (err) {
     console.error("[follow-up] Error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: err instanceof Error ? err.message : "Something went wrong. Please try again." },
       { status: 500 }
     );
   }

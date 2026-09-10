@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildSingleClusterPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { RoleCluster } from "@/types";
@@ -28,29 +28,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const prompt = buildSingleClusterPrompt(resumeText.trim(), clusterName.trim());
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 512,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json({ error: "Unexpected response format from Claude." }, { status: 500 });
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let cluster: RoleCluster;
-    try {
-      cluster = JSON.parse(raw) as RoleCluster;
-    } catch {
-      console.error("[regenerate-cluster] Failed to parse Claude response:", raw);
-      return NextResponse.json({ error: "Claude returned malformed JSON. Try again.", raw }, { status: 500 });
-    }
+    const cluster = await callClaudeWithTool<RoleCluster>(
+      prompt,
+      "submit_cluster",
+      {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          confidence: { type: "string", enum: ["Strong", "Moderate", "Stretch"] },
+          recommendation: { type: "string" },
+          market_read: { type: "string" },
+          reasoning: { type: "string" },
+          signals: { type: "array", items: { type: "string" } },
+        },
+        required: ["name", "confidence", "recommendation", "market_read", "reasoning", "signals"],
+      },
+      1024
+    );
 
     if (!cluster.name || !cluster.confidence || !cluster.signals) {
-      return NextResponse.json({ error: "Response was missing required fields. Try again." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Response was missing required fields. Try again." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ cluster });

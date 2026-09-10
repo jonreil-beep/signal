@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildInterviewPrepPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -34,42 +34,39 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
       return NextResponse.json({ error: "Resume text is missing or too short." }, { status: 400 });
     }
-
     if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length < 50) {
-      return NextResponse.json(
-        { error: "Job description is missing or too short." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Job description is missing or too short." }, { status: 400 });
     }
 
-    const prompt = buildInterviewPrepPrompt(resumeText.trim(), jobDescription.trim(), writingSample?.trim(), pivotTarget?.trim());
+    const prompt = buildInterviewPrepPrompt(
+      resumeText.trim(),
+      jobDescription.trim(),
+      writingSample?.trim(),
+      pivotTarget?.trim()
+    );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 2048,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: InterviewPrepResult;
-    try {
-      result = JSON.parse(raw) as InterviewPrepResult;
-    } catch {
-      console.error("[interview-prep] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
-    }
+    const result = await callClaudeWithTool<InterviewPrepResult>(
+      prompt,
+      "submit_interview_prep",
+      {
+        type: "object",
+        properties: {
+          questions: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                question: { type: "string" },
+                why_likely: { type: "string" },
+                suggested_approach: { type: "string" },
+              },
+              required: ["question", "why_likely", "suggested_approach"],
+            },
+          },
+        },
+        required: ["questions"],
+      }
+    );
 
     if (!Array.isArray(result.questions)) {
       return NextResponse.json(
@@ -82,10 +79,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (err) {
     console.error("[interview-prep] Error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: err instanceof Error ? err.message : "Something went wrong. Please try again." },
       { status: 500 }
     );
   }

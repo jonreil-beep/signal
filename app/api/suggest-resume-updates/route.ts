@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildResumeUpdatePrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -7,20 +7,6 @@ import type { ResumeUpdateResult } from "@/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-/** Call Claude and return the stripped raw text. Throws on API/format errors. */
-async function callClaude(prompt: string): Promise<string> {
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-5",
-    max_tokens: 2048,
-    messages: [{ role: "user", content: prompt }],
-  });
-  const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-  if (content.type !== "text") {
-    throw new Error("Unexpected response format from Claude.");
-  }
-  return (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -59,32 +45,51 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       pivotTarget?.trim()
     );
 
-    // Attempt 1
-    let raw = await callClaude(prompt);
-    let result: ResumeUpdateResult;
-    try {
-      result = JSON.parse(raw) as ResumeUpdateResult;
-    } catch {
-      // Log and silently retry once before surfacing an error
-      console.error("[suggest-resume-updates] Parse attempt 1 failed, retrying. Raw:", raw);
-      raw = await callClaude(prompt);
-      try {
-        result = JSON.parse(raw) as ResumeUpdateResult;
-      } catch {
-        console.error("[suggest-resume-updates] Parse attempt 2 failed. Raw:", raw);
-        return NextResponse.json(
-          { error: "Something went wrong generating your resume suggestions. Try again." },
-          { status: 500 }
-        );
+    const result = await callClaudeWithTool<ResumeUpdateResult>(
+      prompt,
+      "submit_resume_updates",
+      {
+        type: "object",
+        properties: {
+          summary_rewrite: { type: "string" },
+          bullet_updates: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                section: { type: "string" },
+                original: { type: "string" },
+                suggested: { type: "string" },
+                what_changed: { type: "string" },
+              },
+              required: ["section", "original", "suggested", "what_changed"],
+            },
+          },
+          keywords_to_weave_in: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                keyword: { type: "string" },
+                suggested_context: { type: "string" },
+              },
+              required: ["keyword", "suggested_context"],
+            },
+          },
+        },
+        required: ["summary_rewrite", "bullet_updates", "keywords_to_weave_in"],
       }
-    }
+    );
 
     if (
       typeof result.summary_rewrite !== "string" ||
       !Array.isArray(result.bullet_updates) ||
       !Array.isArray(result.keywords_to_weave_in)
     ) {
-      return NextResponse.json({ error: "Response was missing required fields. Try again." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Response was missing required fields. Try again." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(result);

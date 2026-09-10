@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildCompanyResearchPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -27,46 +27,67 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { jobDescription } = body as { jobDescription?: string };
 
     if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length < 50) {
-      return NextResponse.json(
-        { error: "Job description is missing or too short." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Job description is missing or too short." }, { status: 400 });
     }
 
     const prompt = buildCompanyResearchPrompt(jobDescription.trim());
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude." },
-        { status: 500 }
-      );
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: CompanyResearchResult;
-    try {
-      result = JSON.parse(raw) as CompanyResearchResult;
-    } catch {
-      console.error("[company-research] Failed to parse Claude response:", raw);
-      return NextResponse.json(
-        { error: "Claude returned malformed JSON. Try again.", raw },
-        { status: 500 }
-      );
-    }
+    const result = await callClaudeWithTool<CompanyResearchResult>(
+      prompt,
+      "submit_company_research",
+      {
+        type: "object",
+        properties: {
+          company_name: { type: "string" },
+          what_we_know: {
+            type: "object",
+            properties: {
+              summary: { type: "string" },
+              sources: { type: "string" },
+            },
+            required: ["summary", "sources"],
+          },
+          what_we_re_reading: { type: "array", items: { type: "string" } },
+          culture_signals: { type: "array", items: { type: "string" } },
+          red_flags_to_probe: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                flag: { type: "string" },
+                how_to_probe: { type: "string" },
+              },
+              required: ["flag", "how_to_probe"],
+            },
+          },
+          questions_to_test: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                question: { type: "string" },
+                what_youre_probing: { type: "string" },
+              },
+              required: ["question", "what_youre_probing"],
+            },
+          },
+          caveat: { type: "string" },
+        },
+        required: [
+          "company_name",
+          "what_we_know",
+          "what_we_re_reading",
+          "culture_signals",
+          "questions_to_test",
+        ],
+      },
+      2048
+    );
 
     if (
       typeof result.company_name !== "string" ||
       typeof result.what_we_know?.summary !== "string" ||
       !Array.isArray(result.what_we_re_reading) ||
-      !Array.isArray(result.culture_signals) ||
       !Array.isArray(result.questions_to_test)
     ) {
       return NextResponse.json(
@@ -79,10 +100,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } catch (err) {
     console.error("[company-research] Error:", err);
     return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      },
+      { error: err instanceof Error ? err.message : "Something went wrong. Please try again." },
       { status: 500 }
     );
   }

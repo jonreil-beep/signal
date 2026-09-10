@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import anthropic from "@/lib/anthropic";
+import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildCoverLetterPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
@@ -49,29 +49,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       pivotTarget?.trim()
     );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const content = message.content.find((b) => b.type === "text") ?? message.content[0];
-    if (content.type !== "text") {
-      return NextResponse.json({ error: "Unexpected response format from Claude." }, { status: 500 });
-    }
-
-    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
-
-    let result: CoverLetterResult;
-    try {
-      result = JSON.parse(raw) as CoverLetterResult;
-    } catch {
-      console.error("[generate-cover-letter] Failed to parse Claude response:", raw);
-      return NextResponse.json({ error: "Claude returned malformed JSON. Try again." }, { status: 500 });
-    }
+    const result = await callClaudeWithTool<CoverLetterResult>(
+      prompt,
+      "submit_cover_letter",
+      {
+        type: "object",
+        properties: {
+          cover_letter: { type: "string" },
+        },
+        required: ["cover_letter"],
+      },
+      2048
+    );
 
     if (typeof result.cover_letter !== "string") {
-      return NextResponse.json({ error: "Response was missing required fields. Try again." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Response was missing required fields. Try again." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(result);
