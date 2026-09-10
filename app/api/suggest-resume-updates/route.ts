@@ -19,7 +19,7 @@ async function callClaude(prompt: string): Promise<string> {
   if (content.type !== "text") {
     throw new Error("Unexpected response format from Claude.");
   }
-  return content.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+  return (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

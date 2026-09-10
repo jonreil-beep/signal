@@ -60,7 +60,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Unexpected response format from Claude." }, { status: 500 });
     }
 
-    const raw = content.text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+    const raw = (() => { const t = content.text; const s = t.indexOf("{"); const e = t.lastIndexOf("}"); return s !== -1 && e !== -1 ? t.slice(s, e + 1) : t.trim(); })();
 
     let result: CoverLetterResult;
     try {
