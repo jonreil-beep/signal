@@ -114,7 +114,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
     );
 
-    if (!Array.isArray(result.lead_strengths) || !result.recruiter_concern_to_preempt) {
+    // Auto-unwrap if Claude nested the result under a key
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const raw = result as any;
+    const data: TailoringBriefResult = (Array.isArray(raw.lead_strengths) ? raw : (
+      Object.values(raw).find((v) => v && typeof v === "object" && Array.isArray((v as any).lead_strengths)) ?? raw
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    )) as any;
+
+    if (!Array.isArray(data.lead_strengths) || !data.recruiter_concern_to_preempt) {
       console.error("[tailor] Shape check failed. Result:", JSON.stringify(result));
       return NextResponse.json(
         { error: "Response was missing required fields. Try again.", debug: result },
@@ -122,7 +130,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json(data);
   } catch (err) {
     console.error("[tailor] Error:", err);
     return NextResponse.json(
