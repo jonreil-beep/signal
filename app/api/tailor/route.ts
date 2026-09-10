@@ -115,8 +115,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
 
     if (!Array.isArray(result.lead_strengths) || !result.recruiter_concern_to_preempt) {
+      console.error("[tailor] Shape check failed. Result:", JSON.stringify(result));
       return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
+        { error: "Response was missing required fields. Try again.", debug: result },
         { status: 500 }
       );
     }
