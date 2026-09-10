@@ -123,12 +123,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const result = toolBlock.input as JobFitResult;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const raw = toolBlock.input as any;
+    // Coerce overall_fit to number in case Claude returned it as a string
+    const result: JobFitResult = {
+      ...raw,
+      overall_fit: typeof raw.overall_fit === "number" ? raw.overall_fit : Number(raw.overall_fit),
+    };
 
-    if (typeof result.overall_fit !== "number" || !result.recommendation) {
-      console.error("[score-job] Missing required fields. Input:", JSON.stringify(result));
+    if (!Number.isFinite(result.overall_fit) || !result.recommendation) {
+      console.error("[score-job] Missing required fields. Input:", JSON.stringify(raw));
       return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
+        { error: "Response was missing required fields. Try again.", debug: raw },
         { status: 500 }
       );
     }
