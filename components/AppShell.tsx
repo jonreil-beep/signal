@@ -201,8 +201,7 @@ export default function AppShell({
           DESKTOP SIDEBAR (lg: 1024px+) — 240px, white
          ═══════════════════════════════════════════════════════════════ */}
       <aside
-        className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 bg-white"
-        style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+        className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 glass-sidebar"
       >
         {/* Brandmark + Wordmark */}
         <div style={{ padding: "28px 24px 32px" }}>
@@ -240,8 +239,7 @@ export default function AppShell({
           TABLET SIDEBAR (md: 768px–1024px) — 64px, numbers only
          ═══════════════════════════════════════════════════════════════ */}
       <aside
-        className="hidden md:flex lg:hidden md:flex-col md:w-16 md:fixed md:inset-y-0 z-30 items-center bg-white"
-        style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+        className="hidden md:flex lg:hidden md:flex-col md:w-16 md:fixed md:inset-y-0 z-30 items-center glass-sidebar"
       >
         {/* Brandmark only */}
         <div style={{ paddingTop: 28, paddingBottom: 32 }}>
@@ -290,7 +288,7 @@ export default function AppShell({
       {/* ═══════════════════════════════════════════════════════════════
           MOBILE TOP BAR (below 768px)
          ═══════════════════════════════════════════════════════════════ */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 bg-white border-b border-[rgba(28,35,51,0.08)]">
+      <div className="md:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 glass-topbar">
         <button
           onClick={onLogoClick}
           className="flex items-center focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 rounded"
@@ -327,8 +325,7 @@ export default function AppShell({
             onClick={() => setMobileMenuOpen(false)}
           />
           <div
-            className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col bg-white"
-            style={{ boxShadow: "1px 0 0 rgba(28,35,51,0.08)" }}
+            className="fixed inset-y-0 left-0 w-60 z-50 lg:hidden flex flex-col glass-sidebar"
           >
             <div className="flex items-center justify-between" style={{ padding: "28px 24px 32px" }}>
               <div className="flex items-center" style={{ gap: 8 }}>

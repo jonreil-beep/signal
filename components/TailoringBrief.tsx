@@ -130,7 +130,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-7" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+    <div className="glass-card rounded-[10px] p-7" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
       <div className="flex items-center justify-between mb-4">
         <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">{title}</p>
         <CopyButton getText={() => copyText} />
@@ -828,7 +828,7 @@ export default function TailoringBrief({
 
           {/* No brief yet */}
           {!result && !isGenerating && (
-            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+            <div className="glass-card rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
               <p className="font-sans text-[14px] font-medium text-[#1C2333]">Ready when you are.</p>
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Generate your full prep guide — what to emphasize, how to position yourself, and what to say — in one shot.</p>
               <button
@@ -846,7 +846,7 @@ export default function TailoringBrief({
             <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-5">
 
               {/* Left column — Brief sections */}
-              <div className="bg-white rounded-[10px] overflow-hidden divide-y divide-[rgba(28,35,51,0.08)]" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+              <div className="glass-card rounded-[10px] overflow-hidden divide-y divide-[rgba(28,35,51,0.08)]">
 
                 {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
@@ -1005,7 +1005,7 @@ export default function TailoringBrief({
 
                 {/* Outreach */}
                 {!result.outreach_angle ? (
-                  <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+                  <div className="glass-card rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
                     <p className="font-sans text-[14px] font-medium text-[#1C2333]">No outreach angle in brief</p>
                     <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                       The brief for this job didn&apos;t surface an outreach angle. Try rebuilding the prep guide.
@@ -1183,7 +1183,7 @@ export default function TailoringBrief({
       {appStage === "applied" && (
         <>
           {!result ? (
-            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+            <div className="glass-card rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
               <p className="font-sans text-[14px] font-medium text-[#1C2333]">Build your prep guide first</p>
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for interview questions.
@@ -1354,7 +1354,7 @@ export default function TailoringBrief({
         <div className="space-y-5">
 
           {!result ? (
-            <div className="bg-white border border-[rgba(28,35,51,0.08)] rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+            <div className="glass-card rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
               <p className="font-sans text-[14px] font-medium text-[#1C2333]">Build your prep guide first</p>
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1 max-w-xs mx-auto">
                 Head to &ldquo;Preparing to Apply&rdquo; to build your tailored brief, then come back for follow-up templates.

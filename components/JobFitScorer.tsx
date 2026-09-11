@@ -407,8 +407,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             className="result-scroll-target -mx-6 sm:-mx-10 lg:-mx-16 px-6 sm:px-10 lg:px-16"
             style={{ paddingTop: 20, paddingBottom: 26 }}
           >
-            {/* White elevated card */}
-            <div style={{ background: "#ffffff", borderRadius: 14, padding: "40px 44px", boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
+            <div className="glass-card" style={{ borderRadius: 14, padding: "40px 44px" }}>
               <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-14">
 
                 {/* Left column — Score only */}
