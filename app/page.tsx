@@ -955,10 +955,9 @@ export default function Home() {
                 {/* ── Resume status bar ── */}
                 <div
                   className="flex items-center justify-between gap-4"
+                  className="glass-card"
                   style={{
-                    background: "#fff",
                     borderRadius: 10,
-                    boxShadow: "0 1px 3px rgba(15,25,35,0.06), 0 8px 28px rgba(15,25,35,0.07)",
                     padding: "14px 20px",
                   }}
                 >
