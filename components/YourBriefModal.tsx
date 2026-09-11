@@ -100,7 +100,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Your brief"
-          className="flex flex-col glass-card overflow-hidden"
+          className="flex flex-col glass-modal overflow-hidden"
           style={{
             width: "min(680px, 92vw)",
             maxHeight: "80vh",
