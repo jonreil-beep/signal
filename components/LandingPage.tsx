@@ -7,7 +7,11 @@ html { scroll-behavior: smooth; }
 
 .cl-landing * { box-sizing: border-box; margin: 0; padding: 0; }
 .cl-landing {
-  background: #1C2333;
+  background:
+    radial-gradient(ellipse 45% 40% at 4% 45%, rgba(50, 120, 255, 0.32) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 94% 14%, rgba(130, 55, 255, 0.26) 0%, transparent 58%),
+    radial-gradient(ellipse 38% 32% at 78% 90%, rgba(0, 190, 230, 0.22) 0%, transparent 55%),
+    #1C2333;
   color: #fff;
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 15px;
