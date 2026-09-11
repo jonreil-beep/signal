@@ -459,7 +459,8 @@ export default function JobTracker({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search jobs..."
-          className="w-full pl-9 pr-4 py-2 rounded-[8px] bg-[#FAFAFA] border border-[rgba(28,35,51,0.08)] font-sans text-[14px] text-[#1C2333] placeholder:text-[rgba(28,35,51,0.35)] focus:outline-none focus:ring-0 focus:border-[rgba(28,35,51,0.20)] transition-colors"
+          className="w-full pl-9 pr-4 py-2 rounded-[8px] border font-sans text-[14px] text-[#1C2333] placeholder:text-[rgba(28,35,51,0.35)] focus:outline-none focus:ring-0 transition-colors"
+          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", borderColor: "rgba(255,255,255,0.55)" }}
         />
         {searchQuery && (
           <button
@@ -489,9 +490,11 @@ export default function JobTracker({
                   height: 32,
                   padding: "0 14px",
                   borderRadius: 9999,
-                  background: isActive ? "#1C2333" : "#F0F0F0",
+                  background: isActive ? "#1C2333" : "rgba(255,255,255,0.55)",
                   color: isActive ? "#fff" : "rgba(28,35,51,0.65)",
-                  border: "none",
+                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.55)",
+                  backdropFilter: isActive ? "none" : "blur(8px)",
+                  WebkitBackdropFilter: isActive ? "none" : "blur(8px)",
                   cursor: "pointer",
                   fontSize: 13,
                 }}
@@ -507,8 +510,10 @@ export default function JobTracker({
         <div
           className="flex items-center shrink-0 self-start sm:self-auto"
           style={{
-            background: "#fff",
-            border: "1px solid rgba(28,35,51,0.08)",
+            background: "rgba(255,255,255,0.55)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            border: "1px solid rgba(255,255,255,0.55)",
             borderRadius: 8,
             padding: 4,
           }}
