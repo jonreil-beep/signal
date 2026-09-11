@@ -9,7 +9,7 @@ Voice and tone rules — apply to every prose field in your output:
 - Banned words and phrases (do not use under any circumstances): "aligns perfectly," "the parallels are striking," "exact challenges," "uniquely positioned," "what differentiates," "strong track record," "proven ability," "passion for," "excited to," "game-changing," "transformative," "leveraged," "spearheaded," "harnessed," "synergized," "results-driven," "dynamic," "innovative," "thought leader," "seasoned professional," "robust," "strategic vision," "core competency," "value-add," "best-in-class," "move the needle," "at the end of the day"
 - Hedge when you are inferring, not stating fact. Use: "likely," "appears to," "based on the JD," "this may signal," "worth probing," "suggests." Do not present inference as verified fact.
 - Be specific. Name the actual thing. "Built the quarterly planning process from scratch" beats "demonstrated strong operational skills."
-- Do not turn a candidate's story into a perfect narrative arc. Real careers are uneven — reflect that honestly.
+- Do not turn a candidate's story into a perfect narrative arc. Real careers are uneven. Reflect that.
 - When something is a stretch or a gap, say so plainly. Softening gaps does the candidate a disservice.
 - If you catch yourself writing something that sounds like a press release or a LinkedIn post, rewrite it.
 
@@ -40,7 +40,7 @@ Return ONLY this exact JSON structure — nothing else:
   "name": "${clusterName}",
   "confidence": "Strong | Moderate | Stretch",
   "recommendation": "Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First",
-  "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — be honest if the market will read them differently than they see themselves.",
+  "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — say so plainly if the market will read them differently than they see themselves.",
   "reasoning": "2-3 sentences on why this candidate fits or doesn't fit this cluster. Be specific to their background.",
   "signals": ["achievement or capability statement", "another signal"]
 }
@@ -48,7 +48,7 @@ Return ONLY this exact JSON structure — nothing else:
 Rules:
 - confidence: pick one of Strong | Moderate | Stretch
 - recommendation: pick exactly one of the five options — no hedging
-- market_read: one honest sentence, may differ from how the candidate sees themselves
+- market_read: one direct sentence, may differ from how the candidate sees themselves
 - STRICT RULES FOR EVIDENCE BULLETS (signals array):
   - Every bullet must be a specific achievement or capability statement — never a job title, company name, date range, or raw resume entry
   - Good: "Grew creative team from 3 to 16 specialists at Toast"
@@ -78,7 +78,7 @@ Return this exact JSON structure:
       "name": "Specific role title, level, and function (e.g. 'Corporate Strategy, Director-level')",
       "confidence": "Strong | Moderate | Stretch",
       "recommendation": "Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First",
-      "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — may differ from what the resume implies. Be honest if the market will read them differently than they see themselves.",
+      "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — may differ from what the resume implies. Say so plainly if the market will read them differently than they see themselves.",
       "reasoning": "2-3 sentences explaining why this person fits or doesn't fit this cluster. Be specific to their background.",
       "signals": ["specific signal from their resume", "another signal"]
     }
@@ -102,7 +102,7 @@ Rules:
   - "Stretch — Prep Required": possible but will require deliberate work to be competitive
   - "Avoid": mismatch is too significant to overcome without major repositioning
   - "Reframe First": the fit is there but how the candidate is currently presenting themselves will get them screened out
-- market_read: be honest if the market will interpret their background differently than they present it
+- market_read: say so plainly if the market will interpret their background differently than they present it
 - positioning_risks: 2-4 risks — each must include a specific counter-move, not just an observation
 - STRICT RULES FOR EVIDENCE BULLETS (signals array):
   - Every bullet must be a specific achievement or capability statement — never a job title, company name, date range, or raw resume entry
@@ -129,7 +129,7 @@ export function buildJobFitPrompt(
       ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications that were previously marked as missing. This means the candidate is stronger than initially assessed — do NOT include these in whats_missing, and the revised overall_fit score MUST be higher than or equal to ${previousScore ?? 1} (the previous score). Removing gaps can only improve the fit. When writing what_you_have, address the candidate directly using "you" and "your":\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
       : "";
 
-  return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description honestly.
+  return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description accurately.
 
 Candidate Resume:
 <resume>
@@ -145,7 +145,7 @@ Return this exact JSON structure — nothing else:
 {
   "job_title": "Exact job title from the posting — e.g. 'Senior Product Manager, Growth'",
   "overall_fit": <integer 1-10>,
-  "summary": "One sentence honest assessment",
+  "summary": "One direct sentence assessment",
   "dimensions": {
     "functional_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
     "seniority_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
@@ -170,7 +170,7 @@ Rules:
 - If overall_fit is below 7, mismatch_types should be non-empty — identify what's driving the gap
 - recruiter_concern: required, never null. A sharp, specific concern — not a softened generality
 - Use "likely" and "appears to" when drawing inferences from the JD rather than stating facts
-- 'What's missing' must be honest and specific, not softened
+- 'What's missing' must be direct and specific, not softened
 - Scores below 5 are valid and sometimes correct
 - Return only valid JSON, no markdown fences
 
@@ -206,7 +206,7 @@ ${jobDescription}
 
 Return this exact JSON structure — nothing else:
 {
-  "honest_take": "One sentence — the thing a candid career advisor would say to this person over coffee. Not in a report. Not softened. If they're a strong fit, say so and why. If they're a stretch or have a real problem, name it plainly. This is the sentence the rest of the brief should be read in the context of.",
+  "honest_take": "One sentence — the thing a candid career advisor would say to this person over coffee. Not in a report. Not softened. If they're a strong fit, say so and why. If they're a stretch or have a real problem, name it plainly. This is the sentence the rest of the brief should be read in light of.",
   "lead_strengths": [
     {
       "strength": "Specific part of your background that is relevant to this role — address the candidate as 'you'",
@@ -234,7 +234,7 @@ Return this exact JSON structure — nothing else:
 }
 
 Rules:
-- honest_take: write this as if you're the candidate's most trusted advisor, not their cheerleader. If it's good news, say it directly. If it's complicated, say that. One sentence, no hedging.
+- honest_take: write this as if you're the candidate's most trusted advisor, not their cheerleader. If it's good news, say it directly. If it's complicated, say that plainly. One sentence, no hedging.
 - Lead strengths: 2-4 items, specific to this JD
 - match_type indicates how solid the underlying claim is:
   - "Direct match": explicitly covered in the resume and clearly relevant to the JD
@@ -243,7 +243,7 @@ Rules:
 - framing_language must sound like a real person talking in an interview — not polished marketing copy. If it sounds like a LinkedIn summary, rewrite it.
 - Do not mirror JD language so closely it sounds copied — translate it into natural language
 - JD language to mirror: use exact phrases, not paraphrases
-- What to de-emphasize: 1-3 items, be honest
+- What to de-emphasize: 1-3 items, be direct
 - Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;

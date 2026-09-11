@@ -603,7 +603,7 @@ export default function LandingPage({
             <div>
               <p className="cl-step-num">01</p>
               <h3 className="cl-step-title">Upload your resume</h3>
-              <p className="cl-step-desc">Claro maps your background into best-fit role clusters — with honest positioning risks and the LinkedIn headline you should actually be using.</p>
+              <p className="cl-step-desc">Claro maps your background into best-fit role clusters — with clear positioning risks and the LinkedIn headline you should actually be using.</p>
             </div>
             <div>
               <p className="cl-step-num">02</p>

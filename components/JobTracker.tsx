@@ -380,7 +380,7 @@ export default function JobTracker({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
           {[
             { step: "01", title: "Add your profile", body: "Upload your resume or paste the text. Your background is the foundation for all scoring and prep.", done: hasProfile },
-            { step: "02", title: "Score a job", body: "Paste any job description. Get an honest fit score with clear reasoning in about 20 seconds.", done: false },
+            { step: "02", title: "Score a job", body: "Paste any job description. Get a 1–10 fit score with clear reasoning in about 20 seconds.", done: false },
             { step: "03", title: "Build your prep", body: "Get a targeted prep guide covering what to emphasize, what to drop, and how to position yourself.", done: false },
           ].map(({ step, title, body, done }) => (
             <div

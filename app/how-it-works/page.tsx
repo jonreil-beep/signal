@@ -3,7 +3,7 @@ import HowItWorksCTA from "@/components/HowItWorksCTA";
 
 export const metadata = {
   title: "How it works — Claro",
-  description: "Claro helps experienced professionals cut through the noise — score roles honestly, prepare fast, and focus on the ones worth pursuing.",
+  description: "Claro helps experienced professionals cut through the noise. Score roles accurately, prepare fast, and focus on the ones worth pursuing.",
 };
 
 export default function HowItWorksPage() {
@@ -47,7 +47,7 @@ export default function HowItWorksPage() {
               },
               {
                 n: "02",
-                title: "Score any job honestly",
+                title: "Score any job accurately",
                 body: "Paste a job description and get a 1–10 fit score with the specific recruiter concern most likely to sink your application.",
               },
               {

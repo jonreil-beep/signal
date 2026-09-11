@@ -1226,7 +1226,7 @@ export default function Home() {
                     <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-4)", userSelect: "none", margin: "0 12px", lineHeight: 1 }}>{">"}</span>
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</span>
                   </div>
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>An honest 1–10 score with the recruiter concern most likely to sink your application.</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>A 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-8">

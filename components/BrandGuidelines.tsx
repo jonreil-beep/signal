@@ -166,10 +166,10 @@ const BRAND_HOUSE = {
     "To turn experienced professionals from reactive applicants into deliberate strategists \u2014 so they pursue fewer roles with more confidence, and land the ones that actually fit.",
 
   promise:
-    "An honest read, every time. Claro tells you the fit before you invest the time.",
+    "A straight read, every time. Claro tells you the fit before you invest the time.",
 
   position:
-    "For experienced professionals who are selective about their next move, Claro is the only job search tool that gives you an honest, specific fit assessment \u2014 not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it. Unlike Indeed or LinkedIn, which optimize for volume and visibility, Claro optimizes for precision.",
+    "For experienced professionals who are selective about their next move, Claro is the only job search tool that gives you a direct, specific fit assessment \u2014 not a list of job postings, not generic resume tips, but a clear-eyed read on exactly how a recruiter sees you for this role, and exactly what to do about it. Unlike Indeed or LinkedIn, which optimize for volume and visibility, Claro optimizes for precision.",
 
   pillars: [
     {
