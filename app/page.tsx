@@ -800,7 +800,7 @@ export default function Home() {
     // Signed in — show welcome (new) or welcome back (returning) view
     if (user) {
       return (
-        <div style={{minHeight:'100vh', background:"radial-gradient(ellipse 45% 40% at 4% 45%, rgba(50, 120, 255, 0.16) 0%, transparent 60%), radial-gradient(ellipse 40% 35% at 94% 14%, rgba(130, 55, 255, 0.13) 0%, transparent 58%), radial-gradient(ellipse 38% 32% at 78% 90%, rgba(0, 190, 230, 0.11) 0%, transparent 55%), #1C2333", display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif)"}}>
+        <div style={{minHeight:'100vh', background:"radial-gradient(ellipse 45% 40% at 4% 45%, rgba(50, 120, 255, 0.13) 0%, transparent 60%), radial-gradient(ellipse 40% 35% at 94% 14%, rgba(130, 55, 255, 0.10) 0%, transparent 58%), radial-gradient(ellipse 38% 32% at 78% 90%, rgba(0, 190, 230, 0.09) 0%, transparent 55%), #1C2333", display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif)"}}>
           <a href="/" style={{display:'flex', alignItems:'center', gap:8, textDecoration:'none', marginBottom:48}}>
             <div style={{width:18, height:18, background:'#fff', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
               <span style={{color:'#1C2333', fontSize:10, fontWeight:600, fontFamily:"var(--font-geist-sans)", lineHeight:1, letterSpacing:'-0.01em'}}>C</span>
