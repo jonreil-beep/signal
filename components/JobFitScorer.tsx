@@ -527,8 +527,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           </div>
 
-          {/* ── Below-card section — white background ── */}
-          <div style={{ background: "#ffffff", paddingTop: 32 }}>
+          <div style={{ paddingTop: 32 }}>
 
           {/* Full-width: What You Have + What's Missing */}
           <div className="grid grid-cols-1 lg:grid-cols-2 pb-12" style={{ gap: 56 }}>

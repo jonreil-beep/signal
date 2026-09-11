@@ -189,10 +189,10 @@ export default function AppShell({
       className="min-h-screen flex"
       style={{
         background: [
-          "radial-gradient(ellipse 65% 50% at 110% -5%, rgba(255, 158, 85, 0.16) 0%, transparent 65%)",
-          "radial-gradient(ellipse 65% 55% at -5% 105%, rgba(108, 118, 218, 0.14) 0%, transparent 65%)",
-          "radial-gradient(ellipse 45% 50% at 105% 58%, rgba(218, 98, 152, 0.11) 0%, transparent 55%)",
-          "#F8F7F4",
+          "radial-gradient(ellipse 70% 60% at 95% 5%, rgba(255, 150, 70, 0.30) 0%, transparent 65%)",
+          "radial-gradient(ellipse 70% 65% at 5% 95%, rgba(100, 110, 220, 0.26) 0%, transparent 65%)",
+          "radial-gradient(ellipse 55% 55% at 95% 60%, rgba(215, 90, 150, 0.20) 0%, transparent 58%)",
+          "#F5F3F0",
         ].join(", "),
       }}
     >
