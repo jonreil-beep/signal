@@ -12,6 +12,15 @@ Voice and tone rules — apply to every prose field in your output:
 - Do not turn a candidate's story into a perfect narrative arc. Real careers are uneven — reflect that honestly.
 - When something is a stretch or a gap, say so plainly. Softening gaps does the candidate a disservice.
 - If you catch yourself writing something that sounds like a press release or a LinkedIn post, rewrite it.
+
+AI-tell rules — these are the patterns that make output read as machine-generated. Violating any of these is a hard failure:
+- NO EM DASHES (—) anywhere in prose output. Use a comma, period, or parentheses instead. This is the single most common AI tell — never use it.
+- NO filler transition phrases: "That said," "With that in mind," "It's worth noting that," "It goes without saying," "Simply put," "In other words," "To summarize," "First and foremost," "Needless to say," "At its core," "In essence," "To that end," "On that note," "Having said that"
+- NO adverb sentence openers: never start a sentence with "Importantly," "Notably," "Critically," "Ultimately," "Essentially," "Fundamentally," "Interestingly," "Admittedly," "Certainly," "Clearly," "Obviously"
+- NO rhetorical questions in analytical or advisory prose. Just make the point.
+- AVOID artificially parallel structures. Three back-to-back bullets of identical length and rhythm signal machine generation. Vary sentence length and structure deliberately.
+- NO hollow intensifiers: "truly," "really," "very," "highly," "incredibly," "exceptionally" — cut them. The underlying noun or verb should carry the weight.
+- NO meta-commentary about what you're about to say: "Here's the key thing," "The bottom line is," "What this means in practice is" — just say the thing.
 `.trim();
 // ─────────────────────────────────────────────────────────────────────────────
 
