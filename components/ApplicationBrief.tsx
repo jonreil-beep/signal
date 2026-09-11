@@ -128,7 +128,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
           </p>
           <button
             onClick={() => onGoToPrep(job)}
-            className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+            className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
             style={{ height: 40 }}
           >
             Go to Prep →
@@ -308,7 +308,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
         <button
           onClick={handleEmailSend}
           disabled={emailState === "sending"}
-          className={`flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity ${
+          className={`flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity btn-shadow-dark ${
             emailState === "sending"
               ? "opacity-60 cursor-not-allowed"
               : "hover:opacity-90"

@@ -198,7 +198,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             className={`px-5 font-sans font-medium text-[13px] rounded-[8px] transition-all ${
               confirmed
                 ? "bg-[rgba(122,139,115,0.12)] text-[#7A8B73] cursor-default"
-                : "text-white bg-[#1C2333] hover:opacity-90"
+                : "text-white bg-[#1C2333] hover:opacity-90 btn-shadow-dark"
             }`}
             style={{ height: 40 }}
           >

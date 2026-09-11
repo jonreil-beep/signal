@@ -927,7 +927,7 @@ export default function Home() {
                 <div className="flex items-center gap-3 shrink-0 mt-1">
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
+                    className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
                     style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
                   >
                     Score a job →
@@ -1367,7 +1367,7 @@ export default function Home() {
                   <div className="shrink-0 mt-1">
                     <button
                       onClick={resetAndNavigateToJobFit}
-                      className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity"
+                      className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
                       style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
                     >
                       Score a job →

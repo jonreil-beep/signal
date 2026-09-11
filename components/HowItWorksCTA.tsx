@@ -46,7 +46,7 @@ export default function HowItWorksCTA() {
       <div className="flex flex-col items-start gap-3 pb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
           style={{ height: 40 }}
         >
           Go to app →
@@ -89,7 +89,7 @@ export default function HowItWorksCTA() {
         <button
           onClick={handleSend}
           disabled={sending || !email.trim()}
-          className="w-full px-4 font-sans font-medium text-[14px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-4 font-sans font-medium text-[14px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ height: 44 }}
         >
           {sending ? "Sending…" : "Get started →"}
