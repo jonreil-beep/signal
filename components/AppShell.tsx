@@ -185,7 +185,17 @@ export default function AppShell({
   }
 
   return (
-    <div className="min-h-screen flex bg-white">
+    <div
+      className="min-h-screen flex"
+      style={{
+        background: [
+          "radial-gradient(ellipse 65% 50% at 110% -5%, rgba(255, 158, 85, 0.16) 0%, transparent 65%)",
+          "radial-gradient(ellipse 65% 55% at -5% 105%, rgba(108, 118, 218, 0.14) 0%, transparent 65%)",
+          "radial-gradient(ellipse 45% 50% at 105% 58%, rgba(218, 98, 152, 0.11) 0%, transparent 55%)",
+          "#F8F7F4",
+        ].join(", "),
+      }}
+    >
 
       {/* ═══════════════════════════════════════════════════════════════
           DESKTOP SIDEBAR (lg: 1024px+) — 240px, white
@@ -358,7 +368,7 @@ export default function AppShell({
          ═══════════════════════════════════════════════════════════════ */}
       <div
         className="flex-1 md:pl-16 lg:pl-60 overflow-x-hidden"
-        style={{ minHeight: "100vh", background: "#FFFFFF" }}
+        style={{ minHeight: "100vh", background: "transparent" }}
       >
         {/* Spacer for mobile fixed top bar */}
         <div className="h-14 md:hidden" />
