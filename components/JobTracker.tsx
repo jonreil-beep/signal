@@ -303,24 +303,24 @@ function TableRow({
                   cursor: "pointer",
                   height: 36,
                   padding: "0 14px",
+                  boxShadow: "0 1px 2px rgba(15,25,35,0.18), 0 4px 16px rgba(15,25,35,0.22)",
                 }}
               >
                 View Fit
               </button>
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
-                className="hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap"
+                className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
                 style={{
                   fontFamily: "var(--font-geist-sans)",
                   fontSize: 13,
                   fontWeight: 500,
                   color: "var(--fg)",
-                  background: "white",
-                  border: "1px solid var(--line-strong)",
                   borderRadius: 7,
                   cursor: "pointer",
                   height: 36,
                   padding: "0 14px",
+                  boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                 }}
               >
                 Prep →
@@ -407,7 +407,7 @@ export default function JobTracker({
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Start by uploading your resume. Everything else follows from there.</p>
               <button
                 onClick={onGoToProfile}
-                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 40 }}
               >
                 Add your profile
@@ -418,7 +418,7 @@ export default function JobTracker({
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Profile saved. Score your first job to get started.</p>
               <button
                 onClick={onGoToJobFit}
-                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 40 }}
               >
                 Score a job
@@ -631,7 +631,7 @@ export default function JobTracker({
             </p>
           </div>
           <span
-            className="font-sans font-medium text-white bg-[#1C2333] group-hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 flex items-center justify-center"
+            className="font-sans font-medium text-white bg-[#1C2333] group-hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 flex items-center justify-center btn-shadow-dark"
             style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13 }}
           >
             Add a job →
