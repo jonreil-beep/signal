@@ -100,7 +100,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Your brief"
-          className="flex flex-col bg-white overflow-hidden"
+          className="flex flex-col overflow-hidden"
           style={{
             width: "min(680px, 92vw)",
             maxHeight: "80vh",
@@ -108,12 +108,18 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
             boxShadow: "var(--shadow-pop)",
             pointerEvents: "auto",
             animation: "modalIn 200ms var(--easing) forwards",
+            background: [
+              "radial-gradient(ellipse 90% 55% at 100% 0%, rgba(255, 150, 70, 0.16) 0%, transparent 60%)",
+              "radial-gradient(ellipse 80% 60% at 0% 100%, rgba(100, 110, 220, 0.14) 0%, transparent 60%)",
+              "radial-gradient(ellipse 70% 50% at 90% 75%, rgba(215, 90, 150, 0.11) 0%, transparent 55%)",
+              "#F9F7F5",
+            ].join(", "),
           }}
         >
           {/* Header */}
           <div
             className="flex items-start justify-between gap-3 shrink-0"
-            style={{ padding: "28px 32px 20px", borderBottom: "1px solid var(--line)" }}
+            style={{ padding: "28px 32px 20px", borderBottom: "1px solid rgba(255,255,255,0.45)", background: "rgba(255,255,255,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
             <div className="min-w-0">
               <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", marginBottom: 6 }}>
@@ -145,12 +151,6 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
               gap: 28,
               scrollbarWidth: "thin",
               scrollbarColor: "rgba(28,35,51,0.12) transparent",
-              background: [
-                "radial-gradient(ellipse 90% 55% at 100% 0%, rgba(255, 150, 70, 0.16) 0%, transparent 60%)",
-                "radial-gradient(ellipse 80% 60% at 0% 100%, rgba(100, 110, 220, 0.14) 0%, transparent 60%)",
-                "radial-gradient(ellipse 70% 50% at 90% 75%, rgba(215, 90, 150, 0.11) 0%, transparent 55%)",
-                "#F9F7F5",
-              ].join(", "),
             }}
           >
             {/* 1. Fit score + recommendation */}
@@ -250,7 +250,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
           {/* Sticky footer */}
           <div
             className="shrink-0 flex items-center gap-3"
-            style={{ padding: "16px 32px 20px", borderTop: "1px solid var(--line)" }}
+            style={{ padding: "16px 32px 20px", borderTop: "1px solid rgba(255,255,255,0.45)", background: "rgba(255,255,255,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
             <button
               onClick={handleCopy}
