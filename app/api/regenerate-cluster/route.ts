@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildSingleClusterPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { RoleCluster } from "@/types";
 
 export const runtime = "nodejs";
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json({ cluster });
+    return NextResponse.json({ cluster: sanitizeAI(cluster) });
   } catch (err) {
     console.error("[regenerate-cluster] Error:", err);
     return NextResponse.json(

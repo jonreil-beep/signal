@@ -3,6 +3,7 @@ import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildRoleClusterPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { RoleClusterResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json({ ...result, remaining });
+    return NextResponse.json({ ...sanitizeAI(result), remaining });
   } catch (err) {
     console.error("[cluster-roles] Error:", err);
     return NextResponse.json(

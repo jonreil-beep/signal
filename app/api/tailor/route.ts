@@ -3,6 +3,7 @@ import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildTailoringPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { TailoringBriefResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -115,7 +116,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       outreach_angle: raw.outreach_angle || undefined,
     };
 
-    return NextResponse.json(data);
+    return NextResponse.json(sanitizeAI(data));
   } catch (err) {
     console.error("[tailor] Error:", err);
     return NextResponse.json(

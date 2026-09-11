@@ -3,6 +3,7 @@ import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildOutreachPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { OutreachResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json(sanitizeAI(result));
   } catch (err) {
     console.error("[generate-outreach] Error:", err);
     return NextResponse.json(

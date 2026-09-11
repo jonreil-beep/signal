@@ -3,6 +3,7 @@ import { callClaudeWithTool } from "@/lib/anthropic";
 import { buildCompanyResearchPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { CompanyResearchResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -96,7 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json(sanitizeAI(result));
   } catch (err) {
     console.error("[company-research] Error:", err);
     return NextResponse.json(

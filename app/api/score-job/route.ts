@@ -3,6 +3,7 @@ import anthropic from "@/lib/anthropic";
 import { buildJobFitPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
+import { sanitizeAI } from "@/lib/sanitizeAIText";
 import type { JobFitResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json(sanitizeAI(result));
   } catch (err) {
     console.error("[score-job] Error:", err);
     return NextResponse.json(
