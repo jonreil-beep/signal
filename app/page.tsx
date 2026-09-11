@@ -848,14 +848,14 @@ export default function Home() {
 
   // ── App shell ──
   const guestBanner = !user ? (
-    <div className="border-b border-[rgba(28,35,51,0.08)] bg-white">
+    <div className="glass-topbar">
       <div className="max-w-[1280px] mx-auto px-6 sm:px-10 lg:px-[72px] py-3">
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
               <p className="font-sans text-[13px] font-medium text-[#1C2333]">Want to save your work?</p>
               <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)] mt-0.5">
-                Enter your email to save your profile, scores, and prep guides — free, no password.
+                Enter your email to save your profile, scores, and prep guides. Free, no password.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-auto">
