@@ -100,7 +100,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Your brief"
-          className="flex flex-col bg-white overflow-hidden"
+          className="flex flex-col glass-card overflow-hidden"
           style={{
             width: "min(680px, 92vw)",
             maxHeight: "80vh",
@@ -191,8 +191,8 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
                   {tailoringResult.lead_strengths.map((s, i) => (
                     <div
                       key={i}
-                      className="bg-white"
-                      style={{ borderRadius: 10, padding: "16px 20px", border: "1px solid rgba(28,35,51,0.08)", boxShadow: "0 1px 2px rgba(15,25,35,0.04)" }}
+                      className="glass-card"
+                      style={{ borderRadius: 10, padding: "16px 20px" }}
                     >
                       <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{s.strength}</p>
                       <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{s.framing_language}</p>
