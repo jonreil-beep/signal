@@ -871,7 +871,7 @@ export default function Home() {
                 <button
                   onClick={handleSendMagicLink}
                   disabled={sendingMagicLink || !email.trim()}
-                  className="h-9 px-3 shrink-0 bg-[#1C2333] text-white font-sans font-medium text-[13px] rounded-[8px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="h-9 px-3 shrink-0 bg-[#1C2333] text-white font-sans font-medium text-[13px] rounded-[8px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap btn-shadow-dark"
                 >
                   {sendingMagicLink ? "Sending…" : "Save progress"}
                 </button>
@@ -1099,7 +1099,7 @@ export default function Home() {
                     <div className="flex items-center gap-4 pt-2">
                       <button
                         onClick={() => { setProfileExpanded("none"); handleAnalyze(); }}
-                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                         style={{ height: 40 }}
                       >
                         Save &amp; Reanalyze
@@ -1193,7 +1193,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={resetAndNavigateToJobFit}
-                    className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                    className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                     style={{ height: 36 }}
                   >
                     Score a job →
@@ -1239,7 +1239,7 @@ export default function Home() {
                     {jobFitResult && (
                       <button
                         onClick={() => setActiveTab("tailoring-brief")}
-                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity whitespace-nowrap shrink-0"
+                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark whitespace-nowrap shrink-0"
                         style={{ height: 36 }}
                       >
                         Go to Prep →
@@ -1311,7 +1311,7 @@ export default function Home() {
                 {tailoringResult && (
                   <button
                     onClick={() => setBriefModalOpen(true)}
-                    className="glass-card hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 focus:outline-none"
+                    className="glass-card btn-shadow-glass hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 focus:outline-none"
                     style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", cursor: "pointer" }}
                   >
                     Your brief →
@@ -1415,7 +1415,7 @@ function EmptyState({
       <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-2 max-w-xs mx-auto">{sub}</p>
       <button
         onClick={onAction}
-        className="mt-6 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+        className="mt-6 px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
         style={{ height: 40 }}
       >
         {action} →

@@ -312,7 +312,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 <button
                   onClick={handleFetchUrl}
                   disabled={!urlInput.trim() || isFetching}
-                  className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                  className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity btn-shadow-dark"
                   style={{ height: 44 }}
                 >
                   Fetch
@@ -351,7 +351,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             <div className="flex items-center gap-4">
               <button
                 onClick={handleScore}
-                className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 44 }}
               >
                 Score This Job

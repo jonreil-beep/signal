@@ -337,7 +337,7 @@ export default function TailoringBrief({
         <p className="font-sans text-sm text-[rgba(28,35,51,0.55)] mt-2">Upload your resume in the Profile tab first.</p>
         <button
           onClick={onGoToProfile}
-          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
           style={{ height: 40 }}
         >
           Go to Profile →
@@ -355,7 +355,7 @@ export default function TailoringBrief({
         </p>
         <button
           onClick={onGoToJobFit}
-          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+          className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
           style={{ height: 40 }}
         >
           Go to Job Fit →
@@ -792,7 +792,7 @@ export default function TailoringBrief({
                   </button>
                   <button
                     onClick={handleGenerate}
-                    className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                    className="px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                     style={{ height: 36 }}
                   >
                     Rebuild
@@ -833,7 +833,7 @@ export default function TailoringBrief({
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Generate your full prep guide — what to emphasize, how to position yourself, and what to say — in one shot.</p>
               <button
                 onClick={handleGenerate}
-                className="mt-5 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="mt-5 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 36 }}
               >
                 Build Prep
@@ -1012,7 +1012,7 @@ export default function TailoringBrief({
                     </p>
                     <button
                       onClick={handleGenerate}
-                      className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                      className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                       style={{ height: 40 }}
                     >
                       Rebuild →
@@ -1190,7 +1190,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 40 }}
               >
                 Go to Preparing to Apply →
@@ -1361,7 +1361,7 @@ export default function TailoringBrief({
               </p>
               <button
                 onClick={() => setAppStage("preparing")}
-                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity"
+                className="mt-5 inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                 style={{ height: 40 }}
               >
                 Go to Preparing to Apply →
@@ -1405,7 +1405,7 @@ export default function TailoringBrief({
         <div className="flex justify-end">
           <button
             onClick={onOpenBrief}
-            className="glass-card hover:opacity-80 transition-opacity whitespace-nowrap focus:outline-none"
+            className="glass-card btn-shadow-glass hover:opacity-80 transition-opacity whitespace-nowrap focus:outline-none"
             style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", cursor: "pointer" }}
           >
             Your brief →

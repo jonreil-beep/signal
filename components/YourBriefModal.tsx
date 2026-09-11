@@ -247,7 +247,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
           >
             <button
               onClick={handleCopy}
-              className="flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-[#1C2333] border border-[rgba(28,35,51,0.14)] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
+              className="flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-[#1C2333] border border-[rgba(28,35,51,0.14)] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors btn-shadow-glass"
               style={{ height: 44, background: "white" }}
             >
               {copied ? "Copied ✓" : "Copy"}
@@ -255,7 +255,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
             <button
               onClick={handleEmailSend}
               disabled={emailState === "sending"}
-              className={`flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity ${
+              className={`flex-1 flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] transition-opacity btn-shadow-dark ${
                 emailState === "sending" ? "opacity-60 cursor-not-allowed" : "hover:opacity-90"
               }`}
               style={{ height: 44 }}
