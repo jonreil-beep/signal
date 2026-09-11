@@ -145,6 +145,12 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
               gap: 28,
               scrollbarWidth: "thin",
               scrollbarColor: "rgba(28,35,51,0.12) transparent",
+              background: [
+                "radial-gradient(ellipse 90% 55% at 100% 0%, rgba(255, 150, 70, 0.16) 0%, transparent 60%)",
+                "radial-gradient(ellipse 80% 60% at 0% 100%, rgba(100, 110, 220, 0.14) 0%, transparent 60%)",
+                "radial-gradient(ellipse 70% 50% at 90% 75%, rgba(215, 90, 150, 0.11) 0%, transparent 55%)",
+                "#F9F7F5",
+              ].join(", "),
             }}
           >
             {/* 1. Fit score + recommendation */}
@@ -191,7 +197,8 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
                   {tailoringResult.lead_strengths.map((s, i) => (
                     <div
                       key={i}
-                      style={{ borderRadius: 10, padding: "16px 20px", background: "rgba(28,35,51,0.04)", border: "1px solid rgba(28,35,51,0.07)" }}
+                      className="glass-card"
+                      style={{ borderRadius: 10, padding: "16px 20px" }}
                     >
                       <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{s.strength}</p>
                       <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{s.framing_language}</p>
