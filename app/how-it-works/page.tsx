@@ -43,7 +43,7 @@ export default function HowItWorksPage() {
               {
                 n: "01",
                 title: "Clarify your positioning",
-                body: "Upload your resume once — Claro maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
+                body: "Upload your resume once. Claro maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
               },
               {
                 n: "02",
@@ -53,12 +53,12 @@ export default function HowItWorksPage() {
               {
                 n: "03",
                 title: "Prepare for the ones worth pursuing",
-                body: "For roles that score well, Claro builds a full prep pack — cover letter, outreach, resume edits, interview questions, and company research.",
+                body: "For roles that score well, Claro builds a full prep pack: cover letter, outreach, resume edits, interview questions, and company research.",
               },
               {
                 n: "04",
                 title: "Keep your search organized",
-                body: "Every scored job saves with its fit score, prep guide, and pipeline status — no spreadsheet required.",
+                body: "Every scored job saves with its fit score, prep guide, and pipeline status. No spreadsheet required.",
               },
             ].map(({ n, title, body }) => (
               <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(28,35,51,0.08)] last:border-0 last:pb-0">

@@ -391,7 +391,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
           {isProfileStale && !isRescoring && (
             <div className="flex items-center justify-between gap-4 px-4 py-3 border-l-2 border-[#9B8E73] mb-6">
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score — results may not reflect your current resume.</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score. Results may not reflect your current resume.</p>
               <button
                 onClick={handleProfileRescore}
                 className="shrink-0 font-sans text-[12px] text-[#9B8E73] hover:text-[#1C2333] transition-colors whitespace-nowrap"
@@ -569,7 +569,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                         </div>
                         <button
                           onClick={() => handleDismissItem(item)}
-                          title="Dismiss — I actually have this"
+                          title="Dismiss: I actually have this"
                           className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center text-[rgba(28,35,51,0.35)] hover:text-[#8A7373] transition-colors"
                         >
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">

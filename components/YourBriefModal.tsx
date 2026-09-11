@@ -269,7 +269,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
             >
               {emailState === "sending" && "Sending…"}
               {emailState === "sent"    && `Sent to ${sentToEmail} ✓`}
-              {emailState === "error"   && "Couldn't send — try copying"}
+              {emailState === "error"   && "Couldn't send. Try copying."}
               {emailState === "idle"    && "Email this →"}
             </button>
           </div>

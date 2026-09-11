@@ -572,7 +572,7 @@ export default function LandingPage({
         <div className="cl-hero">
           <p className="cl-eyebrow">Career Copilot</p>
           <h1 className="cl-hero-hed">Know your fit<br /><span>before you apply.</span></h1>
-          <p className="cl-hero-sub">Claro reads your resume and scores any job description against your actual background. Honest fit score, recruiter concern flag, and a precise action plan — before you write a single word.</p>
+          <p className="cl-hero-sub">Claro reads your resume and scores any job description against your actual background. A precise fit score, recruiter concern flag, and a clear action plan before you write a single word.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
         </div>
       </div>
@@ -588,7 +588,7 @@ export default function LandingPage({
       <div className="cl-wrap">
         <hr className="cl-strip-divider" />
         <div className="cl-proof">
-          <div className="cl-proof-item">Honest scores, not encouragement</div>
+          <div className="cl-proof-item">Precise scores, not encouragement</div>
           <div className="cl-proof-item">Recruiter concern flag on every score</div>
           <div className="cl-proof-item">Full prep guide to act on</div>
         </div>
@@ -603,7 +603,7 @@ export default function LandingPage({
             <div>
               <p className="cl-step-num">01</p>
               <h3 className="cl-step-title">Upload your resume</h3>
-              <p className="cl-step-desc">Claro maps your background into best-fit role clusters — with clear positioning risks and the LinkedIn headline you should actually be using.</p>
+              <p className="cl-step-desc">Claro maps your background into best-fit role clusters, with clear positioning risks and the LinkedIn headline you should actually be using.</p>
             </div>
             <div>
               <p className="cl-step-num">02</p>
@@ -613,7 +613,7 @@ export default function LandingPage({
             <div>
               <p className="cl-step-num">03</p>
               <h3 className="cl-step-title">Build your prep guide</h3>
-              <p className="cl-step-desc">Generate everything you need to apply — cover letter angle, outreach messages, and interview prep. Your brief assembles automatically and you can email it to yourself in one click.</p>
+              <p className="cl-step-desc">Generate everything you need to apply: cover letter angle, outreach messages, and interview prep. Your brief assembles automatically and you can email it to yourself in one click.</p>
             </div>
           </div>
         </div>
@@ -628,7 +628,7 @@ export default function LandingPage({
             <div className="cl-ft">
               <p className="cl-feature-kicker">Profile Analysis</p>
               <h2 className="cl-feature-title">See how the market reads your background.</h2>
-              <p className="cl-feature-desc">Most experienced professionals apply broadly and get silence. Not because they&apos;re underqualified — because their profile doesn&apos;t immediately answer the question every recruiter asks first: what should we hire this person for?</p>
+              <p className="cl-feature-desc">Most experienced professionals apply broadly and get silence. Not because they&apos;re underqualified. Because their profile doesn&apos;t immediately answer the question every recruiter asks first: what should we hire this person for?</p>
               <ul className="cl-feature-list">
                 <li>Best-fit role clusters with Pursue / Stretch ratings</li>
                 <li>Core strengths framed for the roles you&apos;re targeting</li>
@@ -645,12 +645,12 @@ export default function LandingPage({
             <div className="cl-ft">
               <p className="cl-feature-kicker">Job Fit Scoring</p>
               <h2 className="cl-feature-title">Know if it&apos;s worth your time before you apply.</h2>
-              <p className="cl-feature-desc">A 1–10 fit score across four dimensions. A clear apply or skip recommendation. And the one recruiter concern most likely to flag your application — so you can address it before they ever see your resume.</p>
+              <p className="cl-feature-desc">A 1–10 fit score across four dimensions. A clear apply or skip recommendation. And the one recruiter concern most likely to flag your application, so you can address it before they ever see your resume.</p>
               <ul className="cl-feature-list">
-                <li>Functional, seniority, industry, and keyword fit — each scored separately</li>
+                <li>Functional, seniority, industry, and keyword fit, each scored separately</li>
                 <li>Recruiter concern flag: the specific objection you need to preempt</li>
-                <li>What you have vs. what&apos;s missing — dismissable, re-score without gaps you&apos;ve addressed</li>
-                <li>Paste text or drop in a URL — Claro fetches the JD directly</li>
+                <li>What you have vs. what&apos;s missing, dismissable and re-scoreable as you close gaps</li>
+                <li>Paste text or drop in a URL. Claro fetches the JD directly.</li>
               </ul>
             </div>
             <div className="cl-fv">
@@ -662,9 +662,9 @@ export default function LandingPage({
             <div className="cl-ft">
               <p className="cl-feature-kicker">Your Brief</p>
               <h2 className="cl-feature-title">A precise plan, not a generic checklist.</h2>
-              <p className="cl-feature-desc">The Application Brief is the core thing Claro produces. It tells you exactly what your cover letter, outreach, and resume need to accomplish — so you can write them yourself, armed with the right strategy, in any tool you want.</p>
+              <p className="cl-feature-desc">The Application Brief is the core thing Claro produces. It tells you exactly what your cover letter, outreach, and resume need to accomplish, so you can write them yourself, armed with the right strategy, in any tool you want.</p>
               <ul className="cl-feature-list">
-                <li>Lead strengths to emphasize — with exact framing language</li>
+                <li>Lead strengths to emphasize, with exact framing language</li>
                 <li>JD phrases to mirror in your materials</li>
                 <li>What to de-emphasize and why</li>
                 <li>Numbered action plan, emailable to yourself</li>

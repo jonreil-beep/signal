@@ -627,7 +627,7 @@ export default function JobTracker({
               + Score another job
             </p>
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 14, fontWeight: 400, color: "rgba(28,35,51,0.65)" }}>
-              Paste a JD or LinkedIn URL — get a 1–10 fit and a tailored brief in 30 seconds.
+              Paste a JD or LinkedIn URL to get a 1–10 fit and a tailored brief in 30 seconds.
             </p>
           </div>
           <span

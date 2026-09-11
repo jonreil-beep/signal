@@ -523,7 +523,7 @@ export default function Home() {
           .update({ cluster_result: { ...clusterResult, recommended_headline: newHeadline } })
           .eq("id", user.id);
         if (dbError) {
-          setHeadlineError("Couldn't save — try again.");
+          setHeadlineError("Couldn't save. Try again.");
           return;
         }
       }
@@ -884,7 +884,7 @@ export default function Home() {
         ) : (
           <div className="flex items-center justify-between gap-4">
             <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)]">
-              Check your inbox — we sent a link to <span className="font-medium text-[#1C2333]">{email}</span>.
+              Check your inbox. We sent a link to <span className="font-medium text-[#1C2333]">{email}</span>.
             </p>
             <button
               onClick={() => { setMagicLinkSent(false); setMagicLinkError(""); }}
@@ -940,7 +940,7 @@ export default function Home() {
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Step 1 — Clarify your positioning</h2>
+                  <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Step 1: Clarify your positioning</h2>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-1">
                     Upload your resume once. Claro identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
                   </p>
@@ -1052,7 +1052,7 @@ export default function Home() {
                       }} />
                       {!user && resumeSource === "file" && (
                         <p className="mt-2 font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
-                          Uploaded from file — re-upload if you refresh the page.
+                          Uploaded from file. Re-upload if you refresh the page.
                         </p>
                       )}
                     </div>
@@ -1070,7 +1070,7 @@ export default function Home() {
                       <textarea
                         value={writingSample}
                         onChange={(e) => setWritingSample(e.target.value)}
-                        placeholder="Paste 2–3 sentences you've written professionally — an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
+                        placeholder="Paste 2–3 sentences you've written professionally: an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
                         rows={3}
                         className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[10px] px-3.5 py-3 border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 resize-none placeholder:text-[rgba(28,35,51,0.35)]"
                       />
@@ -1089,7 +1089,7 @@ export default function Home() {
                       <textarea
                         value={pivotTarget}
                         onChange={(e) => setPivotTarget(e.target.value)}
-                        placeholder="Optional: Describe the type of role you're trying to move toward — even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
+                        placeholder="Optional: Describe the type of role you're trying to move toward, even if it's not an obvious fit for your background. Example: 'I want to move from brand strategy into a chief of staff or business operations role at a growth-stage startup.'"
                         rows={3}
                         className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[10px] px-3.5 py-3 border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 resize-none placeholder:text-[rgba(28,35,51,0.35)]"
                       />

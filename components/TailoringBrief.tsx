@@ -816,7 +816,7 @@ export default function TailoringBrief({
           {/* Profile staleness banner */}
           {isProfileStale && result && !isGenerating && (
             <div className="flex items-center justify-between gap-4 px-4 py-3 bg-[rgba(28,35,51,0.03)] border border-[rgba(28,35,51,0.08)] rounded-[8px]">
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score — re-score the job first, then rebuild your prep guide.</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">Your profile was updated after this score. Re-score the job first, then rebuild your prep guide.</p>
               <button
                 onClick={onGoToJobFit}
                 className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.55)] hover:text-[#1C2333] transition-colors whitespace-nowrap"
@@ -830,7 +830,7 @@ export default function TailoringBrief({
           {!result && !isGenerating && (
             <div className="glass-card rounded-[10px] p-8 text-center" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
               <p className="font-sans text-[14px] font-medium text-[#1C2333]">Ready when you are.</p>
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Generate your full prep guide — what to emphasize, how to position yourself, and what to say — in one shot.</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] mt-1">Generate your full prep guide: what to emphasize, how to position yourself, and what to say, in one shot.</p>
               <button
                 onClick={handleGenerate}
                 className="mt-5 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
@@ -1202,7 +1202,7 @@ export default function TailoringBrief({
               {/* Left column — Interview Prep */}
               <ActionSection
                 title="Interview Prep"
-                description="Likely questions for this role, calibrated to your background — with suggested framing for each."
+                description="Likely questions for this role, calibrated to your background, with suggested framing for each."
                 buttonLabel="Generate Questions"
                 onAction={handleGenerateInterviewPrep}
                 isLoading={isGeneratingInterviewPrep}
@@ -1370,7 +1370,7 @@ export default function TailoringBrief({
           ) : (
             <ActionSection
               title="Follow-Up Templates"
-              description="A thank-you note and check-in email tailored to this role — ready to send after your interview."
+              description="A thank-you note and check-in email tailored to this role, ready to send after your interview."
               buttonLabel="Generate Templates"
               onAction={handleGenerateFollowUp}
               isLoading={isGeneratingFollowUp}

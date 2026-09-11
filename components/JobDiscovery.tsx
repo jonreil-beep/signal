@@ -129,7 +129,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
       <div className="text-center py-20">
         <p className="font-sans text-base font-medium text-[#1C2333]">Analyze your profile first</p>
         <p className="font-sans text-sm text-[rgba(28,35,51,0.55)] mt-2 max-w-xs mx-auto">
-          Run the profile analysis to get role clusters — this tab uses them to build your search terms.
+          Run the profile analysis to get role clusters. This tab uses them to build your search terms.
         </p>
         <button
           onClick={onGoToProfile}
@@ -149,7 +149,7 @@ export default function JobDiscovery({ clusterResult, onGoToProfile }: JobDiscov
   return (
     <div className="space-y-6">
       <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-        Your best-fit role clusters — search for open positions directly from here.
+        Your best-fit role clusters. Search for open positions directly from here.
       </p>
 
       <div className="space-y-0">

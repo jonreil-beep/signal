@@ -63,7 +63,7 @@ export default function HowItWorksCTA() {
         <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">
           We sent a sign-in link to{" "}
           <span className="font-medium text-[#1C2333]">{email}</span>.
-          Click it to get started — your progress will be saved automatically.
+          Click it to get started. Your progress will be saved automatically.
         </p>
         <button
           onClick={() => { setSent(false); setEmail(""); }}
