@@ -96,8 +96,8 @@ export default function AppShell({
         onClick={() => handleNav(item.id)}
         className={`w-full flex items-center text-left focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors px-3 rounded-[7px] ${
           isActive
-            ? "bg-[#F4F4F5] text-[#1C2333]"
-            : "text-[rgba(28,35,51,0.65)] hover:text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)]"
+            ? "bg-white/55 text-[#1C2333]"
+            : "text-[rgba(28,35,51,0.65)] hover:text-[#1C2333] hover:bg-white/35"
         }`}
         style={{ gap: 10, paddingTop: 9, paddingBottom: 9 }}
       >
@@ -261,7 +261,7 @@ export default function AppShell({
                 onClick={() => handleNav(item.id)}
                 title={item.label}
                 className={`w-full flex items-center justify-center py-2.5 rounded-[7px] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 transition-colors ${
-                  isActive ? "bg-[#F4F4F5]" : "hover:bg-[rgba(28,35,51,0.04)]"
+                  isActive ? "bg-white/55" : "hover:bg-white/35"
                 }`}
               >
                 <span style={{ color: isActive ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.32)" }}>

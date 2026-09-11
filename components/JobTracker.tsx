@@ -244,12 +244,14 @@ function TableRow({
               style={{
                 height: 36,
                 borderRadius: 7,
-                border: "none",
+                border: "1px solid rgba(255, 255, 255, 0.55)",
                 fontFamily: "var(--font-geist-sans)",
                 fontSize: 14,
                 fontWeight: 400,
                 color: "#1C2333",
-                background: "#F4F4F5",
+                background: "rgba(255, 255, 255, 0.55)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
                 transition: "border-color 150ms",
               }}
             >
