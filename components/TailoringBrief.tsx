@@ -1405,8 +1405,8 @@ export default function TailoringBrief({
         <div className="flex justify-end">
           <button
             onClick={onOpenBrief}
-            className="hover:bg-[rgba(28,35,51,0.04)] transition-colors whitespace-nowrap focus:outline-none"
-            style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", background: "white", border: "1px solid var(--line-strong)", cursor: "pointer" }}
+            className="glass-card hover:opacity-80 transition-opacity whitespace-nowrap focus:outline-none"
+            style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", cursor: "pointer" }}
           >
             Your brief →
           </button>
