@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import type { TrackedJob } from "@/types";
 
 interface JobTrackerProps {
@@ -15,7 +16,6 @@ interface JobTrackerProps {
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
   onScoreNewJob: () => void;
-  onOpenBrief: (jobId: string) => void;
   generatingBriefIds?: Set<string>;
 }
 
@@ -65,14 +65,13 @@ interface TableRowProps {
   onRenameJob: (id: string, newLabel: string) => void;
   onNotesChange: (id: string, notes: string) => void;
   onDeadlineChange: (id: string, deadline: string | null) => void;
-  onOpenBrief: (jobId: string) => void;
   generatingBrief?: boolean;
 }
 
 function TableRow({
   job, staggerIndex, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
-  onNotesChange, onDeadlineChange, onOpenBrief, generatingBrief,
+  onNotesChange, onDeadlineChange, generatingBrief,
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -268,23 +267,23 @@ function TableRow({
                   Building brief…
                 </span>
               ) : job.tailoringResult ? (
-                <button
-                  onClick={() => onOpenBrief(job.id)}
-                  className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
+                <Link
+                  href={`/jobs/${job.id}`}
+                  className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card inline-flex items-center"
                   style={{
                     fontFamily: "var(--font-geist-sans)",
                     fontSize: 13,
                     fontWeight: 500,
                     color: "var(--fg)",
                     borderRadius: 7,
-                    cursor: "pointer",
+                    textDecoration: "none",
                     height: 36,
                     padding: "0 14px",
                     boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                   }}
                 >
                   See brief
-                </button>
+                </Link>
               ) : null}
             </>
           )}
@@ -326,7 +325,7 @@ export default function JobTracker({
   jobs, hasProfile, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
   onNotesChange, onDeadlineChange,
-  onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief, generatingBriefIds,
+  onGoToProfile, onGoToJobFit, onScoreNewJob, generatingBriefIds,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -515,7 +514,6 @@ export default function JobTracker({
                 onRenameJob={onRenameJob}
                 onNotesChange={onNotesChange}
                 onDeadlineChange={onDeadlineChange}
-                onOpenBrief={onOpenBrief}
                 generatingBrief={generatingBriefIds?.has(job.id)}
               />
             ))}

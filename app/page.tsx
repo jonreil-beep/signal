@@ -12,7 +12,6 @@ import LoadingState from "@/components/LoadingState";
 import AppShell from "@/components/AppShell";
 import { ToastProvider } from "@/components/ToastProvider";
 import LandingPage from "@/components/LandingPage";
-import YourBriefModal from "@/components/YourBriefModal";
 import type { TabId, RoleClusterResult, JobFitResult, TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, TrackedJob, ApplicationStatus } from "@/types";
 
 function extractJobTitle(jd: string, fallbackCount: number): string {
@@ -113,7 +112,6 @@ export default function Home() {
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
-  const [briefModalOpen, setBriefModalOpen] = useState(false);
 
   // (Discover tab is now search-terms-only — no discovery state needed)
 
@@ -685,29 +683,6 @@ export default function Home() {
     }
   }
 
-  async function handleOutreachResult(jobId: string, result: OutreachResult | null) {
-    setTrackedJobs((prev) =>
-      prev.map((j) => (j.id === jobId ? { ...j, outreachResult: result } : j))
-    );
-    if (activeJobId === jobId) setOutreachResult(result);
-    if (user) {
-      await supabase.from("tracked_jobs").update({ outreach_result: result }).eq("id", jobId);
-    }
-  }
-
-  async function handleCoverLetterResult(jobId: string, result: CoverLetterResult | null) {
-    setTrackedJobs((prev) =>
-      prev.map((j) => (j.id === jobId ? { ...j, coverLetterResult: result } : j))
-    );
-    if (activeJobId === jobId) setCoverLetterResult(result);
-    if (user) {
-      await supabase.from("tracked_jobs").update({ cover_letter_result: result }).eq("id", jobId);
-    }
-  }
-
-  async function handleBriefRegenerate(jobId: string, result: TailoringBriefResult) {
-    await saveTailoringResultForJob(jobId, result);
-  }
 
   async function handleResumeUpdateResult(result: ResumeUpdateResult | null) {
     setResumeUpdateResult(result);
@@ -1303,23 +1278,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Discover tab ── */}
-        {/* ── Your Brief modal ── */}
-        {briefModalOpen && activeJobId && (() => {
-          const j = trackedJobs.find(j => j.id === activeJobId);
-          return j ? (
-            <YourBriefModal
-              job={j}
-              profileText={profileText}
-              writingSample={writingSample || undefined}
-              pivotTarget={pivotTarget || undefined}
-              onClose={() => setBriefModalOpen(false)}
-              onCoverLetterChange={handleCoverLetterResult}
-              onOutreachChange={handleOutreachResult}
-              onBriefRegenerate={handleBriefRegenerate}
-            />
-          ) : null;
-        })()}
 
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (
@@ -1349,7 +1307,6 @@ export default function Home() {
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
               onScoreNewJob={resetAndNavigateToJobFit}
-              onOpenBrief={(jobId) => { setActiveJobId(jobId); setBriefModalOpen(true); }}
               generatingBriefIds={generatingBriefIds}
             />
           </div>
