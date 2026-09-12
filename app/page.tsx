@@ -957,15 +957,6 @@ export default function Home() {
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
                 </div>
-                <div className="flex items-center gap-3 shrink-0 mt-1">
-                  <button
-                    onClick={resetAndNavigateToJobFit}
-                    className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
-                    style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
-                  >
-                    Score a job →
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -1040,6 +1031,17 @@ export default function Home() {
                       {profileExpanded === "update" ? "Cancel" : "Update"}
                     </button>
                   </div>
+                </div>
+
+                {/* ── Score a job CTA ── */}
+                <div className="mt-4">
+                  <button
+                    onClick={resetAndNavigateToJobFit}
+                    className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
+                    style={{ height: 36, padding: "0 14px", borderRadius: 8, fontSize: 13, border: "none", cursor: "pointer" }}
+                  >
+                    Score a job →
+                  </button>
                 </div>
 
                 {/* ── View: formatted resume text ── */}
