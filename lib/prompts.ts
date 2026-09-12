@@ -145,8 +145,11 @@ Submit the analysis using the tool. Field reference:
 - mismatch_types: Array from ["title", "comp", "scope", "domain", "functional"]
 - what_you_have: Specific matches from the candidate's resume to the JD, addressed as "you"
 - whats_missing: Specific gaps the hiring team will notice
-- recommendation: One of — "Apply Now" | "Apply with Tailoring" | "Stretch — Proceed Carefully" | "Skip"
-- recruiter_concern: The most likely red flag a recruiter would raise
+- recommendation: One of — "Pursue" | "Consider" | "Lower priority"
+  - "Pursue": strong evidence for the core requirements; apply with confidence
+  - "Consider": credible overlap but meaningful uncertainties or gaps to assess first
+  - "Lower priority": significant confirmed mismatch to important requirements
+- recruiter_concern: The most likely concern a hiring team would raise — specific, not softened
 
 Rules:
 - Be decisive on the recommendation — don't hedge it
@@ -179,7 +182,38 @@ function buildPivotBlock(pivotTarget?: string): string {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Session 4: Tailoring brief prompt
-export function buildTailoringPrompt(resumeText: string, jobDescription: string, userNote?: string, writingSample?: string, pivotTarget?: string): string {
+// jobFitResult is injected as established context so the brief can't contradict the score.
+export function buildTailoringPrompt(
+  resumeText: string,
+  jobDescription: string,
+  jobFitResult?: {
+    overall_fit: number;
+    recommendation: string;
+    summary: string;
+    what_you_have: string[];
+    whats_missing: string[];
+    recruiter_concern: string;
+  },
+  userNote?: string,
+  writingSample?: string,
+  pivotTarget?: string,
+): string {
+  const establishedAnalysis = jobFitResult
+    ? `\nThe following scoring analysis has already been established for this candidate and role. Build your brief FROM this assessment — do not contradict or independently reinterpret what it found:
+
+<established_analysis>
+Score: ${jobFitResult.overall_fit}/10 — ${jobFitResult.recommendation}
+${jobFitResult.summary}
+
+Confirmed strengths (things this candidate actually has):
+${jobFitResult.what_you_have.map((s) => `- ${s}`).join("\n")}
+${jobFitResult.whats_missing.length > 0 ? `\nConfirmed gaps (things the hiring team will notice are missing):\n${jobFitResult.whats_missing.map((s) => `- ${s}`).join("\n")}` : ""}
+${jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified" ? `\nThe most likely hiring team concern: ${jobFitResult.recruiter_concern}` : ""}
+</established_analysis>
+
+Your lead_strengths must be drawn from the confirmed strengths above — do not cite something as a strength that appears in the confirmed gaps. The honest_take must be consistent with the score and recommendation. The recruiter_concern_to_preempt should address the established concern above, not invent a new one.\n`
+    : "";
+
   return `You are a senior talent strategist preparing a candidate for a specific job application.
 
 Candidate Resume:
@@ -191,7 +225,7 @@ Job Description:
 <job_description>
 ${jobDescription}
 </job_description>
-
+${establishedAnalysis}
 Submit the brief using the tool. Field reference:
 - honest_take: One candid sentence a trusted advisor would say over coffee — not softened
 - lead_strengths: Array of {strength, match_type ("Direct match"|"Strong inference"|"Reframe"), framing_language}

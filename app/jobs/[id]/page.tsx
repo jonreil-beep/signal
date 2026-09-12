@@ -38,17 +38,15 @@ function normalizeOutreachResult(raw: unknown): OutreachResult | null {
 // ── constants ─────────────────────────────────────────────────────────────────
 
 const REC_STYLES: Record<string, { color: string; bg: string }> = {
-  "Apply Now":                   { color: "#7A8B73", bg: "rgba(122,139,115,0.10)" },
-  "Apply with Tailoring":        { color: "#9B8E73", bg: "rgba(155,142,115,0.10)" },
-  "Stretch — Proceed Carefully": { color: "#8A7373", bg: "rgba(138,115,115,0.10)" },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" },
+  "Pursue":         { color: "#7A8B73", bg: "rgba(122,139,115,0.10)" },
+  "Consider":       { color: "#9B8E73", bg: "rgba(155,142,115,0.10)" },
+  "Lower priority": { color: "#8A7373", bg: "rgba(138,115,115,0.10)" },
 };
 
 const NEXT_ACTION: Record<string, string> = {
-  "Apply Now":                   "Draft outreach. The cover letter and LinkedIn message are ready below.",
-  "Apply with Tailoring":        "Review the positioning notes below before drafting. The framing matters here.",
-  "Stretch — Proceed Carefully": "Clarify the gaps before investing time. Address the concern below first.",
-  "Skip":                        "Low priority for now. Consider focusing on better-matched roles.",
+  "Pursue":         "Draft outreach. The cover letter and LinkedIn message are ready below.",
+  "Consider":       "Review the positioning notes below before drafting. The framing matters here.",
+  "Lower priority": "Clarify the gaps before investing time. Address the concern below first.",
 };
 
 const APP_BG = [
@@ -265,6 +263,14 @@ export default function BriefingPage() {
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: job.jobDescription,
+          jobFitResult: {
+            overall_fit: job.jobFitResult.overall_fit,
+            recommendation: job.jobFitResult.recommendation,
+            summary: job.jobFitResult.summary,
+            what_you_have: job.jobFitResult.what_you_have,
+            whats_missing: job.jobFitResult.whats_missing,
+            recruiter_concern: job.jobFitResult.recruiter_concern,
+          },
           userNote: regenerateNote || undefined,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,

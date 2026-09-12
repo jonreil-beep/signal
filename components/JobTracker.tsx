@@ -21,10 +21,9 @@ interface JobTrackerProps {
 
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; dotColor: string; bg: string; border: string }> = {
-  "Apply Now":                   { color: "#7A8B73", dotColor: "#7A8B73", bg: "rgba(122,139,115,0.08)",  border: "none" },
-  "Apply with Tailoring":        { color: "#9B8E73", dotColor: "#9B8E73", bg: "rgba(155,142,115,0.10)", border: "none" },
-  "Stretch — Proceed Carefully": { color: "#8A7373", dotColor: "#8A7373", bg: "rgba(138,115,115,0.10)", border: "none" },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", dotColor: "rgba(28,35,51,0.28)", bg: "rgba(28,35,51,0.04)", border: "none" },
+  "Pursue":         { color: "#7A8B73", dotColor: "#7A8B73", bg: "rgba(122,139,115,0.08)",  border: "none" },
+  "Consider":       { color: "#9B8E73", dotColor: "#9B8E73", bg: "rgba(155,142,115,0.10)", border: "none" },
+  "Lower priority": { color: "#8A7373", dotColor: "#8A7373", bg: "rgba(138,115,115,0.10)", border: "none" },
 };
 
 function formatDateRelative(date: Date): string {
@@ -242,7 +241,7 @@ function TableRow({
             }}
           >
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
-            {job.jobFitResult.recommendation === "Stretch — Proceed Carefully" ? "Stretch" : job.jobFitResult.recommendation}
+            {job.jobFitResult.recommendation}
           </span>
           {isScoreStale && (
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#9B8E73", marginTop: 4 }}>

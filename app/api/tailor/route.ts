@@ -27,9 +27,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, userNote, writingSample, pivotTarget } = body as {
+    const { resumeText, jobDescription, jobFitResult, userNote, writingSample, pivotTarget } = body as {
       resumeText?: string;
       jobDescription?: string;
+      jobFitResult?: {
+        overall_fit: number;
+        recommendation: string;
+        summary: string;
+        what_you_have: string[];
+        whats_missing: string[];
+        recruiter_concern: string;
+      };
       userNote?: string;
       writingSample?: string;
       pivotTarget?: string;
@@ -49,6 +57,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const prompt = buildTailoringPrompt(
       resumeText.trim(),
       jobDescription.trim(),
+      jobFitResult,
       userNote?.trim(),
       writingSample?.trim(),
       pivotTarget?.trim()

@@ -19,10 +19,9 @@ interface JobFitScorerProps {
 type InputMode = "paste" | "url";
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; border: string; bg: string }> = {
-  "Apply Now":                   { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
-  "Apply with Tailoring":        { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
-  "Stretch — Proceed Carefully": { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", border: "none", bg: "rgba(28,35,51,0.04)" },
+  "Pursue":         { color: "#7A8B73", border: "none", bg: "rgba(122,139,115,0.08)"  },
+  "Consider":       { color: "#9B8E73", border: "none", bg: "rgba(155,142,115,0.10)"  },
+  "Lower priority": { color: "#8A7373", border: "none", bg: "rgba(138,115,115,0.10)"  },
 };
 
 const MISMATCH_LABELS: Record<MismatchType, string> = {

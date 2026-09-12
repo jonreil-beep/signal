@@ -634,7 +634,7 @@ export default function Home() {
       });
     }
 
-    autoGenerateBrief(id, jd);
+    autoGenerateBrief(id, jd, result);
     router.push(`/jobs/${id}`);
   }
 
@@ -665,14 +665,29 @@ export default function Home() {
     }
   }
 
-  async function autoGenerateBrief(jobId: string, jd: string) {
+  async function autoGenerateBrief(jobId: string, jd: string, fitResult?: JobFitResult) {
     if (!profileText) return;
     setGeneratingBriefIds((prev) => new Set(prev).add(jobId));
     try {
       const response = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined }),
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: jd,
+          jobFitResult: fitResult
+            ? {
+                overall_fit: fitResult.overall_fit,
+                recommendation: fitResult.recommendation,
+                summary: fitResult.summary,
+                what_you_have: fitResult.what_you_have,
+                whats_missing: fitResult.whats_missing,
+                recruiter_concern: fitResult.recruiter_concern,
+              }
+            : undefined,
+          writingSample: writingSample || undefined,
+          pivotTarget: pivotTarget || undefined,
+        }),
       });
       if (response.ok) {
         const data = await response.json() as TailoringBriefResult;

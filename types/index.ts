@@ -68,7 +68,7 @@ export interface JobFitResult {
   mismatch_types: MismatchType[]; // what kind of gap is driving a lower score
   what_you_have: string[];
   whats_missing: string[];
-  recommendation: "Apply Now" | "Apply with Tailoring" | "Stretch — Proceed Carefully" | "Skip";
+  recommendation: "Pursue" | "Consider" | "Lower priority";
   recruiter_concern: string; // required — "None identified" if no concern
 }
 
