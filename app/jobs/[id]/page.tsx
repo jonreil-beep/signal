@@ -678,10 +678,13 @@ export default function BriefingPage() {
           <div style={{ marginBottom: 28 }}>
             <button
               onClick={() => setScoreOpen(v => !v)}
-              className="flex items-center gap-2 font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+              className="flex items-center gap-1.5 font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
               style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
             >
-              How this score was calculated {scoreOpen ? "↑" : "↓"}
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0, opacity: 0.5 }}>
+                <path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.4 2.4l1.06 1.06M8.54 8.54l1.06 1.06M9.6 2.4L8.54 3.46M3.46 8.54L2.4 9.6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
+              See how this score was calculated {scoreOpen ? "↑" : "↓"}
             </button>
 
             {scoreOpen && (
