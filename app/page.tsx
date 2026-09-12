@@ -96,6 +96,7 @@ export default function Home() {
   const [currentHeadline, setCurrentHeadline] = useState<string>("");
   const [isGeneratingHeadline, setIsGeneratingHeadline] = useState(false);
   const [headlineError, setHeadlineError] = useState<string>("");
+  const [headlineOpen, setHeadlineOpen] = useState(false);
 
   const [jobDescription, setJobDescription] = useState<string>("");
   const [jobFitResult, setJobFitResult] = useState<JobFitResult | null>(null);
@@ -1138,38 +1139,7 @@ export default function Home() {
             )}
 
             {clusterResult && !isAnalyzing && (
-              <div className="space-y-6">
-
-                {/* ── Recommended LinkedIn Headline ── */}
-                <div id="profile-result" className="result-scroll-target pt-8">
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
-                    Recommended LinkedIn Headline
-                  </p>
-                  <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 14 }}>
-                    {currentHeadline || clusterResult.recommended_headline}
-                  </p>
-                  {isGeneratingHeadline ? (
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em" }}>
-                      Regenerating...
-                    </span>
-                  ) : headlineError ? (
-                    <button
-                      onClick={handleRegenerateHeadline}
-                      style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--status-stretch)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                      className="hover:underline"
-                    >
-                      Try again →
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleRegenerateHeadline}
-                      style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                      className="hover:underline"
-                    >
-                      Regenerate →
-                    </button>
-                  )}
-                </div>
+              <div id="profile-result" className="result-scroll-target space-y-6">
 
                 {/* ── 58/42 grid: left = clusters, right = strengths + risks ── */}
                 <RoleClusterResults
@@ -1184,6 +1154,45 @@ export default function Home() {
                     });
                   }}
                 />
+
+                {/* ── LinkedIn Headline (collapsible) ── */}
+                <div className="pt-4 border-t border-[rgba(28,35,51,0.08)]">
+                  <button
+                    onClick={() => setHeadlineOpen(prev => !prev)}
+                    style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 13, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                    className="hover:text-[#1C2333] transition-colors"
+                  >
+                    LinkedIn headline suggestion {headlineOpen ? "↑" : "→"}
+                  </button>
+                  {headlineOpen && (
+                    <div className="mt-5">
+                      <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 32, letterSpacing: "-0.025em", marginBottom: 14 }}>
+                        {currentHeadline || clusterResult.recommended_headline}
+                      </p>
+                      {isGeneratingHeadline ? (
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em" }}>
+                          Regenerating...
+                        </span>
+                      ) : headlineError ? (
+                        <button
+                          onClick={handleRegenerateHeadline}
+                          style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--status-stretch)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                          className="hover:underline"
+                        >
+                          Try again →
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleRegenerateHeadline}
+                          style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 13, color: "var(--fg-3)", letterSpacing: "0.02em", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                          className="hover:underline"
+                        >
+                          Regenerate →
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

@@ -133,7 +133,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                       style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                       className="hover:text-[#1C2333] transition-colors disabled:opacity-40"
                     >
-                      {regeneratingIndex === i ? "Regenerating…" : "Regenerate ↓"}
+                      {regeneratingIndex === i ? "Reanalyzing…" : "Reanalyze ↓"}
                     </button>
                   </div>
                 )}
