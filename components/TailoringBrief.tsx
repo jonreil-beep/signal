@@ -43,6 +43,7 @@ interface TailoringBriefProps {
   onGoToJobFit: () => void;
   isProfileStale?: boolean;
   onOpenBrief?: () => void;
+  autoGenerate?: boolean;
 }
 
 function CopyButton({ getText }: { getText: () => string }) {
@@ -289,6 +290,7 @@ export default function TailoringBrief({
   onGoToJobFit,
   isProfileStale,
   onOpenBrief,
+  autoGenerate,
 }: TailoringBriefProps) {
   const [appStage, setAppStage] = useState<ApplicationStage>("preparing");
   const [briefNoteExpanded, setBriefNoteExpanded] = useState(false);
@@ -328,6 +330,15 @@ export default function TailoringBrief({
   const [outreachNote, setOutreachNote] = useState<string>("");
 
   const cr = companyResearchResult ? normalizeCompanyResearch(companyResearchResult) : null;
+
+  // Auto-trigger brief generation when navigating here via "Build your prep".
+  // handleGenerate is a function declaration so it is hoisted and accessible here.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (autoGenerate && !result && profileText && jobDescription) {
+      handleGenerate();
+    }
+  }, []);
 
   if (!profileText) {
     return (

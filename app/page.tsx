@@ -109,6 +109,8 @@ export default function Home() {
   const [followUpResult, setFollowUpResult] = useState<FollowUpResult | null>(null);
   const [companyResearchResult, setCompanyResearchResult] = useState<CompanyResearchResult | null>(null);
 
+  const [autoBuildPrep, setAutoBuildPrep] = useState(false);
+
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
@@ -150,6 +152,11 @@ export default function Home() {
     if (!sessionRestored) return;
     sessionStorage.setItem("signal-active-tab", activeTab);
   }, [activeTab, sessionRestored]);
+
+  // Reset auto-build flag when leaving prep tab so returning via other routes doesn't re-trigger
+  useEffect(() => {
+    if (activeTab !== "tailoring-brief") setAutoBuildPrep(false);
+  }, [activeTab]);
 
   // ── Persist landing visibility — lets guests survive a refresh without returning to landing ──
   useEffect(() => {
@@ -1264,11 +1271,14 @@ export default function Home() {
                     />
                     {jobFitResult && (
                       <button
-                        onClick={() => setActiveTab("tailoring-brief")}
+                        onClick={() => {
+                          if (!tailoringResult) setAutoBuildPrep(true);
+                          setActiveTab("tailoring-brief");
+                        }}
                         className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark whitespace-nowrap shrink-0"
                         style={{ height: 36 }}
                       >
-                        Go to Prep →
+                        {tailoringResult ? "Go to Prep →" : "Build your prep"}
                       </button>
                     )}
                   </div>
@@ -1369,6 +1379,7 @@ export default function Home() {
               onGoToJobFit={() => setActiveTab("job-fit")}
               isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
               onOpenBrief={tailoringResult ? () => setBriefModalOpen(true) : undefined}
+              autoGenerate={autoBuildPrep}
             />
           </div>
         )}
