@@ -10,7 +10,7 @@ import type {
   OutreachResult, CoverLetterResult,
 } from "@/types";
 
-// ── normalizers (mirrors page.tsx) ──────────────────────────────────────────
+// ── normalizers ───────────────────────────────────────────────────────────────
 
 function normalizeJobFitResult(raw: unknown): JobFitResult {
   const r = raw as Record<string, unknown>;
@@ -35,7 +35,7 @@ function normalizeOutreachResult(raw: unknown): OutreachResult | null {
   return r as unknown as OutreachResult;
 }
 
-// ── small shared UI ──────────────────────────────────────────────────────────
+// ── constants ─────────────────────────────────────────────────────────────────
 
 const REC_STYLES: Record<string, { color: string; bg: string }> = {
   "Apply Now":                   { color: "#7A8B73", bg: "rgba(122,139,115,0.10)" },
@@ -44,9 +44,29 @@ const REC_STYLES: Record<string, { color: string; bg: string }> = {
   "Skip":                        { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" },
 };
 
+const NEXT_ACTION: Record<string, string> = {
+  "Apply Now":                   "Draft outreach. The cover letter and LinkedIn message are ready below.",
+  "Apply with Tailoring":        "Review the positioning notes below before drafting. The framing matters here.",
+  "Stretch — Proceed Carefully": "Clarify the gaps before investing time. Address the concern below first.",
+  "Skip":                        "Low priority for now. Consider focusing on better-matched roles.",
+};
+
+const APP_BG = [
+  "radial-gradient(ellipse 70% 60% at 95% 5%, rgba(255,150,70,0.18) 0%, transparent 65%)",
+  "radial-gradient(ellipse 70% 65% at 5% 95%, rgba(100,110,220,0.16) 0%, transparent 65%)",
+  "radial-gradient(ellipse 55% 55% at 95% 60%, rgba(215,90,150,0.13) 0%, transparent 58%)",
+  "#F5F3F0",
+].join(", ");
+
+// ── small components ──────────────────────────────────────────────────────────
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 12, textTransform: "uppercase" }}>
+    <p style={{
+      fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11,
+      letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 12,
+      textTransform: "uppercase",
+    }}>
       {children}
     </p>
   );
@@ -55,15 +75,16 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 function Spinner() {
   return (
     <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="31.4" strokeDashoffset="10" opacity="0.3"/>
-      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+        strokeDasharray="31.4" strokeDashoffset="10" opacity="0.3" />
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
 
 type EmailState = "idle" | "sending" | "sent" | "error";
 
-// ── page ─────────────────────────────────────────────────────────────────────
+// ── page ──────────────────────────────────────────────────────────────────────
 
 export default function BriefingPage() {
   const params = useParams();
@@ -85,7 +106,6 @@ export default function BriefingPage() {
   const [regenerateError, setRegenerateError] = useState("");
   const [copied, setCopied] = useState(false);
   const [emailState, setEmailState] = useState<EmailState>("idle");
-  const [sentToEmail, setSentToEmail] = useState("");
 
   // ── load ──────────────────────────────────────────────────────────────────
 
@@ -159,7 +179,7 @@ export default function BriefingPage() {
     return () => clearInterval(interval);
   }, [job, jobId]);
 
-  // ── actions ───────────────────────────────────────────────────────────────
+  // ── mutations ─────────────────────────────────────────────────────────────
 
   function updateJob(patch: Partial<TrackedJob>) {
     setJob((prev) => prev ? { ...prev, ...patch } : prev);
@@ -176,7 +196,7 @@ export default function BriefingPage() {
     setClError("");
     updateJob({ coverLetterResult: null });
     try {
-      const response = await fetch("/api/generate-cover-letter", {
+      const res = await fetch("/api/generate-cover-letter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -187,8 +207,8 @@ export default function BriefingPage() {
           pivotTarget: pivotTarget || undefined,
         }),
       });
-      const data = await response.json();
-      if (!response.ok) {
+      const data = await res.json();
+      if (!res.ok) {
         setClError(data.error ?? "Failed to generate. Please try again.");
       } else {
         const result = data as CoverLetterResult;
@@ -208,7 +228,7 @@ export default function BriefingPage() {
     setOutreachError("");
     updateJob({ outreachResult: null });
     try {
-      const response = await fetch("/api/generate-outreach", {
+      const res = await fetch("/api/generate-outreach", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -219,8 +239,8 @@ export default function BriefingPage() {
           pivotTarget: pivotTarget || undefined,
         }),
       });
-      const data = await response.json();
-      if (!response.ok) {
+      const data = await res.json();
+      if (!res.ok) {
         setOutreachError(data.error ?? "Failed to generate. Please try again.");
       } else {
         const result = data as OutreachResult;
@@ -239,7 +259,7 @@ export default function BriefingPage() {
     setIsRegenerating(true);
     setRegenerateError("");
     try {
-      const response = await fetch("/api/tailor", {
+      const res = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -250,8 +270,8 @@ export default function BriefingPage() {
           pivotTarget: pivotTarget || undefined,
         }),
       });
-      const data = await response.json();
-      if (!response.ok) {
+      const data = await res.json();
+      if (!res.ok) {
         setRegenerateError(data.error ?? "Failed to regenerate. Please try again.");
       } else {
         const result = data as TailoringBriefResult;
@@ -269,7 +289,9 @@ export default function BriefingPage() {
   async function handleCopy() {
     if (!job) return;
     try {
-      await navigator.clipboard.writeText(formatBrief(job.label, job.jobFitResult, job.tailoringResult));
+      await navigator.clipboard.writeText(
+        formatBrief(job.label, job.jobFitResult, job.tailoringResult)
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* unavailable */ }
@@ -286,9 +308,8 @@ export default function BriefingPage() {
       });
       const data = await res.json() as { success?: boolean; email?: string; error?: string };
       if (!res.ok || !data.success) throw new Error(data.error ?? "Send failed");
-      setSentToEmail(data.email ?? "your email");
       setEmailState("sent");
-      setTimeout(() => { setEmailState("idle"); setSentToEmail(""); }, 4000);
+      setTimeout(() => setEmailState("idle"), 4000);
     } catch {
       setEmailState("error");
       setTimeout(() => setEmailState("idle"), 4000);
@@ -297,16 +318,9 @@ export default function BriefingPage() {
 
   // ── render ────────────────────────────────────────────────────────────────
 
-  const bg = [
-    "radial-gradient(ellipse 70% 60% at 95% 5%, rgba(255,150,70,0.18) 0%, transparent 65%)",
-    "radial-gradient(ellipse 70% 65% at 5% 95%, rgba(100,110,220,0.16) 0%, transparent 65%)",
-    "radial-gradient(ellipse 55% 55% at 95% 60%, rgba(215,90,150,0.13) 0%, transparent 58%)",
-    "#F5F3F0",
-  ].join(", ");
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: bg }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: APP_BG }}>
         <Spinner />
       </div>
     );
@@ -316,26 +330,31 @@ export default function BriefingPage() {
 
   const { jobFitResult, tailoringResult, coverLetterResult, outreachResult } = job;
   const recStyle = REC_STYLES[jobFitResult.recommendation] ?? { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" };
+  const nextAction = NEXT_ACTION[jobFitResult.recommendation] ?? "";
 
   const dimensions = [
-    { label: "Function",  score: jobFitResult.dimensions.functional_fit.score },
-    { label: "Seniority", score: jobFitResult.dimensions.seniority_fit.score },
-    { label: "Industry",  score: jobFitResult.dimensions.industry_fit.score },
-    { label: "Keywords",  score: jobFitResult.dimensions.keyword_overlap.score },
+    { label: "Function",  key: "functional_fit",  score: jobFitResult.dimensions.functional_fit.score,  reasoning: jobFitResult.dimensions.functional_fit.reasoning },
+    { label: "Seniority", key: "seniority_fit",   score: jobFitResult.dimensions.seniority_fit.score,   reasoning: jobFitResult.dimensions.seniority_fit.reasoning },
+    { label: "Industry",  key: "industry_fit",    score: jobFitResult.dimensions.industry_fit.score,    reasoning: jobFitResult.dimensions.industry_fit.reasoning },
+    { label: "Keywords",  key: "keyword_overlap", score: jobFitResult.dimensions.keyword_overlap.score, reasoning: jobFitResult.dimensions.keyword_overlap.reasoning },
   ];
+
+  const hasRecruiterConcern =
+    !!jobFitResult.recruiter_concern &&
+    jobFitResult.recruiter_concern !== "None identified";
 
   const briefReady = !!tailoringResult;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: bg }}>
+    <div className="min-h-screen flex flex-col" style={{ background: APP_BG }}>
 
-      {/* ── Top bar ── */}
+      {/* ── Top bar ────────────────────────────────────────────────────────── */}
       <header
         className="sticky top-0 z-20 flex items-center justify-between"
         style={{
           padding: "0 40px",
           height: 56,
-          background: "rgba(245,243,240,0.80)",
+          background: "rgba(245,243,240,0.85)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid rgba(28,35,51,0.07)",
@@ -344,19 +363,22 @@ export default function BriefingPage() {
         <Link
           href="/"
           className="flex items-center gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors"
-          style={{ fontWeight: 500, textDecoration: "none" }}
+          style={{ fontWeight: 500, textDecoration: "none", flexShrink: 0 }}
         >
           <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-            <path d="M13 5H1M1 5L5 1M1 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M13 5H1M1 5L5 1M1 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Jobs
         </Link>
 
-        <p className="font-sans font-medium text-[#1C2333] truncate max-w-[50vw] text-center" style={{ fontSize: 14, letterSpacing: "-0.01em" }}>
+        <p
+          className="font-sans font-medium text-[#1C2333] truncate text-center"
+          style={{ fontSize: 14, letterSpacing: "-0.01em", maxWidth: "52vw" }}
+        >
           {job.label}
         </p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
           <button
             onClick={handleCopy}
             className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
@@ -370,53 +392,115 @@ export default function BriefingPage() {
             className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
             style={{ height: 32, padding: "0 14px", cursor: emailState === "sending" ? "default" : "pointer" }}
           >
-            {emailState === "sending" ? "Sending…" : emailState === "sent" ? `Sent ✓` : emailState === "error" ? "Couldn't send" : "Email →"}
+            {emailState === "sending" ? "Sending…"
+              : emailState === "sent" ? "Sent ✓"
+              : emailState === "error" ? "Couldn't send"
+              : "Email →"}
           </button>
         </div>
       </header>
 
-      {/* ── Main content ── */}
-      <main className="flex-1 mx-auto w-full" style={{ maxWidth: 720, padding: "56px 40px 120px" }}>
+      {/* ── Main ───────────────────────────────────────────────────────────── */}
+      <main
+        className="flex-1 mx-auto w-full"
+        style={{ maxWidth: 960, padding: "56px 40px 120px" }}
+      >
 
-        {/* ══ SCORE ════════════════════════════════════════════════════════ */}
+        {/* ══ A. DECISION SUMMARY ══════════════════════════════════════════ */}
 
-        {/* Overall + recommendation */}
-        <div className="flex items-center gap-4 flex-wrap mb-10">
+        {/* Score + recommendation */}
+        <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: 24 }}>
           <div className="flex items-baseline gap-2">
-            <span className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 80, lineHeight: 0.85, letterSpacing: "-0.05em" }}>
+            <span
+              className="font-sans font-medium tabular-nums text-[#1C2333]"
+              style={{ fontSize: 80, lineHeight: 0.85, letterSpacing: "-0.05em" }}
+            >
               {jobFitResult.overall_fit}
             </span>
-            <span className="font-sans font-medium tabular-nums" style={{ fontSize: 24, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.30)" }}>
+            <span
+              className="font-sans font-medium tabular-nums"
+              style={{ fontSize: 24, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.30)" }}
+            >
               /10
             </span>
           </div>
-          <span className="font-sans text-[13px] font-medium px-3 py-1.5 rounded-full" style={{ color: recStyle.color, background: recStyle.bg }}>
+          <span
+            className="font-sans text-[13px] font-medium px-3 py-1.5 rounded-full"
+            style={{ color: recStyle.color, background: recStyle.bg }}
+          >
             {jobFitResult.recommendation}
           </span>
         </div>
 
+        {/* Your match, explained */}
+        {jobFitResult.summary && (
+          <p
+            className="font-sans text-[#1C2333]"
+            style={{ fontSize: 18, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 640, marginBottom: 20 }}
+          >
+            {jobFitResult.summary}
+          </p>
+        )}
+
+        {/* Primary next action */}
+        {nextAction && (
+          <div
+            className="flex items-start gap-3"
+            style={{ marginBottom: 12 }}
+          >
+            <span
+              className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.40)] uppercase"
+              style={{ letterSpacing: "0.06em", lineHeight: 1.6, flexShrink: 0, paddingTop: 1 }}
+            >
+              Next
+            </span>
+            <p className="font-sans text-[14px] font-medium text-[#1C2333]" style={{ lineHeight: 1.55 }}>
+              {nextAction}
+            </p>
+          </div>
+        )}
+
+        {/* Disclaimer */}
+        <p
+          className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]"
+          style={{ marginBottom: 40 }}
+        >
+          Based on your profile and this job description. Not a prediction of interview outcomes.
+        </p>
+
+        {/* ══ B. SCORE BREAKDOWN ═══════════════════════════════════════════ */}
+
         {/* Dimensions */}
-        <div className="grid grid-cols-4 gap-3 mb-10">
+        <div className="grid grid-cols-4 gap-3" style={{ marginBottom: 32 }}>
           {dimensions.map(({ label, score }) => (
             <div key={label} className="glass-card" style={{ borderRadius: 10, padding: "14px 16px" }}>
-              <p className="font-sans text-[11px] font-medium text-[rgba(28,35,51,0.45)] mb-2" style={{ letterSpacing: "0.01em" }}>{label}</p>
-              <p className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1 }}>
-                {score}<span style={{ fontSize: 12, color: "rgba(28,35,51,0.35)", marginLeft: 2 }}>/10</span>
+              <p
+                className="font-sans font-medium text-[rgba(28,35,51,0.45)]"
+                style={{ fontSize: 11, letterSpacing: "0.01em", marginBottom: 8 }}
+              >
+                {label}
+              </p>
+              <p
+                className="font-sans font-medium tabular-nums text-[#1C2333]"
+                style={{ fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1 }}
+              >
+                {score}
+                <span style={{ fontSize: 12, color: "rgba(28,35,51,0.35)", marginLeft: 2 }}>/10</span>
               </p>
             </div>
           ))}
         </div>
 
-        {/* What you have / missing */}
+        {/* What you have / what's missing */}
         {(jobFitResult.what_you_have?.length > 0 || jobFitResult.whats_missing?.length > 0) && (
-          <div className="grid grid-cols-2 gap-6 mb-10">
+          <div className="grid grid-cols-2 gap-x-12 gap-y-6" style={{ marginBottom: 32 }}>
             {jobFitResult.what_you_have?.length > 0 && (
               <div>
                 <SectionLabel>What you have</SectionLabel>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
                   {jobFitResult.what_you_have.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 font-sans text-[13px] text-[#1C2333] leading-snug">
-                      <span style={{ color: "#7A8B73", marginTop: 2, flexShrink: 0 }}>✓</span>
+                    <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#1C2333] leading-snug">
+                      <span style={{ color: "#7A8B73", marginTop: 3, flexShrink: 0 }}>✓</span>
                       {item}
                     </li>
                   ))}
@@ -426,10 +510,10 @@ export default function BriefingPage() {
             {jobFitResult.whats_missing?.length > 0 && (
               <div>
                 <SectionLabel>What&apos;s missing</SectionLabel>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
                   {jobFitResult.whats_missing.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
-                      <span style={{ color: "rgba(28,35,51,0.30)", marginTop: 2, flexShrink: 0 }}>–</span>
+                    <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug">
+                      <span style={{ color: "rgba(28,35,51,0.30)", marginTop: 3, flexShrink: 0 }}>–</span>
                       {item}
                     </li>
                   ))}
@@ -439,11 +523,16 @@ export default function BriefingPage() {
           </div>
         )}
 
-        {/* Recruiter concern (from fit score) */}
-        {jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified" && (
-          <div className="mb-10" style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16 }}>
-            <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase" }}>
-              Recruiter Concern
+        {/* Hiring team concern */}
+        {hasRecruiterConcern && (
+          <div style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16, marginBottom: 40 }}>
+            <p
+              style={{
+                fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11,
+                letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase",
+              }}
+            >
+              A hiring team may raise
             </p>
             <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
               {jobFitResult.recruiter_concern}
@@ -451,10 +540,10 @@ export default function BriefingPage() {
           </div>
         )}
 
-        {/* ── divider ── */}
+        {/* divider */}
         <div style={{ borderTop: "1px solid rgba(28,35,51,0.09)", marginBottom: 48 }} />
 
-        {/* ══ BRIEF ════════════════════════════════════════════════════════ */}
+        {/* ══ C. APPLICATION BRIEF ═════════════════════════════════════════ */}
 
         {!briefReady ? (
           <div className="flex items-center gap-3">
@@ -462,51 +551,65 @@ export default function BriefingPage() {
             <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 44 }}>
 
             {/* Bottom Line */}
             {tailoringResult.honest_take && (
               <div>
-                <SectionLabel>Bottom Line</SectionLabel>
-                <p className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 26, lineHeight: 1.3, letterSpacing: "-0.02em" }}>
+                <SectionLabel>Bottom line</SectionLabel>
+                <p
+                  className="font-sans font-medium text-[#1C2333]"
+                  style={{ fontSize: 24, lineHeight: 1.35, letterSpacing: "-0.02em", maxWidth: 680 }}
+                >
                   {tailoringResult.honest_take}
                 </p>
               </div>
             )}
 
-            {/* Lead strengths */}
+            {/* Lead with */}
             {tailoringResult.lead_strengths.length > 0 && (
               <div>
                 <SectionLabel>Lead with</SectionLabel>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
                   {tailoringResult.lead_strengths.map((s, i) => (
                     <div key={i} className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
-                      <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{s.strength}</p>
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.60)] leading-snug">{s.framing_language}</p>
+                      <p className="font-sans text-[14px] font-medium text-[#1C2333]" style={{ marginBottom: 6 }}>
+                        {s.strength}
+                      </p>
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.60)] leading-snug">
+                        {s.framing_language}
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Mirror this language */}
+            {/* Relevant terminology */}
             {tailoringResult.jd_language_to_mirror.length > 0 && (
               <div>
-                <SectionLabel>Mirror this language</SectionLabel>
+                <SectionLabel>Relevant terminology</SectionLabel>
                 <div className="flex flex-wrap gap-2">
                   {tailoringResult.jd_language_to_mirror.map((p, i) => (
-                    <span key={i} className="font-sans text-[13px] px-3 py-1.5 text-[#1C2333]" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
+                    <span
+                      key={i}
+                      className="font-sans text-[13px] px-3 py-1.5 text-[#1C2333]"
+                      style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}
+                    >
                       &ldquo;{p.phrase}&rdquo;
                     </span>
                   ))}
                 </div>
+                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginTop: 8 }}>
+                  Use where accurate. Don&apos;t claim experience you don&apos;t have.
+                </p>
               </div>
             )}
 
-            {/* Cover Letter */}
+            {/* Cover letter */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <SectionLabel>Cover Letter</SectionLabel>
+              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                <SectionLabel>Cover letter</SectionLabel>
                 <button
                   onClick={handleGenerateCoverLetter}
                   disabled={isGeneratingCL}
@@ -516,22 +619,30 @@ export default function BriefingPage() {
                   {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Regenerate" : "Generate"}
                 </button>
               </div>
-              {isGeneratingCL && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>}
-              {clError && !isGeneratingCL && <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>}
+              {isGeneratingCL && (
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>
+              )}
+              {clError && !isGeneratingCL && (
+                <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>
+              )}
               {coverLetterResult && !isGeneratingCL && (
                 <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                  <p className="font-sans text-[13px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{coverLetterResult.cover_letter}</p>
+                  <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
+                    {coverLetterResult.cover_letter}
+                  </p>
                 </div>
               )}
               {!coverLetterResult && !isGeneratingCL && !clError && (
-                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Generate a cover letter tailored to this role.</p>
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
+                  Generate a cover letter tailored to this role.
+                </p>
               )}
             </div>
 
             {/* Outreach */}
             {tailoringResult.outreach_angle && (
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
                   <SectionLabel>Outreach</SectionLabel>
                   <button
                     onClick={handleGenerateOutreach}
@@ -542,38 +653,59 @@ export default function BriefingPage() {
                     {isGeneratingOutreach ? <><Spinner /> Generating…</> : outreachResult ? "Regenerate" : "Generate"}
                   </button>
                 </div>
-                {isGeneratingOutreach && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Drafting outreach messages…</p>}
-                {outreachError && !isGeneratingOutreach && <p className="font-sans text-[13px] text-[#8A7373]">{outreachError}</p>}
+                {isGeneratingOutreach && (
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Drafting outreach messages…</p>
+                )}
+                {outreachError && !isGeneratingOutreach && (
+                  <p className="font-sans text-[13px] text-[#8A7373]">{outreachError}</p>
+                )}
                 {outreachResult && !isGeneratingOutreach && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>EMAIL</p>
-                      <p className="font-sans text-[13px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.email}</p>
+                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>
+                        EMAIL
+                      </p>
+                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
+                        {outreachResult.email}
+                      </p>
                     </div>
                     <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>LINKEDIN</p>
-                      <p className="font-sans text-[13px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.linkedin_message}</p>
+                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>
+                        LINKEDIN
+                      </p>
+                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
+                        {outreachResult.linkedin_message}
+                      </p>
                     </div>
                   </div>
                 )}
                 {!outreachResult && !isGeneratingOutreach && !outreachError && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Generate email and LinkedIn outreach for this role.</p>
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
+                    Generate email and LinkedIn outreach for this role.
+                  </p>
                 )}
               </div>
             )}
 
-            {/* Rebuild */}
+            {/* Update brief */}
             <div style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
-              <SectionLabel>Rebuild brief</SectionLabel>
+              <SectionLabel>Update brief</SectionLabel>
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
+                Add context Claro may have missed — a specific project, correction, or framing preference.
+              </p>
               <textarea
                 value={regenerateNote}
                 onChange={(e) => setRegenerateNote(e.target.value)}
-                placeholder="Anything to correct or add? (optional)"
-                maxLength={300}
+                placeholder="e.g. I led the rebrand end-to-end, not just the visual side."
+                maxLength={400}
                 rows={2}
                 className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
               />
-              {regenerateError && <p className="font-sans text-[12px] text-[#8A7373] mt-1">{regenerateError}</p>}
+              {regenerateError && (
+                <p className="font-sans text-[12px] text-[#8A7373]" style={{ marginTop: 4 }}>
+                  {regenerateError}
+                </p>
+              )}
               <button
                 onClick={handleRegenerate}
                 disabled={isRegenerating}
