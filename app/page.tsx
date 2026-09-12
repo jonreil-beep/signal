@@ -811,13 +811,19 @@ export default function Home() {
             Welcome back.
           </h1>
           <p style={{fontFamily:"var(--font-geist-sans)", fontSize:16, fontWeight:400, color:'rgba(255,255,255,0.55)', marginBottom:44, textAlign:'center'}}>
-            {trackedJobs.length === 1 ? 'You have 1 job scored.' : `You have ${trackedJobs.length} jobs scored.`}
+            {trackedJobs.length === 0
+              ? 'Your search starts here.'
+              : trackedJobs.length === 1
+              ? 'One role scored. Keep going.'
+              : trackedJobs.length <= 4
+              ? `${trackedJobs.length} roles scored. The search is getting clearer.`
+              : `${trackedJobs.length} roles in. You've built real signal.`}
           </p>
           <button
             onClick={() => setShowLanding(false)}
             style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:14, letterSpacing:'-0.005em', color:'#1C2333', background:'#fff', border:'none', padding:'0 24px', height:44, borderRadius:8, cursor:'pointer', marginBottom:24}}
           >
-            Go to my jobs →
+            {trackedJobs.length === 0 ? 'Get started →' : 'Go to my jobs →'}
           </button>
           <button
             onClick={handleSignOut}
@@ -877,7 +883,7 @@ export default function Home() {
                 </button>
               </div>
               {magicLinkError && (
-                <p className="font-sans text-[11px] text-red-600 max-w-xs">{magicLinkError}</p>
+                <p className="font-sans text-[12px] text-red-600 max-w-xs">{magicLinkError}</p>
               )}
             </div>
           </div>
@@ -919,7 +925,7 @@ export default function Home() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="9" height="11" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Your Background</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Your Background</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
@@ -962,13 +968,13 @@ export default function Home() {
                 >
                   <div className="flex items-center gap-2.5 flex-wrap min-w-0">
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7A8B73", flexShrink: 0, display: "inline-block" }} />
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                       Resume saved
                     </span>
                     {clusterResult && (
                       <>
                         <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
-                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                           Analyzed
                         </span>
                       </>
@@ -976,7 +982,7 @@ export default function Home() {
                     {resumeSource === "file" && resumeFileName && (
                       <>
                         <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
-                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                           {resumeFileName}
                         </span>
                       </>
@@ -986,7 +992,7 @@ export default function Home() {
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                         className="hover:text-[#1C2333] transition-colors"
                       >
                         Analyze →
@@ -994,14 +1000,14 @@ export default function Home() {
                     )}
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
-                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                       className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "view" ? "Hide" : "View"}
                     </button>
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
-                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                       className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "update" ? "Cancel" : "Update"}
@@ -1051,7 +1057,7 @@ export default function Home() {
                         setProfileExpanded("none");
                       }} />
                       {!user && resumeSource === "file" && (
-                        <p className="mt-2 font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
+                        <p className="mt-2 font-sans text-[12px] text-[rgba(28,35,51,0.45)]">
                           Uploaded from file. Re-upload if you refresh the page.
                         </p>
                       )}
@@ -1064,7 +1070,7 @@ export default function Home() {
                           Writing sample <span className="font-normal text-[rgba(28,35,51,0.45)]">(optional)</span>
                         </label>
                         {writingSample.trim() && (
-                          <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
+                          <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1083,7 +1089,7 @@ export default function Home() {
                           Targeting a pivot? <span className="font-normal text-[rgba(28,35,51,0.45)]">(optional)</span>
                         </label>
                         {pivotTarget.trim() && (
-                          <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
+                          <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Auto-saved</span>
                         )}
                       </div>
                       <textarea
@@ -1136,7 +1142,7 @@ export default function Home() {
 
                 {/* ── Recommended LinkedIn Headline ── */}
                 <div id="profile-result" className="result-scroll-target pt-8">
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                     Recommended LinkedIn Headline
                   </p>
                   <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 14 }}>
@@ -1219,7 +1225,7 @@ export default function Home() {
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                     <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
@@ -1271,7 +1277,7 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9 9l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Explore Roles</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Explore Roles</span>
               </div>
               <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Discover</h1>
               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Search directly from your best-fit role clusters.</p>
@@ -1289,7 +1295,7 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                 <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
               </div>
               <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                 <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
@@ -1358,7 +1364,7 @@ export default function Home() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
