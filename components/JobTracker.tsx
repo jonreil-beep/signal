@@ -159,10 +159,6 @@ function TableRow({
               {job.label}
             </button>
           )}
-          {/* Meta row */}
-          <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)", marginTop: 3 }}>
-            {formatDateRelative(job.scoredAt)}
-          </p>
           {/* Hover-only actions */}
           <div className="flex items-center gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
@@ -325,7 +321,6 @@ function TableRow({
   );
 }
 
-type SortBy = "date" | "score";
 
 export default function JobTracker({
   jobs, hasProfile, profileUpdatedAt,
@@ -334,7 +329,6 @@ export default function JobTracker({
   onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief, generatingBriefIds,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortBy>("date");
 
   /* ── Empty state ── */
   if (jobs.length === 0) {
@@ -443,10 +437,7 @@ export default function JobTracker({
 
   const filtered = jobs
     .filter((j) => !searchQuery.trim() || j.label.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => {
-      if (sortBy === "score") return b.jobFitResult.overall_fit - a.jobFitResult.overall_fit;
-      return new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime();
-    });
+    .sort((a, b) => new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime());
 
   const isFiltered = searchQuery.trim() !== "";
 
@@ -484,39 +475,6 @@ export default function JobTracker({
         )}
       </div>
 
-      {/* ── Sort toggle ── */}
-      <div className="flex justify-end">
-        {/* Sort toggle */}
-        <div
-          className="flex items-center shrink-0 self-start sm:self-auto"
-          style={{
-            background: "rgba(255,255,255,0.55)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,0.55)",
-            borderRadius: 8,
-            padding: 4,
-          }}
-        >
-          {(["date", "score"] as SortBy[]).map((s) => (
-            <button
-              key={s}
-              onClick={() => setSortBy(s)}
-              className="font-sans text-[12px] transition-all"
-              style={{
-                padding: "4px 10px",
-                borderRadius: 6,
-                background: sortBy === s ? "rgba(28,35,51,0.06)" : "transparent",
-                color: sortBy === s ? "#1C2333" : "rgba(28,35,51,0.45)",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              {s === "date" ? "Date" : "Score"}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* ── Filtered count ── */}
       {isFiltered && (
