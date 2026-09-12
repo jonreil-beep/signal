@@ -110,6 +110,7 @@ export default function Home() {
   const [companyResearchResult, setCompanyResearchResult] = useState<CompanyResearchResult | null>(null);
 
   const [autoBuildPrep, setAutoBuildPrep] = useState(false);
+  const [generatingBriefIds, setGeneratingBriefIds] = useState<Set<string>>(new Set());
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
@@ -639,6 +640,9 @@ export default function Home() {
         application_status: "Tracking",
       });
     }
+
+    setActiveTab("my-jobs");
+    autoGenerateBrief(id, jd);
   }
 
   async function handleTailoringResult(result: TailoringBriefResult) {
@@ -653,6 +657,38 @@ export default function Home() {
       if (user) {
         await supabase.from("tracked_jobs").update({ tailoring_result: result, outreach_result: null, cover_letter_result: null, interview_prep_result: null }).eq("id", activeJobId);
       }
+    }
+  }
+
+  async function saveTailoringResultForJob(jobId: string, result: TailoringBriefResult) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === jobId ? { ...j, tailoringResult: result } : j))
+    );
+    if (activeJobId === jobId) {
+      setTailoringResult(result);
+    }
+    if (user) {
+      await supabase.from("tracked_jobs").update({ tailoring_result: result }).eq("id", jobId);
+    }
+  }
+
+  async function autoGenerateBrief(jobId: string, jd: string) {
+    if (!profileText) return;
+    setGeneratingBriefIds((prev) => new Set(prev).add(jobId));
+    try {
+      const response = await fetch("/api/tailor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription: jd, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined }),
+      });
+      if (response.ok) {
+        const data = await response.json() as TailoringBriefResult;
+        await saveTailoringResultForJob(jobId, data);
+      }
+    } catch {
+      // Silent fail — user can still build manually from Prep tab
+    } finally {
+      setGeneratingBriefIds((prev) => { const next = new Set(prev); next.delete(jobId); return next; });
     }
   }
 
@@ -1418,6 +1454,7 @@ export default function Home() {
               onGoToJobFit={() => setActiveTab("job-fit")}
               onScoreNewJob={resetAndNavigateToJobFit}
               onOpenBrief={(jobId) => { setActiveJobId(jobId); setBriefModalOpen(true); }}
+              generatingBriefIds={generatingBriefIds}
             />
           </div>
         )}

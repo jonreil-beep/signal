@@ -17,6 +17,7 @@ interface JobTrackerProps {
   onGoToJobFit: () => void;
   onScoreNewJob: () => void;
   onOpenBrief: (jobId: string) => void;
+  generatingBriefIds?: Set<string>;
 }
 
 const APPLICATION_STATUSES: ApplicationStatus[] = [
@@ -70,12 +71,13 @@ interface TableRowProps {
   onNotesChange: (id: string, notes: string) => void;
   onDeadlineChange: (id: string, deadline: string | null) => void;
   onOpenBrief: (jobId: string) => void;
+  generatingBrief?: boolean;
 }
 
 function TableRow({
   job, staggerIndex, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
-  onStatusChange, onNotesChange, onDeadlineChange, onOpenBrief,
+  onStatusChange, onNotesChange, onDeadlineChange, onOpenBrief, generatingBrief,
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -343,7 +345,11 @@ function TableRow({
               >
                 Prep
               </button>
-              {job.tailoringResult && (
+              {generatingBrief ? (
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", whiteSpace: "nowrap" }}>
+                  Building brief…
+                </span>
+              ) : job.tailoringResult ? (
                 <button
                   onClick={() => onOpenBrief(job.id)}
                   className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
@@ -361,7 +367,7 @@ function TableRow({
                 >
                   Brief
                 </button>
-              )}
+              ) : null}
             </>
           )}
         </div>
@@ -404,7 +410,7 @@ export default function JobTracker({
   jobs, hasProfile, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob, onStatusChange,
   onNotesChange, onDeadlineChange,
-  onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief,
+  onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief, generatingBriefIds,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
@@ -682,6 +688,7 @@ export default function JobTracker({
                 onNotesChange={onNotesChange}
                 onDeadlineChange={onDeadlineChange}
                 onOpenBrief={onOpenBrief}
+                generatingBrief={generatingBriefIds?.has(job.id)}
               />
             ))}
           </div>
