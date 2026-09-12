@@ -6,6 +6,7 @@ import type { TrackedJob } from "@/types";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
+  isLoading?: boolean;
   hasProfile: boolean;
   profileUpdatedAt?: Date | null;
   onSelectJob: (job: TrackedJob, goTo: "job-fit") => void;
@@ -402,12 +403,21 @@ function TableRow({
 
 
 export default function JobTracker({
-  jobs, hasProfile, profileUpdatedAt,
+  jobs, isLoading, hasProfile, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
   onNotesChange, onDeadlineChange,
   onGoToProfile, onGoToJobFit, onScoreNewJob, generatingBriefIds,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
+
+  /* ── Loading state ── */
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center" style={{ minHeight: 200 }}>
+        <div style={{ width: 20, height: 20, border: "2px solid rgba(28,35,51,0.12)", borderTopColor: "#1C2333", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+      </div>
+    );
+  }
 
   /* ── Empty state ── */
   if (jobs.length === 0) {

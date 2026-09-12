@@ -113,8 +113,10 @@ export default function Home() {
   const [generatingBriefIds, setGeneratingBriefIds] = useState<Set<string>>(new Set());
 
   const [trackedJobs, setTrackedJobs] = useState<TrackedJob[]>([]);
+  const [trackedJobsLoading, setTrackedJobsLoading] = useState(true);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [profileUpdatedAt, setProfileUpdatedAt] = useState<Date | null>(null);
+  const [isNavigatingToJob, setIsNavigatingToJob] = useState(false);
 
   // (Discover tab is now search-terms-only — no discovery state needed)
 
@@ -329,6 +331,8 @@ export default function Home() {
         setUser(session.user);
         setShowLanding(false);
         loadUserData(session.user.id);
+      } else {
+        setTrackedJobsLoading(false);
       }
       setAuthLoading(false);
     });
@@ -383,6 +387,7 @@ export default function Home() {
         notes: (row.notes as string) ?? "",
       }));
       setTrackedJobs(jobs);
+      setTrackedJobsLoading(false);
 
       // Route new users (no profile, no jobs) straight to resume upload
       if (!profileRes.data?.resume_text && jobs.length === 0) {
@@ -428,6 +433,7 @@ export default function Home() {
     setFollowUpResult(null);
     setCompanyResearchResult(null);
     setTrackedJobs([]);
+    setTrackedJobsLoading(true);
     setActiveJobId(null);
     setProfileUpdatedAt(null);
     setActiveTab("my-jobs");
@@ -640,6 +646,7 @@ export default function Home() {
     }
 
     autoGenerateBrief(id, jd, result);
+    setIsNavigatingToJob(true);
     router.push(`/jobs/${id}`);
   }
 
@@ -906,7 +913,7 @@ export default function Home() {
       activeTab={activeTab}
       onTabChange={setActiveTab}
       onScoreNewJob={resetAndNavigateToJobFit}
-      onLogoClick={() => setShowLanding(true)}
+      onLogoClick={() => user ? setActiveTab("my-jobs") : setShowLanding(true)}
       onSignOut={handleSignOut}
       jobCount={trackedJobs.length}
       user={user}
@@ -1213,7 +1220,11 @@ export default function Home() {
         {/* ── Job Fit tab ── */}
         {activeTab === "job-fit" && (
           <div>
-            {!profileText ? (
+            {isNavigatingToJob ? (
+              <div className="flex items-center justify-center" style={{ minHeight: 320 }}>
+                <div style={{ width: 20, height: 20, border: "2px solid rgba(28,35,51,0.12)", borderTopColor: "#1C2333", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+              </div>
+            ) : !profileText ? (
               <EmptyState
                 message="Complete your profile first"
                 sub="Upload or paste your resume in the Profile tab before scoring jobs."
@@ -1287,6 +1298,7 @@ export default function Home() {
             </div>
             <JobTracker
               jobs={trackedJobs}
+              isLoading={trackedJobsLoading}
               hasProfile={!!profileText}
               profileUpdatedAt={profileUpdatedAt}
               onSelectJob={handleSelectJob}
