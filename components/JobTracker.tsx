@@ -16,6 +16,7 @@ interface JobTrackerProps {
   onGoToProfile: () => void;
   onGoToJobFit: () => void;
   onScoreNewJob: () => void;
+  onOpenBrief: (jobId: string) => void;
 }
 
 const APPLICATION_STATUSES: ApplicationStatus[] = [
@@ -68,12 +69,13 @@ interface TableRowProps {
   onStatusChange: (id: string, status: ApplicationStatus) => void;
   onNotesChange: (id: string, notes: string) => void;
   onDeadlineChange: (id: string, deadline: string | null) => void;
+  onOpenBrief: (jobId: string) => void;
 }
 
 function TableRow({
   job, staggerIndex, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
-  onStatusChange, onNotesChange, onDeadlineChange,
+  onStatusChange, onNotesChange, onDeadlineChange, onOpenBrief,
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -326,6 +328,25 @@ function TableRow({
               >
                 View Fit
               </button>
+              {job.tailoringResult && (
+                <button
+                  onClick={() => onOpenBrief(job.id)}
+                  className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
+                  style={{
+                    fontFamily: "var(--font-geist-sans)",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "var(--fg)",
+                    borderRadius: 7,
+                    cursor: "pointer",
+                    height: 36,
+                    padding: "0 14px",
+                    boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
+                  }}
+                >
+                  Brief
+                </button>
+              )}
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
                 className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
@@ -385,7 +406,7 @@ export default function JobTracker({
   jobs, hasProfile, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob, onStatusChange,
   onNotesChange, onDeadlineChange,
-  onGoToProfile, onGoToJobFit, onScoreNewJob,
+  onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
@@ -662,6 +683,7 @@ export default function JobTracker({
                 onStatusChange={onStatusChange}
                 onNotesChange={onNotesChange}
                 onDeadlineChange={onDeadlineChange}
+                onOpenBrief={onOpenBrief}
               />
             ))}
           </div>

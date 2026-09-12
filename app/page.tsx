@@ -1426,6 +1426,7 @@ export default function Home() {
               onGoToProfile={() => setActiveTab("profile")}
               onGoToJobFit={() => setActiveTab("job-fit")}
               onScoreNewJob={resetAndNavigateToJobFit}
+              onOpenBrief={(jobId) => { setActiveJobId(jobId); setBriefModalOpen(true); }}
             />
           </div>
         )}
