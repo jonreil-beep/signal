@@ -588,7 +588,7 @@ export default function TailoringBrief({
       lines.push(sep);
       lines.push("");
       if (result.honest_take) {
-        lines.push("Honest Take");
+        lines.push("Bottom Line");
         lines.push(result.honest_take);
         lines.push("");
       }
@@ -761,14 +761,14 @@ export default function TailoringBrief({
         ))}
       </div>
 
-      {/* ── Honest Take — always visible when brief is built ── */}
+      {/* ── Bottom Line — always visible when brief is built ── */}
       {result?.honest_take && (
         <div
           id="prep-result"
           className="result-scroll-target honest-take-entrance py-7"
         >
           <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
-            Honest Take
+            Bottom Line
           </p>
           <p className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 38, lineHeight: 1.2, letterSpacing: "-0.025em" }}>{result.honest_take}</p>
         </div>
