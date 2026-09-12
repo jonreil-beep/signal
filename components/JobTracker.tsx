@@ -78,9 +78,19 @@ function TableRow({
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
   const [confirmingRemove, setConfirmingRemove] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [editingLabel, setEditingLabel] = useState(false);
   const [labelValue, setLabelValue] = useState(job.label);
   const labelInputRef = useRef<HTMLInputElement>(null);
+  const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => { if (removeTimerRef.current) clearTimeout(removeTimerRef.current); }, []);
+
+  function handleConfirmRemove() {
+    setConfirmingRemove(false);
+    setRemoving(true);
+    removeTimerRef.current = setTimeout(() => onRemoveJob(job.id), 320);
+  }
 
   useEffect(() => { if (!editingLabel) setLabelValue(job.label); }, [job.label, editingLabel]);
   useEffect(() => { if (editingLabel) labelInputRef.current?.select(); }, [editingLabel]);
@@ -106,7 +116,16 @@ function TableRow({
   return (
     <div
       className="card-entrance"
-      style={{ animationDelay: `${Math.min(staggerIndex, 5) * 50}ms` }}
+      style={{
+        animationDelay: `${Math.min(staggerIndex, 5) * 50}ms`,
+        overflow: "hidden",
+        maxHeight: removing ? 0 : 800,
+        opacity: removing ? 0 : 1,
+        transform: removing ? "translateY(-6px)" : "translateY(0)",
+        transition: removing
+          ? "max-height 300ms cubic-bezier(0.4,0,0.2,1), opacity 180ms ease, transform 220ms ease"
+          : "none",
+      }}
     >
       {/* ── Main table row ── */}
       <div
@@ -155,7 +174,7 @@ function TableRow({
               <>
                 <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}>Remove?</span>
                 <button
-                  onClick={() => onRemoveJob(job.id)}
+                  onClick={handleConfirmRemove}
                   style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "#8A7373" }}
                   className="hover:underline transition-colors"
                 >
