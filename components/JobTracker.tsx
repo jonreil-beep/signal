@@ -394,55 +394,103 @@ export default function JobTracker({
   /* ── Empty state ── */
   if (jobs.length === 0) {
     return (
-      <div className="py-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
-          {[
-            { step: "01", title: "Add your profile", body: "Upload your resume or paste the text. Your background is the foundation for all scoring and prep.", done: hasProfile },
-            { step: "02", title: "Score a job", body: "Paste any job description. Get a 1–10 fit score with clear reasoning in about 20 seconds.", done: false },
-            { step: "03", title: "Build your prep", body: "Get a targeted prep guide covering what to emphasize, what to drop, and how to position yourself.", done: false },
-          ].map(({ step, title, body, done }) => (
-            <div
-              key={step}
-              className={`rounded-[10px] px-5 py-5 glass-card ${done ? "bg-[rgba(122,139,115,0.06)]" : ""}`}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <span className={`font-sans text-[12px] px-1.5 py-0.5 rounded-[5px] shrink-0 ${done ? "bg-[rgba(122,139,115,0.15)] text-[#7A8B73]" : "bg-[rgba(28,35,51,0.06)] text-[rgba(28,35,51,0.45)]"}`}>
-                  {done ? (
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="inline">
-                      <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ) : step}
+      <div className="py-2">
+        <div className="grid grid-cols-1 md:grid-cols-3">
+
+          {/* Step 01 — Add profile */}
+          <div className="md:border-r border-[rgba(28,35,51,0.08)] md:pr-10 pb-10 md:pb-0">
+            <div className="flex items-end gap-3 mb-5">
+              <span
+                className="font-sans font-bold leading-none"
+                style={{ fontSize: 80, letterSpacing: "-0.04em", color: hasProfile ? "#7A8B73" : "#1C2333" }}
+              >
+                01
+              </span>
+              {hasProfile && (
+                <span
+                  className="font-sans mb-2.5"
+                  style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", color: "#7A8B73", border: "1.5px solid rgba(122,139,115,0.45)", borderRadius: 100, padding: "3px 9px" }}
+                >
+                  SAVED
                 </span>
-                <p className={`font-sans text-[14px] font-medium ${done ? "text-[#7A8B73]" : "text-[#1C2333]"}`}>{title}</p>
-              </div>
-              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-relaxed">{body}</p>
+              )}
             </div>
-          ))}
-        </div>
-        <div className="text-center">
-          {!hasProfile ? (
-            <>
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Start by uploading your resume. Everything else follows from there.</p>
+            <p className="font-sans font-semibold text-[18px] text-[#1C2333] mb-2" style={{ letterSpacing: "-0.01em" }}>
+              Add your profile
+            </p>
+            <p className="font-sans text-[14px] leading-relaxed text-[rgba(28,35,51,0.55)] mb-5">
+              Upload your resume or paste the text. Your background is the foundation for all scoring and prep.
+            </p>
+            {!hasProfile && (
               <button
                 onClick={onGoToProfile}
-                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
-                style={{ height: 40 }}
+                className="font-sans font-semibold text-[14px] text-[#1C2333] hover:opacity-70 transition-opacity"
+                style={{ background: "none", border: "none", borderBottom: "2px solid #1C2333", paddingBottom: 1, cursor: "pointer" }}
               >
-                Add your profile
+                Add your profile →
               </button>
-            </>
-          ) : (
-            <>
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Your profile is saved. Drop in a job description to see how you stack up.</p>
+            )}
+          </div>
+
+          {/* Step 02 — Score a job */}
+          <div className="md:border-r border-[rgba(28,35,51,0.08)] md:px-10 py-10 md:py-0">
+            <div className="flex items-end gap-3 mb-5">
+              <span
+                className="font-sans font-bold leading-none"
+                style={{ fontSize: 80, letterSpacing: "-0.04em", color: hasProfile ? "#1C2333" : "rgba(28,35,51,0.18)" }}
+              >
+                02
+              </span>
+              {hasProfile && (
+                <span
+                  className="font-sans mb-2.5"
+                  style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.09em", color: "#fff", background: "#1C2333", borderRadius: 100, padding: "4px 10px" }}
+                >
+                  NOW
+                </span>
+              )}
+            </div>
+            <p
+              className="font-sans font-semibold text-[18px] mb-2"
+              style={{ letterSpacing: "-0.01em", color: hasProfile ? "#1C2333" : "rgba(28,35,51,0.30)" }}
+            >
+              Score a job
+            </p>
+            <p
+              className="font-sans text-[14px] leading-relaxed mb-5"
+              style={{ color: hasProfile ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.28)" }}
+            >
+              Paste any job description. Get a 1–10 fit score with clear reasoning in about 20 seconds.
+            </p>
+            {hasProfile && (
               <button
                 onClick={onGoToJobFit}
-                className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
-                style={{ height: 40 }}
+                className="font-sans font-semibold text-[14px] text-[#1C2333] hover:opacity-70 transition-opacity"
+                style={{ background: "none", border: "none", borderBottom: "2px solid #1C2333", paddingBottom: 1, cursor: "pointer" }}
               >
-                Score a job
+                Paste a description
               </button>
-            </>
-          )}
+            )}
+          </div>
+
+          {/* Step 03 — Build prep */}
+          <div className="md:pl-10 pt-10 md:pt-0">
+            <div className="mb-5">
+              <span
+                className="font-sans font-bold leading-none"
+                style={{ fontSize: 80, letterSpacing: "-0.04em", color: "rgba(28,35,51,0.14)" }}
+              >
+                03
+              </span>
+            </div>
+            <p className="font-sans font-semibold text-[18px] mb-2" style={{ letterSpacing: "-0.01em", color: "rgba(28,35,51,0.30)" }}>
+              Build your prep
+            </p>
+            <p className="font-sans text-[14px] leading-relaxed" style={{ color: "rgba(28,35,51,0.28)" }}>
+              Get a targeted prep guide covering what to emphasize, what to drop, and how to position yourself.
+            </p>
+          </div>
+
         </div>
       </div>
     );
