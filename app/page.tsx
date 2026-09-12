@@ -1332,7 +1332,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
-                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every role you've scored, with fit score and application brief.</p>
                 </div>
               </div>
             </div>

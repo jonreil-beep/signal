@@ -334,7 +334,7 @@ export default function JobTracker({
   if (jobs.length === 0) {
     return (
       <div className="py-2">
-        <div className="grid grid-cols-1 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 max-w-2xl">
 
           {/* Step 01 — Add profile */}
           <div className="md:border-r border-[rgba(28,35,51,0.08)] md:pr-10 pb-10 md:pb-0">
@@ -358,7 +358,7 @@ export default function JobTracker({
               Add your profile
             </p>
             <p className="font-sans text-[14px] leading-relaxed text-[rgba(28,35,51,0.55)] mb-5">
-              Upload your resume or paste the text. Your background is the foundation for all scoring and prep.
+              Upload your resume or paste the text. Your background is the foundation for scoring.
             </p>
             {!hasProfile && (
               <button
@@ -372,7 +372,7 @@ export default function JobTracker({
           </div>
 
           {/* Step 02 — Score a job */}
-          <div className="md:border-r border-[rgba(28,35,51,0.08)] md:px-10 py-10 md:py-0">
+          <div className="md:pl-10 pt-10 md:pt-0">
             <div className="flex items-end gap-3 mb-5">
               <span
                 className="font-sans font-bold leading-none"
@@ -399,7 +399,7 @@ export default function JobTracker({
               className="font-sans text-[14px] leading-relaxed mb-5"
               style={{ color: hasProfile ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.28)" }}
             >
-              Paste any job description. Get a 1–10 fit score with clear reasoning in about 20 seconds.
+              Paste any job description. Get a fit score, bottom line, cover letter, and outreach — automatically.
             </p>
             {hasProfile && (
               <button
@@ -410,24 +410,6 @@ export default function JobTracker({
                 Paste a description
               </button>
             )}
-          </div>
-
-          {/* Step 03 — Build prep */}
-          <div className="md:pl-10 pt-10 md:pt-0">
-            <div className="mb-5">
-              <span
-                className="font-sans font-bold leading-none"
-                style={{ fontSize: 80, letterSpacing: "-0.04em", color: "rgba(28,35,51,0.14)" }}
-              >
-                03
-              </span>
-            </div>
-            <p className="font-sans font-semibold text-[18px] mb-2" style={{ letterSpacing: "-0.01em", color: "rgba(28,35,51,0.30)" }}>
-              Build your prep
-            </p>
-            <p className="font-sans text-[14px] leading-relaxed" style={{ color: "rgba(28,35,51,0.28)" }}>
-              Get a targeted prep guide covering what to emphasize, what to drop, and how to position yourself.
-            </p>
           </div>
 
         </div>
