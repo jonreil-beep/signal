@@ -144,7 +144,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
             </div>
           </div>
 
-          {isLoading && <LoadingState message="Extracting text from file…" />}
+          {isLoading && <LoadingState message="Reading your resume. This may take a few seconds…" />}
 
           {error && (
             <div className="mt-3 p-4 border-l-2 border-[#8A7373]">
