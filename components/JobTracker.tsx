@@ -282,7 +282,7 @@ function TableRow({
                     boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                   }}
                 >
-                  See brief
+                  Your briefing
                 </Link>
               ) : null}
             </>

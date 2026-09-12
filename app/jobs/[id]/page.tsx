@@ -10,7 +10,7 @@ import type {
   OutreachResult, CoverLetterResult,
 } from "@/types";
 
-// ── helpers (same as page.tsx) ──────────────────────────────────────────────
+// ── normalizers (mirrors page.tsx) ──────────────────────────────────────────
 
 function normalizeJobFitResult(raw: unknown): JobFitResult {
   const r = raw as Record<string, unknown>;
@@ -35,18 +35,18 @@ function normalizeOutreachResult(raw: unknown): OutreachResult | null {
   return r as unknown as OutreachResult;
 }
 
-// ── small shared bits ────────────────────────────────────────────────────────
+// ── small shared UI ──────────────────────────────────────────────────────────
 
-const RECOMMENDATION_STYLES: Record<string, { color: string; bg: string }> = {
-  "Apply Now":                   { color: "#7A8B73", bg: "rgba(122,139,115,0.08)" },
+const REC_STYLES: Record<string, { color: string; bg: string }> = {
+  "Apply Now":                   { color: "#7A8B73", bg: "rgba(122,139,115,0.10)" },
   "Apply with Tailoring":        { color: "#9B8E73", bg: "rgba(155,142,115,0.10)" },
   "Stretch — Proceed Carefully": { color: "#8A7373", bg: "rgba(138,115,115,0.10)" },
-  "Skip":                        { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.04)" },
+  "Skip":                        { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" },
 };
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
+    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 12, textTransform: "uppercase" }}>
       {children}
     </p>
   );
@@ -61,11 +61,11 @@ function Spinner() {
   );
 }
 
-// ── page ─────────────────────────────────────────────────────────────────────
-
 type EmailState = "idle" | "sending" | "sent" | "error";
 
-export default function BriefPage() {
+// ── page ─────────────────────────────────────────────────────────────────────
+
+export default function BriefingPage() {
   const params = useParams();
   const jobId = params.id as string;
   const router = useRouter();
@@ -76,20 +76,13 @@ export default function BriefPage() {
   const [pivotTarget, setPivotTarget] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // CL
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
   const [clError, setClError] = useState("");
-
-  // Outreach
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
   const [outreachError, setOutreachError] = useState("");
-
-  // Regenerate
   const [regenerateNote, setRegenerateNote] = useState("");
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [regenerateError, setRegenerateError] = useState("");
-
-  // Footer
   const [copied, setCopied] = useState(false);
   const [emailState, setEmailState] = useState<EmailState>("idle");
   const [sentToEmail, setSentToEmail] = useState("");
@@ -103,7 +96,6 @@ export default function BriefPage() {
       if (!session) { router.push("/"); return; }
 
       const userId = session.user.id;
-
       const [{ data: row }, { data: profile }] = await Promise.all([
         supabase.from("tracked_jobs").select("*").eq("id", jobId).eq("user_id", userId).single(),
         supabase.from("profiles").select("resume_text").eq("id", userId).single(),
@@ -143,7 +135,31 @@ export default function BriefPage() {
     load();
   }, [jobId, router]);
 
-  // ── helpers ───────────────────────────────────────────────────────────────
+  // ── poll until brief arrives ──────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!job || job.tailoringResult) return;
+    const interval = setInterval(async () => {
+      const supabase = createClient();
+      const { data: row } = await supabase
+        .from("tracked_jobs")
+        .select("tailoring_result, cover_letter_result, outreach_result")
+        .eq("id", jobId)
+        .single();
+      if (row?.tailoring_result) {
+        setJob((prev) => prev ? {
+          ...prev,
+          tailoringResult: row.tailoring_result as TailoringBriefResult,
+          coverLetterResult: (row.cover_letter_result as CoverLetterResult | null) ?? prev.coverLetterResult,
+          outreachResult: normalizeOutreachResult(row.outreach_result) ?? prev.outreachResult,
+        } : prev);
+        clearInterval(interval);
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [job, jobId]);
+
+  // ── actions ───────────────────────────────────────────────────────────────
 
   function updateJob(patch: Partial<TrackedJob>) {
     setJob((prev) => prev ? { ...prev, ...patch } : prev);
@@ -256,7 +272,7 @@ export default function BriefPage() {
       await navigator.clipboard.writeText(formatBrief(job.label, job.jobFitResult, job.tailoringResult));
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch { /* clipboard unavailable */ }
+    } catch { /* unavailable */ }
   }
 
   async function handleEmailSend() {
@@ -281,7 +297,7 @@ export default function BriefPage() {
 
   // ── render ────────────────────────────────────────────────────────────────
 
-  const bgGradient = [
+  const bg = [
     "radial-gradient(ellipse 70% 60% at 95% 5%, rgba(255,150,70,0.18) 0%, transparent 65%)",
     "radial-gradient(ellipse 70% 65% at 5% 95%, rgba(100,110,220,0.16) 0%, transparent 65%)",
     "radial-gradient(ellipse 55% 55% at 95% 60%, rgba(215,90,150,0.13) 0%, transparent 58%)",
@@ -290,7 +306,7 @@ export default function BriefPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: bgGradient }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: bg }}>
         <Spinner />
       </div>
     );
@@ -299,11 +315,19 @@ export default function BriefPage() {
   if (!job) return null;
 
   const { jobFitResult, tailoringResult, coverLetterResult, outreachResult } = job;
-  const recStyle = RECOMMENDATION_STYLES[jobFitResult.recommendation] ??
-    { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.04)" };
+  const recStyle = REC_STYLES[jobFitResult.recommendation] ?? { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" };
+
+  const dimensions = [
+    { label: "Function",  score: jobFitResult.dimensions.functional_fit.score },
+    { label: "Seniority", score: jobFitResult.dimensions.seniority_fit.score },
+    { label: "Industry",  score: jobFitResult.dimensions.industry_fit.score },
+    { label: "Keywords",  score: jobFitResult.dimensions.keyword_overlap.score },
+  ];
+
+  const briefReady = !!tailoringResult;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: bgGradient }}>
+    <div className="min-h-screen flex flex-col" style={{ background: bg }}>
 
       {/* ── Top bar ── */}
       <header
@@ -311,7 +335,7 @@ export default function BriefPage() {
         style={{
           padding: "0 40px",
           height: 56,
-          background: "rgba(245,243,240,0.75)",
+          background: "rgba(245,243,240,0.80)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid rgba(28,35,51,0.07)",
@@ -319,8 +343,8 @@ export default function BriefPage() {
       >
         <Link
           href="/"
-          className="flex items-center gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.55)] hover:text-[#1C2333] transition-colors"
-          style={{ fontWeight: 500 }}
+          className="flex items-center gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors"
+          style={{ fontWeight: 500, textDecoration: "none" }}
         >
           <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
             <path d="M13 5H1M1 5L5 1M1 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -328,18 +352,14 @@ export default function BriefPage() {
           Jobs
         </Link>
 
-        <p
-          className="font-sans font-medium text-[#1C2333] truncate max-w-[50vw] text-center"
-          style={{ fontSize: 14, letterSpacing: "-0.01em" }}
-        >
+        <p className="font-sans font-medium text-[#1C2333] truncate max-w-[50vw] text-center" style={{ fontSize: 14, letterSpacing: "-0.01em" }}>
           {job.label}
         </p>
 
-        {/* Copy + Email */}
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopy}
-            className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.55)] hover:text-[#1C2333] transition-colors focus:outline-none"
+            className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
             style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}
           >
             {copied ? "Copied ✓" : "Copy"}
@@ -350,33 +370,98 @@ export default function BriefPage() {
             className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
             style={{ height: 32, padding: "0 14px", cursor: emailState === "sending" ? "default" : "pointer" }}
           >
-            {emailState === "sending" && "Sending…"}
-            {emailState === "sent"    && `Sent ✓`}
-            {emailState === "error"   && "Couldn't send"}
-            {emailState === "idle"    && "Email →"}
+            {emailState === "sending" ? "Sending…" : emailState === "sent" ? `Sent ✓` : emailState === "error" ? "Couldn't send" : "Email →"}
           </button>
         </div>
       </header>
 
-      {/* ── Content ── */}
+      {/* ── Main content ── */}
       <main className="flex-1 mx-auto w-full" style={{ maxWidth: 720, padding: "56px 40px 120px" }}>
 
-        {/* Score + recommendation */}
+        {/* ══ SCORE ════════════════════════════════════════════════════════ */}
+
+        {/* Overall + recommendation */}
         <div className="flex items-center gap-4 flex-wrap mb-10">
           <div className="flex items-baseline gap-2">
-            <span className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 72, lineHeight: 0.9, letterSpacing: "-0.05em" }}>
+            <span className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 80, lineHeight: 0.85, letterSpacing: "-0.05em" }}>
               {jobFitResult.overall_fit}
             </span>
-            <span className="font-sans font-medium tabular-nums" style={{ fontSize: 22, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.35)" }}>
+            <span className="font-sans font-medium tabular-nums" style={{ fontSize: 24, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.30)" }}>
               /10
             </span>
           </div>
-          <span className="font-sans text-[12px] font-medium px-3 py-1.5" style={{ color: recStyle.color, background: recStyle.bg, borderRadius: "9999px" }}>
+          <span className="font-sans text-[13px] font-medium px-3 py-1.5 rounded-full" style={{ color: recStyle.color, background: recStyle.bg }}>
             {jobFitResult.recommendation}
           </span>
         </div>
 
-        {tailoringResult ? (
+        {/* Dimensions */}
+        <div className="grid grid-cols-4 gap-3 mb-10">
+          {dimensions.map(({ label, score }) => (
+            <div key={label} className="glass-card" style={{ borderRadius: 10, padding: "14px 16px" }}>
+              <p className="font-sans text-[11px] font-medium text-[rgba(28,35,51,0.45)] mb-2" style={{ letterSpacing: "0.01em" }}>{label}</p>
+              <p className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1 }}>
+                {score}<span style={{ fontSize: 12, color: "rgba(28,35,51,0.35)", marginLeft: 2 }}>/10</span>
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* What you have / missing */}
+        {(jobFitResult.what_you_have?.length > 0 || jobFitResult.whats_missing?.length > 0) && (
+          <div className="grid grid-cols-2 gap-6 mb-10">
+            {jobFitResult.what_you_have?.length > 0 && (
+              <div>
+                <SectionLabel>What you have</SectionLabel>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                  {jobFitResult.what_you_have.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 font-sans text-[13px] text-[#1C2333] leading-snug">
+                      <span style={{ color: "#7A8B73", marginTop: 2, flexShrink: 0 }}>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {jobFitResult.whats_missing?.length > 0 && (
+              <div>
+                <SectionLabel>What&apos;s missing</SectionLabel>
+                <ul style={{ display: "flex", flexDirection: "column", gap: 6, listStyle: "none", padding: 0, margin: 0 }}>
+                  {jobFitResult.whats_missing.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
+                      <span style={{ color: "rgba(28,35,51,0.30)", marginTop: 2, flexShrink: 0 }}>–</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Recruiter concern (from fit score) */}
+        {jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified" && (
+          <div className="mb-10" style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16 }}>
+            <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase" }}>
+              Recruiter Concern
+            </p>
+            <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
+              {jobFitResult.recruiter_concern}
+            </p>
+          </div>
+        )}
+
+        {/* ── divider ── */}
+        <div style={{ borderTop: "1px solid rgba(28,35,51,0.09)", marginBottom: 48 }} />
+
+        {/* ══ BRIEF ════════════════════════════════════════════════════════ */}
+
+        {!briefReady ? (
+          <div className="flex items-center gap-3">
+            <Spinner />
+            <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>
+          </div>
+        ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
 
             {/* Bottom Line */}
@@ -389,25 +474,15 @@ export default function BriefPage() {
               </div>
             )}
 
-            {/* Recruiter concern */}
-            <div style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16 }}>
-              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "#9B8E73", marginBottom: 8 }}>
-                Recruiter Concern
-              </p>
-              <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
-                {tailoringResult.recruiter_concern_to_preempt.concern}
-              </p>
-            </div>
-
             {/* Lead strengths */}
             {tailoringResult.lead_strengths.length > 0 && (
               <div>
-                <SectionLabel>Lead with these strengths</SectionLabel>
+                <SectionLabel>Lead with</SectionLabel>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {tailoringResult.lead_strengths.map((s, i) => (
                     <div key={i} className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
                       <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{s.strength}</p>
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{s.framing_language}</p>
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.60)] leading-snug">{s.framing_language}</p>
                     </div>
                   ))}
                 </div>
@@ -436,7 +511,7 @@ export default function BriefPage() {
                   onClick={handleGenerateCoverLetter}
                   disabled={isGeneratingCL}
                   className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                  style={{ color: "rgba(28,35,51,0.55)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
+                  style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
                 >
                   {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Regenerate" : "Generate"}
                 </button>
@@ -462,7 +537,7 @@ export default function BriefPage() {
                     onClick={handleGenerateOutreach}
                     disabled={isGeneratingOutreach}
                     className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                    style={{ color: "rgba(28,35,51,0.55)", background: "none", border: "none", cursor: isGeneratingOutreach ? "default" : "pointer", padding: 0 }}
+                    style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingOutreach ? "default" : "pointer", padding: 0 }}
                   >
                     {isGeneratingOutreach ? <><Spinner /> Generating…</> : outreachResult ? "Regenerate" : "Generate"}
                   </button>
@@ -472,11 +547,11 @@ export default function BriefPage() {
                 {outreachResult && !isGeneratingOutreach && (
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>EMAIL</p>
+                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>EMAIL</p>
                       <p className="font-sans text-[13px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.email}</p>
                     </div>
                     <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 10 }}>LINKEDIN</p>
+                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>LINKEDIN</p>
                       <p className="font-sans text-[13px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.linkedin_message}</p>
                     </div>
                   </div>
@@ -487,7 +562,7 @@ export default function BriefPage() {
               </div>
             )}
 
-            {/* Regenerate */}
+            {/* Rebuild */}
             <div style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
               <SectionLabel>Rebuild brief</SectionLabel>
               <textarea
@@ -503,20 +578,15 @@ export default function BriefPage() {
                 onClick={handleRegenerate}
                 disabled={isRegenerating}
                 className="mt-2 flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                style={{ color: "rgba(28,35,51,0.55)", background: "none", border: "none", cursor: isRegenerating ? "default" : "pointer", padding: 0 }}
+                style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isRegenerating ? "default" : "pointer", padding: 0 }}
               >
                 {isRegenerating ? <><Spinner /> Rebuilding…</> : "Rebuild →"}
               </button>
             </div>
 
           </div>
-        ) : (
-          <div style={{ paddingTop: 8 }}>
-            <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)]">Brief is still generating — check back in a moment.</p>
-          </div>
         )}
       </main>
-
     </div>
   );
 }

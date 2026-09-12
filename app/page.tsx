@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import ProfileUploader from "@/components/ProfileUploader";
@@ -52,6 +53,7 @@ function normalizeOutreachResult(raw: unknown): OutreachResult | null {
 
 export default function Home() {
   const supabase = createClient();
+  const router = useRouter();
   const [isNewSignup, setIsNewSignup] = useState(false);
 
   // ── Detect new signup from ?welcome=true param ──
@@ -632,8 +634,8 @@ export default function Home() {
       });
     }
 
-    setActiveTab("my-jobs");
     autoGenerateBrief(id, jd);
+    router.push(`/jobs/${id}`);
   }
 
   async function handleTailoringResult(result: TailoringBriefResult) {
