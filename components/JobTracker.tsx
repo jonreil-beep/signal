@@ -334,7 +334,7 @@ export default function JobTracker({
   if (jobs.length === 0) {
     return (
       <div className="py-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 max-w-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-2">
 
           {/* Step 01 — Add profile */}
           <div className="md:border-r border-[rgba(28,35,51,0.08)] md:pr-10 pb-10 md:pb-0">
