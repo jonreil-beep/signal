@@ -150,13 +150,13 @@ function TableRow({
             />
           ) : (
             <div>
-              <button
-                onClick={() => onSelectJob(job, "job-fit")}
-                className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left"
-                style={{ fontSize: 17, letterSpacing: "-0.012em", whiteSpace: "normal", wordBreak: "break-word", maxWidth: 360, display: "block" }}
+              <Link
+                href={`/jobs/${job.id}`}
+                className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug"
+                style={{ fontSize: 17, letterSpacing: "-0.012em", whiteSpace: "normal", wordBreak: "break-word", maxWidth: 360, display: "block", textDecoration: "none" }}
               >
                 {job.label}
-              </button>
+              </Link>
               {job.jobFitResult.company && (
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] mt-0.5 leading-snug">
                   {job.jobFitResult.company}
@@ -272,31 +272,30 @@ function TableRow({
               Re-score →
             </button>
           ) : (
-            <>
-              {generatingBrief ? (
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", whiteSpace: "nowrap" }}>
+            <div className="flex flex-col items-end gap-1.5">
+              {generatingBrief && (
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, color: "rgba(28,35,51,0.40)", whiteSpace: "nowrap" }}>
                   Building brief…
                 </span>
-              ) : job.tailoringResult ? (
-                <Link
-                  href={`/jobs/${job.id}`}
-                  className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card inline-flex items-center"
-                  style={{
-                    fontFamily: "var(--font-geist-sans)",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "var(--fg)",
-                    borderRadius: 7,
-                    textDecoration: "none",
-                    height: 36,
-                    padding: "0 14px",
-                    boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
-                  }}
-                >
-                  View match
-                </Link>
-              ) : null}
-            </>
+              )}
+              <Link
+                href={`/jobs/${job.id}`}
+                className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card inline-flex items-center"
+                style={{
+                  fontFamily: "var(--font-geist-sans)",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--fg)",
+                  borderRadius: 7,
+                  textDecoration: "none",
+                  height: 36,
+                  padding: "0 14px",
+                  boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
+                }}
+              >
+                View match
+              </Link>
+            </div>
           )}
         </div>
       </div>

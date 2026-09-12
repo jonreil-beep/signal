@@ -120,9 +120,16 @@ export default function Home() {
 
   // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
-    const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
     const valid: TabId[] = ["profile", "job-fit", "my-jobs"];
-    if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
+    // ?tab= from briefing sidebar nav takes priority; clean the URL after reading
+    const tabParam = new URLSearchParams(window.location.search).get("tab") as TabId | null;
+    if (tabParam && valid.includes(tabParam)) {
+      setActiveTab(tabParam);
+      window.history.replaceState({}, "", "/");
+    } else {
+      const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
+      if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
+    }
 
     // Restore guest "dismissed landing" state so refresh doesn't kick them back to landing
     // Also support ?skip=1 from external links (e.g. How It Works "Try without signing up")

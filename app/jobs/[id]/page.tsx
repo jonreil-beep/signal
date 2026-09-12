@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -43,12 +43,6 @@ const REC_STYLES: Record<string, { color: string; bg: string }> = {
   "Lower priority": { color: "#8A7373", bg: "rgba(138,115,115,0.10)" },
 };
 
-const NEXT_ACTION: Record<string, string> = {
-  "Pursue":         "Draft outreach. The cover letter and LinkedIn message are ready below.",
-  "Consider":       "Review the positioning notes below before drafting. The framing matters here.",
-  "Lower priority": "Clarify the gaps before investing time. Address the concern below first.",
-};
-
 const APP_BG = [
   "radial-gradient(ellipse 70% 60% at 95% 5%, rgba(255,150,70,0.18) 0%, transparent 65%)",
   "radial-gradient(ellipse 70% 65% at 5% 95%, rgba(100,110,220,0.16) 0%, transparent 65%)",
@@ -56,7 +50,9 @@ const APP_BG = [
   "#F5F3F0",
 ].join(", ");
 
-// ── small components ──────────────────────────────────────────────────────────
+type EmailState = "idle" | "sending" | "sent" | "error";
+
+// ── small UI components ───────────────────────────────────────────────────────
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -80,7 +76,30 @@ function Spinner() {
   );
 }
 
-type EmailState = "idle" | "sending" | "sent" | "error";
+function ScoreBar({ score, fill }: { score: number; fill: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex-1 relative" style={{ height: 6, background: "rgba(28,35,51,0.08)", borderRadius: 3 }}>
+        <div style={{ position: "absolute", top: 0, left: 0, height: 6, background: fill, borderRadius: 3, width: `${score * 10}%` }} />
+      </div>
+      <span className="font-sans font-medium tabular-nums text-[#1C2333]"
+        style={{ fontSize: 18, letterSpacing: "-0.03em", lineHeight: 1, width: 24, textAlign: "right" }}>
+        {score}
+      </span>
+    </div>
+  );
+}
+
+function Brandmark() {
+  return (
+    <div style={{
+      width: 18, height: 18, background: "#1C2333", borderRadius: 4,
+      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+    }}>
+      <span style={{ color: "#fff", fontSize: 10, fontWeight: 600, fontFamily: "var(--font-geist-sans)", lineHeight: 1 }}>C</span>
+    </div>
+  );
+}
 
 // ── page ──────────────────────────────────────────────────────────────────────
 
@@ -93,8 +112,10 @@ export default function BriefingPage() {
   const [profileText, setProfileText] = useState("");
   const [writingSample, setWritingSample] = useState("");
   const [pivotTarget, setPivotTarget] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
   const [clError, setClError] = useState("");
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
@@ -105,6 +126,19 @@ export default function BriefingPage() {
   const [copied, setCopied] = useState(false);
   const [emailState, setEmailState] = useState<EmailState>("idle");
 
+  // UI disclosure states
+  const [scoreOpen, setScoreOpen] = useState(false);
+  const [showAllHave, setShowAllHave] = useState(false);
+  const [showAllMissing, setShowAllMissing] = useState(false);
+  const [showAllLeads, setShowAllLeads] = useState(false);
+  const [expandedLead, setExpandedLead] = useState<number | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // scroll refs
+  const updateBriefRef = useRef<HTMLDivElement>(null);
+  const outreachRef = useRef<HTMLDivElement>(null);
+  const coverLetterRef = useRef<HTMLDivElement>(null);
+
   // ── load ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -114,6 +148,8 @@ export default function BriefingPage() {
       if (!session) { router.push("/"); return; }
 
       const userId = session.user.id;
+      setUserEmail(session.user.email ?? "");
+
       const [{ data: row }, { data: profile }] = await Promise.all([
         supabase.from("tracked_jobs").select("*").eq("id", jobId).eq("user_id", userId).single(),
         supabase.from("profiles").select("resume_text").eq("id", userId).single(),
@@ -284,6 +320,8 @@ export default function BriefingPage() {
         updateJob({ tailoringResult: result, coverLetterResult: null, outreachResult: null });
         await saveToDb({ tailoring_result: result, cover_letter_result: null, outreach_result: null });
         setRegenerateNote("");
+        setShowAllLeads(false);
+        setExpandedLead(null);
       }
     } catch {
       setRegenerateError("Network error. Check your connection and try again.");
@@ -322,6 +360,35 @@ export default function BriefingPage() {
     }
   }
 
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+  }
+
+  // ── scroll helpers ────────────────────────────────────────────────────────
+
+  function scrollToAddContext() {
+    updateBriefRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => {
+      updateBriefRef.current?.querySelector("textarea")?.focus();
+    }, 400);
+  }
+
+  function scrollAndGenCoverLetter() {
+    coverLetterRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!job?.coverLetterResult && !isGeneratingCL) {
+      setTimeout(() => handleGenerateCoverLetter(), 500);
+    }
+  }
+
+  function scrollAndGenOutreach() {
+    outreachRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!job?.outreachResult && !isGeneratingOutreach) {
+      setTimeout(() => handleGenerateOutreach(), 500);
+    }
+  }
+
   // ── render ────────────────────────────────────────────────────────────────
 
   if (loading) {
@@ -336,395 +403,540 @@ export default function BriefingPage() {
 
   const { jobFitResult, tailoringResult, coverLetterResult, outreachResult } = job;
   const recStyle = REC_STYLES[jobFitResult.recommendation] ?? { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" };
-  const nextAction = NEXT_ACTION[jobFitResult.recommendation] ?? "";
-
-  const dimensions = [
-    { label: "Function",  key: "functional_fit",  score: jobFitResult.dimensions.functional_fit.score,  reasoning: jobFitResult.dimensions.functional_fit.reasoning },
-    { label: "Seniority", key: "seniority_fit",   score: jobFitResult.dimensions.seniority_fit.score,   reasoning: jobFitResult.dimensions.seniority_fit.reasoning },
-    { label: "Industry",  key: "industry_fit",    score: jobFitResult.dimensions.industry_fit.score,    reasoning: jobFitResult.dimensions.industry_fit.reasoning },
-    { label: "Keywords",  key: "keyword_overlap", score: jobFitResult.dimensions.keyword_overlap.score, reasoning: jobFitResult.dimensions.keyword_overlap.reasoning },
-  ];
-
-  const hasRecruiterConcern =
-    !!jobFitResult.recruiter_concern &&
-    jobFitResult.recruiter_concern !== "None identified";
-
   const briefReady = !!tailoringResult;
 
-  return (
-    <div className="min-h-screen flex flex-col" style={{ background: APP_BG }}>
+  // Single decision summary — honest_take when ready, summary while loading
+  const decisionSummary = (briefReady && tailoringResult.honest_take)
+    ? tailoringResult.honest_take
+    : jobFitResult.summary;
 
-      {/* ── Top bar ────────────────────────────────────────────────────────── */}
-      <header
-        className="sticky top-0 z-20 flex items-center justify-between"
-        style={{
-          padding: "0 40px",
-          height: 56,
-          background: "rgba(245,243,240,0.85)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(28,35,51,0.07)",
-        }}
-      >
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors"
-          style={{ fontWeight: 500, textDecoration: "none", flexShrink: 0 }}
+  // Evidence visibility
+  const haveItems = jobFitResult.what_you_have ?? [];
+  const missingItems = jobFitResult.whats_missing ?? [];
+  const visibleHave = showAllHave ? haveItems : haveItems.slice(0, 3);
+  const visibleMissing = showAllMissing ? missingItems : missingItems.slice(0, 2);
+  const hasRecruiterConcern = !!jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified";
+
+  // Lead strengths visibility
+  const leadStrengths = tailoringResult?.lead_strengths ?? [];
+  const visibleLeads = showAllLeads ? leadStrengths : leadStrengths.slice(0, 3);
+
+  // Dimensions
+  const dimensions = [
+    { label: "Functional Fit",  score: jobFitResult.dimensions.functional_fit.score,  reasoning: jobFitResult.dimensions.functional_fit.reasoning },
+    { label: "Seniority Fit",   score: jobFitResult.dimensions.seniority_fit.score,   reasoning: jobFitResult.dimensions.seniority_fit.reasoning },
+    { label: "Industry Fit",    score: jobFitResult.dimensions.industry_fit.score,    reasoning: jobFitResult.dimensions.industry_fit.reasoning },
+    { label: "Keyword Overlap", score: jobFitResult.dimensions.keyword_overlap.score, reasoning: jobFitResult.dimensions.keyword_overlap.reasoning },
+  ];
+  const lowestDimScore = Math.min(...dimensions.map(d => d.score));
+
+  function dimFill(score: number) {
+    if (score >= 7) return "#7A8B73";
+    if (score >= 5) return "#9B8E73";
+    return "#8A7373";
+  }
+
+  // Nav helpers
+  function navTo(tab: string) {
+    try { sessionStorage.setItem("signal-active-tab", tab); } catch { /* ignore */ }
+    router.push("/");
+  }
+
+  return (
+    <div className="min-h-screen flex" style={{ background: APP_BG }}>
+
+      {/* ── DESKTOP SIDEBAR ────────────────────────────────────────────────── */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:fixed lg:inset-y-0 z-30 glass-sidebar">
+        {/* Logo */}
+        <div style={{ padding: "28px 24px 32px" }}>
+          <button
+            onClick={() => navTo("my-jobs")}
+            className="flex items-center focus:outline-none"
+            style={{ gap: 8, background: "none", border: "none", cursor: "pointer" }}
+          >
+            <Brandmark />
+            <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 15, letterSpacing: "-0.01em", color: "#1C2333" }}>
+              Claro
+            </span>
+          </button>
+        </div>
+
+        {/* Nav */}
+        <nav className="flex-1 px-3" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {([
+            { id: "profile", label: "My Profile" },
+            { id: "my-jobs", label: "My Jobs" },
+          ] as const).map(item => (
+            <button
+              key={item.id}
+              onClick={() => navTo(item.id)}
+              className="w-full flex items-center text-left transition-colors px-3 rounded-[7px] text-[rgba(28,35,51,0.65)] hover:text-[#1C2333] hover:bg-white/35 focus:outline-none"
+              style={{ gap: 10, paddingTop: 9, paddingBottom: 9 }}
+            >
+              <span style={{ width: 16, height: 16, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(28,35,51,0.32)" }}>
+                {item.id === "profile" ? (
+                  <svg width="12" height="14" viewBox="0 0 12 14" fill="none" aria-hidden="true">
+                    <path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                ) : (
+                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" aria-hidden="true">
+                    <path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                )}
+              </span>
+              <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 14, fontWeight: 400 }}>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Bottom */}
+        <div style={{ padding: "0 24px 24px" }}>
+          {userEmail && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <p className="truncate" style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)" }}>
+                {userEmail}
+              </p>
+              <button
+                onClick={handleSignOut}
+                style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}
+                className="hover:text-[#1C2333] transition-colors focus:outline-none"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* ── MOBILE TOP BAR ─────────────────────────────────────────────────── */}
+      <div className="lg:hidden fixed top-0 inset-x-0 h-14 z-30 flex items-center justify-between px-4 glass-topbar">
+        <button
+          onClick={() => navTo("my-jobs")}
+          className="flex items-center gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
+          style={{ fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}
         >
           <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
             <path d="M13 5H1M1 5L5 1M1 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Jobs
-        </Link>
+        </button>
 
-        <p
-          className="font-sans font-medium text-[#1C2333] truncate text-center"
-          style={{ fontSize: 14, letterSpacing: "-0.01em", maxWidth: "52vw" }}
-        >
+        <p className="font-sans font-medium text-[#1C2333] truncate text-center" style={{ fontSize: 13, maxWidth: "50vw" }}>
           {job.label}
         </p>
 
-        <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
+        <div className="flex items-center gap-2">
           <button
             onClick={handleCopy}
             className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
             style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}
           >
-            {copied ? "Copied ✓" : "Copy"}
+            {copied ? "✓" : "Copy"}
           </button>
           <button
             onClick={handleEmailSend}
             disabled={emailState === "sending"}
             className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
-            style={{ height: 32, padding: "0 14px", cursor: emailState === "sending" ? "default" : "pointer" }}
+            style={{ height: 30, padding: "0 12px", cursor: emailState === "sending" ? "default" : "pointer" }}
           >
-            {emailState === "sending" ? "Sending…"
-              : emailState === "sent" ? "Sent ✓"
-              : emailState === "error" ? "Couldn't send"
-              : "Email →"}
+            {emailState === "sent" ? "Sent ✓" : emailState === "error" ? "Error" : "Email →"}
           </button>
         </div>
-      </header>
+      </div>
 
-      {/* ── Main ───────────────────────────────────────────────────────────── */}
-      <main
-        className="flex-1 mx-auto w-full"
-        style={{ maxWidth: 960, padding: "56px 40px 120px" }}
-      >
+      {/* ── MAIN CONTENT ───────────────────────────────────────────────────── */}
+      <div className="flex-1 lg:pl-60 overflow-x-hidden">
+        {/* Mobile spacer */}
+        <div className="h-14 lg:hidden" />
 
-        {/* ══ A. DECISION SUMMARY ══════════════════════════════════════════ */}
-
-        {/* Score + recommendation */}
-        <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: 24 }}>
-          <div className="flex items-baseline gap-2">
-            <span
-              className="font-sans font-medium tabular-nums text-[#1C2333]"
-              style={{ fontSize: 80, lineHeight: 0.85, letterSpacing: "-0.05em" }}
-            >
-              {jobFitResult.overall_fit}
-            </span>
-            <span
-              className="font-sans font-medium tabular-nums"
-              style={{ fontSize: 24, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.30)" }}
-            >
-              /10
-            </span>
-          </div>
-          <span
-            className="font-sans text-[13px] font-medium px-3 py-1.5 rounded-full"
-            style={{ color: recStyle.color, background: recStyle.bg }}
-          >
-            {jobFitResult.recommendation}
-          </span>
-        </div>
-
-        {/* Your match, explained */}
-        {jobFitResult.summary && (
-          <p
-            className="font-sans text-[#1C2333]"
-            style={{ fontSize: 18, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 640, marginBottom: 20 }}
-          >
-            {jobFitResult.summary}
-          </p>
-        )}
-
-        {/* Primary next action */}
-        {nextAction && (
-          <div
-            className="flex items-start gap-3"
-            style={{ marginBottom: 12 }}
-          >
-            <span
-              className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.40)] uppercase"
-              style={{ letterSpacing: "0.06em", lineHeight: 1.6, flexShrink: 0, paddingTop: 1 }}
-            >
-              Next
-            </span>
-            <p className="font-sans text-[14px] font-medium text-[#1C2333]" style={{ lineHeight: 1.55 }}>
-              {nextAction}
-            </p>
-          </div>
-        )}
-
-        {/* Disclaimer */}
-        <p
-          className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]"
-          style={{ marginBottom: 40 }}
+        {/* Desktop topbar */}
+        <header
+          className="hidden lg:flex sticky top-0 z-20 items-center justify-between"
+          style={{
+            padding: "0 40px",
+            height: 56,
+            background: "rgba(245,243,240,0.85)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            borderBottom: "1px solid rgba(28,35,51,0.07)",
+          }}
         >
-          Based on your profile and this job description. Not a prediction of interview outcomes.
-        </p>
-
-        {/* ══ B. SCORE BREAKDOWN ═══════════════════════════════════════════ */}
-
-        {/* Dimensions */}
-        <div className="grid grid-cols-4 gap-3" style={{ marginBottom: 32 }}>
-          {dimensions.map(({ label, score }) => (
-            <div key={label} className="glass-card" style={{ borderRadius: 10, padding: "14px 16px" }}>
-              <p
-                className="font-sans font-medium text-[rgba(28,35,51,0.45)]"
-                style={{ fontSize: 11, letterSpacing: "0.01em", marginBottom: 8 }}
-              >
-                {label}
-              </p>
-              <p
-                className="font-sans font-medium tabular-nums text-[#1C2333]"
-                style={{ fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1 }}
-              >
-                {score}
-                <span style={{ fontSize: 12, color: "rgba(28,35,51,0.35)", marginLeft: 2 }}>/10</span>
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* What you have / what's missing */}
-        {(jobFitResult.what_you_have?.length > 0 || jobFitResult.whats_missing?.length > 0) && (
-          <div className="grid grid-cols-2 gap-x-12 gap-y-6" style={{ marginBottom: 32 }}>
-            {jobFitResult.what_you_have?.length > 0 && (
-              <div>
-                <SectionLabel>What you have</SectionLabel>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
-                  {jobFitResult.what_you_have.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#1C2333] leading-snug">
-                      <span style={{ color: "#7A8B73", marginTop: 3, flexShrink: 0 }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {jobFitResult.whats_missing?.length > 0 && (
-              <div>
-                <SectionLabel>What&apos;s missing</SectionLabel>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
-                  {jobFitResult.whats_missing.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug">
-                      <span style={{ color: "rgba(28,35,51,0.30)", marginTop: 3, flexShrink: 0 }}>–</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Hiring team concern */}
-        {hasRecruiterConcern && (
-          <div style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16, marginBottom: 40 }}>
-            <p
-              style={{
-                fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11,
-                letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase",
-              }}
+          <p className="font-sans font-medium text-[#1C2333] truncate" style={{ fontSize: 14, letterSpacing: "-0.01em", maxWidth: "60vw" }}>
+            {job.label}
+          </p>
+          <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
+            <button
+              onClick={handleCopy}
+              className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
+              style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}
             >
-              A hiring team may raise
-            </p>
-            <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
-              {jobFitResult.recruiter_concern}
-            </p>
+              {copied ? "Copied ✓" : "Copy"}
+            </button>
+            <button
+              onClick={handleEmailSend}
+              disabled={emailState === "sending"}
+              className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
+              style={{ height: 32, padding: "0 14px", cursor: emailState === "sending" ? "default" : "pointer" }}
+            >
+              {emailState === "sending" ? "Sending…"
+                : emailState === "sent" ? "Sent ✓"
+                : emailState === "error" ? "Couldn't send"
+                : "Email →"}
+            </button>
           </div>
-        )}
+        </header>
 
-        {/* divider */}
-        <div style={{ borderTop: "1px solid rgba(28,35,51,0.09)", marginBottom: 48 }} />
+        {/* ── Content ────────────────────────────────────────────────────── */}
+        <main className="mx-auto w-full" style={{ maxWidth: 920, padding: "48px 32px 120px" }}>
 
-        {/* ══ C. APPLICATION BRIEF ═════════════════════════════════════════ */}
-
-        {!briefReady ? (
-          <div className="flex items-center gap-3">
-            <Spinner />
-            <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 44 }}>
-
-            {/* Bottom Line */}
-            {tailoringResult.honest_take && (
-              <div>
-                <SectionLabel>Bottom line</SectionLabel>
-                <p
-                  className="font-sans font-medium text-[#1C2333]"
-                  style={{ fontSize: 24, lineHeight: 1.35, letterSpacing: "-0.02em", maxWidth: 680 }}
-                >
-                  {tailoringResult.honest_take}
-                </p>
-              </div>
-            )}
-
-            {/* Lead with */}
-            {tailoringResult.lead_strengths.length > 0 && (
-              <div>
-                <SectionLabel>Lead with</SectionLabel>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
-                  {tailoringResult.lead_strengths.map((s, i) => (
-                    <div key={i} className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
-                      <p className="font-sans text-[14px] font-medium text-[#1C2333]" style={{ marginBottom: 6 }}>
-                        {s.strength}
-                      </p>
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.60)] leading-snug">
-                        {s.framing_language}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Relevant terminology */}
-            {tailoringResult.jd_language_to_mirror.length > 0 && (
-              <div>
-                <SectionLabel>Relevant terminology</SectionLabel>
-                <div className="flex flex-wrap gap-2">
-                  {tailoringResult.jd_language_to_mirror.map((p, i) => (
-                    <span
-                      key={i}
-                      className="font-sans text-[13px] px-3 py-1.5 text-[#1C2333]"
-                      style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}
-                    >
-                      &ldquo;{p.phrase}&rdquo;
-                    </span>
-                  ))}
-                </div>
-                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginTop: 8 }}>
-                  Use where accurate. Don&apos;t claim experience you don&apos;t have.
-                </p>
-              </div>
-            )}
-
-            {/* Cover letter */}
-            <div>
-              <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-                <SectionLabel>Cover letter</SectionLabel>
-                <button
-                  onClick={handleGenerateCoverLetter}
-                  disabled={isGeneratingCL}
-                  className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                  style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
-                >
-                  {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Regenerate" : "Generate"}
-                </button>
-              </div>
-              {isGeneratingCL && (
-                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>
-              )}
-              {clError && !isGeneratingCL && (
-                <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>
-              )}
-              {coverLetterResult && !isGeneratingCL && (
-                <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                  <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
-                    {coverLetterResult.cover_letter}
-                  </p>
-                </div>
-              )}
-              {!coverLetterResult && !isGeneratingCL && !clError && (
-                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
-                  Generate a cover letter tailored to this role.
-                </p>
-              )}
-            </div>
-
-            {/* Outreach */}
-            {tailoringResult.outreach_angle && (
-              <div>
-                <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-                  <SectionLabel>Outreach</SectionLabel>
-                  <button
-                    onClick={handleGenerateOutreach}
-                    disabled={isGeneratingOutreach}
-                    className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                    style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingOutreach ? "default" : "pointer", padding: 0 }}
-                  >
-                    {isGeneratingOutreach ? <><Spinner /> Generating…</> : outreachResult ? "Regenerate" : "Generate"}
-                  </button>
-                </div>
-                {isGeneratingOutreach && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Drafting outreach messages…</p>
-                )}
-                {outreachError && !isGeneratingOutreach && (
-                  <p className="font-sans text-[13px] text-[#8A7373]">{outreachError}</p>
-                )}
-                {outreachResult && !isGeneratingOutreach && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>
-                        EMAIL
-                      </p>
-                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
-                        {outreachResult.email}
-                      </p>
-                    </div>
-                    <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>
-                        LINKEDIN
-                      </p>
-                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
-                        {outreachResult.linkedin_message}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {!outreachResult && !isGeneratingOutreach && !outreachError && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
-                    Generate email and LinkedIn outreach for this role.
-                  </p>
-                )}
-              </div>
-            )}
-
-            {/* Update brief */}
-            <div style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
-              <SectionLabel>Update brief</SectionLabel>
-              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
-                Add context Claro may have missed — a specific project, correction, or framing preference.
+          {/* ─ Content header: company + role ─ */}
+          <div style={{ marginBottom: 32 }}>
+            {jobFitResult.company && (
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]" style={{ marginBottom: 4 }}>
+                {jobFitResult.company}
               </p>
-              <textarea
-                value={regenerateNote}
-                onChange={(e) => setRegenerateNote(e.target.value)}
-                placeholder="e.g. I led the rebrand end-to-end, not just the visual side."
-                maxLength={400}
-                rows={2}
-                className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
-              />
-              {regenerateError && (
-                <p className="font-sans text-[12px] text-[#8A7373]" style={{ marginTop: 4 }}>
-                  {regenerateError}
-                </p>
+            )}
+            <h1 className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 28, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+              {job.label}
+            </h1>
+          </div>
+
+          {/* ─ Score + recommendation ─ */}
+          <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: 20 }}>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-sans font-medium tabular-nums text-[#1C2333]"
+                style={{ fontSize: 72, lineHeight: 0.88, letterSpacing: "-0.05em" }}>
+                {jobFitResult.overall_fit}
+              </span>
+              <span className="font-sans font-medium tabular-nums"
+                style={{ fontSize: 22, letterSpacing: "-0.03em", color: "rgba(28,35,51,0.30)" }}>
+                /10
+              </span>
+            </div>
+            <span className="font-sans text-[13px] font-medium px-3 py-1.5 rounded-full"
+              style={{ color: recStyle.color, background: recStyle.bg }}>
+              {jobFitResult.recommendation}
+            </span>
+          </div>
+
+          {/* ─ Decision summary (single source of truth) ─ */}
+          <p className="font-sans text-[#1C2333]"
+            style={{ fontSize: briefReady ? 16 : 17, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 24 }}>
+            {decisionSummary}
+            {!briefReady && (
+              <span className="inline-flex items-center gap-1.5 ml-2 text-[rgba(28,35,51,0.40)] text-[13px]" style={{ verticalAlign: "middle" }}>
+                <Spinner /> Building brief…
+              </span>
+            )}
+          </p>
+
+          {/* ─ Action buttons ─ */}
+          {briefReady && (
+            <div className="flex flex-wrap gap-2" style={{ marginBottom: 28 }}>
+              <button
+                onClick={scrollToAddContext}
+                className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
+                style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
+              >
+                Add context
+              </button>
+              {tailoringResult?.outreach_angle && (
+                <button
+                  onClick={scrollAndGenOutreach}
+                  className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
+                  style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
+                >
+                  Draft outreach
+                </button>
               )}
               <button
-                onClick={handleRegenerate}
-                disabled={isRegenerating}
-                className="mt-2 flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isRegenerating ? "default" : "pointer", padding: 0 }}
+                onClick={scrollAndGenCoverLetter}
+                className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
+                style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
               >
-                {isRegenerating ? <><Spinner /> Rebuilding…</> : "Rebuild →"}
+                Create cover letter
               </button>
             </div>
+          )}
 
+          {/* Disclaimer */}
+          <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginBottom: 32 }}>
+            Based on your profile and this job description. Not a prediction of interview outcomes.
+          </p>
+
+          {/* ─ How this score was calculated (collapsible) ─ */}
+          <div style={{ marginBottom: 32 }}>
+            <button
+              onClick={() => setScoreOpen(v => !v)}
+              className="flex items-center gap-2 font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              How this score was calculated {scoreOpen ? "↑" : "↓"}
+            </button>
+
+            {scoreOpen && (
+              <div className="mt-4 space-y-5">
+                {dimensions.map(({ label, score, reasoning }) => (
+                  <div key={label}>
+                    <div className="flex items-baseline justify-between gap-2" style={{ marginBottom: 8 }}>
+                      <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
+                      {score === lowestDimScore && (
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 10, letterSpacing: "0.01em", color: "#8A7373" }}>
+                          Pulling score down
+                        </span>
+                      )}
+                    </div>
+                    <ScoreBar score={score} fill={dimFill(score)} />
+                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed" style={{ marginTop: 6 }}>
+                      {reasoning}
+                    </p>
+                  </div>
+                ))}
+                {jobFitResult.mismatch_types?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {jobFitResult.mismatch_types.map((t) => (
+                      <span key={t} className="font-sans text-[12px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]"
+                        style={{ background: "rgba(28,35,51,0.05)", borderRadius: 9999 }}>
+                        {t === "title" ? "Title mismatch"
+                          : t === "comp" ? "Comp gap likely"
+                          : t === "scope" ? "Scope mismatch"
+                          : t === "domain" ? "Domain mismatch"
+                          : "Functional mismatch"}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        )}
-      </main>
+
+          {/* ─ What you have / missing ─ */}
+          {(haveItems.length > 0 || missingItems.length > 0) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8" style={{ marginBottom: 32 }}>
+              {haveItems.length > 0 && (
+                <div>
+                  <SectionLabel>What you have</SectionLabel>
+                  <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
+                    {visibleHave.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#1C2333] leading-snug">
+                        <span style={{ color: "#7A8B73", marginTop: 3, flexShrink: 0 }}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  {haveItems.length > 3 && (
+                    <button
+                      onClick={() => setShowAllHave(v => !v)}
+                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+                      style={{ background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 10 }}
+                    >
+                      {showAllHave ? "Show less ↑" : `Show all ${haveItems.length - 3} more ↓`}
+                    </button>
+                  )}
+                </div>
+              )}
+              {missingItems.length > 0 && (
+                <div>
+                  <SectionLabel>What&apos;s missing</SectionLabel>
+                  <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
+                    {visibleMissing.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug">
+                        <span style={{ color: "rgba(28,35,51,0.30)", marginTop: 3, flexShrink: 0 }}>–</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  {missingItems.length > 2 && (
+                    <button
+                      onClick={() => setShowAllMissing(v => !v)}
+                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+                      style={{ background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 10 }}
+                    >
+                      {showAllMissing ? "Show less ↑" : `Show all ${missingItems.length - 2} more ↓`}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ─ Recruiter concern ─ */}
+          {hasRecruiterConcern && (
+            <div style={{ borderLeft: "2px solid #C9A87A", paddingLeft: 16, marginBottom: 40 }}>
+              <p style={{
+                fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11,
+                letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase",
+              }}>
+                A hiring team may raise
+              </p>
+              <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
+                {jobFitResult.recruiter_concern}
+              </p>
+            </div>
+          )}
+
+          {/* ─ Divider ─ */}
+          <div style={{ borderTop: "1px solid rgba(28,35,51,0.09)", marginBottom: 48 }} />
+
+          {/* ── APPLICATION BRIEF ─────────────────────────────────────────── */}
+
+          {!briefReady ? (
+            <div className="flex items-center gap-3">
+              <Spinner />
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 44 }}>
+
+              {/* Lead with — 3 cards, expandable detail, show all */}
+              {leadStrengths.length > 0 && (
+                <div>
+                  <SectionLabel>Lead with</SectionLabel>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {visibleLeads.map((s, i) => (
+                      <div key={i} className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="font-sans text-[14px] font-medium text-[#1C2333]">{s.strength}</p>
+                          {s.framing_language && (
+                            <button
+                              onClick={() => setExpandedLead(expandedLead === i ? null : i)}
+                              className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.40)] hover:text-[#1C2333] transition-colors focus:outline-none"
+                              style={{ background: "none", border: "none", padding: 0, cursor: "pointer", whiteSpace: "nowrap" }}
+                            >
+                              {expandedLead === i ? "Less ↑" : "How to frame →"}
+                            </button>
+                          )}
+                        </div>
+                        {expandedLead === i && s.framing_language && (
+                          <p className="font-sans text-[13px] text-[rgba(28,35,51,0.60)] leading-snug" style={{ marginTop: 10 }}>
+                            {s.framing_language}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {leadStrengths.length > 3 && (
+                    <button
+                      onClick={() => setShowAllLeads(v => !v)}
+                      className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+                      style={{ background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 12 }}
+                    >
+                      {showAllLeads ? "Show less ↑" : `Show ${leadStrengths.length - 3} more ↓`}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Relevant terminology */}
+              {tailoringResult.jd_language_to_mirror.length > 0 && (
+                <div>
+                  <SectionLabel>Relevant terminology</SectionLabel>
+                  <div className="flex flex-wrap gap-2">
+                    {tailoringResult.jd_language_to_mirror.map((p, i) => (
+                      <span key={i} className="font-sans text-[13px] px-3 py-1.5 text-[#1C2333]"
+                        style={{ background: "rgba(28,35,51,0.05)", borderRadius: 9999 }}>
+                        &ldquo;{p.phrase}&rdquo;
+                      </span>
+                    ))}
+                  </div>
+                  <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginTop: 8 }}>
+                    Use where accurate. Don&apos;t claim experience you don&apos;t have.
+                  </p>
+                </div>
+              )}
+
+              {/* Cover letter */}
+              <div ref={coverLetterRef}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                  <SectionLabel>Cover letter</SectionLabel>
+                  <button
+                    onClick={handleGenerateCoverLetter}
+                    disabled={isGeneratingCL}
+                    className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
+                    style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
+                  >
+                    {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Regenerate" : "Generate"}
+                  </button>
+                </div>
+                {isGeneratingCL && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>}
+                {clError && !isGeneratingCL && <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>}
+                {coverLetterResult && !isGeneratingCL && (
+                  <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                    <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
+                      {coverLetterResult.cover_letter}
+                    </p>
+                  </div>
+                )}
+                {!coverLetterResult && !isGeneratingCL && !clError && (
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Generate a cover letter tailored to this role.</p>
+                )}
+              </div>
+
+              {/* Outreach */}
+              {tailoringResult.outreach_angle && (
+                <div ref={outreachRef}>
+                  <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                    <SectionLabel>Outreach</SectionLabel>
+                    <button
+                      onClick={handleGenerateOutreach}
+                      disabled={isGeneratingOutreach}
+                      className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
+                      style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingOutreach ? "default" : "pointer", padding: 0 }}
+                    >
+                      {isGeneratingOutreach ? <><Spinner /> Generating…</> : outreachResult ? "Regenerate" : "Generate"}
+                    </button>
+                  </div>
+                  {isGeneratingOutreach && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Drafting outreach messages…</p>}
+                  {outreachError && !isGeneratingOutreach && <p className="font-sans text-[13px] text-[#8A7373]">{outreachError}</p>}
+                  {outreachResult && !isGeneratingOutreach && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>EMAIL</p>
+                        <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.email}</p>
+                      </div>
+                      <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>LINKEDIN</p>
+                        <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.linkedin_message}</p>
+                      </div>
+                    </div>
+                  )}
+                  {!outreachResult && !isGeneratingOutreach && !outreachError && (
+                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Generate email and LinkedIn outreach for this role.</p>
+                  )}
+                </div>
+              )}
+
+              {/* Update brief */}
+              <div ref={updateBriefRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
+                <SectionLabel>Add context</SectionLabel>
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
+                  Add something Claro may have missed — a specific project, correction, or framing preference.
+                </p>
+                <textarea
+                  value={regenerateNote}
+                  onChange={(e) => setRegenerateNote(e.target.value)}
+                  placeholder="e.g. I led the rebrand end-to-end, not just the visual side."
+                  maxLength={400}
+                  rows={2}
+                  className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
+                />
+                {regenerateError && (
+                  <p className="font-sans text-[12px] text-[#8A7373]" style={{ marginTop: 4 }}>{regenerateError}</p>
+                )}
+                <button
+                  onClick={handleRegenerate}
+                  disabled={isRegenerating}
+                  className="mt-2 flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
+                  style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isRegenerating ? "default" : "pointer", padding: 0 }}
+                >
+                  {isRegenerating ? <><Spinner /> Rebuilding…</> : "Rebuild →"}
+                </button>
+              </div>
+
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
