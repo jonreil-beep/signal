@@ -375,7 +375,11 @@ export default function BriefingPage() {
   }
 
   async function handleRescore() {
-    if (!job || !profileText || isRescoring) return;
+    if (!job || isRescoring) return;
+    if (!profileText) {
+      setRescoreError("Add your profile before re-scoring.");
+      return;
+    }
     setIsRescoring(true);
     setRescoreError("");
     try {
@@ -465,14 +469,15 @@ export default function BriefingPage() {
   const leadStrengths = tailoringResult?.lead_strengths ?? [];
   const visibleLeads = showAllLeads ? leadStrengths : leadStrengths.slice(0, 3);
 
-  // Dimensions
-  const dimensions = [
-    { label: "Functional Fit",  score: jobFitResult.dimensions.functional_fit.score,  reasoning: jobFitResult.dimensions.functional_fit.reasoning },
-    { label: "Seniority Fit",   score: jobFitResult.dimensions.seniority_fit.score,   reasoning: jobFitResult.dimensions.seniority_fit.reasoning },
-    { label: "Industry Fit",    score: jobFitResult.dimensions.industry_fit.score,    reasoning: jobFitResult.dimensions.industry_fit.reasoning },
-    { label: "Keyword Overlap", score: jobFitResult.dimensions.keyword_overlap.score, reasoning: jobFitResult.dimensions.keyword_overlap.reasoning },
-  ];
-  const lowestDimScore = Math.min(...dimensions.map(d => d.score));
+  // Dimensions — guard against missing/malformed data from legacy or failed scores
+  const dims = jobFitResult.dimensions ?? null;
+  const dimensions = dims ? [
+    { label: "Functional Fit",  score: dims.functional_fit?.score  ?? 0, reasoning: dims.functional_fit?.reasoning  ?? "" },
+    { label: "Seniority Fit",   score: dims.seniority_fit?.score   ?? 0, reasoning: dims.seniority_fit?.reasoning   ?? "" },
+    { label: "Industry Fit",    score: dims.industry_fit?.score    ?? 0, reasoning: dims.industry_fit?.reasoning    ?? "" },
+    { label: "Keyword Overlap", score: dims.keyword_overlap?.score ?? 0, reasoning: dims.keyword_overlap?.reasoning ?? "" },
+  ] : [];
+  const lowestDimScore = dimensions.length > 0 ? Math.min(...dimensions.map(d => d.score)) : 0;
 
   function dimFill(score: number) {
     if (score >= 7) return "#7A8B73";

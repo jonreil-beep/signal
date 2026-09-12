@@ -163,7 +163,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         evidence_items: sanitizeEvidenceItems(raw.evidence_items),
       };
 
-      if (!Number.isFinite(candidate.overall_fit) || !candidate.recommendation) {
+      if (!Number.isFinite(candidate.overall_fit) || !candidate.recommendation || !candidate.dimensions?.functional_fit) {
         console.error(`[score-job] Attempt ${attempt}: Missing required fields:`, JSON.stringify(raw));
         if (attempt === maxAttempts) {
           return NextResponse.json({ error: "Scoring failed after multiple attempts. Try again." }, { status: 500 });
