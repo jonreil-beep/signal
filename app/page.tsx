@@ -619,6 +619,7 @@ export default function Home() {
       applicationStatus: "Tracking",
       notes: "",
     };
+    setIsNavigatingToJob(true);
     setTrackedJobs((prev) => [...prev, newJob]);
     setActiveJobId(id);
     setJobDescription(jd);
@@ -646,7 +647,6 @@ export default function Home() {
     }
 
     autoGenerateBrief(id, jd, result);
-    setIsNavigatingToJob(true);
     router.push(`/jobs/${id}`);
   }
 
