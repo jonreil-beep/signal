@@ -311,22 +311,20 @@ function TableRow({
             <>
               <button
                 onClick={() => onSelectJob(job, "job-fit")}
-                className="hover:opacity-90 transition-opacity whitespace-nowrap"
+                className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
                 style={{
                   fontFamily: "var(--font-geist-sans)",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: "#ffffff",
-                  background: "#1C2333",
-                  border: "none",
+                  color: "var(--fg)",
                   borderRadius: 7,
                   cursor: "pointer",
                   height: 36,
                   padding: "0 14px",
-                  boxShadow: "0 1px 2px rgba(15,25,35,0.18), 0 4px 16px rgba(15,25,35,0.22)",
+                  boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                 }}
               >
-                Fit
+                Score
               </button>
               <button
                 onClick={() => onSelectJob(job, "tailoring-brief")}
