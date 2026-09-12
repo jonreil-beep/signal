@@ -1239,9 +1239,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Fit Score</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 0, marginBottom: 8 }}>
-                    <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
-                    <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</span>
+                    <h1 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1, margin: 0 }}>Add a Job</h1>
                   </div>
                   <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>A 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
@@ -1284,13 +1282,6 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-4 mb-2">
                     <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em" }}>My Jobs</h1>
-                    <button
-                      onClick={resetAndNavigateToJobFit}
-                      className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
-                      style={{ height: 32, padding: "0 12px", borderRadius: 7, fontSize: 12, border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
-                    >
-                      Add a job →
-                    </button>
                   </div>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every role you've scored, with fit score and application brief.</p>
                 </div>
