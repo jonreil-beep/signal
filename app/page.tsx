@@ -1239,7 +1239,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Fit Score</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 0, marginBottom: 8 }}>
-                    <h1 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1, margin: 0 }}>Add a Job</h1>
+                    <h1 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1, margin: 0 }}>Score a Job</h1>
                   </div>
                   <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>A 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
