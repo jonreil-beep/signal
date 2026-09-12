@@ -670,7 +670,7 @@ export default function Home() {
     }
   }
 
-  async function autoGenerateBrief(jobId: string, jd: string, fitResult?: JobFitResult) {
+  async function autoGenerateBrief(jobId: string, _jd: string, _fitResult?: JobFitResult) {
     if (!profileText) return;
     setGeneratingBriefIds((prev) => new Set(prev).add(jobId));
     try {
@@ -679,17 +679,7 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
-          jobDescription: jd,
-          jobFitResult: fitResult
-            ? {
-                overall_fit: fitResult.overall_fit,
-                recommendation: fitResult.recommendation,
-                summary: fitResult.summary,
-                what_you_have: fitResult.what_you_have,
-                whats_missing: fitResult.whats_missing,
-                recruiter_concern: fitResult.recruiter_concern,
-              }
-            : undefined,
+          jobId,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
         }),

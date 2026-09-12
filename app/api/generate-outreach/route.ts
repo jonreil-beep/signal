@@ -4,6 +4,7 @@ import { buildOutreachPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
 import { sanitizeAI } from "@/lib/sanitizeAIText";
+import { loadJobFitResult } from "@/lib/loadJobFitResult";
 import type { OutreachResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -25,21 +26,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { outreachAngle, resumeText, jobDescription, userNote, writingSample, pivotTarget, jobFitResult } = body as {
+    const { outreachAngle, resumeText, jobDescription, userNote, writingSample, pivotTarget, jobId } = body as {
       outreachAngle?: string;
       resumeText?: string;
       jobDescription?: string;
       userNote?: string;
       writingSample?: string;
       pivotTarget?: string;
-      jobFitResult?: {
-        overall_fit: number;
-        recommendation: string;
-        summary: string;
-        what_you_have: string[];
-        whats_missing: string[];
-        recruiter_concern: string;
-      };
+      jobId?: string;
     };
 
     if (!outreachAngle || typeof outreachAngle !== "string" || outreachAngle.trim().length < 10) {
@@ -48,14 +42,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (!resumeText || typeof resumeText !== "string") {
       return NextResponse.json({ error: "Resume text is required." }, { status: 400 });
     }
-    if (!jobDescription || typeof jobDescription !== "string") {
+    if (!jobId && (!jobDescription || typeof jobDescription !== "string")) {
       return NextResponse.json({ error: "Job description is required." }, { status: 400 });
     }
+
+    const fitLookup = await loadJobFitResult(supabase, user.id, jobId);
+    if (fitLookup && "error" in fitLookup) {
+      return NextResponse.json({ error: fitLookup.error }, { status: fitLookup.status });
+    }
+    const jobFitResult = fitLookup && "result" in fitLookup ? fitLookup.result : undefined;
+    const resolvedJD = (fitLookup && "jobDescription" in fitLookup && fitLookup.jobDescription)
+      ? fitLookup.jobDescription
+      : jobDescription ?? "";
 
     const prompt = buildOutreachPrompt(
       outreachAngle.trim(),
       resumeText.trim(),
-      jobDescription.trim(),
+      resolvedJD.trim(),
       userNote?.trim(),
       writingSample?.trim(),
       pivotTarget?.trim(),

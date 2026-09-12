@@ -1,5 +1,9 @@
 // All Claude prompt templates live here — never inline prompts in API routes
 
+// Increment when scoring prompt logic or output schema changes meaningfully.
+// Stored in job_fit_result.prompt_version; detected-stale when value differs from CURRENT_PROMPT_VERSION.
+export const CURRENT_PROMPT_VERSION = "2.1";
+
 // ── Shared voice standard ─────────────────────────────────────────────────────
 // Injected into every prompt. Any prompt-level voice rules extend this, never contradict it.
 const VOICE_RULES = `
@@ -117,12 +121,11 @@ ${VOICE_RULES}`;
 export function buildJobFitPrompt(
   resumeText: string,
   jobDescription: string,
-  dismissedItems?: string[],
-  previousScore?: number
+  dismissedItems?: string[]
 ): string {
   const correctionBlock =
     dismissedItems && dismissedItems.length > 0
-      ? `\nCandidate corrections: The candidate has confirmed they actually possess the following qualifications that were previously marked as missing. This means the candidate is stronger than initially assessed — do NOT include these in whats_missing, and the revised overall_fit score MUST be higher than or equal to ${previousScore ?? 1} (the previous score). Removing gaps can only improve the fit. When writing what_you_have, address the candidate directly using "you" and "your":\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
+      ? `\nCandidate context: The candidate has indicated that the following items listed as missing are actually present in their background. Treat this as additional context when re-evaluating — re-examine the evidence and update overall_fit in any direction the full evidence supports. Do NOT enforce a score floor; the revised score may be higher, lower, or the same as before. Do NOT include these items in whats_missing unless you find they are genuinely absent after reconsidering. When writing what_you_have, address the candidate directly using "you" and "your":\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
       : "";
 
   return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description accurately.
@@ -151,6 +154,7 @@ Submit the analysis using the tool. Field reference:
   - "Consider": credible overlap but meaningful uncertainties or gaps to assess first
   - "Lower priority": significant confirmed mismatch to important requirements
 - recruiter_concern: The most likely concern a hiring team would raise — specific, not softened
+- evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (résumé clearly shows it), "not_demonstrated" (résumé is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess)
 
 Rules:
 - Be decisive on the recommendation — don't hedge it
@@ -258,8 +262,35 @@ ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}${
 }
 
 // Resume update suggestions prompt
-export function buildResumeUpdatePrompt(resumeText: string, jobDescription: string, writingSample?: string, pivotTarget?: string): string {
-  return `You are a senior resume strategist helping a candidate rewrite their resume bullets to be clearer and more specific for a particular role — using only what is already true in the original resume.
+export function buildResumeUpdatePrompt(
+  resumeText: string,
+  jobDescription: string,
+  writingSample?: string,
+  pivotTarget?: string,
+  jobFitResult?: {
+    overall_fit: number;
+    recommendation: string;
+    summary: string;
+    what_you_have: string[];
+    whats_missing: string[];
+    recruiter_concern: string;
+  }
+): string {
+  const establishedAnalysis = jobFitResult
+    ? `\nThe following scoring analysis has already been established for this candidate and role. Use it to decide which bullets to prioritize — focus rewrites on confirmed strengths and on addressing confirmed gaps where possible. Do not contradict or independently reinterpret what it found:
+
+<established_analysis>
+Score: ${jobFitResult.overall_fit}/10 — ${jobFitResult.recommendation}
+${jobFitResult.summary}
+
+Confirmed strengths (things this candidate actually has):
+${jobFitResult.what_you_have.map((s) => `- ${s}`).join("\n")}
+${jobFitResult.whats_missing.length > 0 ? `\nConfirmed gaps (things the hiring team will notice are missing):\n${jobFitResult.whats_missing.map((s) => `- ${s}`).join("\n")}` : ""}
+${jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified" ? `\nThe most likely hiring team concern: ${jobFitResult.recruiter_concern}` : ""}
+</established_analysis>\n`
+    : "";
+
+  return `You are a senior resume strategist helping a candidate rewrite their resume bullets to be clearer and more specific for a particular role — using only what is already true in the original resume.${establishedAnalysis}
 
 CRITICAL RULES — NEVER VIOLATE THESE:
 - Never invent, estimate, or imply numbers, percentages, dollar amounts, timeframes, or metrics that are not explicitly stated in the original resume. If no number exists, do not add one.

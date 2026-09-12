@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { formatBrief } from "@/lib/formatBrief";
+import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
   TrackedJob, JobFitResult, TailoringBriefResult,
   OutreachResult, CoverLetterResult,
@@ -115,6 +116,9 @@ export default function BriefingPage() {
   const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [isAnalysisStale, setIsAnalysisStale] = useState(false);
+  const [isVersionStale, setIsVersionStale] = useState(false);
+  const [isRescoring, setIsRescoring] = useState(false);
+  const [rescoreError, setRescoreError] = useState("");
 
   // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
@@ -174,6 +178,12 @@ export default function BriefingPage() {
         const profileUpdated = new Date(profile.updated_at as string);
         const jobScored = new Date(row.scored_at as string);
         setIsAnalysisStale(profileUpdated > jobScored);
+      }
+
+      // Detect stale analysis: scoring prompt version changed since this job was scored
+      const savedFit = row?.job_fit_result as { prompt_version?: string } | null;
+      if (savedFit && savedFit.prompt_version !== CURRENT_PROMPT_VERSION) {
+        setIsVersionStale(true);
       }
 
       setJob({
@@ -248,14 +258,7 @@ export default function BriefingPage() {
           outreachAngle: job.tailoringResult?.outreach_angle,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
-          jobFitResult: {
-            overall_fit: job.jobFitResult.overall_fit,
-            recommendation: job.jobFitResult.recommendation,
-            summary: job.jobFitResult.summary,
-            what_you_have: job.jobFitResult.what_you_have,
-            whats_missing: job.jobFitResult.whats_missing,
-            recruiter_concern: job.jobFitResult.recruiter_concern,
-          },
+          jobId,
         }),
       });
       const data = await res.json();
@@ -288,14 +291,7 @@ export default function BriefingPage() {
           jobDescription: job.jobDescription,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
-          jobFitResult: {
-            overall_fit: job.jobFitResult.overall_fit,
-            recommendation: job.jobFitResult.recommendation,
-            summary: job.jobFitResult.summary,
-            what_you_have: job.jobFitResult.what_you_have,
-            whats_missing: job.jobFitResult.whats_missing,
-            recruiter_concern: job.jobFitResult.recruiter_concern,
-          },
+          jobId,
         }),
       });
       const data = await res.json();
@@ -324,14 +320,7 @@ export default function BriefingPage() {
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: job.jobDescription,
-          jobFitResult: {
-            overall_fit: job.jobFitResult.overall_fit,
-            recommendation: job.jobFitResult.recommendation,
-            summary: job.jobFitResult.summary,
-            what_you_have: job.jobFitResult.what_you_have,
-            whats_missing: job.jobFitResult.whats_missing,
-            recruiter_concern: job.jobFitResult.recruiter_concern,
-          },
+          jobId,
           userNote: regenerateNote || undefined,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
@@ -382,6 +371,36 @@ export default function BriefingPage() {
     } catch {
       setEmailState("error");
       setTimeout(() => setEmailState("idle"), 4000);
+    }
+  }
+
+  async function handleRescore() {
+    if (!job || !profileText || isRescoring) return;
+    setIsRescoring(true);
+    setRescoreError("");
+    try {
+      const res = await fetch("/api/score-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: job.jobDescription,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
+      } else {
+        const result = data as JobFitResult;
+        updateJob({ jobFitResult: result });
+        await saveToDb({ job_fit_result: result, scored_at: new Date().toISOString() });
+        setIsAnalysisStale(false);
+        setIsVersionStale(false);
+      }
+    } catch {
+      setRescoreError("Network error. Check your connection and try again.");
+    } finally {
+      setIsRescoring(false);
     }
   }
 
@@ -685,18 +704,24 @@ export default function BriefingPage() {
           )}
 
           {/* ─ Stale analysis warning ─ */}
-          {isAnalysisStale && (
+          {(isAnalysisStale || isVersionStale) && (
             <div style={{ borderLeft: "2px solid #9B8E73", paddingLeft: 14, marginBottom: 20 }}>
               <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
-                Your profile was updated after this job was scored. This analysis may not reflect your current background.{" "}
+                {isVersionStale
+                  ? "The scoring model has been updated since this job was analyzed. Re-score to get the latest assessment."
+                  : "Your profile was updated after this job was scored. This analysis may not reflect your current background."}{" "}
                 <button
-                  onClick={() => navTo("my-jobs")}
-                  className="font-sans text-[13px] text-[#9B8E73] hover:text-[#1C2333] transition-colors focus:outline-none"
-                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer", textDecoration: "underline" }}
+                  onClick={handleRescore}
+                  disabled={isRescoring}
+                  className="font-sans text-[13px] text-[#9B8E73] hover:text-[#1C2333] transition-colors focus:outline-none disabled:opacity-50"
+                  style={{ background: "none", border: "none", padding: 0, cursor: isRescoring ? "default" : "pointer", textDecoration: "underline" }}
                 >
-                  Re-score from My Jobs →
+                  {isRescoring ? "Re-scoring…" : "Update analysis →"}
                 </button>
               </p>
+              {rescoreError && (
+                <p className="font-sans text-[12px] text-[#8A7373] mt-1">{rescoreError}</p>
+              )}
             </div>
           )}
 

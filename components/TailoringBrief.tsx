@@ -25,6 +25,7 @@ interface TailoringBriefProps {
   pivotTarget?: string;
   jobDescription: string;
   jobLabel?: string;
+  jobId?: string;
   result: TailoringBriefResult | null;
   onResultChange: (result: TailoringBriefResult) => void;
   outreachResult: OutreachResult | null;
@@ -272,6 +273,7 @@ export default function TailoringBrief({
   pivotTarget,
   jobDescription,
   jobLabel,
+  jobId,
   result,
   onResultChange,
   outreachResult,
@@ -409,7 +411,7 @@ export default function TailoringBrief({
       const response = await fetch("/api/suggest-resume-updates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined }),
+        body: JSON.stringify({ resumeText: profileText, jobDescription, writingSample: writingSample || undefined, pivotTarget: pivotTarget || undefined, jobId: jobId || undefined }),
       });
       const data = await response.json();
       if (!response.ok) {

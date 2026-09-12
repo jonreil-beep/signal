@@ -4,6 +4,7 @@ import { buildTailoringPrompt } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
 import { sanitizeAI } from "@/lib/sanitizeAIText";
+import { loadJobFitResult } from "@/lib/loadJobFitResult";
 import type { TailoringBriefResult } from "@/types";
 
 export const runtime = "nodejs";
@@ -27,17 +28,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, jobFitResult, userNote, writingSample, pivotTarget } = body as {
+    const { resumeText, jobDescription, jobId, userNote, writingSample, pivotTarget } = body as {
       resumeText?: string;
       jobDescription?: string;
-      jobFitResult?: {
-        overall_fit: number;
-        recommendation: string;
-        summary: string;
-        what_you_have: string[];
-        whats_missing: string[];
-        recruiter_concern: string;
-      };
+      jobId?: string;
       userNote?: string;
       writingSample?: string;
       pivotTarget?: string;
@@ -47,16 +41,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "Resume text is missing or too short." }, { status: 400 });
     }
 
-    if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length < 50) {
+    if (!jobId && (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length < 50)) {
       return NextResponse.json(
         { error: "Job description is missing or too short." },
         { status: 400 }
       );
     }
 
+    const fitLookup = await loadJobFitResult(supabase, user.id, jobId);
+    if (fitLookup && "error" in fitLookup) {
+      return NextResponse.json({ error: fitLookup.error }, { status: fitLookup.status });
+    }
+    const jobFitResult = fitLookup && "result" in fitLookup ? fitLookup.result : undefined;
+    // Use authoritative DB job description when available; fall back to client-supplied
+    const resolvedJD = (fitLookup && "jobDescription" in fitLookup && fitLookup.jobDescription)
+      ? fitLookup.jobDescription
+      : jobDescription ?? "";
+
     const prompt = buildTailoringPrompt(
       resumeText.trim(),
-      jobDescription.trim(),
+      resolvedJD.trim(),
       jobFitResult,
       userNote?.trim(),
       writingSample?.trim(),

@@ -2,7 +2,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import LoadingState from "./LoadingState";
-import type { JobFitResult, MismatchType } from "@/types";
+import type { JobFitResult, MismatchType, EvidenceType } from "@/types";
+
+const EVIDENCE_LABELS: Record<EvidenceType, { label: string; color: string }> = {
+  demonstrated:       { label: "Verified",       color: "#7A8B73" },
+  not_demonstrated:   { label: "Not shown",       color: "#9B8E73" },
+  confirmed_gap:      { label: "Confirmed gap",   color: "#8A7373" },
+  needs_clarification:{ label: "Needs follow-up", color: "#9B8E73" },
+};
+
+function evidenceTypeForText(text: string, result: JobFitResult): EvidenceType | undefined {
+  return result.evidence_items?.find((e) => e.text === text || text.includes(e.text) || e.text.includes(text))?.type;
+}
 
 interface JobFitScorerProps {
   profileText: string;
@@ -240,16 +251,12 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           resumeText: profileText,
           jobDescription: jd,
           dismissedItems: dismissed,
-          previousScore: result?.overall_fit,
         }),
       });
       const data = await response.json() as JobFitResult & { error?: string };
       if (!response.ok) {
         setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
       } else {
-        if (result && typeof data.overall_fit === "number" && data.overall_fit < result.overall_fit) {
-          data.overall_fit = result.overall_fit;
-        }
         setDismissedItems([]);
         onJobFitUpdated(data as JobFitResult);
       }
@@ -534,12 +541,23 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 What You Have
               </p>
               <ul className="space-y-3">
-                {result.what_you_have.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                    <span className="shrink-0" style={{ width: 6, height: 6, background: "#7A8B73", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
-                    {item}
-                  </li>
-                ))}
+                {result.what_you_have.map((item, i) => {
+                  const evType = evidenceTypeForText(item, result);
+                  const evStyle = evType ? EVIDENCE_LABELS[evType] : null;
+                  return (
+                    <li key={i} className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                      <span className="shrink-0" style={{ width: 6, height: 6, background: "#7A8B73", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
+                      <span>
+                        {evStyle && (
+                          <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full mr-1.5 leading-none" style={{ color: evStyle.color, background: `${evStyle.color}18` }}>
+                            {evStyle.label}
+                          </span>
+                        )}
+                        {item}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
@@ -558,11 +576,21 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] italic">All items dismissed.</p>
                 ) : (
                   <ul className="space-y-3">
-                    {activeItems.map((item, i) => (
+                    {activeItems.map((item, i) => {
+                      const evType = evidenceTypeForText(item, result);
+                      const evStyle = evType ? EVIDENCE_LABELS[evType] : null;
+                      return (
                       <li key={i} className="flex items-start justify-between gap-2 group">
                         <div className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
                           <span className="shrink-0" style={{ width: 6, height: 6, background: "#8A7373", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
-                          {item}
+                          <span>
+                            {evStyle && (
+                              <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full mr-1.5 leading-none" style={{ color: evStyle.color, background: `${evStyle.color}18` }}>
+                                {evStyle.label}
+                              </span>
+                            )}
+                            {item}
+                          </span>
                         </div>
                         <button
                           onClick={() => handleDismissItem(item)}
@@ -574,7 +602,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                           </svg>
                         </button>
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 );
               })()}

@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import anthropic from "@/lib/anthropic";
-import { buildJobFitPrompt } from "@/lib/prompts";
+import { buildJobFitPrompt, CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { checkAndLogUsage } from "@/lib/checkUsage";
 import { sanitizeAI } from "@/lib/sanitizeAIText";
-import type { JobFitResult } from "@/types";
+import type { JobFitResult, EvidenceItem, EvidenceType } from "@/types";
+
+const VALID_EVIDENCE_TYPES = new Set<EvidenceType>(["demonstrated", "not_demonstrated", "confirmed_gap", "needs_clarification"]);
+
+function sanitizeEvidenceItems(raw: unknown): EvidenceItem[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const items: EvidenceItem[] = [];
+  for (const item of raw) {
+    if (typeof item?.text === "string" && VALID_EVIDENCE_TYPES.has(item?.type)) {
+      items.push({ text: item.text, type: item.type as EvidenceType });
+    }
+  }
+  return items.length > 0 ? items : undefined;
+}
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -27,11 +40,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, dismissedItems, previousScore } = body as {
+    const { resumeText, jobDescription, dismissedItems } = body as {
       resumeText?: string;
       jobDescription?: string;
       dismissedItems?: string[];
-      previousScore?: number;
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -48,8 +60,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const prompt = buildJobFitPrompt(
       resumeText.trim(),
       jobDescription.trim(),
-      Array.isArray(dismissedItems) ? dismissedItems : undefined,
-      typeof previousScore === "number" ? previousScore : undefined
+      Array.isArray(dismissedItems) ? dismissedItems : undefined
     );
 
     const toolConfig = {
@@ -95,6 +106,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
               whats_missing: { type: "array", items: { type: "string" } },
               recommendation: { type: "string" },
               recruiter_concern: { type: "string" },
+              evidence_items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    text: { type: "string" },
+                    type: { type: "string", enum: ["demonstrated", "not_demonstrated", "confirmed_gap", "needs_clarification"] },
+                  },
+                  required: ["text", "type"],
+                },
+              },
             },
             required: [
               "job_title",
@@ -137,6 +159,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const candidate: JobFitResult = {
         ...raw,
         overall_fit: typeof raw.overall_fit === "number" ? raw.overall_fit : Number(raw.overall_fit),
+        prompt_version: CURRENT_PROMPT_VERSION,
+        evidence_items: sanitizeEvidenceItems(raw.evidence_items),
       };
 
       if (!Number.isFinite(candidate.overall_fit) || !candidate.recommendation) {

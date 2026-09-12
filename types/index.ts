@@ -71,6 +71,15 @@ export interface JobFitResult {
   whats_missing: string[];
   recommendation: "Pursue" | "Consider" | "Lower priority";
   recruiter_concern: string; // required — "None identified" if no concern
+  prompt_version?: string;  // set at scoring time; absent on legacy records
+  evidence_items?: EvidenceItem[]; // structured per-finding classification; absent on legacy records
+}
+
+export type EvidenceType = "demonstrated" | "not_demonstrated" | "confirmed_gap" | "needs_clarification";
+
+export interface EvidenceItem {
+  text: string;
+  type: EvidenceType;
 }
 
 export type StrengthMatchType = "Direct match" | "Strong inference" | "Reframe";

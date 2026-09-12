@@ -112,7 +112,7 @@ export default function YourBriefModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
-          jobDescription: job.jobDescription,
+          jobId: job.id,
           outreachAngle: tailoringResult?.outreach_angle,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
@@ -142,7 +142,7 @@ export default function YourBriefModal({
         body: JSON.stringify({
           outreachAngle: tailoringResult?.outreach_angle,
           resumeText: profileText,
-          jobDescription: job.jobDescription,
+          jobId: job.id,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
         }),
@@ -170,7 +170,7 @@ export default function YourBriefModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
-          jobDescription: job.jobDescription,
+          jobId: job.id,
           userNote: regenerateNote || undefined,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
