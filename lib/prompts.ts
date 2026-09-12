@@ -498,11 +498,9 @@ Job description (first 800 chars for context):
 ${jobDescription.slice(0, 800)}
 </job_description>
 
-Draft two outreach messages. Return this exact JSON structure — nothing else:
-{
-  "email": "Subject: [subject line]\\n\\n[email body — 150–200 words, professional, specific to this role, ends with a clear ask]",
-  "linkedin_message": "[LinkedIn connection request — 280 characters max, warm and specific, references the outreach angle, no generic openers like 'I came across your profile']"
-}
+Draft two outreach messages and submit them using the tool:
+- email: Subject line + body (150–200 words, specific to this role, ends with a clear ask). Format: "Subject: [subject]\n\n[body]"
+- linkedin_message: Connection request (280 characters max, warm and specific, references the outreach angle)
 
 Rules:
 - FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. These are messages the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
@@ -511,9 +509,9 @@ Rules:
 - Be direct and confident, not groveling
 - Do not use hollow phrases like "I hope this finds you well" or "I'd love to connect"
 - LinkedIn message must be ≤ 280 characters (strictly enforced)
+- No generic openers like "I came across your profile"
 - The email must contain one observation that could only have been written by someone who actually read both the JD and this candidate's background — not a statement that would apply to any candidate for any role
 - If the outreach reads like a recruiter template, it has failed — rewrite it with a more specific hook
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }

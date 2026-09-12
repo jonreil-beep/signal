@@ -53,25 +53,46 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       pivotTarget?.trim()
     );
 
-    const result = await callClaudeWithTool<OutreachResult>(
-      prompt,
-      "submit_outreach",
-      {
-        type: "object",
-        properties: {
-          email: { type: "string" },
-          linkedin_message: { type: "string" },
-        },
-        required: ["email", "linkedin_message"],
+    const toolSchema = {
+      type: "object" as const,
+      properties: {
+        email: { type: "string" },
+        linkedin_message: { type: "string" },
       },
-      2048
-    );
+      required: ["email", "linkedin_message"],
+    };
 
-    if (typeof result.email !== "string" || typeof result.linkedin_message !== "string") {
-      return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
-        { status: 500 }
-      );
+    let result: OutreachResult | null = null;
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const raw = await callClaudeWithTool<OutreachResult>(prompt, "submit_outreach", toolSchema, 2048);
+
+      // Guard against Claude putting the full JSON blob into the email field
+      // (happens when prompt instructions conflict with tool forcing)
+      let candidate = raw;
+      if (typeof raw.email === "string" && raw.email.trimStart().startsWith("{")) {
+        try {
+          const parsed = JSON.parse(raw.email) as OutreachResult;
+          if (typeof parsed.email === "string" && typeof parsed.linkedin_message === "string") {
+            candidate = parsed;
+          }
+        } catch { /* not JSON — leave as-is */ }
+      }
+
+      if (typeof candidate.email !== "string" || typeof candidate.linkedin_message !== "string") {
+        console.error(`[generate-outreach] Attempt ${attempt}: missing required fields`, JSON.stringify(raw));
+        if (attempt === maxAttempts) {
+          return NextResponse.json({ error: "Outreach generation failed after multiple attempts. Try again." }, { status: 500 });
+        }
+        continue;
+      }
+
+      result = candidate;
+      break;
+    }
+
+    if (!result) {
+      return NextResponse.json({ error: "Outreach generation failed. Try again." }, { status: 500 });
     }
 
     return NextResponse.json(sanitizeAI(result));

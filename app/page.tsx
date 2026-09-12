@@ -35,6 +35,24 @@ function normalizeJobFitResult(raw: unknown): JobFitResult {
   return r as unknown as JobFitResult;
 }
 
+function normalizeOutreachResult(raw: unknown): OutreachResult | null {
+  if (!raw) return null;
+  const r = raw as Record<string, unknown>;
+  // Recover from Claude putting full JSON in the email field
+  if (typeof r.email === "string" && r.email.trimStart().startsWith("{")) {
+    try {
+      const parsed = JSON.parse(r.email) as Record<string, unknown>;
+      if (typeof parsed.email === "string" && typeof parsed.linkedin_message === "string") {
+        return parsed as unknown as OutreachResult;
+      }
+    } catch { /* not JSON */ }
+  }
+  if (typeof r.email === "string" && typeof r.linkedin_message === "string") {
+    return raw as OutreachResult;
+  }
+  return null;
+}
+
 export default function Home() {
   const supabase = createClient();
   const [isNewSignup, setIsNewSignup] = useState(false);
@@ -352,7 +370,7 @@ export default function Home() {
         jobDescription: row.job_description as string,
         jobFitResult: normalizeJobFitResult(row.job_fit_result),
         tailoringResult: row.tailoring_result as TailoringBriefResult | null,
-        outreachResult: row.outreach_result as OutreachResult | null,
+        outreachResult: normalizeOutreachResult(row.outreach_result),
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         interviewPrepResult: row.interview_prep_result as InterviewPrepResult | null,
