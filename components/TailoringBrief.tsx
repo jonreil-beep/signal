@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import LoadingState from "./LoadingState";
-import TypingIndicator from "./TypingIndicator";
 import { useToast } from "./ToastProvider";
 import type { TailoringBriefResult, OutreachResult, CoverLetterResult, ResumeUpdateResult, InterviewPrepResult, FollowUpResult, CompanyResearchResult, StrengthMatchType } from "@/types";
 
@@ -189,7 +188,7 @@ function ActionSection({
 
       {isLoading && (
         <div className="px-5 pb-5">
-          <TypingIndicator message={loadingMessage} />
+          <LoadingState message={loadingMessage} />
         </div>
       )}
 
@@ -802,7 +801,7 @@ export default function TailoringBrief({
             </div>
           )}
 
-          {isGenerating && <TypingIndicator message="Building your prep guide. This takes about 20 seconds…" />}
+          {isGenerating && <LoadingState message="Building your prep guide. This takes about 20 seconds…" />}
 
           {error && !isGenerating && (
             <div className="p-4 border-l-2 border-[#8A7373]">
