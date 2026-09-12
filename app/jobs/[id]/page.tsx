@@ -114,6 +114,7 @@ export default function BriefingPage() {
   const [pivotTarget, setPivotTarget] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isAnalysisStale, setIsAnalysisStale] = useState(false);
 
   // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
@@ -152,7 +153,7 @@ export default function BriefingPage() {
 
       const [{ data: row }, { data: profile }] = await Promise.all([
         supabase.from("tracked_jobs").select("*").eq("id", jobId).eq("user_id", userId).single(),
-        supabase.from("profiles").select("resume_text").eq("id", userId).single(),
+        supabase.from("profiles").select("resume_text, updated_at").eq("id", userId).single(),
       ]);
 
       if (!row) { router.push("/"); return; }
@@ -167,6 +168,14 @@ export default function BriefingPage() {
       } catch { /* ignore */ }
 
       setProfileText(profile?.resume_text ?? "");
+
+      // Detect stale analysis: profile updated after job was scored
+      if (profile?.updated_at && row?.scored_at) {
+        const profileUpdated = new Date(profile.updated_at as string);
+        const jobScored = new Date(row.scored_at as string);
+        setIsAnalysisStale(profileUpdated > jobScored);
+      }
+
       setJob({
         id: row.id as string,
         label: row.label as string,
@@ -239,6 +248,14 @@ export default function BriefingPage() {
           outreachAngle: job.tailoringResult?.outreach_angle,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
+          jobFitResult: {
+            overall_fit: job.jobFitResult.overall_fit,
+            recommendation: job.jobFitResult.recommendation,
+            summary: job.jobFitResult.summary,
+            what_you_have: job.jobFitResult.what_you_have,
+            whats_missing: job.jobFitResult.whats_missing,
+            recruiter_concern: job.jobFitResult.recruiter_concern,
+          },
         }),
       });
       const data = await res.json();
@@ -271,6 +288,14 @@ export default function BriefingPage() {
           jobDescription: job.jobDescription,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
+          jobFitResult: {
+            overall_fit: job.jobFitResult.overall_fit,
+            recommendation: job.jobFitResult.recommendation,
+            summary: job.jobFitResult.summary,
+            what_you_have: job.jobFitResult.what_you_have,
+            whats_missing: job.jobFitResult.whats_missing,
+            recruiter_concern: job.jobFitResult.recruiter_concern,
+          },
         }),
       });
       const data = await res.json();
@@ -656,6 +681,22 @@ export default function BriefingPage() {
               >
                 Create cover letter
               </button>
+            </div>
+          )}
+
+          {/* ─ Stale analysis warning ─ */}
+          {isAnalysisStale && (
+            <div style={{ borderLeft: "2px solid #9B8E73", paddingLeft: 14, marginBottom: 20 }}>
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">
+                Your profile was updated after this job was scored. This analysis may not reflect your current background.{" "}
+                <button
+                  onClick={() => navTo("my-jobs")}
+                  className="font-sans text-[13px] text-[#9B8E73] hover:text-[#1C2333] transition-colors focus:outline-none"
+                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer", textDecoration: "underline" }}
+                >
+                  Re-score from My Jobs →
+                </button>
+              </p>
             </div>
           )}
 

@@ -43,6 +43,12 @@ function formatDeadlineDate(deadline: string): string {
   );
 }
 
+function shortReason(summary: string, maxWords = 15): string {
+  const words = summary.trim().split(/\s+/);
+  if (words.length <= maxWords) return summary;
+  return words.slice(0, maxWords).join(" ") + "…";
+}
+
 function deadlineUrgency(deadline: string): { color: string; label: string } {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -124,9 +130,73 @@ function TableRow({
           : "none",
       }}
     >
-      {/* ── Main table row ── */}
+      {/* ── Mobile card (< sm) ── */}
+      <div className="sm:hidden border-b border-[rgba(28,35,51,0.08)] py-4">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="min-w-0">
+            {editingLabel ? (
+              <input
+                ref={labelInputRef}
+                value={labelValue}
+                onChange={(e) => setLabelValue(e.target.value)}
+                onBlur={commitLabel}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitLabel();
+                  if (e.key === "Escape") { setLabelValue(job.label); setEditingLabel(false); }
+                }}
+                className="font-sans text-[17px] font-medium text-[#1C2333] bg-transparent border-b border-[rgba(28,35,51,0.20)] outline-none w-full leading-snug focus:ring-0"
+                style={{ letterSpacing: "-0.012em" }}
+              />
+            ) : (
+              <Link
+                href={`/jobs/${job.id}`}
+                className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug"
+                style={{ fontSize: 17, letterSpacing: "-0.012em", textDecoration: "none", display: "block" }}
+              >
+                {job.label}
+              </Link>
+            )}
+            {job.jobFitResult.company && (
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] mt-0.5 leading-snug">{job.jobFitResult.company}</p>
+            )}
+            {job.jobFitResult.summary && (
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] mt-1.5 leading-snug">
+                {shortReason(job.jobFitResult.summary)}
+              </p>
+            )}
+          </div>
+          <div className="flex items-baseline gap-0.5 shrink-0">
+            <span className="font-sans font-medium tabular-nums text-[#1C2333]" style={{ fontSize: 24, lineHeight: 1, letterSpacing: "-0.03em" }}>
+              {job.jobFitResult.overall_fit}
+            </span>
+            <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", lineHeight: 1 }}>/10</span>
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <span
+            className="inline-flex items-center gap-1.5"
+            style={{ height: 24, padding: "0 10px", borderRadius: 9999, background: recStyle.bg, border: recStyle.border, fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, color: recStyle.color, whiteSpace: "nowrap" }}
+          >
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
+            {job.jobFitResult.recommendation}
+          </span>
+          {isScoreStale ? (
+            <button onClick={() => onSelectJob(job, "job-fit")} className="font-sans text-[13px] text-[#9B8E73] hover:text-[#1C2333] transition-colors">Re-score →</button>
+          ) : (
+            <Link
+              href={`/jobs/${job.id}`}
+              className="hover:opacity-80 transition-opacity glass-card inline-flex items-center"
+              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, fontWeight: 500, color: "var(--fg)", borderRadius: 7, textDecoration: "none", height: 32, padding: "0 12px" }}
+            >
+              View match
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* ── Desktop table row (>= sm) ── */}
       <div
-        className="group grid items-start border-b border-[rgba(28,35,51,0.08)]"
+        className="group hidden sm:grid items-start border-b border-[rgba(28,35,51,0.08)]"
         style={{
           gridTemplateColumns: "1fr 80px 160px 180px",
           gap: "0 16px",
@@ -160,6 +230,11 @@ function TableRow({
               {job.jobFitResult.company && (
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] mt-0.5 leading-snug">
                   {job.jobFitResult.company}
+                </p>
+              )}
+              {job.jobFitResult.summary && (
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] mt-1.5 leading-snug">
+                  {shortReason(job.jobFitResult.summary)}
                 </p>
               )}
             </div>
@@ -250,11 +325,6 @@ function TableRow({
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
             {job.jobFitResult.recommendation}
           </span>
-          {job.jobFitResult.summary && (
-            <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.50)", marginTop: 5, lineHeight: 1.4, maxWidth: 220 }}>
-              {job.jobFitResult.summary}
-            </p>
-          )}
           {isScoreStale && (
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#9B8E73", marginTop: 4 }}>
               Profile updated

@@ -163,8 +163,15 @@ Rules:
 - If overall_fit is below 7, mismatch_types should be non-empty — identify what's driving the gap
 - recruiter_concern: required, never null. A sharp, specific concern — not a softened generality
 - Use "likely" and "appears to" when drawing inferences from the JD rather than stating facts
-- 'What's missing' must be direct and specific, not softened
 - Scores below 5 are valid and sometimes correct
+
+Evidence classification rules — apply before populating whats_missing and what_you_have:
+- whats_missing is ONLY for confirmed functional gaps: experience the candidate's background genuinely lacks. A functional gap means they have not done this type of work, not that the résumé doesn't use a particular phrase or industry label.
+- Industry-specific labeling is NOT a functional gap. If the JD requires "B2B SaaS brand experience" and the résumé contains brand experience at a company that is a B2B SaaS company (e.g. Salesforce, Toast, HubSpot, Workday, Zendesk, Rippling, Brex, Carta), this is an industry-translation consideration — put it in dimensions.industry_fit.reasoning, not whats_missing.
+- Functional experience vs industry relevance are different things. Brand strategy, demand generation, product marketing, and similar functions can be demonstrated in one industry and applied to another. If the candidate has the functional skill, note the industry-translation question in the dimension — do not list it as a gap.
+- Do not flag the absence of a keyword when the underlying competency is present. "No 'B2B SaaS' in résumé text" is not evidence of a gap if the candidate has worked in B2B SaaS companies.
+- If the résumé is silent on something but the candidate's background makes it plausible, flag it as an uncertainty in recruiter_concern or summary — not whats_missing. Reserve whats_missing for things you are confident are absent from their actual background, not just absent from the document.
+- what_you_have items must be directly supported by the résumé text. Do not invent or infer accomplishments not present.
 
 ${VOICE_RULES}`;
 }
@@ -300,11 +307,33 @@ export function buildCoverLetterPrompt(
   outreachAngle?: string,
   userNote?: string,
   writingSample?: string,
-  pivotTarget?: string
+  pivotTarget?: string,
+  jobFitResult?: {
+    overall_fit: number;
+    recommendation: string;
+    summary: string;
+    what_you_have: string[];
+    whats_missing: string[];
+    recruiter_concern: string;
+  }
 ): string {
+  const establishedAnalysis = jobFitResult
+    ? `\nThe following scoring analysis has already been established for this candidate and role. Your cover letter must be consistent with this assessment — do not contradict it or independently reinterpret the facts:
+
+<established_analysis>
+Score: ${jobFitResult.overall_fit}/10 — ${jobFitResult.recommendation}
+${jobFitResult.summary}
+
+Confirmed strengths (draw cover letter claims from these):
+${jobFitResult.what_you_have.map((s) => `- ${s}`).join("\n")}
+${jobFitResult.whats_missing.length > 0 ? `\nConfirmed gaps (do not present these as strengths or claim the candidate has them):\n${jobFitResult.whats_missing.map((s) => `- ${s}`).join("\n")}` : ""}
+${jobFitResult.recruiter_concern && jobFitResult.recruiter_concern !== "None identified" ? `\nPrimary hiring concern to address (do not ignore or contradict): ${jobFitResult.recruiter_concern}` : ""}
+</established_analysis>\n`
+    : "";
+
   return `You are a senior talent strategist helping a candidate write a cover letter for a specific job.
 
-${outreachAngle ? `Outreach angle / hook to lead with:\n<outreach_angle>\n${outreachAngle}\n</outreach_angle>\n\n` : ""}Candidate Resume:
+${outreachAngle ? `Outreach angle / hook to lead with:\n<outreach_angle>\n${outreachAngle}\n</outreach_angle>\n\n` : ""}${establishedAnalysis}Candidate Resume:
 <resume>
 ${resumeText}
 </resume>
@@ -447,15 +476,36 @@ export function buildOutreachPrompt(
   jobDescription: string,
   userNote?: string,
   writingSample?: string,
-  pivotTarget?: string
+  pivotTarget?: string,
+  jobFitResult?: {
+    overall_fit: number;
+    recommendation: string;
+    summary: string;
+    what_you_have: string[];
+    whats_missing: string[];
+    recruiter_concern: string;
+  }
 ): string {
+  const establishedAnalysis = jobFitResult
+    ? `\nThe following scoring analysis has already been established for this candidate and role. Your outreach must be consistent with it — do not contradict the established assessment or claim strengths that appear in the confirmed gaps:
+
+<established_analysis>
+Score: ${jobFitResult.overall_fit}/10 — ${jobFitResult.recommendation}
+${jobFitResult.summary}
+
+Confirmed strengths (ground your outreach hook in these):
+${jobFitResult.what_you_have.map((s) => `- ${s}`).join("\n")}
+${jobFitResult.whats_missing.length > 0 ? `\nConfirmed gaps (do not claim these as strengths):\n${jobFitResult.whats_missing.map((s) => `- ${s}`).join("\n")}` : ""}
+</established_analysis>\n`
+    : "";
+
   return `You are a senior talent strategist helping a candidate write outreach messages for a specific job.
 
 Outreach angle to use as the hook:
 <outreach_angle>
 ${outreachAngle}
 </outreach_angle>
-
+${establishedAnalysis}
 Candidate resume summary (for context):
 <resume>
 ${resumeText.slice(0, 1500)}

@@ -25,13 +25,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { outreachAngle, resumeText, jobDescription, userNote, writingSample, pivotTarget } = body as {
+    const { outreachAngle, resumeText, jobDescription, userNote, writingSample, pivotTarget, jobFitResult } = body as {
       outreachAngle?: string;
       resumeText?: string;
       jobDescription?: string;
       userNote?: string;
       writingSample?: string;
       pivotTarget?: string;
+      jobFitResult?: {
+        overall_fit: number;
+        recommendation: string;
+        summary: string;
+        what_you_have: string[];
+        whats_missing: string[];
+        recruiter_concern: string;
+      };
     };
 
     if (!outreachAngle || typeof outreachAngle !== "string" || outreachAngle.trim().length < 10) {
@@ -50,7 +58,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       jobDescription.trim(),
       userNote?.trim(),
       writingSample?.trim(),
-      pivotTarget?.trim()
+      pivotTarget?.trim(),
+      jobFitResult
     );
 
     const toolSchema = {

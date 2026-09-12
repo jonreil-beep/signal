@@ -1281,7 +1281,16 @@ export default function Home() {
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
-                  <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
+                  <div className="flex items-center gap-4 mb-2">
+                    <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em" }}>My Jobs</h1>
+                    <button
+                      onClick={resetAndNavigateToJobFit}
+                      className="font-sans font-medium text-white bg-[#1C2333] hover:opacity-90 transition-opacity btn-shadow-dark"
+                      style={{ height: 32, padding: "0 12px", borderRadius: 7, fontSize: 12, border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
+                    >
+                      Add a job →
+                    </button>
+                  </div>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every role you've scored, with fit score and application brief.</p>
                 </div>
               </div>
