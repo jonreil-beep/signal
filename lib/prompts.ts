@@ -467,9 +467,10 @@ Rules:
 - Plain declarative statement — no buzzwords, no hype.
 - Banned words (never use): "passionate," "results-driven," "dynamic," "strategic leader," "innovative," "thought leader," "leveraged," "spearheaded," "synergized," "transformative," "game-changing," "seasoned," "driven"
 - Answers one question clearly: what does this person do, and at what level?
-- Written as first-person implied — no "I" — reads as if the candidate wrote it about themselves
+- Written as first-person implied — reads as if the candidate wrote it about themselves
+- Do not use "I", "You", or any personal pronouns — implied subject only
+- Do not address the reader ("You build...", "Your background...") — the headline describes the person, not speaks to them
 - Use concrete, specific language — name actual functions, industries, or outcomes from their background
-- Do not start with "I" or use first-person pronouns
 - The headline must work for someone scanning a search result — immediately legible
 - Priority: (1) role clarity, (2) one concrete differentiator, (3) context. Never stack all credentials at once.
 

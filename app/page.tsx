@@ -479,10 +479,12 @@ export default function Home() {
     if (user) {
       await supabase.from("profiles").upsert({ id: user.id, resume_text: text, cluster_result: null, updated_at: new Date().toISOString() });
     }
+    handleAnalyze(text);
   }
 
-  async function handleAnalyze() {
-    if (!profileText) return;
+  async function handleAnalyze(textOverride?: string) {
+    const textToAnalyze = textOverride ?? profileText;
+    if (!textToAnalyze) return;
     setIsAnalyzing(true);
     setAnalyzeError("");
     setClusterResult(null);
@@ -490,7 +492,7 @@ export default function Home() {
       const response = await fetch("/api/cluster-roles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText }),
+        body: JSON.stringify({ resumeText: textToAnalyze }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -500,7 +502,7 @@ export default function Home() {
         setTimeout(() => {
           document.getElementById("profile-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 100);
-        const snapshot = { resumeText: profileText, writingSample, pivotTarget };
+        const snapshot = { resumeText: textToAnalyze, writingSample, pivotTarget };
         setSavedProfileSnapshot(snapshot);
         try { localStorage.setItem("signal_profile_snapshot", JSON.stringify(snapshot)); } catch { /* ignore */ }
         if (user) {
@@ -1009,7 +1011,7 @@ export default function Home() {
                   <div className="flex items-center shrink-0" style={{ gap: 16 }}>
                     {!clusterResult && !isAnalyzing && (
                       <button
-                        onClick={handleAnalyze}
+                        onClick={() => handleAnalyze()}
                         style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                         className="hover:text-[#1C2333] transition-colors"
                       >
@@ -1149,7 +1151,7 @@ export default function Home() {
             {analyzeError && !isAnalyzing && (
               <div className="mb-4 p-4 border-l-2 border-[#8A7373]">
                 <p className="font-sans text-[14px] text-[#1C2333]">{analyzeError}</p>
-                <button onClick={handleAnalyze} className="mt-1.5 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors">
+                <button onClick={() => handleAnalyze()} className="mt-1.5 font-sans text-[12px] text-[#8A7373] hover:text-[#1C2333] transition-colors">
                   Try again
                 </button>
               </div>
