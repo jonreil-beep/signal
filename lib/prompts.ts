@@ -35,15 +35,13 @@ ${resumeText}
 
 Role cluster to analyze: "${clusterName}"
 
-Return ONLY this exact JSON structure — nothing else:
-{
-  "name": "${clusterName}",
-  "confidence": "Strong | Moderate | Stretch",
-  "recommendation": "Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First",
-  "market_read": "One sentence on how the market is likely to categorize this candidate for this cluster — say so plainly if the market will read them differently than they see themselves.",
-  "reasoning": "2-3 sentences on why this candidate fits or doesn't fit this cluster. Be specific to their background.",
-  "signals": ["achievement or capability statement", "another signal"]
-}
+Submit the following using the tool. Expected fields:
+- name: "${clusterName}"
+- confidence: Strong | Moderate | Stretch
+- recommendation: Pursue | Pursue Selectively | Stretch — Prep Required | Avoid | Reframe First
+- market_read: One sentence on how the market categorizes this candidate for this cluster
+- reasoning: 2-3 sentences on fit, specific to their background
+- signals: Array of achievement or capability statements
 
 Rules:
 - confidence: pick one of Strong | Moderate | Stretch
@@ -55,7 +53,6 @@ Rules:
   - Bad: "Toast, Inc. 01/2020 – Present" / "Head of Brand and Creative, Toast"
   - If you cannot find a genuine achievement signal, write a capability statement instead
   - Maximum 3 bullets — use fewer rather than padding with weak entries
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;
 }
@@ -64,14 +61,14 @@ ${VOICE_RULES}`;
 export function buildRoleClusterPrompt(resumeText: string): string {
   return `You are a senior talent strategist with deep hiring-side experience across corporate strategy, consulting, policy, and research roles.
 
-Analyze the resume below and return a structured JSON object — nothing else, no markdown, no explanation.
+Analyze the resume below and submit the result using the tool. Expected fields:
 
 Resume:
 <resume>
 ${resumeText}
 </resume>
 
-Return this exact JSON structure:
+Field reference:
 {
   "role_clusters": [
     {
@@ -112,7 +109,6 @@ Rules:
   - If you cannot find a genuine achievement signal to support a cluster, write a capability statement instead — e.g. "Built and scaled in-house creative organizations across two companies"
   - Never use employment dates, company names alone, or job titles as bullet content
   - Maximum 3 bullets per cluster — if you cannot find 3 genuine signals, use fewer rather than padding with weak or raw entries
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;
 }
@@ -141,23 +137,16 @@ Job Description:
 ${jobDescription}
 </job_description>
 ${correctionBlock}
-Return this exact JSON structure — nothing else:
-{
-  "job_title": "Exact job title from the posting — e.g. 'Senior Product Manager, Growth'",
-  "overall_fit": <integer 1-10>,
-  "summary": "One direct sentence assessment",
-  "dimensions": {
-    "functional_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
-    "seniority_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
-    "industry_fit": { "score": <1-10>, "reasoning": "Brief explanation" },
-    "keyword_overlap": { "score": <1-10>, "reasoning": "Brief explanation" }
-  },
-  "mismatch_types": ["title" | "comp" | "scope" | "domain" | "functional"],
-  "what_you_have": ["specific match from your resume to the JD — addressed directly to the candidate", "..."],
-  "whats_missing": ["specific gap or ambiguity the hiring team will notice", "..."],
-  "recommendation": "Apply Now | Apply with Tailoring | Stretch — Proceed Carefully | Skip",
-  "recruiter_concern": "The most likely red flag a recruiter would raise — be specific. Use 'None identified' only if there is genuinely no concern."
-}
+Submit the analysis using the tool. Field reference:
+- job_title: Exact job title from the posting
+- overall_fit: Integer 1–10
+- summary: One direct sentence assessment
+- dimensions: functional_fit, seniority_fit, industry_fit, keyword_overlap — each with score (1–10) and reasoning
+- mismatch_types: Array from ["title", "comp", "scope", "domain", "functional"]
+- what_you_have: Specific matches from the candidate's resume to the JD, addressed as "you"
+- whats_missing: Specific gaps the hiring team will notice
+- recommendation: One of — "Apply Now" | "Apply with Tailoring" | "Stretch — Proceed Carefully" | "Skip"
+- recruiter_concern: The most likely red flag a recruiter would raise
 
 Rules:
 - Be decisive on the recommendation — don't hedge it
@@ -172,7 +161,6 @@ Rules:
 - Use "likely" and "appears to" when drawing inferences from the JD rather than stating facts
 - 'What's missing' must be direct and specific, not softened
 - Scores below 5 are valid and sometimes correct
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;
 }
@@ -204,34 +192,13 @@ Job Description:
 ${jobDescription}
 </job_description>
 
-Return this exact JSON structure — nothing else:
-{
-  "honest_take": "One sentence — the thing a candid career advisor would say to this person over coffee. Not in a report. Not softened. If they're a strong fit, say so and why. If they're a stretch or have a real problem, name it plainly. This is the sentence the rest of the brief should be read in light of.",
-  "lead_strengths": [
-    {
-      "strength": "Specific part of your background that is relevant to this role — address the candidate as 'you'",
-      "match_type": "Direct match | Strong inference | Reframe",
-      "framing_language": "How they could present this in an interview or cover letter — in their own voice, not marketing copy"
-    }
-  ],
-  "jd_language_to_mirror": [
-    {
-      "phrase": "Exact phrase from the JD",
-      "context": "Why this phrase matters and where to use it"
-    }
-  ],
-  "what_to_deemphasize": [
-    {
-      "item": "Part of your background to downplay — address the candidate as 'you'",
-      "reason": "Why it dilutes your candidacy for this role"
-    }
-  ],
-  "recruiter_concern_to_preempt": {
-    "concern": "The most likely hesitation a recruiter would have — be specific, not softened",
-    "suggested_response": "How to address it proactively — concrete language they could actually use, not generic advice"
-  },
-  "outreach_angle": "Optional: A specific hook for cold outreach, or null"
-}
+Submit the brief using the tool. Field reference:
+- honest_take: One candid sentence a trusted advisor would say over coffee — not softened
+- lead_strengths: Array of {strength, match_type ("Direct match"|"Strong inference"|"Reframe"), framing_language}
+- jd_language_to_mirror: Array of {phrase (exact from JD), context (why and where to use it)}
+- what_to_deemphasize: Array of {item (what to downplay), reason (why it hurts candidacy)}
+- recruiter_concern_to_preempt: {concern (specific hesitation), suggested_response (concrete language to use)}
+- outreach_angle: A specific hook for cold outreach, or null
 
 Rules:
 - honest_take: write this as if you're the candidate's most trusted advisor, not their cheerleader. If it's good news, say it directly. If it's complicated, say that plainly. One sentence, no hedging.
@@ -244,7 +211,6 @@ Rules:
 - Do not mirror JD language so closely it sounds copied — translate it into natural language
 - JD language to mirror: use exact phrases, not paraphrases
 - What to de-emphasize: 1-3 items, be direct
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }
@@ -275,24 +241,10 @@ Job Description:
 ${jobDescription}
 </job_description>
 
-Return this exact JSON structure — nothing else:
-{
-  "summary_rewrite": "A rewrite of their professional summary/headline for this specific role — 2–4 sentences. Uses only what is true in the resume. Must sound like the candidate wrote it.",
-  "bullet_updates": [
-    {
-      "section": "Section and context (e.g. 'Work Experience — Acme Corp' or 'Professional Summary')",
-      "original": "The exact original bullet text from the resume — copy it verbatim, do not paraphrase",
-      "suggested": "The rewritten bullet — starts with a plain strong verb, mirrors JD language where relevant, adds no invented facts",
-      "what_changed": "One sentence explaining precisely what was changed and why — this must be specific enough that the candidate can verify the claim is grounded in their actual experience"
-    }
-  ],
-  "keywords_to_weave_in": [
-    {
-      "keyword": "Exact keyword or phrase from the JD that is missing or underused",
-      "suggested_context": "Where and how to naturally add it (e.g. 'Add to summary' or 'Use in your [Company] bullet about X')"
-    }
-  ]
-}
+Submit the result using the tool. Field reference:
+- summary_rewrite: A rewrite of their professional summary for this role — 2–4 sentences using only what is true in the resume
+- bullet_updates: Array of {section, original (verbatim), suggested (rewritten bullet), what_changed (one specific sentence)}
+- keywords_to_weave_in: Array of {keyword (exact from JD), suggested_context (where and how to add it)}
 
 Rules:
 - summary_rewrite: must feel authentic, written in first-person implied (no "I"), specific to this role
@@ -302,11 +254,8 @@ Rules:
 - what_changed: be specific and accountable — "Replaced vague 'managed projects' with the specific initiative name from the resume and connected it to the JD's emphasis on cross-functional execution" is good. "Made it stronger" is not.
 - keywords_to_weave_in: 3–6 phrases from the JD that are absent or underrepresented in the resume
 - Be specific to this candidate and this job — no generic advice
-- Return only valid JSON, no markdown fences
 
-${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}
-
-CRITICAL: Return ONLY a valid JSON object. No preamble, no explanation, no markdown fences, no text before or after the JSON. The response must start with { and end with }. Double-check that all strings are properly escaped, all arrays are properly closed, and all objects have matching braces before responding.`;
+${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;
 }
 
 // Cover letter generation prompt
@@ -330,10 +279,8 @@ Job Description:
 ${jobDescription}
 </job_description>
 
-Write a tailored cover letter. Return this exact JSON structure — nothing else:
-{
-  "cover_letter": "The full cover letter text — 180–280 words, no salutation line, no date or address block. Start directly with the opening paragraph."
-}
+Write a tailored cover letter and submit it using the tool:
+- cover_letter: The full cover letter text — 180–280 words, no salutation line, no date or address block, starts with the opening paragraph
 
 Rules:
 - FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. This is a document the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
@@ -347,7 +294,6 @@ Rules:
 - 3 paragraphs max — each paragraph must earn its place. If you can't say what it's doing, cut it.
 - The letter should feel like something a sharp person wrote in 20 minutes, not something workshopped. Restraint is more convincing than completeness.
 - Never list more than two things in a row. If you're listing, you're probably not writing.
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}${userNote?.trim() ? `\n\nUser instruction: "${userNote.trim()}"\n— Treat this as the highest-priority instruction. If it corrects a factual error, take the user's version as authoritative. If it requests a tone or focus change, apply it throughout.` : ""}`;
 }
@@ -366,16 +312,8 @@ Job Description:
 ${jobDescription}
 </job_description>
 
-Return this exact JSON structure — nothing else:
-{
-  "questions": [
-    {
-      "question": "The interview question, phrased exactly as an interviewer would ask it",
-      "why_likely": "One sentence on why this question is likely for this specific role and candidate",
-      "suggested_approach": "2-3 sentences on how this candidate should frame their answer, referencing their specific background"
-    }
-  ]
-}
+Submit the result using the tool. Field reference:
+- questions: Array of {question (phrased as an interviewer would ask), why_likely (one sentence on why it's likely for this role), suggested_approach (2-3 sentences on how this candidate should frame their answer)}
 
 Rules:
 - Return 6-8 questions
@@ -385,7 +323,6 @@ Rules:
 - Gap questions should address the most likely recruiter hesitation from the job fit
 - Do not use filler phrases like "Great question" or "That's a good point" in the suggested approach
 - suggested_approach must reference the candidate's actual experience — not generic interview advice
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;
 }
@@ -399,7 +336,7 @@ Job Description:
 ${jobDescription.slice(0, 2000)}
 </job_description>
 
-Research this company and return structured JSON with explicit provenance — separating what is known from what is inferred. Return this exact JSON structure — nothing else:
+Research this company and submit the result using the tool — separate what is known from what is inferred. Field reference:
 {
   "company_name": "The company's full name as it appears in the JD",
   "what_we_know": {
@@ -436,7 +373,6 @@ Rules:
 - red_flags_to_probe: 1-3 items. If you have no genuine concerns, return an empty array — do not manufacture flags.
 - questions_to_test: 3-4 questions — each must test a specific hypothesis, not be a generic "tell me about the culture" question
 - Never present an inference as a verified fact. The distinction is the entire point.
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}`;
 }
@@ -455,11 +391,9 @@ Job Description:
 ${jobDescription.slice(0, 1000)}
 </job_description>
 
-Draft two follow-up messages tailored to this candidate and role. Return this exact JSON structure — nothing else:
-{
-  "thank_you_note": "A thank-you note to send within 24 hours of an interview — 100–150 words. References something specific from the interview (use a plausible placeholder like '[topic discussed]' if no specifics are known), reinforces one concrete reason why the candidate is a strong fit, and closes with a direct but warm next step.",
-  "check_in_email": "A follow-up check-in email to send 1–2 weeks after the interview if no response — 80–120 words. References the role and interview, reaffirms interest with one specific detail, and asks clearly about timing without being pushy."
-}
+Draft two follow-up messages and submit them using the tool:
+- thank_you_note: Thank-you note to send within 24 hours — 100–150 words. References something specific from the interview (use '[topic discussed]' if no specifics known), reinforces one concrete reason for fit, closes with a direct but warm next step.
+- check_in_email: Check-in email to send 1–2 weeks after if no response — 80–120 words. References the role and interview, reaffirms interest with one specific detail, asks about timing without being pushy.
 
 Rules:
 - FIRST PERSON THROUGHOUT: Write entirely in first person — use "I", "my", "me", and "we" throughout. These are documents the candidate will send directly. Never use "you", "your", or "their" when referring to the candidate's experience, background, or achievements. Correct: "My experience scaling creative teams at Toast…" — Incorrect: "Your experience scaling creative teams at Toast…"
@@ -467,7 +401,6 @@ Rules:
 - Do not use hollow openers like "I hope this email finds you well" or "I wanted to follow up"
 - thank_you_note: mention a specific detail from the role or conversation — use '[the conversation about X]' as a bracket placeholder if needed
 - check_in_email: be direct, warm, and brief — no groveling, no over-explaining
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;
 }
@@ -525,10 +458,8 @@ Candidate Resume:
 ${resumeText.slice(0, 3000)}
 </resume>
 
-Write one optimized LinkedIn headline for this person. Return this exact JSON structure — nothing else:
-{
-  "headline": "The complete headline text"
-}
+Write one optimized LinkedIn headline and submit it using the tool:
+- headline: The complete headline text
 
 Rules:
 - Hard limit: 120 characters maximum. Count carefully before responding.
@@ -541,7 +472,6 @@ Rules:
 - Do not start with "I" or use first-person pronouns
 - The headline must work for someone scanning a search result — immediately legible
 - Priority: (1) role clarity, (2) one concrete differentiator, (3) context. Never stack all credentials at once.
-- Return only valid JSON, no markdown fences
 
 ${VOICE_RULES}${buildVoiceBlock(writingSample)}${buildPivotBlock(pivotTarget)}`;
 }

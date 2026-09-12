@@ -46,28 +46,38 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       pivotTarget?.trim()
     );
 
-    const result = await callClaudeWithTool<FollowUpResult>(
-      prompt,
-      "submit_follow_up",
-      {
-        type: "object",
-        properties: {
-          thank_you_note: { type: "string" },
-          check_in_email: { type: "string" },
-        },
-        required: ["thank_you_note", "check_in_email"],
+    const toolSchema = {
+      type: "object" as const,
+      properties: {
+        thank_you_note: { type: "string" },
+        check_in_email: { type: "string" },
       },
-      2048
-    );
+      required: ["thank_you_note", "check_in_email"],
+    };
 
-    if (typeof result.thank_you_note !== "string" || typeof result.check_in_email !== "string") {
-      return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
-        { status: 500 }
-      );
+    let result: FollowUpResult | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const raw = await callClaudeWithTool<FollowUpResult>(prompt, "submit_follow_up", toolSchema, 2048);
+
+      // Recover if Claude put the full JSON in the first field
+      let candidate = raw;
+      if (typeof raw.thank_you_note === "string" && raw.thank_you_note.trimStart().startsWith("{")) {
+        try {
+          const parsed = JSON.parse(raw.thank_you_note) as FollowUpResult;
+          if (typeof parsed.thank_you_note === "string" && typeof parsed.check_in_email === "string") candidate = parsed;
+        } catch { /* not JSON */ }
+      }
+
+      if (typeof candidate.thank_you_note !== "string" || typeof candidate.check_in_email !== "string") {
+        console.error(`[follow-up] Attempt ${attempt}: missing required fields`);
+        if (attempt === 3) return NextResponse.json({ error: "Follow-up generation failed. Try again." }, { status: 500 });
+        continue;
+      }
+      result = candidate;
+      break;
     }
 
-    return NextResponse.json(sanitizeAI(result));
+    return NextResponse.json(sanitizeAI(result!));
   } catch (err) {
     console.error("[follow-up] Error:", err);
     return NextResponse.json(

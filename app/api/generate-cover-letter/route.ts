@@ -50,27 +50,34 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       pivotTarget?.trim()
     );
 
-    const result = await callClaudeWithTool<CoverLetterResult>(
-      prompt,
-      "submit_cover_letter",
-      {
-        type: "object",
-        properties: {
-          cover_letter: { type: "string" },
-        },
-        required: ["cover_letter"],
-      },
-      2048
-    );
+    const toolSchema = {
+      type: "object" as const,
+      properties: { cover_letter: { type: "string" } },
+      required: ["cover_letter"],
+    };
 
-    if (typeof result.cover_letter !== "string") {
-      return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
-        { status: 500 }
-      );
+    let result: CoverLetterResult | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const raw = await callClaudeWithTool<CoverLetterResult>(prompt, "submit_cover_letter", toolSchema, 2048);
+
+      let candidate = raw;
+      if (typeof raw.cover_letter === "string" && raw.cover_letter.trimStart().startsWith("{")) {
+        try {
+          const parsed = JSON.parse(raw.cover_letter) as CoverLetterResult;
+          if (typeof parsed.cover_letter === "string") candidate = parsed;
+        } catch { /* not JSON */ }
+      }
+
+      if (typeof candidate.cover_letter !== "string" || candidate.cover_letter.trim().length < 50) {
+        console.error(`[generate-cover-letter] Attempt ${attempt}: missing or short cover_letter`);
+        if (attempt === 3) return NextResponse.json({ error: "Cover letter generation failed. Try again." }, { status: 500 });
+        continue;
+      }
+      result = candidate;
+      break;
     }
 
-    return NextResponse.json(sanitizeAI(result));
+    return NextResponse.json(sanitizeAI(result!));
   } catch (err) {
     console.error("[generate-cover-letter] Error:", err);
     return NextResponse.json(

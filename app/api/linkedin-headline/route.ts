@@ -37,27 +37,34 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const prompt = buildLinkedInHeadlinePrompt(resumeText.trim(), writingSample?.trim(), pivotTarget?.trim());
 
-    const result = await callClaudeWithTool<LinkedInHeadlineResult>(
-      prompt,
-      "submit_linkedin_headline",
-      {
-        type: "object",
-        properties: {
-          headline: { type: "string" },
-        },
-        required: ["headline"],
-      },
-      512
-    );
+    const toolSchema = {
+      type: "object" as const,
+      properties: { headline: { type: "string" } },
+      required: ["headline"],
+    };
 
-    if (!result.headline || typeof result.headline !== "string") {
-      return NextResponse.json(
-        { error: "Response was missing required fields. Try again." },
-        { status: 500 }
-      );
+    let result: LinkedInHeadlineResult | null = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const raw = await callClaudeWithTool<LinkedInHeadlineResult>(prompt, "submit_linkedin_headline", toolSchema, 512);
+
+      let candidate = raw;
+      if (typeof raw.headline === "string" && raw.headline.trimStart().startsWith("{")) {
+        try {
+          const parsed = JSON.parse(raw.headline) as LinkedInHeadlineResult;
+          if (typeof parsed.headline === "string") candidate = parsed;
+        } catch { /* not JSON */ }
+      }
+
+      if (!candidate.headline || typeof candidate.headline !== "string") {
+        console.error(`[linkedin-headline] Attempt ${attempt}: missing headline`);
+        if (attempt === 3) return NextResponse.json({ error: "Headline generation failed. Try again." }, { status: 500 });
+        continue;
+      }
+      result = candidate;
+      break;
     }
 
-    return NextResponse.json(sanitizeAI(result));
+    return NextResponse.json(sanitizeAI(result!));
   } catch (err) {
     console.error("[linkedin-headline] Error:", err);
     return NextResponse.json(
