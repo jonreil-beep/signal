@@ -414,7 +414,7 @@ export default function JobTracker({
             </>
           ) : (
             <>
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Profile saved. Score your first job to get started.</p>
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] mb-4">Your profile is saved. Drop in a job description to see how you stack up.</p>
               <button
                 onClick={onGoToJobFit}
                 className="inline-flex items-center gap-1 px-5 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"

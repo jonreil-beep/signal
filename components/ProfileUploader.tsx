@@ -206,7 +206,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
           </button>
 
           {confirmed && (
-            <p className="font-sans text-[14px] text-[#7A8B73] font-medium">Ready to score jobs.</p>
+            <p className="font-sans text-[14px] text-[#7A8B73] font-medium">You're set up. Start scoring roles.</p>
           )}
 
           {!confirmed && (
