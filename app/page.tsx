@@ -6,8 +6,6 @@ import type { User } from "@supabase/supabase-js";
 import ProfileUploader from "@/components/ProfileUploader";
 import RoleClusterResults from "@/components/RoleClusterResults";
 import JobFitScorer from "@/components/JobFitScorer";
-import TailoringBrief from "@/components/TailoringBrief";
-import JobDiscovery from "@/components/JobDiscovery";
 import JobTracker from "@/components/JobTracker";
 import JobLabelEditor from "@/components/JobLabelEditor";
 import LoadingState from "@/components/LoadingState";
@@ -122,7 +120,7 @@ export default function Home() {
   // ── Restore tab, landing state + active job from sessionStorage after hydration ──
   useEffect(() => {
     const savedTab = sessionStorage.getItem("signal-active-tab") as TabId | null;
-    const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs", "discover"];
+    const valid: TabId[] = ["profile", "job-fit", "my-jobs"];
     if (savedTab && valid.includes(savedTab)) setActiveTab(savedTab);
 
     // Restore guest "dismissed landing" state so refresh doesn't kick them back to landing
@@ -153,11 +151,6 @@ export default function Home() {
     if (!sessionRestored) return;
     sessionStorage.setItem("signal-active-tab", activeTab);
   }, [activeTab, sessionRestored]);
-
-  // Reset auto-build flag when leaving prep tab so returning via other routes doesn't re-trigger
-  useEffect(() => {
-    if (activeTab !== "tailoring-brief") setAutoBuildPrep(false);
-  }, [activeTab]);
 
   // ── Persist landing visibility — lets guests survive a refresh without returning to landing ──
   useEffect(() => {
@@ -312,7 +305,7 @@ export default function Home() {
   useEffect(() => {
     function handlePopState(event: PopStateEvent) {
       const state = event.state as { signalTab?: string } | null;
-      const valid: TabId[] = ["profile", "job-fit", "tailoring-brief", "my-jobs", "discover"];
+      const valid: TabId[] = ["profile", "job-fit", "my-jobs"];
       if (state?.signalTab && valid.includes(state.signalTab as TabId)) {
         setActiveTab(state.signalTab as TabId);
       }
@@ -692,28 +685,28 @@ export default function Home() {
     }
   }
 
-  async function handleOutreachResult(result: OutreachResult | null) {
-    setOutreachResult(result);
-    if (activeJobId) {
-      setTrackedJobs((prev) =>
-        prev.map((j) => (j.id === activeJobId ? { ...j, outreachResult: result } : j))
-      );
-      if (user) {
-        await supabase.from("tracked_jobs").update({ outreach_result: result }).eq("id", activeJobId);
-      }
+  async function handleOutreachResult(jobId: string, result: OutreachResult | null) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === jobId ? { ...j, outreachResult: result } : j))
+    );
+    if (activeJobId === jobId) setOutreachResult(result);
+    if (user) {
+      await supabase.from("tracked_jobs").update({ outreach_result: result }).eq("id", jobId);
     }
   }
 
-  async function handleCoverLetterResult(result: CoverLetterResult | null) {
-    setCoverLetterResult(result);
-    if (activeJobId) {
-      setTrackedJobs((prev) =>
-        prev.map((j) => (j.id === activeJobId ? { ...j, coverLetterResult: result } : j))
-      );
-      if (user) {
-        await supabase.from("tracked_jobs").update({ cover_letter_result: result }).eq("id", activeJobId);
-      }
+  async function handleCoverLetterResult(jobId: string, result: CoverLetterResult | null) {
+    setTrackedJobs((prev) =>
+      prev.map((j) => (j.id === jobId ? { ...j, coverLetterResult: result } : j))
+    );
+    if (activeJobId === jobId) setCoverLetterResult(result);
+    if (user) {
+      await supabase.from("tracked_jobs").update({ cover_letter_result: result }).eq("id", jobId);
     }
+  }
+
+  async function handleBriefRegenerate(jobId: string, result: TailoringBriefResult) {
+    await saveTailoringResultForJob(jobId, result);
   }
 
   async function handleResumeUpdateResult(result: ResumeUpdateResult | null) {
@@ -797,7 +790,7 @@ export default function Home() {
     setActiveTab("job-fit");
   }
 
-  function handleSelectJob(job: TrackedJob, goTo: "job-fit" | "tailoring-brief") {
+  function handleSelectJob(job: TrackedJob, goTo: "job-fit") {
     // Push history so the browser back button returns to My Jobs
     window.history.replaceState({ signalTab: "my-jobs" }, "");
     window.history.pushState({ signalTab: goTo }, "");
@@ -1248,12 +1241,6 @@ export default function Home() {
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Ready to evaluate a role?</p>
                 <div className="flex items-center gap-5 shrink-0">
                   <button
-                    onClick={() => setActiveTab("discover")}
-                    className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
-                  >
-                    Discover jobs →
-                  </button>
-                  <button
                     onClick={resetAndNavigateToJobFit}
                     className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
                     style={{ height: 36 }}
@@ -1298,18 +1285,6 @@ export default function Home() {
                       onRename={handleRenameJob}
                       className="font-sans text-[18px] font-medium text-[#1C2333]"
                     />
-                    {jobFitResult && (
-                      <button
-                        onClick={() => {
-                          if (!tailoringResult) setAutoBuildPrep(true);
-                          setActiveTab("tailoring-brief");
-                        }}
-                        className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark whitespace-nowrap shrink-0"
-                        style={{ height: 36 }}
-                      >
-                        {tailoringResult ? "Go to Prep →" : "Build your prep"}
-                      </button>
-                    )}
                   </div>
                 )}
                 <JobFitScorer
@@ -1322,8 +1297,6 @@ export default function Home() {
                   onJobScored={handleJobScored}
                   onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}
-                  onGoToTailoringBrief={() => setActiveTab("tailoring-brief")}
-                  onSearchSimilarRoles={() => setActiveTab("discover")}
                 />
               </div>
             )}
@@ -1331,90 +1304,22 @@ export default function Home() {
         )}
 
         {/* ── Discover tab ── */}
-        {activeTab === "discover" && (
-          <div>
-            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9 9l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Explore Roles</span>
-              </div>
-              <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Discover</h1>
-              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Search directly from your best-fit role clusters.</p>
-            </div>
-            <JobDiscovery
-              clusterResult={clusterResult}
-              onGoToProfile={() => setActiveTab("profile")}
-            />
-          </div>
-        )}
-
-        {/* ── Prep tab ── */}
-        {activeTab === "tailoring-brief" && (
-          <div>
-            <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
-                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 1h10M2 4.5h7M7 8h5M2 11.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Application Kit</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
-                <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
-                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                <button onClick={() => setActiveTab("job-fit")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>Job Fit</button>
-                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Prep</span>
-              </div>
-              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "rgba(28,35,51,0.65)", marginTop: 8 }}>Everything you need to apply. Built from your fit score.</p>
-            </div>
-            {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
-              <div className="flex items-center justify-between gap-4 mb-6">
-                <JobLabelEditor
-                  id={activeJobId}
-                  label={trackedJobs.find(j => j.id === activeJobId)!.label}
-                  onRename={handleRenameJob}
-                  className="font-sans text-[18px] font-medium text-[#231812]"
-                />
-                {tailoringResult && (
-                  <button
-                    onClick={() => setBriefModalOpen(true)}
-                    className="glass-card btn-shadow-glass hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 focus:outline-none"
-                    style={{ height: 36, padding: "0 14px", borderRadius: 7, fontSize: 13, fontFamily: "var(--font-geist-sans)", fontWeight: 500, color: "var(--fg)", cursor: "pointer" }}
-                  >
-                    Your brief →
-                  </button>
-                )}
-              </div>
-            )}
-            <TailoringBrief
+        {/* ── Your Brief modal ── */}
+        {briefModalOpen && activeJobId && (() => {
+          const j = trackedJobs.find(j => j.id === activeJobId);
+          return j ? (
+            <YourBriefModal
+              job={j}
               profileText={profileText}
               writingSample={writingSample || undefined}
               pivotTarget={pivotTarget || undefined}
-              jobDescription={jobDescription}
-              jobLabel={activeJobId ? trackedJobs.find(j => j.id === activeJobId)?.label : undefined}
-              result={tailoringResult}
-              onResultChange={handleTailoringResult}
-              outreachResult={outreachResult}
-              onOutreachResultChange={handleOutreachResult}
-              coverLetterResult={coverLetterResult}
-              onCoverLetterResultChange={handleCoverLetterResult}
-              resumeUpdateResult={resumeUpdateResult}
-              onResumeUpdateResultChange={handleResumeUpdateResult}
-              interviewPrepResult={interviewPrepResult}
-              onInterviewPrepResultChange={handleInterviewPrepResult}
-              followUpResult={followUpResult}
-              onFollowUpResultChange={handleFollowUpResult}
-              companyResearchResult={companyResearchResult}
-              onCompanyResearchResultChange={handleCompanyResearchResult}
-              onGoToProfile={() => setActiveTab("profile")}
-              onGoToJobFit={() => setActiveTab("job-fit")}
-              isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
-              onOpenBrief={tailoringResult ? () => setBriefModalOpen(true) : undefined}
-              autoGenerate={autoBuildPrep}
+              onClose={() => setBriefModalOpen(false)}
+              onCoverLetterChange={handleCoverLetterResult}
+              onOutreachChange={handleOutreachResult}
+              onBriefRegenerate={handleBriefRegenerate}
             />
-          </div>
-        )}
-
-        {/* ── Your Brief modal (Prep screen) ── */}
-        {briefModalOpen && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j ? <YourBriefModal job={j} onClose={() => setBriefModalOpen(false)} /> : null; })()}
+          ) : null;
+        })()}
 
         {/* ── My Jobs tab ── */}
         {activeTab === "my-jobs" && (

@@ -1,6 +1,6 @@
 // Shared TypeScript types for Claro
 
-export type TabId = "profile" | "job-fit" | "tailoring-brief" | "my-jobs" | "discover";
+export type TabId = "profile" | "job-fit" | "my-jobs";
 
 export type ApplicationStatus =
   | "Tracking"

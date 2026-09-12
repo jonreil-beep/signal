@@ -7,7 +7,6 @@ import type { TabId } from "@/types";
 const NAV_ITEMS: { id: TabId; label: string }[] = [
   { id: "my-jobs",  label: "My Jobs"  },
   { id: "profile",  label: "Profile"  },
-  { id: "discover", label: "Discover" },
 ];
 
 interface AppShellProps {

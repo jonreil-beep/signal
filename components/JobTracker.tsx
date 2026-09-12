@@ -7,7 +7,7 @@ interface JobTrackerProps {
   jobs: TrackedJob[];
   hasProfile: boolean;
   profileUpdatedAt?: Date | null;
-  onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
+  onSelectJob: (job: TrackedJob, goTo: "job-fit") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onNotesChange: (id: string, notes: string) => void;
@@ -60,7 +60,7 @@ interface TableRowProps {
   job: TrackedJob;
   staggerIndex: number;
   profileUpdatedAt?: Date | null;
-  onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
+  onSelectJob: (job: TrackedJob, goTo: "job-fit") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
   onNotesChange: (id: string, notes: string) => void;
@@ -282,23 +282,6 @@ function TableRow({
                 }}
               >
                 Score
-              </button>
-              <button
-                onClick={() => onSelectJob(job, "tailoring-brief")}
-                className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
-                style={{
-                  fontFamily: "var(--font-geist-sans)",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--fg)",
-                  borderRadius: 7,
-                  cursor: "pointer",
-                  height: 36,
-                  padding: "0 14px",
-                  boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
-                }}
-              >
-                Prep
               </button>
               {generatingBrief ? (
                 <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", whiteSpace: "nowrap" }}>

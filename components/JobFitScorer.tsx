@@ -14,8 +14,6 @@ interface JobFitScorerProps {
   onJobScored: (jobDescription: string, result: JobFitResult) => void;
   onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
-  onGoToTailoringBrief: () => void;
-  onSearchSimilarRoles: () => void;
 }
 
 type InputMode = "paste" | "url";
@@ -77,7 +75,7 @@ function ScoreBar({ score, animate, delayMs }: { score: number; animate: boolean
   );
 }
 
-export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset, onGoToTailoringBrief, onSearchSimilarRoles }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>(initialJDText ?? "");
 
@@ -623,20 +621,13 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           </div>
 
           {/* Bottom nav CTAs */}
-          <div className="flex items-center justify-between gap-4 pt-6 border-t border-[rgba(28,35,51,0.08)]">
+          <div className="flex items-center pt-6 border-t border-[rgba(28,35,51,0.08)]">
             <button
               onClick={handleReset}
               style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
               className="hover:text-[#1C2333] transition-colors"
             >
               ← Score another job
-            </button>
-            <button
-              onClick={onSearchSimilarRoles}
-              style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-              className="hover:text-[#1C2333] transition-colors"
-            >
-              Search for similar roles →
             </button>
           </div>
 
