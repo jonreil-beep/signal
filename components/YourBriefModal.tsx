@@ -126,7 +126,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
                 Your Brief
               </p>
               <h2 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 20, color: "var(--fg)", letterSpacing: "-0.015em", lineHeight: 1.2 }}>
-                {jobFitResult.job_title || job.label}
+                {job.label}
               </h2>
             </div>
             <button
