@@ -823,15 +823,6 @@ export default function Home() {
     }
   }
 
-  async function handleStatusChange(id: string, status: ApplicationStatus) {
-    setTrackedJobs((prev) =>
-      prev.map((j) => (j.id === id ? { ...j, applicationStatus: status } : j))
-    );
-    if (user) {
-      await supabase.from("tracked_jobs").update({ application_status: status }).eq("id", id);
-    }
-  }
-
   async function handleNotesChange(id: string, notes: string) {
     setTrackedJobs((prev) =>
       prev.map((j) => (j.id === id ? { ...j, notes } : j))
@@ -1447,7 +1438,7 @@ export default function Home() {
               onSelectJob={handleSelectJob}
               onRemoveJob={handleRemoveJob}
               onRenameJob={handleRenameJob}
-              onStatusChange={handleStatusChange}
+
               onNotesChange={handleNotesChange}
               onDeadlineChange={handleDeadlineChange}
               onGoToProfile={() => setActiveTab("profile")}

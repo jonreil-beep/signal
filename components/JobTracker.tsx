@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { TrackedJob, ApplicationStatus } from "@/types";
+import type { TrackedJob } from "@/types";
 
 interface JobTrackerProps {
   jobs: TrackedJob[];
@@ -10,7 +10,6 @@ interface JobTrackerProps {
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
-  onStatusChange: (id: string, status: ApplicationStatus) => void;
   onNotesChange: (id: string, notes: string) => void;
   onDeadlineChange: (id: string, deadline: string | null) => void;
   onGoToProfile: () => void;
@@ -20,9 +19,6 @@ interface JobTrackerProps {
   generatingBriefIds?: Set<string>;
 }
 
-const APPLICATION_STATUSES: ApplicationStatus[] = [
-  "Tracking", "Applied", "Phone Screen", "Interview", "Offer", "Rejected",
-];
 
 const RECOMMENDATION_STYLES: Record<string, { color: string; dotColor: string; bg: string; border: string }> = {
   "Apply Now":                   { color: "#7A8B73", dotColor: "#7A8B73", bg: "rgba(122,139,115,0.08)",  border: "none" },
@@ -67,7 +63,6 @@ interface TableRowProps {
   onSelectJob: (job: TrackedJob, goTo: "job-fit" | "tailoring-brief") => void;
   onRemoveJob: (id: string) => void;
   onRenameJob: (id: string, newLabel: string) => void;
-  onStatusChange: (id: string, status: ApplicationStatus) => void;
   onNotesChange: (id: string, notes: string) => void;
   onDeadlineChange: (id: string, deadline: string | null) => void;
   onOpenBrief: (jobId: string) => void;
@@ -77,7 +72,7 @@ interface TableRowProps {
 function TableRow({
   job, staggerIndex, profileUpdatedAt,
   onSelectJob, onRemoveJob, onRenameJob,
-  onStatusChange, onNotesChange, onDeadlineChange, onOpenBrief, generatingBrief,
+  onNotesChange, onDeadlineChange, onOpenBrief, generatingBrief,
 }: TableRowProps) {
   const [expanded, setExpanded] = useState<"none" | "notes" | "jd" | "deadline">("none");
   const [notesValue, setNotesValue] = useState(job.notes);
@@ -135,7 +130,7 @@ function TableRow({
       <div
         className="group grid items-start border-b border-[rgba(28,35,51,0.08)]"
         style={{
-          gridTemplateColumns: "1fr 80px 160px 160px 180px",
+          gridTemplateColumns: "1fr 80px 160px 180px",
           gap: "0 16px",
           padding: "20px 0",
         }}
@@ -165,6 +160,9 @@ function TableRow({
             </button>
           )}
           {/* Meta row */}
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)", marginTop: 3 }}>
+            {formatDateRelative(job.scoredAt)}
+          </p>
           <div className="flex items-center gap-1.5 mt-1.5">
             <button
               onClick={() => toggleExpanded("jd")}
@@ -255,49 +253,6 @@ function TableRow({
               Profile updated
             </p>
           )}
-        </div>
-
-        {/* STAGE */}
-        <div className="pt-0.5">
-          <div className="relative inline-flex items-center">
-            <select
-              value={job.applicationStatus}
-              onChange={(e) => onStatusChange(job.id, e.target.value as ApplicationStatus)}
-              className="appearance-none cursor-pointer outline-none focus:ring-0 pr-6 pl-3"
-              style={{
-                height: 36,
-                borderRadius: 7,
-                border: "1px solid rgba(255, 255, 255, 0.55)",
-                fontFamily: "var(--font-geist-sans)",
-                fontSize: 14,
-                fontWeight: 400,
-                color: "#1C2333",
-                background: "rgba(255, 255, 255, 0.55)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                transition: "border-color 150ms",
-              }}
-            >
-              {APPLICATION_STATUSES.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <svg
-              className="absolute right-2 w-2.5 h-2.5 pointer-events-none text-[rgba(28,35,51,0.45)]"
-              viewBox="0 0 10 6" fill="none" aria-hidden="true"
-            >
-              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <p style={{
-            fontFamily: "var(--font-geist-sans)",
-            fontSize: 12,
-            color: "rgba(28,35,51,0.45)",
-            letterSpacing: "0.01em",
-            marginTop: 5,
-          }}>
-            {formatDateRelative(job.scoredAt)}
-          </p>
         </div>
 
         {/* ACTIONS */}
@@ -404,16 +359,14 @@ function TableRow({
 }
 
 type SortBy = "date" | "score";
-type StatusFilter = ApplicationStatus | "All";
 
 export default function JobTracker({
   jobs, hasProfile, profileUpdatedAt,
-  onSelectJob, onRemoveJob, onRenameJob, onStatusChange,
+  onSelectJob, onRemoveJob, onRenameJob,
   onNotesChange, onDeadlineChange,
   onGoToProfile, onGoToJobFit, onScoreNewJob, onOpenBrief, generatingBriefIds,
 }: JobTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [sortBy, setSortBy] = useState<SortBy>("date");
 
   /* ── Empty state ── */
@@ -522,18 +475,16 @@ export default function JobTracker({
   }
 
   const filtered = jobs
-    .filter((j) => statusFilter === "All" || j.applicationStatus === statusFilter)
     .filter((j) => !searchQuery.trim() || j.label.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
       if (sortBy === "score") return b.jobFitResult.overall_fit - a.jobFitResult.overall_fit;
       return new Date(b.scoredAt).getTime() - new Date(a.scoredAt).getTime();
     });
 
-  const isFiltered = searchQuery.trim() !== "" || statusFilter !== "All";
+  const isFiltered = searchQuery.trim() !== "";
 
   function clearFilters() {
     setSearchQuery("");
-    setStatusFilter("All");
   }
 
   return (
@@ -566,37 +517,8 @@ export default function JobTracker({
         )}
       </div>
 
-      {/* ── Filter pills + sort ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mb-1" style={{ scrollbarWidth: "none" }}>
-          {(["All", ...APPLICATION_STATUSES] as StatusFilter[]).map((s) => {
-            const isActive = statusFilter === s;
-            const count = s !== "All" ? jobs.filter((j) => j.applicationStatus === s).length : jobs.length;
-            return (
-              <button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className="shrink-0 font-sans font-medium text-[13px] transition-all whitespace-nowrap"
-                style={{
-                  height: 32,
-                  padding: "0 14px",
-                  borderRadius: 9999,
-                  background: isActive ? "#1C2333" : "rgba(255,255,255,0.55)",
-                  color: isActive ? "#fff" : "rgba(28,35,51,0.65)",
-                  border: isActive ? "none" : "1px solid rgba(255,255,255,0.55)",
-                  backdropFilter: isActive ? "none" : "blur(8px)",
-                  WebkitBackdropFilter: isActive ? "none" : "blur(8px)",
-                  cursor: "pointer",
-                  fontSize: 13,
-                }}
-              >
-                {s}
-                {" "}
-                <span style={{ opacity: isActive ? 0.65 : 0.45 }}>{count}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* ── Sort toggle ── */}
+      <div className="flex justify-end">
         {/* Sort toggle */}
         <div
           className="flex items-center shrink-0 self-start sm:self-auto"
@@ -650,13 +572,13 @@ export default function JobTracker({
           <div
             className="grid"
             style={{
-              gridTemplateColumns: "1fr 80px 160px 160px 180px",
+              gridTemplateColumns: "1fr 80px 160px 180px",
               gap: "0 16px",
               paddingBottom: 12,
               borderBottom: "1px solid rgba(28,35,51,0.08)",
             }}
           >
-            {["Role", "Fit", "Recommendation", "Stage", "Actions"].map((col) => (
+            {["Role", "Fit", "Recommendation", "Actions"].map((col) => (
               <p
                 key={col}
                 style={{
@@ -684,7 +606,6 @@ export default function JobTracker({
                 onSelectJob={onSelectJob}
                 onRemoveJob={onRemoveJob}
                 onRenameJob={onRenameJob}
-                onStatusChange={onStatusChange}
                 onNotesChange={onNotesChange}
                 onDeadlineChange={onDeadlineChange}
                 onOpenBrief={onOpenBrief}
