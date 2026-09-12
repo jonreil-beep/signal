@@ -319,9 +319,7 @@ export default function Home() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
-        // Do NOT force setShowLanding(false) here — sessionStorage restoration already
-        // handles where the user was (app vs. welcome-back screen). Overriding it here
-        // caused refresh-on-welcome-back to dump users onto the Profile tab.
+        setShowLanding(false);
         loadUserData(session.user.id);
       }
       setAuthLoading(false);
@@ -330,13 +328,7 @@ export default function Home() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session?.user) {
         setUser(session.user);
-        // Only push into the app if the user wasn't intentionally on the welcome-back
-        // screen. SIGNED_IN fires on token refreshes too (not just fresh sign-ins), so
-        // blindly calling setShowLanding(false) here caused refreshes from the
-        // welcome-back screen to drop the user into the app.
-        if (sessionStorage.getItem("signal-show-landing") !== "true") {
-          setShowLanding(false);
-        }
+        setShowLanding(false);
         loadUserData(session.user.id);
       }
       if (event === "SIGNED_OUT") {
@@ -383,6 +375,11 @@ export default function Home() {
         notes: (row.notes as string) ?? "",
       }));
       setTrackedJobs(jobs);
+
+      // Route new users (no profile, no jobs) straight to resume upload
+      if (!profileRes.data?.resume_text && jobs.length === 0) {
+        setActiveTab("profile");
+      }
 
       // Restore active job state so refreshing on job-fit / prep keeps the job loaded
       const savedJobId = sessionStorage.getItem("signal-active-job-id");
@@ -836,44 +833,6 @@ export default function Home() {
 
   // ── Landing screen ──
   if (showLanding) {
-    // Signed in — show welcome (new) or welcome back (returning) view
-    if (user) {
-      return (
-        <div style={{minHeight:'100vh', background:"radial-gradient(ellipse 45% 40% at 4% 45%, rgba(50, 120, 255, 0.13) 0%, transparent 60%), radial-gradient(ellipse 40% 35% at 94% 14%, rgba(130, 55, 255, 0.10) 0%, transparent 58%), radial-gradient(ellipse 38% 32% at 78% 90%, rgba(0, 190, 230, 0.09) 0%, transparent 55%), #1C2333", display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif)"}}>
-          <a href="/" style={{display:'flex', alignItems:'center', gap:8, textDecoration:'none', marginBottom:48}}>
-            <div style={{width:18, height:18, background:'#fff', borderRadius:4, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
-              <span style={{color:'#1C2333', fontSize:10, fontWeight:600, fontFamily:"var(--font-geist-sans)", lineHeight:1, letterSpacing:'-0.01em'}}>C</span>
-            </div>
-            <span style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:17, letterSpacing:'-0.02em', color:'#fff'}}>Claro</span>
-          </a>
-          <h1 style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:'clamp(40px, 5vw, 64px)', lineHeight:1, letterSpacing:'-0.03em', color:'#fff', marginBottom:16, textAlign:'center'}}>
-            Welcome back.
-          </h1>
-          <p style={{fontFamily:"var(--font-geist-sans)", fontSize:16, fontWeight:400, color:'rgba(255,255,255,0.55)', marginBottom:44, textAlign:'center'}}>
-            {trackedJobs.length === 0
-              ? 'Your search starts here.'
-              : trackedJobs.length === 1
-              ? 'One role scored. Keep going.'
-              : trackedJobs.length <= 4
-              ? `${trackedJobs.length} roles scored. The search is getting clearer.`
-              : `${trackedJobs.length} roles in. You've built real signal.`}
-          </p>
-          <button
-            onClick={() => setShowLanding(false)}
-            style={{fontFamily:"var(--font-geist-sans)", fontWeight:500, fontSize:14, letterSpacing:'-0.005em', color:'#1C2333', background:'#fff', border:'none', padding:'0 24px', height:44, borderRadius:8, cursor:'pointer', marginBottom:24}}
-          >
-            {trackedJobs.length === 0 ? 'Get started →' : 'Go to my jobs →'}
-          </button>
-          <button
-            onClick={handleSignOut}
-            style={{fontFamily:"var(--font-geist-sans)", fontSize:11, letterSpacing:'0.01em', color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:0}}
-          >
-            Sign out
-          </button>
-        </div>
-      );
-    }
-
     // Not signed in — show full landing page
     return (
       <LandingPage

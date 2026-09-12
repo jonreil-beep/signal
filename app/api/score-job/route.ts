@@ -61,6 +61,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             type: "object" as const,
             properties: {
               job_title: { type: "string" },
+              company: { type: "string" },
               overall_fit: { type: "integer", minimum: 1, maximum: 10 },
               summary: { type: "string" },
               dimensions: {

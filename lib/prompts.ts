@@ -139,8 +139,9 @@ ${jobDescription}
 ${correctionBlock}
 Submit the analysis using the tool. Field reference:
 - job_title: Exact job title from the posting
+- company: Company name from the posting, or omit if not clearly stated
 - overall_fit: Integer 1–10
-- summary: One direct sentence assessment
+- summary: One direct sentence assessment — state the strongest overlap and the biggest uncertainty
 - dimensions: functional_fit, seniority_fit, industry_fit, keyword_overlap — each with score (1–10) and reasoning
 - mismatch_types: Array from ["title", "comp", "scope", "domain", "functional"]
 - what_you_have: Specific matches from the candidate's resume to the JD, addressed as "you"

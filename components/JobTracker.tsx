@@ -149,13 +149,20 @@ function TableRow({
               style={{ letterSpacing: "-0.012em" }}
             />
           ) : (
-            <button
-              onClick={() => onSelectJob(job, "job-fit")}
-              className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left"
-              style={{ fontSize: 17, letterSpacing: "-0.012em", whiteSpace: "normal", wordBreak: "break-word", maxWidth: 360, display: "block" }}
-            >
-              {job.label}
-            </button>
+            <div>
+              <button
+                onClick={() => onSelectJob(job, "job-fit")}
+                className="font-sans font-medium text-[#1C2333] hover:text-[rgba(28,35,51,0.65)] transition-colors leading-snug text-left"
+                style={{ fontSize: 17, letterSpacing: "-0.012em", whiteSpace: "normal", wordBreak: "break-word", maxWidth: 360, display: "block" }}
+              >
+                {job.label}
+              </button>
+              {job.jobFitResult.company && (
+                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] mt-0.5 leading-snug">
+                  {job.jobFitResult.company}
+                </p>
+              )}
+            </div>
           )}
           {/* Hover-only actions */}
           <div className="flex items-center gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -223,7 +230,7 @@ function TableRow({
           </span>
         </div>
 
-        {/* RECOMMENDATION */}
+        {/* RECOMMENDATION + reason */}
         <div className="pt-0.5">
           <span
             className="inline-flex items-center gap-1.5"
@@ -243,6 +250,11 @@ function TableRow({
             <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
             {job.jobFitResult.recommendation}
           </span>
+          {job.jobFitResult.summary && (
+            <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.50)", marginTop: 5, lineHeight: 1.4, maxWidth: 220 }}>
+              {job.jobFitResult.summary}
+            </p>
+          )}
           {isScoreStale && (
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#9B8E73", marginTop: 4 }}>
               Profile updated
@@ -281,7 +293,7 @@ function TableRow({
                     boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                   }}
                 >
-                  Your briefing
+                  View match
                 </Link>
               ) : null}
             </>
