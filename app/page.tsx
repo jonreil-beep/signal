@@ -1250,10 +1250,14 @@ export default function Home() {
             ) : (
               <div>
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 13V8M5 13V4M9 13V1M13 13V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Fit Score</span>
+                  </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 0, marginBottom: 8 }}>
-                    <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
+                    <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
                     <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 700, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Job Fit</span>
                   </div>
                   <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>A 1–10 score with the recruiter concern most likely to sink your application.</p>
                 </div>
@@ -1319,14 +1323,18 @@ export default function Home() {
         {activeTab === "tailoring-brief" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
-                <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
-                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                <button onClick={() => setActiveTab("job-fit")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>Job Fit</button>
-                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 700, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Prep</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 1h10M2 4.5h7M7 8h5M2 11.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Application Kit</span>
               </div>
-              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>Everything you need to apply. Built from your fit score.</p>
+              <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
+                <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>My Jobs</button>
+                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
+                <button onClick={() => setActiveTab("job-fit")} className="focus:outline-none hover:opacity-70 transition-opacity" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 20, color: "rgba(28,35,51,0.65)", background: "none", border: "none", padding: 0, cursor: "pointer", lineHeight: 1 }}>Job Fit</button>
+                <span aria-hidden="true" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 16, color: "rgba(28,35,51,0.28)", userSelect: "none", margin: "0 10px", lineHeight: 1 }}>›</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1 }}>Prep</span>
+              </div>
+              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "rgba(28,35,51,0.65)", marginTop: 8 }}>Everything you need to apply. Built from your fit score.</p>
             </div>
             {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
               <div className="flex items-center justify-between gap-4 mb-6">
@@ -1385,8 +1393,12 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h1 className="font-sans font-bold text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>Every scored role, with fit score, prep status, and pipeline tracking.</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
+                    <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
+                  </div>
+                  <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>
                 </div>
                 {trackedJobs.length > 0 && (
                   <div className="shrink-0 mt-1">
