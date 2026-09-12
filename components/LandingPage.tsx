@@ -582,7 +582,7 @@ export default function LandingPage({
         <div className="cl-proof">
           <div className="cl-proof-item">Precise scores, not encouragement</div>
           <div className="cl-proof-item">Recruiter concern flag on every score</div>
-          <div className="cl-proof-item">Full prep guide to act on</div>
+          <div className="cl-proof-item">Cover letter and outreach, auto-generated</div>
         </div>
         <hr className="cl-strip-divider" />
       </div>
@@ -595,7 +595,7 @@ export default function LandingPage({
             <div>
               <p className="cl-step-num">01</p>
               <h3 className="cl-step-title">Upload your resume</h3>
-              <p className="cl-step-desc">Claro maps your background into best-fit role clusters, with clear positioning risks and the LinkedIn headline you should actually be using.</p>
+              <p className="cl-step-desc">Upload your resume once. Claro reads your background and uses it to personalize every score and brief you generate.</p>
             </div>
             <div>
               <p className="cl-step-num">02</p>
@@ -604,8 +604,8 @@ export default function LandingPage({
             </div>
             <div>
               <p className="cl-step-num">03</p>
-              <h3 className="cl-step-title">Build your prep guide</h3>
-              <p className="cl-step-desc">Generate everything you need to apply: cover letter angle, outreach messages, and interview prep. Your brief assembles automatically and you can email it to yourself in one click.</p>
+              <h3 className="cl-step-title">Get your application brief</h3>
+              <p className="cl-step-desc">Score a job and Claro instantly generates your brief: a bottom line on fit, a tailored cover letter, and outreach messages — all in one shot.</p>
             </div>
           </div>
         </div>
@@ -624,7 +624,7 @@ export default function LandingPage({
               <ul className="cl-feature-list">
                 <li>Best-fit role clusters with Pursue / Stretch ratings</li>
                 <li>Core strengths framed for the roles you&apos;re targeting</li>
-                <li>Positioning risks with specific guidance on how to address each one</li>
+                <li>Positioning risks so you know what to address before applying</li>
                 <li>Recommended LinkedIn headline, optimized for how recruiters search</li>
               </ul>
             </div>
@@ -653,13 +653,13 @@ export default function LandingPage({
           <div className="cl-feature-block">
             <div className="cl-ft">
               <p className="cl-feature-kicker">Your Brief</p>
-              <h2 className="cl-feature-title">A precise plan, not a generic checklist.</h2>
-              <p className="cl-feature-desc">The Application Brief is the core thing Claro produces. It tells you exactly what your cover letter, outreach, and resume need to accomplish, so you can write them yourself, armed with the right strategy, in any tool you want.</p>
+              <h2 className="cl-feature-title">Everything you need to apply, in one shot.</h2>
+              <p className="cl-feature-desc">Score a job and Claro immediately generates your complete application brief — no extra steps. It&apos;s waiting for you in My Jobs the moment scoring finishes.</p>
               <ul className="cl-feature-list">
-                <li>Lead strengths to emphasize, with exact framing language</li>
-                <li>JD phrases to mirror in your materials</li>
-                <li>What to de-emphasize and why</li>
-                <li>Numbered action plan, emailable to yourself</li>
+                <li>Bottom line: should you apply, and what&apos;s the honest case</li>
+                <li>Cover letter, written in your voice</li>
+                <li>Email and LinkedIn outreach, ready to send</li>
+                <li>Rebuild with a note whenever your thinking changes</li>
               </ul>
             </div>
             <div className="cl-fv">

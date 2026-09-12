@@ -975,7 +975,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Your Background</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
-                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your background, analyzed so every score and brief is built around you.</p>
                 </div>
               </div>
             </div>
@@ -984,9 +984,9 @@ export default function Home() {
             {!profileText && (
               <>
                 <div className="mb-7">
-                  <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Step 1: Clarify your positioning</h2>
+                  <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Add your background</h2>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-1">
-                    Upload your resume once. Claro identifies your strongest role clusters, surfaces positioning risks, and adapts every fit score, prep guide, and resume edit to your specific background.
+                    Upload your resume or paste the text. Claro reads your background once and uses it to personalize every fit score and application brief.
                   </p>
                 </div>
                 <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />

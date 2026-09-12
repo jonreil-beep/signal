@@ -24,7 +24,7 @@ export default function HowItWorksPage() {
             <h1 className="font-sans text-[40px] font-medium leading-[1.0] tracking-[-0.03em] text-[#1C2333]">
               How it works
             </h1>
-            <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] shrink-0">
+            <span className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] shrink-0">
               Overview
             </span>
           </div>
@@ -35,7 +35,7 @@ export default function HowItWorksPage() {
 
         {/* Steps */}
         <section className="mb-14">
-          <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-6">
+          <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] mb-6">
             The process
           </p>
           <div className="space-y-10">
@@ -43,7 +43,7 @@ export default function HowItWorksPage() {
               {
                 n: "01",
                 title: "Clarify your positioning",
-                body: "Upload your resume once. Claro maps your strongest role clusters, surfaces what recruiters are likely to flag, and tells you how your background reads.",
+                body: "Upload your resume once. Claro reads your background and uses it to personalize every fit score and application brief you generate.",
               },
               {
                 n: "02",
@@ -52,17 +52,12 @@ export default function HowItWorksPage() {
               },
               {
                 n: "03",
-                title: "Prepare for the ones worth pursuing",
-                body: "For roles that score well, Claro builds a full prep pack: cover letter, outreach, resume edits, interview questions, and company research.",
-              },
-              {
-                n: "04",
-                title: "Keep your search organized",
-                body: "Every scored job saves with its fit score, prep guide, and pipeline status. No spreadsheet required.",
+                title: "Get your brief, automatically",
+                body: "Score a job and Claro instantly generates your application brief: a bottom line on fit, a tailored cover letter, and outreach messages — no extra steps.",
               },
             ].map(({ n, title, body }) => (
               <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(28,35,51,0.08)] last:border-0 last:pb-0">
-                <span className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] shrink-0 pt-1">{n}</span>
+                <span className="font-sans text-[12px] text-[rgba(28,35,51,0.35)] shrink-0 pt-1">{n}</span>
                 <div>
                   <p className="font-sans text-[16px] font-medium text-[#1C2333] mb-1">{title}</p>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] leading-relaxed">{body}</p>
@@ -74,7 +69,7 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section>
-          <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-6">
+          <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] mb-6">
             Get started
           </p>
           <HowItWorksCTA />
