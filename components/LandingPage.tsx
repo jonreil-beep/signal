@@ -411,7 +411,7 @@ html { scroll-behavior: smooth; }
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.25);
 }
 

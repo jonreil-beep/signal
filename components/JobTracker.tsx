@@ -270,7 +270,7 @@ function TableRow({
             fontFamily: "var(--font-geist-sans)",
             fontSize: 12,
             color: "rgba(28,35,51,0.45)",
-            letterSpacing: "0.04em",
+            letterSpacing: "0.01em",
             marginTop: 5,
           }}>
             {formatDateRelative(job.scoredAt)}
