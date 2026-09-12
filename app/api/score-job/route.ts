@@ -52,9 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       typeof previousScore === "number" ? previousScore : undefined
     );
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 4096,
+    const toolConfig = {
       tools: [
         {
           name: "submit_job_fit_result",
@@ -111,36 +109,52 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           },
         },
       ],
-      tool_choice: { type: "tool", name: "submit_job_fit_result" },
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const toolBlock = message.content.find((b) => b.type === "tool_use");
-    if (!toolBlock || toolBlock.type !== "tool_use") {
-      console.error("[score-job] No tool_use block in response. Content:", JSON.stringify(message.content));
-      return NextResponse.json(
-        { error: "Unexpected response format from Claude. Try again." },
-        { status: 500 }
-      );
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const raw = toolBlock.input as any;
-    // Coerce overall_fit to number in case Claude returned it as a string
-    const result: JobFitResult = {
-      ...raw,
-      overall_fit: typeof raw.overall_fit === "number" ? raw.overall_fit : Number(raw.overall_fit),
+      tool_choice: { type: "tool" as const, name: "submit_job_fit_result" },
     };
 
-    if (!Number.isFinite(result.overall_fit) || !result.recommendation) {
-      console.error("[score-job] Missing required fields. Input:", JSON.stringify(raw));
-      return NextResponse.json(
-        { error: "Response was missing required fields. Try again.", debug: raw },
-        { status: 500 }
-      );
+    let result: JobFitResult | null = null;
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-5",
+        max_tokens: 4096,
+        ...toolConfig,
+        messages: [{ role: "user", content: prompt }],
+      });
+
+      const toolBlock = message.content.find((b) => b.type === "tool_use");
+      if (!toolBlock || toolBlock.type !== "tool_use") {
+        console.error(`[score-job] Attempt ${attempt}: No tool_use block. Content:`, JSON.stringify(message.content));
+        if (attempt === maxAttempts) {
+          return NextResponse.json({ error: "Unexpected response format from Claude. Try again." }, { status: 500 });
+        }
+        continue;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const raw = toolBlock.input as any;
+      const candidate: JobFitResult = {
+        ...raw,
+        overall_fit: typeof raw.overall_fit === "number" ? raw.overall_fit : Number(raw.overall_fit),
+      };
+
+      if (!Number.isFinite(candidate.overall_fit) || !candidate.recommendation) {
+        console.error(`[score-job] Attempt ${attempt}: Missing required fields:`, JSON.stringify(raw));
+        if (attempt === maxAttempts) {
+          return NextResponse.json({ error: "Scoring failed after multiple attempts. Try again." }, { status: 500 });
+        }
+        continue;
+      }
+
+      result = candidate;
+      break;
     }
 
-    return NextResponse.json(sanitizeAI(result));
+    if (!result) {
+      return NextResponse.json({ error: "Scoring failed. Try again." }, { status: 500 });
+    }
+
+    return NextResponse.json(sanitizeAI(result!));
   } catch (err) {
     console.error("[score-job] Error:", err);
     return NextResponse.json(
