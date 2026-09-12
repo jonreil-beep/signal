@@ -104,7 +104,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
 
       {/* X-Ray ATS buttons */}
       <div className="mt-2">
-        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-2">X-Ray search</p>
+        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-2">X-Ray search</p>
         <div className="flex items-center gap-2 flex-wrap">
           {ATS_PLATFORMS.map((ats) => (
             <a

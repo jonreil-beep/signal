@@ -267,10 +267,9 @@ function TableRow({
             </svg>
           </div>
           <p style={{
-            fontFamily: "var(--font-geist-mono)",
+            fontFamily: "var(--font-geist-sans)",
             fontSize: 11,
             color: "rgba(28,35,51,0.45)",
-            textTransform: "uppercase",
             letterSpacing: "0.04em",
             marginTop: 5,
           }}>
@@ -569,11 +568,10 @@ export default function JobTracker({
               <p
                 key={col}
                 style={{
-                  fontFamily: "var(--font-geist-mono)",
+                  fontFamily: "var(--font-geist-sans)",
                   fontSize: 11,
                   fontWeight: 500,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
+                  letterSpacing: "0.01em",
                   color: "rgba(28,35,51,0.45)",
                   textAlign: col === "Actions" ? "right" : "left",
                 }}

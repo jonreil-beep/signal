@@ -821,7 +821,7 @@ export default function Home() {
           </button>
           <button
             onClick={handleSignOut}
-            style={{fontFamily:"var(--font-geist-mono)", fontSize:11, letterSpacing:'0.05em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:0}}
+            style={{fontFamily:"var(--font-geist-sans)", fontSize:11, letterSpacing:'0.01em', color:'rgba(255,255,255,0.35)', background:'none', border:'none', cursor:'pointer', padding:0}}
           >
             Sign out
           </button>
@@ -919,7 +919,7 @@ export default function Home() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="9" height="11" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Your Background</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Your Background</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your strongest role clusters and the positioning risks that come with them.</p>
@@ -962,13 +962,13 @@ export default function Home() {
                 >
                   <div className="flex items-center gap-2.5 flex-wrap min-w-0">
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#7A8B73", flexShrink: 0, display: "inline-block" }} />
-                    <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                       Resume saved
                     </span>
                     {clusterResult && (
                       <>
                         <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
-                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                           Analyzed
                         </span>
                       </>
@@ -976,7 +976,7 @@ export default function Home() {
                     {resumeSource === "file" && resumeFileName && (
                       <>
                         <span style={{ color: "rgba(28,35,51,0.20)" }}>·</span>
-                        <span style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)" }}>
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                           {resumeFileName}
                         </span>
                       </>
@@ -986,7 +986,7 @@ export default function Home() {
                     {!clusterResult && !isAnalyzing && (
                       <button
                         onClick={handleAnalyze}
-                        style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 500, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                         className="hover:text-[#1C2333] transition-colors"
                       >
                         Analyze →
@@ -994,14 +994,14 @@ export default function Home() {
                     )}
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "view" ? "none" : "view")}
-                      style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                       className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "view" ? "Hide" : "View"}
                     </button>
                     <button
                       onClick={() => setProfileExpanded(profileExpanded === "update" ? "none" : "update")}
-                      style={{ fontFamily: "var(--font-geist-mono)", fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, fontWeight: 400, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                       className="hover:text-[#1C2333] transition-colors"
                     >
                       {profileExpanded === "update" ? "Cancel" : "Update"}
@@ -1136,7 +1136,7 @@ export default function Home() {
 
                 {/* ── Recommended LinkedIn Headline ── */}
                 <div id="profile-result" className="result-scroll-target pt-8">
-                  <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                     Recommended LinkedIn Headline
                   </p>
                   <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 38, letterSpacing: "-0.025em", marginBottom: 14 }}>
@@ -1219,7 +1219,7 @@ export default function Home() {
                 <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                     <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
@@ -1271,7 +1271,7 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9 9l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Explore Roles</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Explore Roles</span>
               </div>
               <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Discover</h1>
               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Search directly from your best-fit role clusters.</p>
@@ -1289,7 +1289,7 @@ export default function Home() {
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                 <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
               </div>
               <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap" }}>
                 <button onClick={() => setActiveTab("my-jobs")} className="focus:outline-none" style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg-3)", background: "none", border: "none", padding: 0, cursor: "pointer", letterSpacing: "-0.025em", lineHeight: 1 }}>My Jobs</button>
@@ -1358,7 +1358,7 @@ export default function Home() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em" }}>Pipeline</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>My Jobs</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every scored role, with fit score, prep status, and pipeline tracking.</p>

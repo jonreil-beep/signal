@@ -126,7 +126,7 @@ export default function AppShell({
         {/* Job count badge */}
         {item.id === "my-jobs" && jobCount > 0 && (
           <span style={{
-            fontFamily: "var(--font-geist-mono)",
+            fontFamily: "var(--font-geist-sans)",
             fontSize: "10.5px",
             color: "rgba(28,35,51,0.45)",
           }}>
@@ -162,10 +162,9 @@ export default function AppShell({
             <button
               onClick={onSignOut}
               style={{
-                fontFamily: "var(--font-geist-mono)",
+                fontFamily: "var(--font-geist-sans)",
                 fontSize: 11,
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
+                letterSpacing: "0.01em",
                 color: "rgba(28,35,51,0.45)",
                 background: "none",
                 border: "none",

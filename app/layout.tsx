@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
@@ -17,7 +16,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={GeistSans.variable}>
       <body className={GeistSans.className}>
         <GoogleAnalytics />
         {children}

@@ -94,11 +94,10 @@ html { scroll-behavior: smooth; }
   align-items: center;
 }
 .cl-eyebrow {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
   margin-bottom: 28px;
 }
@@ -179,11 +178,10 @@ html { scroll-behavior: smooth; }
 .cl-email-submit:hover { opacity: 0.88; }
 .cl-email-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 .cl-guest-link {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.36);
   text-decoration: none;
   cursor: pointer;
@@ -196,11 +194,10 @@ html { scroll-behavior: smooth; }
 }
 .cl-guest-link:hover { color: rgba(255,255,255,0.65); }
 .cl-magic-sent {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.55);
   text-align: center;
 }
@@ -211,11 +208,10 @@ html { scroll-behavior: smooth; }
   text-align: center;
 }
 .cl-privacy {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.28);
   text-align: center;
   margin-top: 4px;
@@ -253,11 +249,10 @@ html { scroll-behavior: smooth; }
   justify-content: center;
 }
 .cl-proof-item {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
   text-align: center;
   padding: 0 28px;
@@ -269,11 +264,10 @@ html { scroll-behavior: smooth; }
 /* Sections */
 .cl-section { padding: 88px 0; }
 .cl-section-label {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.35);
   margin-bottom: 44px;
 }
@@ -287,10 +281,10 @@ html { scroll-behavior: smooth; }
   padding-top: 40px;
 }
 .cl-step-num {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.28);
   margin-bottom: 16px;
 }
@@ -325,11 +319,10 @@ html { scroll-behavior: smooth; }
 .cl-feature-block.flip .cl-ft { order: 2; }
 .cl-feature-block.flip .cl-fv { order: 1; }
 .cl-feature-kicker {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.35);
   margin-bottom: 14px;
 }
@@ -415,11 +408,10 @@ html { scroll-behavior: smooth; }
   align-items: center;
 }
 .cl-footer-note {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.07em;
-  text-transform: uppercase;
   color: rgba(255,255,255,0.25);
 }
 

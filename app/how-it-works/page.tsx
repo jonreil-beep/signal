@@ -24,7 +24,7 @@ export default function HowItWorksPage() {
             <h1 className="font-sans text-[40px] font-medium leading-[1.0] tracking-[-0.03em] text-[#1C2333]">
               How it works
             </h1>
-            <span className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] shrink-0">
+            <span className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] shrink-0">
               Overview
             </span>
           </div>
@@ -35,7 +35,7 @@ export default function HowItWorksPage() {
 
         {/* Steps */}
         <section className="mb-14">
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-6">
+          <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-6">
             The process
           </p>
           <div className="space-y-10">
@@ -74,7 +74,7 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section>
-          <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-6">
+          <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-6">
             Get started
           </p>
           <HowItWorksCTA />

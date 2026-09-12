@@ -62,7 +62,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
 
       {/* Left column — Role clusters */}
       <div>
-        <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
+        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
           Best-Fit Role Clusters
         </p>
         <div>
@@ -130,7 +130,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                     <button
                       onClick={() => handleRegenerate(i, cluster.name)}
                       disabled={regeneratingIndex === i}
-                      style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                       className="hover:text-[#1C2333] transition-colors disabled:opacity-40"
                     >
                       {regeneratingIndex === i ? "Regenerating…" : "Regenerate ↓"}
@@ -146,7 +146,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       {/* Right column — Strengths + Risks + optional extra */}
       <div>
         <div className="card-entrance" style={{ paddingBottom: 28, animationDelay: "50ms" }}>
-          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
             Core Strengths
           </p>
           <ul style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -160,7 +160,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
         </div>
 
         <div className="border-t border-[rgba(28,35,51,0.08)] card-entrance" style={{ paddingTop: 28, paddingBottom: 28, animationDelay: "100ms" }}>
-          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
             Positioning Risks
           </p>
           <ul style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -183,7 +183,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
                         )}
                         <button
                           onClick={() => toggleRisk(i)}
-                          style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 6 }}
+                          style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 6 }}
                           className="hover:text-[#1C2333] transition-colors"
                         >
                           {isOpen ? "Hide ↑" : "How to address →"}

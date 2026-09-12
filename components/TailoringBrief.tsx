@@ -132,7 +132,7 @@ function Section({
   return (
     <div className="glass-card rounded-[10px] p-7" style={{ boxShadow: "0 1px 2px rgba(15,25,35,0.04), 0 6px 24px rgba(15,25,35,0.05)" }}>
       <div className="flex items-center justify-between mb-4">
-        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">{title}</p>
+        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">{title}</p>
         <CopyButton getText={() => copyText} />
       </div>
       {children}
@@ -171,7 +171,7 @@ function ActionSection({
     <div className={`${bgClass} border-b border-[rgba(28,35,51,0.08)] overflow-hidden`}>
       {/* Header row */}
       <div className="flex items-center justify-between px-5 py-4">
-        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.55)]">{title}</p>
+        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.55)]">{title}</p>
         {!isLoading && (
           <button
             onClick={onAction}
@@ -210,7 +210,7 @@ function ActionSection({
           {children}
           {noteValue !== undefined && onNoteChange && (
             <div className="border-t border-[rgba(28,35,51,0.08)] pt-4 space-y-2">
-              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
+              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
                 Anything to correct or adjust?
               </p>
               <textarea
@@ -240,7 +240,7 @@ function ActionSection({
 function SubHeading({ label, copyText }: { label: string; copyText?: string }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">{label}</p>
+      <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">{label}</p>
       {copyText !== undefined && <CopyButton getText={() => copyText} />}
     </div>
   );
@@ -757,7 +757,7 @@ export default function TailoringBrief({
           id="prep-result"
           className="result-scroll-target honest-take-entrance py-7"
         >
-          <p style={{ fontFamily: "var(--font-geist-mono)", fontWeight: 500, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
             Honest Take
           </p>
           <p className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 38, lineHeight: 1.2, letterSpacing: "-0.025em" }}>{result.honest_take}</p>
@@ -851,7 +851,7 @@ export default function TailoringBrief({
                 {/* ── Lead Strengths ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Lead Strengths to Emphasize</p>
+                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Lead Strengths to Emphasize</p>
                     <CopyButton getText={() => result.lead_strengths.map((s) => `• [${s.match_type ?? ""}] ${s.strength}\n  → ${s.framing_language}`).join("\n\n")} />
                   </div>
                   <div className="space-y-3">
@@ -888,20 +888,20 @@ export default function TailoringBrief({
                 {/* ── Recruiter Concern to Preempt ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
+                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
                       Recruiter Concern to Preempt
                     </p>
                     <CopyButton getText={() => `Concern: ${result.recruiter_concern_to_preempt.concern}\n\nHow to address it: ${result.recruiter_concern_to_preempt.suggested_response}`} />
                   </div>
                   <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: "16px" }} className="space-y-3">
                     <div>
-                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
+                      <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-1">
                         Likely concern
                       </p>
                       <p className="font-sans text-[14px] text-[#1C2333]">{result.recruiter_concern_to_preempt.concern}</p>
                     </div>
                     <div>
-                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1">
+                      <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-1">
                         How to address it
                       </p>
                       <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">{result.recruiter_concern_to_preempt.suggested_response}</p>
@@ -912,7 +912,7 @@ export default function TailoringBrief({
                 {/* ── JD Language to Mirror ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">JD Language to Mirror</p>
+                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">JD Language to Mirror</p>
                     <CopyButton getText={() => result.jd_language_to_mirror.map((p) => `"${p.phrase}"\n  ${p.context}`).join("\n\n")} />
                   </div>
                   <div className="space-y-2.5">
@@ -941,7 +941,7 @@ export default function TailoringBrief({
                 {/* ── What to De-emphasize ── */}
                 <div className="px-6 py-5">
                   <div className="flex items-center justify-between mb-4">
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">What to De-emphasize</p>
+                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">What to De-emphasize</p>
                     <CopyButton getText={() => result.what_to_deemphasize.map((d) => `• ${d.item}\n  Reason: ${d.reason}`).join("\n\n")} />
                   </div>
                   <div className="space-y-2.5">
@@ -958,7 +958,7 @@ export default function TailoringBrief({
                 {result.outreach_angle && (
                   <div className="px-6 py-5">
                     <div className="flex items-center justify-between mb-4">
-                      <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Outreach Angle</p>
+                      <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Outreach Angle</p>
                       <CopyButton getText={() => result.outreach_angle!} />
                     </div>
                     <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-[1.7]">{result.outreach_angle}</p>
@@ -973,7 +973,7 @@ export default function TailoringBrief({
                 {!coverLetterResult && !isGeneratingCoverLetter && (
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-1 h-4 bg-[#1C2333]" />
-                    <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[#1C2333]">Start here</p>
+                    <p className="font-sans text-[11px] text-[#1C2333]">Start here</p>
                   </div>
                 )}
                 <ActionSection
@@ -991,7 +991,7 @@ export default function TailoringBrief({
                   {coverLetterResult && (
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Cover Letter</p>
+                        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Cover Letter</p>
                         <PrimaryCopyButton getText={() => coverLetterResult.cover_letter} label="Copy letter" />
                       </div>
                       <div className="border border-[rgba(28,35,51,0.08)] bg-[#FAFAFA] rounded-[8px] p-6">
@@ -1045,7 +1045,7 @@ export default function TailoringBrief({
                         <>
                           <div>
                             <div className="flex items-center justify-between mb-3">
-                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">Cold Email</p>
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">Cold Email</p>
                               <PrimaryCopyButton getText={() => outreachResult.email} label="Copy email" />
                             </div>
                             <p className="font-sans text-[14px] font-medium text-[#1C2333] mb-1">{emailSubject}</p>
@@ -1065,7 +1065,7 @@ export default function TailoringBrief({
                           </div>
                           <div className="border-t border-[rgba(28,35,51,0.08)] pt-6">
                             <div className="flex items-center justify-between mb-3">
-                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">LinkedIn Message</p>
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">LinkedIn Message</p>
                               <PrimaryCopyButton getText={() => outreachResult.linkedin_message} label="Copy message" />
                             </div>
                             {linkedInExpanded ? (
@@ -1117,7 +1117,7 @@ export default function TailoringBrief({
                         <div className="space-y-4">
                           {resumeUpdateResult.bullet_updates.map((b, i) => (
                             <div key={i} className="space-y-1.5">
-                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)]">
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)]">
                                 {b.section}
                               </p>
                               <div className="border border-[rgba(28,35,51,0.08)] rounded-[8px] overflow-hidden">
@@ -1138,11 +1138,11 @@ export default function TailoringBrief({
                                 {expandedBullets.has(i) && (
                                   <>
                                     <div className="px-3.5 py-3 bg-[#FAFAFA] border-t border-[rgba(28,35,51,0.08)]">
-                                      <p className="font-sans text-[10px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mb-1.5">Original</p>
+                                      <p className="font-sans text-[10px] text-[rgba(28,35,51,0.35)] mb-1.5">Original</p>
                                       <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{b.original}</p>
                                     </div>
                                     <div className="px-3.5 py-2.5 bg-[#FAFAFA] border-t border-[rgba(28,35,51,0.08)]">
-                                      <p className="font-sans text-[10px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mb-1">What changed</p>
+                                      <p className="font-sans text-[10px] text-[rgba(28,35,51,0.35)] mb-1">What changed</p>
                                       <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed">{b.what_changed}</p>
                                     </div>
                                   </>
@@ -1233,13 +1233,13 @@ export default function TailoringBrief({
                         {expandedQuestions.has(i) && (
                           <div className="px-4 pb-4 pt-3 space-y-3 border-t border-[rgba(28,35,51,0.08)] bg-[#FAFAFA]">
                             <div>
-                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1.5">
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-1.5">
                                 Why likely
                               </p>
                               <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-relaxed">{q.why_likely}</p>
                             </div>
                             <div>
-                              <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.45)] mb-1.5">
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-1.5">
                                 Suggested approach
                               </p>
                               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-relaxed">{q.suggested_approach}</p>
@@ -1268,7 +1268,7 @@ export default function TailoringBrief({
                     <div>
                       <div className="mb-2">
                         <p className="font-sans text-[14px] font-medium text-[#1C2333]">{cr.company_name}</p>
-                        <p className="font-sans text-[11px] uppercase tracking-[0.08em] text-[rgba(28,35,51,0.35)] mt-0.5" style={{ whiteSpace: "normal" }}>
+                        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] mt-0.5" style={{ whiteSpace: "normal" }}>
                           {cr.what_we_know.sources}
                         </p>
                       </div>
