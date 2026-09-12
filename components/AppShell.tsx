@@ -140,14 +140,6 @@ export default function AppShell({
   function SidebarBottom() {
     return (
       <div style={{ padding: "0 24px 24px" }}>
-        {/* Score a job CTA */}
-        <button
-          onClick={handleScoreJob}
-          className="w-full font-sans font-medium text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] focus-visible:outline-offset-2 btn-shadow-dark"
-          style={{ height: 44, fontSize: 13, letterSpacing: "-0.005em" }}
-        >
-          Score a job →
-        </button>
         {/* Email + Sign out */}
         {user && (
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 2 }}>
@@ -271,17 +263,6 @@ export default function AppShell({
           })}
         </nav>
 
-        {/* Score a job — compact */}
-        <div className="px-2 pb-6 pt-2 w-full">
-          <button
-            onClick={handleScoreJob}
-            className="w-full flex items-center justify-center font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity focus:outline-none btn-shadow-dark"
-            style={{ height: 36 }}
-            title="Score a job"
-          >
-            →
-          </button>
-        </div>
       </aside>
 
       {/* ═══════════════════════════════════════════════════════════════
