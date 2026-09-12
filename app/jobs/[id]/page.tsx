@@ -665,7 +665,7 @@ export default function BriefingPage() {
 
           {/* ─ Decision summary (single source of truth) ─ */}
           <p className="font-sans text-[#1C2333]"
-            style={{ fontSize: briefReady ? 16 : 17, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 24 }}>
+            style={{ fontSize: briefReady ? 16 : 17, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 20 }}>
             {decisionSummary}
             {!briefReady && (
               <span className="inline-flex items-center gap-1.5 ml-2 text-[rgba(28,35,51,0.40)] text-[13px]" style={{ verticalAlign: "middle" }}>
@@ -673,6 +673,52 @@ export default function BriefingPage() {
               </span>
             )}
           </p>
+
+          {/* ─ How this score was calculated (collapsible) ─ */}
+          <div style={{ marginBottom: 28 }}>
+            <button
+              onClick={() => setScoreOpen(v => !v)}
+              className="flex items-center gap-2 font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              How this score was calculated {scoreOpen ? "↑" : "↓"}
+            </button>
+
+            {scoreOpen && (
+              <div className="mt-4 space-y-5">
+                {dimensions.map(({ label, score, reasoning }) => (
+                  <div key={label}>
+                    <div className="flex items-baseline justify-between gap-2" style={{ marginBottom: 8 }}>
+                      <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
+                      {score === lowestDimScore && (
+                        <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 10, letterSpacing: "0.01em", color: "#8A7373" }}>
+                          Pulling score down
+                        </span>
+                      )}
+                    </div>
+                    <ScoreBar score={score} fill={dimFill(score)} />
+                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed" style={{ marginTop: 6 }}>
+                      {reasoning}
+                    </p>
+                  </div>
+                ))}
+                {jobFitResult.mismatch_types?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {jobFitResult.mismatch_types.map((t) => (
+                      <span key={t} className="font-sans text-[12px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]"
+                        style={{ background: "rgba(28,35,51,0.05)", borderRadius: 9999 }}>
+                        {t === "title" ? "Title mismatch"
+                          : t === "comp" ? "Comp gap likely"
+                          : t === "scope" ? "Scope mismatch"
+                          : t === "domain" ? "Domain mismatch"
+                          : "Functional mismatch"}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* ─ Action buttons ─ */}
           {briefReady && (
@@ -729,52 +775,6 @@ export default function BriefingPage() {
           <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginBottom: 32 }}>
             Based on your profile and this job description. Not a prediction of interview outcomes.
           </p>
-
-          {/* ─ How this score was calculated (collapsible) ─ */}
-          <div style={{ marginBottom: 32 }}>
-            <button
-              onClick={() => setScoreOpen(v => !v)}
-              className="flex items-center gap-2 font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
-              style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-            >
-              How this score was calculated {scoreOpen ? "↑" : "↓"}
-            </button>
-
-            {scoreOpen && (
-              <div className="mt-4 space-y-5">
-                {dimensions.map(({ label, score, reasoning }) => (
-                  <div key={label}>
-                    <div className="flex items-baseline justify-between gap-2" style={{ marginBottom: 8 }}>
-                      <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)]">{label}</p>
-                      {score === lowestDimScore && (
-                        <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 10, letterSpacing: "0.01em", color: "#8A7373" }}>
-                          Pulling score down
-                        </span>
-                      )}
-                    </div>
-                    <ScoreBar score={score} fill={dimFill(score)} />
-                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed" style={{ marginTop: 6 }}>
-                      {reasoning}
-                    </p>
-                  </div>
-                ))}
-                {jobFitResult.mismatch_types?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {jobFitResult.mismatch_types.map((t) => (
-                      <span key={t} className="font-sans text-[12px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]"
-                        style={{ background: "rgba(28,35,51,0.05)", borderRadius: 9999 }}>
-                        {t === "title" ? "Title mismatch"
-                          : t === "comp" ? "Comp gap likely"
-                          : t === "scope" ? "Scope mismatch"
-                          : t === "domain" ? "Domain mismatch"
-                          : "Functional mismatch"}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
 
           {/* ─ What you have / missing ─ */}
           {(haveItems.length > 0 || missingItems.length > 0) && (
