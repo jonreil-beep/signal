@@ -163,7 +163,8 @@ function TableRow({
           <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.35)", marginTop: 3 }}>
             {formatDateRelative(job.scoredAt)}
           </p>
-          <div className="flex items-center gap-1.5 mt-1.5">
+          {/* Hover-only actions */}
+          <div className="flex items-center gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={() => toggleExpanded("jd")}
               style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: showJD ? "var(--fg)" : "var(--fg-3)" }}
@@ -266,23 +267,6 @@ function TableRow({
             </button>
           ) : (
             <>
-              <button
-                onClick={() => onSelectJob(job, "job-fit")}
-                className="hover:opacity-80 transition-opacity whitespace-nowrap glass-card"
-                style={{
-                  fontFamily: "var(--font-geist-sans)",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--fg)",
-                  borderRadius: 7,
-                  cursor: "pointer",
-                  height: 36,
-                  padding: "0 14px",
-                  boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
-                }}
-              >
-                Score
-              </button>
               {generatingBrief ? (
                 <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.45)", whiteSpace: "nowrap" }}>
                   Building brief…
@@ -303,7 +287,7 @@ function TableRow({
                     boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                   }}
                 >
-                  Brief
+                  See brief
                 </button>
               ) : null}
             </>
@@ -561,7 +545,7 @@ export default function JobTracker({
               borderBottom: "1px solid rgba(28,35,51,0.08)",
             }}
           >
-            {["Role", "Fit", "Recommendation", "Actions"].map((col) => (
+            {["Role", "Fit", "Recommendation", ""].map((col) => (
               <p
                 key={col}
                 style={{
@@ -570,7 +554,7 @@ export default function JobTracker({
                   fontWeight: 500,
                   letterSpacing: "0.01em",
                   color: "rgba(28,35,51,0.45)",
-                  textAlign: col === "Actions" ? "right" : "left",
+                  textAlign: "left",
                 }}
               >
                 {col}
