@@ -20,7 +20,7 @@ const RECOMMENDATION_STYLES: Record<string, { color: string; border: string; bg:
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "var(--fg-3)", marginBottom: 12 }}>
+    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "var(--fg-3)", marginBottom: 12 }}>
       {children}
     </p>
   );
@@ -122,7 +122,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
             style={{ padding: "28px 32px 20px", borderBottom: "1px solid rgba(255,255,255,0.45)", background: "rgba(255,255,255,0.55)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
           >
             <div className="min-w-0">
-              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "var(--fg-3)", marginBottom: 6 }}>
+              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "var(--fg-3)", marginBottom: 6 }}>
                 Your Brief
               </p>
               <h2 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 20, color: "var(--fg)", letterSpacing: "-0.015em", lineHeight: 1.2 }}>
@@ -180,7 +180,7 @@ export default function YourBriefModal({ job, onClose }: YourBriefModalProps) {
             {/* 2. Recruiter concern */}
             {tailoringResult && (
               <div style={{ borderLeft: "2px solid var(--status-stretch)", paddingLeft: 16 }}>
-                <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "var(--status-stretch)", marginBottom: 8 }}>
+                <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "var(--status-stretch)", marginBottom: 8 }}>
                   Recruiter Concern to Address
                 </p>
                 <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">

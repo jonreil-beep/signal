@@ -66,7 +66,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
       <div className="flex items-start justify-between gap-3">
         <p className="font-sans text-[16px] font-medium text-[#1C2333] leading-snug">{clusterName}</p>
         <span
-          className="shrink-0 font-sans text-[11px] px-2.5 py-0.5"
+          className="shrink-0 font-sans text-[12px] px-2.5 py-0.5"
           style={{ color: confStyle.color, border: confStyle.border, background: confStyle.bg, borderRadius: "9999px" }}
         >
           {confidence}
@@ -104,7 +104,7 @@ function ClusterCard({ clusterName, confidence, staggerIndex }: { clusterName: s
 
       {/* X-Ray ATS buttons */}
       <div className="mt-2">
-        <p className="font-sans text-[11px] text-[rgba(28,35,51,0.45)] mb-2">X-Ray search</p>
+        <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] mb-2">X-Ray search</p>
         <div className="flex items-center gap-2 flex-wrap">
           {ATS_PLATFORMS.map((ats) => (
             <a

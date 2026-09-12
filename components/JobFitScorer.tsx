@@ -412,7 +412,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
 
                 {/* Left column — Score only */}
                 <div>
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                     Overall Fit
                   </p>
                   {/* Giant score numeral */}
@@ -467,7 +467,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   {result.mismatch_types?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-3">
                       {result.mismatch_types.map((t) => (
-                        <span key={t} className="font-sans text-[11px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
+                        <span key={t} className="font-sans text-[12px] px-2.5 py-1 text-[rgba(28,35,51,0.45)]" style={{ background: "rgba(28,35,51,0.05)", borderRadius: "9999px" }}>
                           {MISMATCH_LABELS[t]}
                         </span>
                       ))}
@@ -487,7 +487,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   return (
                     <div className="space-y-10">
                       <div>
-                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 24 }}>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 24 }}>
                           What Drove This Score
                         </p>
                         <div className="space-y-7">
@@ -514,7 +514,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                       {/* Recruiter concern — inside card, below dimensions */}
                       {result.recruiter_concern && (
                         <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
-                          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "#8A7373", marginBottom: 8 }}>
+                          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "#8A7373", marginBottom: 8 }}>
                             Recruiter Concern
                           </p>
                           <p className="font-sans text-[15px] text-[#1C2333] leading-relaxed">{result.recruiter_concern}</p>
@@ -533,7 +533,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           <div className="grid grid-cols-1 lg:grid-cols-2 pb-12" style={{ gap: 56 }}>
             {/* What You Have */}
             <div>
-              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
+              <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 16 }}>
                 What You Have
               </p>
               <ul className="space-y-3">
@@ -549,10 +549,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             {/* What's Missing */}
             <div>
               <div className="flex items-baseline justify-between gap-2 mb-4">
-                <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
+                <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                   What&apos;s Missing
                 </p>
-                <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)]">Tap × to remove</p>
+                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]">Tap × to remove</p>
               </div>
 
               {(() => {
@@ -612,10 +612,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                     </button>
                   )}
                   {hasPrepData && !isRescoring && (
-                    <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-center">Re-scoring will clear your existing prep guide.</p>
+                    <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)] text-center">Re-scoring will clear your existing prep guide.</p>
                   )}
                   {rescoreError && !isRescoring && (
-                    <p className="font-sans text-[11px] text-[#8A7373] text-center">{rescoreError}</p>
+                    <p className="font-sans text-[12px] text-[#8A7373] text-center">{rescoreError}</p>
                   )}
                 </div>
               )}
@@ -626,14 +626,14 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           <div className="flex items-center justify-between gap-4 pt-6 border-t border-[rgba(28,35,51,0.08)]">
             <button
               onClick={handleReset}
-              style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
               className="hover:text-[#1C2333] transition-colors"
             >
               ← Score another job
             </button>
             <button
               onClick={onSearchSimilarRoles}
-              style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
               className="hover:text-[#1C2333] transition-colors"
             >
               Search for similar roles →

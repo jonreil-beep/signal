@@ -163,7 +163,7 @@ export default function AppShell({
               onClick={onSignOut}
               style={{
                 fontFamily: "var(--font-geist-sans)",
-                fontSize: 11,
+                fontSize: 12,
                 letterSpacing: "0.01em",
                 color: "rgba(28,35,51,0.45)",
                 background: "none",

@@ -44,7 +44,7 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 /* ── Section label ── */
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
+    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 12 }}>
       {children}
     </p>
   );
@@ -104,7 +104,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-[rgba(28,35,51,0.08)]" style={{ padding: "28px 36px 24px" }}>
           <div className="min-w-0">
-            <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
+            <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
               Application Brief
             </p>
             <h2 className="font-sans font-medium text-[#1C2333] leading-snug truncate" style={{ fontSize: 24, letterSpacing: "-0.018em" }}>
@@ -165,7 +165,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
       {/* ── Panel header ── */}
       <div className="flex items-start justify-between gap-3 border-b border-[rgba(28,35,51,0.08)]" style={{ padding: "28px 36px 24px" }}>
         <div className="min-w-0">
-          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", marginBottom: 8 }}>
             Application Brief
           </p>
           <h2 className="font-sans font-medium text-[#1C2333] leading-snug" style={{ fontSize: 24, letterSpacing: "-0.018em", marginBottom: 8 }}>
@@ -174,7 +174,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
           {/* Tag + status pills */}
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className="inline-block font-sans text-[11px] px-2.5 py-0.5"
+              className="inline-block font-sans text-[12px] px-2.5 py-0.5"
               style={{ background: statusStyle.bg, color: statusStyle.text, borderRadius: "9999px" }}
             >
               {applicationStatus}
@@ -216,7 +216,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
 
         {/* ── 2. Recruiter concern ── */}
         <div style={{ borderLeft: "2px solid #8A7373", paddingLeft: 16 }}>
-          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "#8A7373", marginBottom: 8 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "#8A7373", marginBottom: 8 }}>
             Recruiter Concern to Address
           </p>
           <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
@@ -238,7 +238,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug mb-3">{s.framing_language}</p>
                 <div className="flex items-center justify-between gap-3">
                   <span
-                    className="inline-block font-sans text-[11px] px-2.5 py-0.5"
+                    className="inline-block font-sans text-[12px] px-2.5 py-0.5"
                     style={{ background: "rgba(28,35,51,0.05)", color: "rgba(28,35,51,0.45)", borderRadius: "9999px" }}
                   >
                     {s.match_type}
@@ -247,7 +247,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
                     onClick={async () => {
                       try { await navigator.clipboard.writeText(`${s.strength} — ${s.framing_language}`); } catch { /* no-op */ }
                     }}
-                    style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                    style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                     className="hover:text-[#1C2333] transition-colors"
                   >
                     Copy framing →
@@ -283,7 +283,7 @@ export default function ApplicationBrief({ job, onGoToPrep, onClose }: Applicati
             {actionPlan.map((item, i) => (
               <li key={i} className="flex gap-3">
                 <span
-                  className="shrink-0 font-sans font-medium text-[11px] text-white tabular-nums w-5 h-5 flex items-center justify-center"
+                  className="shrink-0 font-sans font-medium text-[12px] text-white tabular-nums w-5 h-5 flex items-center justify-center"
                   style={{ background: "#1C2333", borderRadius: "9999px", fontSize: "10px" }}
                 >
                   {i + 1}

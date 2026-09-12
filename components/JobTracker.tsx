@@ -34,10 +34,10 @@ function formatDateRelative(date: Date): string {
   const d = new Date(date);
   const diffMs = now.getTime() - d.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return "TODAY";
-  if (diffDays === 1) return "YESTERDAY";
-  if (diffDays < 7) return `${diffDays}D AGO`;
-  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(d).toUpperCase();
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(d);
 }
 
 function formatDeadlineDate(deadline: string): string {
@@ -218,7 +218,7 @@ function TableRow({
               background: recStyle.bg,
               border: recStyle.border,
               fontFamily: "var(--font-geist-sans)",
-              fontSize: 11.5,
+              fontSize: 12,
               fontWeight: 500,
               color: recStyle.color,
               whiteSpace: "nowrap",
@@ -228,7 +228,7 @@ function TableRow({
             {job.jobFitResult.recommendation === "Stretch — Proceed Carefully" ? "Stretch" : job.jobFitResult.recommendation}
           </span>
           {isScoreStale && (
-            <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 11, color: "#9B8E73", marginTop: 4 }}>
+            <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "#9B8E73", marginTop: 4 }}>
               Profile updated
             </p>
           )}
@@ -268,7 +268,7 @@ function TableRow({
           </div>
           <p style={{
             fontFamily: "var(--font-geist-sans)",
-            fontSize: 11,
+            fontSize: 12,
             color: "rgba(28,35,51,0.45)",
             letterSpacing: "0.04em",
             marginTop: 5,
@@ -387,7 +387,7 @@ export default function JobTracker({
               className={`rounded-[10px] px-5 py-5 glass-card ${done ? "bg-[rgba(122,139,115,0.06)]" : ""}`}
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className={`font-sans text-[11px] px-1.5 py-0.5 rounded-[5px] shrink-0 ${done ? "bg-[rgba(122,139,115,0.15)] text-[#7A8B73]" : "bg-[rgba(28,35,51,0.06)] text-[rgba(28,35,51,0.45)]"}`}>
+                <span className={`font-sans text-[12px] px-1.5 py-0.5 rounded-[5px] shrink-0 ${done ? "bg-[rgba(122,139,115,0.15)] text-[#7A8B73]" : "bg-[rgba(28,35,51,0.06)] text-[rgba(28,35,51,0.45)]"}`}>
                   {done ? (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none" className="inline">
                       <path d="M1 4l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -521,7 +521,7 @@ export default function JobTracker({
             <button
               key={s}
               onClick={() => setSortBy(s)}
-              className="font-sans text-[11px] transition-all"
+              className="font-sans text-[12px] transition-all"
               style={{
                 padding: "4px 10px",
                 borderRadius: 6,
@@ -569,7 +569,7 @@ export default function JobTracker({
                 key={col}
                 style={{
                   fontFamily: "var(--font-geist-sans)",
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: 500,
                   letterSpacing: "0.01em",
                   color: "rgba(28,35,51,0.45)",

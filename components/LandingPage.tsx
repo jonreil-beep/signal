@@ -95,7 +95,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-eyebrow {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
@@ -179,7 +179,7 @@ html { scroll-behavior: smooth; }
 .cl-email-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 .cl-guest-link {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.36);
@@ -195,7 +195,7 @@ html { scroll-behavior: smooth; }
 .cl-guest-link:hover { color: rgba(255,255,255,0.65); }
 .cl-magic-sent {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.55);
@@ -250,7 +250,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-proof-item {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
@@ -265,7 +265,7 @@ html { scroll-behavior: smooth; }
 .cl-section { padding: 88px 0; }
 .cl-section-label {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.35);
@@ -320,7 +320,7 @@ html { scroll-behavior: smooth; }
 .cl-feature-block.flip .cl-fv { order: 1; }
 .cl-feature-kicker {
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
   color: rgba(255,255,255,0.35);
