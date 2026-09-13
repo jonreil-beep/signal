@@ -404,7 +404,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 Clear
               </button>
               {isProfileParsing && (
-                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Reading your resume — score available after.</p>
+                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Reading your resume. You can assess a job when it&apos;s ready.</p>
               )}
             </div>
           )}
