@@ -10,7 +10,7 @@ import { deriveBeforeYouApplyActions } from "@/lib/beforeYouApply";
 import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
   TrackedJob, JobFitResult, TailoringBriefResult,
-  OutreachResult, CoverLetterResult, ResumeUpdateResult, CandidateNote,
+  OutreachResult, ResumeUpdateResult, CandidateNote,
 } from "@/types";
 
 // ── normalizers / validators ──────────────────────────────────────────────────
@@ -172,8 +172,6 @@ export default function BriefingPage() {
   const hasTriggeredGeneration = useRef(false);
 
   // generation states
-  const [isGeneratingCL, setIsGeneratingCL] = useState(false);
-  const [clError, setClError] = useState("");
   const [isGeneratingOutreach, setIsGeneratingOutreach] = useState(false);
   const [outreachError, setOutreachError] = useState("");
   const [regenerateNote, setRegenerateNote] = useState("");
@@ -191,11 +189,10 @@ export default function BriefingPage() {
   // true when score succeeded but subsequent brief generation failed
   const [briefStaleAfterRescore, setBriefStaleAfterRescore] = useState(false);
   // which generated drafts belong to a previous assessment
-  const [staleDrafts, setStaleDrafts] = useState<{ coverLetter: boolean; outreach: boolean; resumeSuggestions: boolean }>({ coverLetter: false, outreach: false, resumeSuggestions: false });
+  const [staleDrafts, setStaleDrafts] = useState<{ outreach: boolean; resumeSuggestions: boolean }>({ outreach: false, resumeSuggestions: false });
 
   // UI disclosure states
   const [scoreOpen, setScoreOpen] = useState(false);
-  const [jdOpen, setJdOpen] = useState(false);
   const [showAllHave, setShowAllHave] = useState(false);
   const [showAllMissing, setShowAllMissing] = useState(false);
   const [showAllLeads, setShowAllLeads] = useState(false);
@@ -205,7 +202,6 @@ export default function BriefingPage() {
   // scroll refs
   const updateBriefRef = useRef<HTMLDivElement>(null);
   const outreachRef = useRef<HTMLDivElement>(null);
-  const coverLetterRef = useRef<HTMLDivElement>(null);
   const resumeUpdateRef = useRef<HTMLDivElement>(null);
 
   // ── load ──────────────────────────────────────────────────────────────────
@@ -265,7 +261,7 @@ export default function BriefingPage() {
         jobFitResult: fitValidation.result,
         tailoringResult,
         outreachResult: normalizeOutreachResult(row.outreach_result),
-        coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
+        coverLetterResult: row.cover_letter_result as import("@/types").CoverLetterResult | null,
         resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         interviewPrepResult: null,
         followUpResult: null,
@@ -413,39 +409,6 @@ export default function BriefingPage() {
     await supabase.from("tracked_jobs").update(patch).eq("id", jobId);
   }
 
-  async function handleGenerateCoverLetter() {
-    if (!job) return;
-    setIsGeneratingCL(true);
-    setClError("");
-    updateJob({ coverLetterResult: null });
-    try {
-      const res = await fetch("/api/generate-cover-letter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          resumeText: profileText,
-          jobDescription: job.jobDescription,
-          outreachAngle: job.tailoringResult?.outreach_angle,
-          writingSample: writingSample || undefined,
-          pivotTarget: pivotTarget || undefined,
-          jobId,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setClError(data.error ?? "Failed to generate. Please try again.");
-      } else {
-        const result = data as CoverLetterResult;
-        updateJob({ coverLetterResult: result });
-        await saveToDb({ cover_letter_result: result });
-        setStaleDrafts(prev => ({ ...prev, coverLetter: false }));
-      }
-    } catch {
-      setClError("Network error. Check your connection and try again.");
-    } finally {
-      setIsGeneratingCL(false);
-    }
-  }
 
   async function handleGenerateOutreach() {
     if (!job) return;
@@ -556,7 +519,6 @@ export default function BriefingPage() {
       updateJob({ tailoringResult: newTailoring });
       await saveToDb({ tailoring_result: newTailoring });
       setStaleDrafts({
-        coverLetter: !!job.coverLetterResult,
         outreach: !!job.outreachResult,
         resumeSuggestions: !!job.resumeUpdateResult,
       });
@@ -617,7 +579,6 @@ export default function BriefingPage() {
       updateJob({ tailoringResult: newTailoring });
       await saveToDb({ tailoring_result: newTailoring });
       setStaleDrafts({
-        coverLetter: !!job.coverLetterResult,
         outreach: !!job.outreachResult,
         resumeSuggestions: !!job.resumeUpdateResult,
       });
@@ -748,12 +709,6 @@ export default function BriefingPage() {
     }, 400);
   }
 
-  function scrollAndGenCoverLetter() {
-    coverLetterRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (!job?.coverLetterResult && !isGeneratingCL) {
-      setTimeout(() => handleGenerateCoverLetter(), 500);
-    }
-  }
 
   function scrollAndGenResumeUpdates() {
     resumeUpdateRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -866,7 +821,7 @@ export default function BriefingPage() {
 
   if (!job) return null;
 
-  const { jobFitResult, tailoringResult, coverLetterResult, outreachResult } = job;
+  const { jobFitResult, tailoringResult, outreachResult } = job;
   const recStyle = REC_STYLES[jobFitResult.recommendation] ?? { color: "rgba(28,35,51,0.45)", bg: "rgba(28,35,51,0.05)" };
   const briefReady = !!tailoringResult;
 
@@ -1211,7 +1166,7 @@ export default function BriefingPage() {
                     <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 10, textTransform: "uppercase" }}>
                       Findings
                     </p>
-                    <div className="space-y-3">
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {jobFitResult.evidence_items.map((ev, i) => {
                         const typeColors: Record<string, string> = {
                           demonstrated:        "#7A8B73",
@@ -1227,33 +1182,35 @@ export default function BriefingPage() {
                         };
                         const col = typeColors[ev.type] ?? "rgba(28,35,51,0.45)";
                         return (
-                          <div key={i} className="space-y-1">
-                            <div className="flex items-start gap-2">
-                              <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none shrink-0 mt-0.5" style={{ color: col, background: `${col}18` }}>
+                          <div key={i} style={{ display: "grid", gridTemplateColumns: "100px 1fr", gap: "0 12px", alignItems: "start" }}>
+                            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 2 }}>
+                              <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none" style={{ color: col, background: `${col}18`, whiteSpace: "nowrap" }}>
                                 {typeLabels[ev.type] ?? ev.type}
                               </span>
-                              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.75)] leading-snug">{ev.text}</p>
                             </div>
-                            {ev.requirement && (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] pl-4 leading-snug">
-                                JD requirement: {ev.requirement}
-                              </p>
-                            )}
-                            {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-4 leading-snug italic">
-                                <span className="not-italic text-[rgba(28,35,51,0.40)] mr-1">From resume:</span>
-                                &ldquo;{ev.resume_evidence}&rdquo;
-                              </p>
-                            ) : ev.resume_evidence ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-4 leading-snug">
-                                <span className="text-[rgba(28,35,51,0.40)] mr-1">Model summary:</span>
-                                {ev.resume_evidence}
-                              </p>
-                            ) : !ev.requirement ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)] pl-4 leading-snug">
-                                Source unavailable
-                              </p>
-                            ) : null}
+                            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.75)] leading-snug">{ev.text}</p>
+                              {ev.requirement && (
+                                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] leading-snug">
+                                  JD requirement: {ev.requirement}
+                                </p>
+                              )}
+                              {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
+                                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] leading-snug italic">
+                                  <span className="not-italic text-[rgba(28,35,51,0.40)] mr-1">From resume:</span>
+                                  &ldquo;{ev.resume_evidence}&rdquo;
+                                </p>
+                              ) : ev.resume_evidence ? (
+                                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] leading-snug">
+                                  <span className="text-[rgba(28,35,51,0.40)] mr-1">Model summary:</span>
+                                  {ev.resume_evidence}
+                                </p>
+                              ) : !ev.requirement ? (
+                                <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)] leading-snug">
+                                  Source unavailable
+                                </p>
+                              ) : null}
+                            </div>
                           </div>
                         );
                       })}
@@ -1290,44 +1247,6 @@ export default function BriefingPage() {
                   Draft outreach
                 </button>
               )}
-              <button
-                onClick={scrollAndGenCoverLetter}
-                className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
-                style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
-              >
-                Draft cover letter
-              </button>
-              <button
-                onClick={() => setJdOpen(v => !v)}
-                className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
-                style={{ padding: 0, border: "none", background: "none", cursor: "pointer" }}
-              >
-                {jdOpen ? "Hide job description" : "View job description"}
-              </button>
-            </div>
-          )}
-
-          {/* ─ Job description (collapsible) ─ */}
-          {jdOpen && (
-            <div style={{ marginBottom: 28 }}>
-              <div
-                className="overflow-y-auto px-6 py-5 rounded-[8px]"
-                style={{
-                  maxHeight: 400,
-                  background: "#FAFAFA",
-                  border: "1px solid rgba(28,35,51,0.08)",
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "rgba(28,35,51,0.12) transparent",
-                }}
-              >
-                {(job.jobDescription ?? "").split(/\n\n+/).map((para, pi) => (
-                  <p key={pi} className="mb-3 last:mb-0 font-sans text-[13px] leading-[1.7] text-[rgba(28,35,51,0.65)]">
-                    {para.split(/\n/).map((line, li, arr) => (
-                      <span key={li}>{line}{li < arr.length - 1 && <br />}</span>
-                    ))}
-                  </p>
-                ))}
-              </div>
             </div>
           )}
 
@@ -1504,40 +1423,6 @@ export default function BriefingPage() {
                   </p>
                 </div>
               )}
-
-              {/* Cover letter */}
-              <div ref={coverLetterRef}>
-                <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-                  <SectionLabel>Cover letter</SectionLabel>
-                  <button
-                    onClick={handleGenerateCoverLetter}
-                    disabled={isGeneratingCL}
-                    className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
-                    style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
-                  >
-                    {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Create another draft" : "Draft cover letter"}
-                  </button>
-                </div>
-                {isGeneratingCL && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>}
-                {clError && !isGeneratingCL && <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>}
-                {coverLetterResult && !isGeneratingCL && (
-                  <div>
-                    {staleDrafts.coverLetter && (
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 8 }}>
-                        Based on the earlier assessment. Generate a new draft to reflect the updated findings.
-                      </p>
-                    )}
-                    <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
-                        {coverLetterResult.cover_letter}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {!coverLetterResult && !isGeneratingCL && !clError && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Create a draft using your experience and this job description. Review it before sending.</p>
-                )}
-              </div>
 
               {/* Outreach */}
               {tailoringResult.outreach_angle && (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import type { TrackedJob } from "@/types";
 
@@ -86,10 +85,7 @@ function TableRow({
   const [removing, setRemoving] = useState(false);
   const [editingLabel, setEditingLabel] = useState(false);
   const [labelValue, setLabelValue] = useState(job.label);
-  const [menuOpen, setMenuOpen] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => { if (removeTimerRef.current) clearTimeout(removeTimerRef.current); }, []);
@@ -114,11 +110,6 @@ function TableRow({
     setExpanded(prev => prev === panel ? "none" : panel);
   }
 
-  function openMenu(e: React.MouseEvent<HTMLButtonElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMenuPos({ top: rect.bottom + 4, left: rect.left });
-    setMenuOpen(true);
-  }
 
   const recStyle = RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
     { color: "rgba(28,35,51,0.45)", dotColor: "rgba(28,35,51,0.28)", bg: "rgba(28,35,51,0.04)", border: "1px solid rgba(28,35,51,0.10)" };
@@ -192,7 +183,7 @@ function TableRow({
               <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
               {job.jobFitResult.recommendation}
             </span>
-            {/* Mobile overflow menu */}
+            {/* Mobile row actions */}
             {confirmingRemove ? (
               <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.65)" }} className="flex items-center gap-1">
                 Remove?{" "}
@@ -201,14 +192,15 @@ function TableRow({
                 <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">No</button>
               </span>
             ) : (
-              <div>
-                <button
-                  onClick={(e) => menuOpen ? setMenuOpen(false) : openMenu(e)}
-                  aria-label="More actions"
-                  style={{ fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 4px" }}
-                  className="hover:text-[#1C2333] transition-colors focus:outline-none"
-                >
-                  ···
+              <div className="flex items-center gap-1">
+                <button onClick={() => setEditingLabel(true)} title="Rename" aria-label="Rename" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: "rgba(28,35,51,0.35)" }} className="hover:text-[#1C2333] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5L11.5 4.5L4.5 11.5H2.5V9.5L9.5 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+                <button onClick={() => toggleExpanded("jd")} title="View job description" aria-label="View job description" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: expanded === "jd" ? "#1C2333" : "rgba(28,35,51,0.35)" }} className="hover:text-[#1C2333] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2.5" y="1.5" width="9" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M5 5H9M5 7H9M5 9H7.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                </button>
+                <button onClick={() => setConfirmingRemove(true)} title="Remove" aria-label="Remove" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: "rgba(28,35,51,0.35)" }} className="hover:text-[#8A7373] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 4H11.5M5 4V2.5H9V4M5.5 6.5V10.5M8.5 6.5V10.5M3.5 4L4 11.5H10L10.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
               </div>
             )}
@@ -273,27 +265,28 @@ function TableRow({
             </div>
           )}
           {/* Persistent row actions */}
-          <div className="flex items-center gap-2 mt-1.5">
-            {/* Overflow menu */}
-            <div className="relative" ref={menuRef}>
-              {confirmingRemove ? (
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.65)" }} className="flex items-center gap-1.5">
-                  Remove?{" "}
-                  <button onClick={handleConfirmRemove} style={{ color: "#8A7373" }} className="hover:underline focus:outline-none">Yes</button>
-                  {" · "}
-                  <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">Cancel</button>
-                </span>
-              ) : (
-                <button
-                  onClick={(e) => menuOpen ? setMenuOpen(false) : openMenu(e)}
-                  aria-label="More actions"
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 2px" }}
-                  className="hover:text-[#1C2333] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] rounded"
-                >
-                  ···
+          {/* Desktop row actions */}
+          <div className="flex items-center gap-1 mt-1.5">
+            {confirmingRemove ? (
+              <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.65)" }} className="flex items-center gap-1.5">
+                Remove?{" "}
+                <button onClick={handleConfirmRemove} style={{ color: "#8A7373" }} className="hover:underline focus:outline-none">Yes</button>
+                {" · "}
+                <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">Cancel</button>
+              </span>
+            ) : (
+              <>
+                <button onClick={() => setEditingLabel(true)} title="Rename" aria-label="Rename" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: "rgba(28,35,51,0.35)" }} className="hover:text-[#1C2333] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5L11.5 4.5L4.5 11.5H2.5V9.5L9.5 2.5Z" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
-              )}
-            </div>
+                <button onClick={() => toggleExpanded("jd")} title="View job description" aria-label="View job description" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: expanded === "jd" ? "#1C2333" : "rgba(28,35,51,0.35)" }} className="hover:text-[#1C2333] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2.5" y="1.5" width="9" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M5 5H9M5 7H9M5 9H7.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                </button>
+                <button onClick={() => setConfirmingRemove(true)} title="Remove" aria-label="Remove" style={{ background: "none", border: "none", cursor: "pointer", padding: "0 3px", color: "rgba(28,35,51,0.35)" }} className="hover:text-[#8A7373] transition-colors focus:outline-none">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 4H11.5M5 4V2.5H9V4M5.5 6.5V10.5M8.5 6.5V10.5M3.5 4L4 11.5H10L10.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -376,34 +369,6 @@ function TableRow({
           )}
         </div>
       </div>
-
-      {/* ── Overflow menu — portalled to body to escape card-entrance stacking context ── */}
-      {menuOpen && menuPos && createPortal(
-        <>
-          <div
-            style={{ position: "fixed", inset: 0, zIndex: 998 }}
-            onClick={() => setMenuOpen(false)}
-          />
-          <div
-            ref={menuRef}
-            style={{ position: "fixed", top: menuPos.top, left: menuPos.left, minWidth: 140, borderRadius: 8, padding: "4px 0", background: "var(--bg, #F5F3EF)", border: "1px solid rgba(28,35,51,0.10)", boxShadow: "0 4px 16px rgba(15,25,35,0.12)", zIndex: 999 }}
-          >
-            <button
-              onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-            >
-              Rename
-            </button>
-            <button
-              onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-            >
-              Remove
-            </button>
-          </div>
-        </>,
-        document.body
-      )}
 
       {/* ── Expandable JD ── */}
       {showJD && (
