@@ -862,9 +862,9 @@ export default function Home() {
         {!magicLinkSent ? (
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="font-sans text-[13px] font-medium text-[#1C2333]">Want to save your work?</p>
+              <p className="font-sans text-[13px] font-medium text-[#1C2333]">Save your work for later</p>
               <p className="font-sans text-[12px] text-[rgba(28,35,51,0.55)] mt-0.5">
-                Enter your email to save your profile, scores, and prep guides. Free, no password.
+                Enter your email to save your profile and job assessments. We&apos;ll send you a sign-in link.
               </p>
             </div>
             <div className="flex flex-col gap-1.5 shrink-0 w-full sm:w-auto">
@@ -882,7 +882,7 @@ export default function Home() {
                   disabled={sendingMagicLink || !email.trim()}
                   className="h-9 px-3 shrink-0 bg-[#1C2333] text-white font-sans font-medium text-[13px] rounded-[8px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap btn-shadow-dark"
                 >
-                  {sendingMagicLink ? "Sending…" : "Save progress"}
+                  {sendingMagicLink ? "Sending…" : "Send sign-in link"}
                 </button>
               </div>
               {magicLinkError && (
@@ -931,7 +931,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Your Background</span>
                   </div>
                   <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
-                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your background, analyzed so every score and brief is built around you.</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your experience, strengths, and role suggestions in one place.</p>
                 </div>
               </div>
             </div>
@@ -942,7 +942,7 @@ export default function Home() {
                 <div className="mb-7">
                   <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Add your background</h2>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-1">
-                    Upload your resume or paste the text. Claro reads your background once and uses it to personalize every fit score and application brief.
+                    Upload your résumé or paste its text. Claro uses it to compare your experience with a job.
                   </p>
                 </div>
                 <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
@@ -1129,7 +1129,7 @@ export default function Home() {
 
             {isAnalyzing && (
               <div className="mb-6">
-                <LoadingState message="Analyzing your profile. This takes about 20 seconds..." />
+                <LoadingState message="Reading your résumé…" />
               </div>
             )}
 
@@ -1166,7 +1166,7 @@ export default function Home() {
                     style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 13, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                     className="hover:text-[#1C2333] transition-colors"
                   >
-                    LinkedIn headline suggestion {headlineOpen ? "↑" : "→"}
+                    Draft a LinkedIn headline {headlineOpen ? "↑" : "→"}
                   </button>
                   {headlineOpen && (
                     <div className="mt-5">
@@ -1241,7 +1241,7 @@ export default function Home() {
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 0, marginBottom: 8 }}>
                     <h1 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1, margin: 0 }}>Score a Job</h1>
                   </div>
-                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>A 1–10 score with the recruiter concern most likely to sink your application.</p>
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>Paste a job description to see how your experience compares.</p>
                 </div>
                 {activeJobId && trackedJobs.find(j => j.id === activeJobId) && (
                   <div className="flex items-center justify-between gap-4 mb-8">
@@ -1278,12 +1278,12 @@ export default function Home() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="12" height="9" viewBox="0 0 14 11" fill="none" aria-hidden="true"><path d="M1 1.5h12M1 5.5h12M1 9.5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Pipeline</span>
+                    <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>My Jobs</span>
                   </div>
                   <div className="flex items-center gap-4 mb-2">
                     <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em" }}>My Jobs</h1>
                   </div>
-                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Every role you've scored, with fit score and application brief.</p>
+                  <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Review the jobs you&apos;ve added and how each matches your experience.</p>
                 </div>
               </div>
             </div>

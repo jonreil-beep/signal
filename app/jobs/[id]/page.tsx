@@ -683,7 +683,7 @@ export default function BriefingPage() {
             className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
             style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}
           >
-            {copied ? "✓" : "Copy"}
+            {copied ? "✓" : "Copy brief"}
           </button>
           <button
             onClick={handleEmailSend}
@@ -691,7 +691,7 @@ export default function BriefingPage() {
             className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
             style={{ height: 30, padding: "0 12px", cursor: emailState === "sending" ? "default" : "pointer" }}
           >
-            {emailState === "sent" ? "Sent ✓" : emailState === "error" ? "Error" : "Email →"}
+            {emailState === "sent" ? "Sent ✓" : emailState === "error" ? "Error" : "Email brief →"}
           </button>
         </div>
       </div>
@@ -722,7 +722,7 @@ export default function BriefingPage() {
               className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.50)] hover:text-[#1C2333] transition-colors focus:outline-none"
               style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 8px" }}
             >
-              {copied ? "Copied ✓" : "Copy"}
+              {copied ? "Copied ✓" : "Copy brief"}
             </button>
             <button
               onClick={handleEmailSend}
@@ -733,7 +733,7 @@ export default function BriefingPage() {
               {emailState === "sending" ? "Sending…"
                 : emailState === "sent" ? "Sent ✓"
                 : emailState === "error" ? "Couldn't send"
-                : "Email →"}
+                : "Email brief →"}
             </button>
           </div>
         </header>
@@ -754,6 +754,9 @@ export default function BriefingPage() {
           </div>
 
           {/* ─ Score + recommendation ─ */}
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.35)", textTransform: "uppercase", marginBottom: 8 }}>
+            Profile match
+          </p>
           <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: 20 }}>
             <div className="flex items-baseline gap-1.5">
               <span className="font-sans font-medium tabular-nums text-[#1C2333]"
@@ -792,7 +795,7 @@ export default function BriefingPage() {
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0, opacity: 0.5 }}>
                 <path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.4 2.4l1.06 1.06M8.54 8.54l1.06 1.06M9.6 2.4L8.54 3.46M3.46 8.54L2.4 9.6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
               </svg>
-              See how this score was calculated {scoreOpen ? "↑" : "↓"}
+              Why this score? {scoreOpen ? "↑" : "↓"}
             </button>
 
             {scoreOpen && (
@@ -889,7 +892,7 @@ export default function BriefingPage() {
                 className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
                 style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
               >
-                Add context
+                Add experience or correct details
               </button>
               {tailoringResult?.outreach_angle && (
                 <button
@@ -905,7 +908,7 @@ export default function BriefingPage() {
                 className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
                 style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
               >
-                Create cover letter
+                Draft cover letter
               </button>
             </div>
           )}
@@ -934,7 +937,7 @@ export default function BriefingPage() {
 
           {/* Disclaimer */}
           <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginBottom: 32 }}>
-            Based on your profile and this job description. Not a prediction of interview outcomes.
+            This compares your profile with the job description. It doesn&apos;t predict whether you&apos;ll get an interview.
           </p>
 
           {/* ─ What you have / missing ─ */}
@@ -942,7 +945,7 @@ export default function BriefingPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8" style={{ marginBottom: 32 }}>
               {haveItems.length > 0 && (
                 <div>
-                  <SectionLabel>What you have</SectionLabel>
+                  <SectionLabel>Relevant experience</SectionLabel>
                   <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
                     {visibleHave.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[#1C2333] leading-snug">
@@ -957,14 +960,14 @@ export default function BriefingPage() {
                       className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
                       style={{ background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 10 }}
                     >
-                      {showAllHave ? "Show less ↑" : `Show all ${haveItems.length - 3} more ↓`}
+                      {showAllHave ? "Show fewer ↑" : `Show ${haveItems.length - 3} more ↓`}
                     </button>
                   )}
                 </div>
               )}
               {missingItems.length > 0 && (
                 <div>
-                  <SectionLabel>What&apos;s missing</SectionLabel>
+                  <SectionLabel>Requirements to review</SectionLabel>
                   <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
                     {visibleMissing.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug">
@@ -979,7 +982,7 @@ export default function BriefingPage() {
                       className="font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
                       style={{ background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 10 }}
                     >
-                      {showAllMissing ? "Show less ↑" : `Show all ${missingItems.length - 2} more ↓`}
+                      {showAllMissing ? "Show fewer ↑" : `Show ${missingItems.length - 2} more ↓`}
                     </button>
                   )}
                 </div>
@@ -994,7 +997,7 @@ export default function BriefingPage() {
                 fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11,
                 letterSpacing: "0.07em", color: "#9B8E73", marginBottom: 8, textTransform: "uppercase",
               }}>
-                A hiring team may raise
+                A question to prepare for
               </p>
               <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">
                 {jobFitResult.recruiter_concern}
@@ -1033,7 +1036,7 @@ export default function BriefingPage() {
               {/* Lead with — 3 cards, expandable detail, show all */}
               {leadStrengths.length > 0 && (
                 <div>
-                  <SectionLabel>Lead with</SectionLabel>
+                  <SectionLabel>Experience to highlight</SectionLabel>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {visibleLeads.map((s, i) => (
                       <div key={i} className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
@@ -1045,7 +1048,7 @@ export default function BriefingPage() {
                               className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.40)] hover:text-[#1C2333] transition-colors focus:outline-none"
                               style={{ background: "none", border: "none", padding: 0, cursor: "pointer", whiteSpace: "nowrap" }}
                             >
-                              {expandedLead === i ? "Less ↑" : "How to frame →"}
+                              {expandedLead === i ? "Less ↑" : "See suggested wording →"}
                             </button>
                           )}
                         </div>
@@ -1072,7 +1075,7 @@ export default function BriefingPage() {
               {/* Relevant terminology */}
               {tailoringResult.jd_language_to_mirror.length > 0 && (
                 <div>
-                  <SectionLabel>Relevant terminology</SectionLabel>
+                  <SectionLabel>Terms from the job description</SectionLabel>
                   <div className="flex flex-wrap gap-2">
                     {tailoringResult.jd_language_to_mirror.map((p, i) => (
                       <span key={i} className="font-sans text-[13px] px-3 py-1.5 text-[#1C2333]"
@@ -1082,7 +1085,7 @@ export default function BriefingPage() {
                     ))}
                   </div>
                   <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginTop: 8 }}>
-                    Use where accurate. Don&apos;t claim experience you don&apos;t have.
+                    Use these terms where they describe work you&apos;ve done.
                   </p>
                 </div>
               )}
@@ -1097,7 +1100,7 @@ export default function BriefingPage() {
                     className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
                     style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingCL ? "default" : "pointer", padding: 0 }}
                   >
-                    {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Regenerate" : "Generate"}
+                    {isGeneratingCL ? <><Spinner /> Generating…</> : coverLetterResult ? "Create another draft" : "Draft cover letter"}
                   </button>
                 </div>
                 {isGeneratingCL && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>}
@@ -1110,7 +1113,7 @@ export default function BriefingPage() {
                   </div>
                 )}
                 {!coverLetterResult && !isGeneratingCL && !clError && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Generate a cover letter tailored to this role.</p>
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">Create a draft using your experience and this job description. Review it before sending.</p>
                 )}
               </div>
 
@@ -1150,14 +1153,14 @@ export default function BriefingPage() {
 
               {/* Update brief */}
               <div ref={updateBriefRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
-                <SectionLabel>Add context</SectionLabel>
+                <SectionLabel>Add experience or correct details</SectionLabel>
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
-                  Add something Claro may have missed — a specific project, correction, or framing preference.
+                  A résumé doesn&apos;t always include every relevant project. Add experience or correct a detail for Claro to consider.
                 </p>
                 <textarea
                   value={regenerateNote}
                   onChange={(e) => setRegenerateNote(e.target.value)}
-                  placeholder="e.g. I led the rebrand end-to-end, not just the visual side."
+                  placeholder="For example: I managed a team of six"
                   maxLength={400}
                   rows={2}
                   className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
@@ -1171,7 +1174,7 @@ export default function BriefingPage() {
                   className="mt-2 flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
                   style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isRegenerating ? "default" : "pointer", padding: 0 }}
                 >
-                  {isRegenerating ? <><Spinner /> Rebuilding…</> : "Rebuild →"}
+                  {isRegenerating ? <><Spinner /> Updating…</> : "Update assessment →"}
                 </button>
               </div>
 

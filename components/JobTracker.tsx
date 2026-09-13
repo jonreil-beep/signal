@@ -529,7 +529,7 @@ export default function JobTracker({
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search jobs..."
+          placeholder="Search your jobs"
           className="w-full pl-9 pr-4 py-2 rounded-[8px] border font-sans text-[14px] text-[#1C2333] placeholder:text-[rgba(28,35,51,0.35)] focus:outline-none focus:ring-0 transition-colors"
           style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", borderColor: "rgba(255,255,255,0.55)" }}
         />
@@ -574,7 +574,7 @@ export default function JobTracker({
               borderBottom: "1px solid rgba(28,35,51,0.08)",
             }}
           >
-            {["Role", "Fit", "Recommendation", ""].map((col) => (
+            {["Role", "Profile match", "Recommendation", ""].map((col) => (
               <p
                 key={col}
                 style={{
@@ -632,10 +632,10 @@ export default function JobTracker({
         >
           <div>
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 15, fontWeight: 500, color: "#1C2333", marginBottom: 4 }}>
-              + Score another job
+              Have another job in mind?
             </p>
             <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: 14, fontWeight: 400, color: "rgba(28,35,51,0.65)" }}>
-              Paste a JD or LinkedIn URL to get a 1–10 fit and a tailored brief in about 20 seconds.
+              Add a job description to compare it with your experience.
             </p>
           </div>
           <span

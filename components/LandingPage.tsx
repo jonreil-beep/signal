@@ -507,7 +507,7 @@ function EmailForm({
             <input
               type="email"
               className="cl-email-input"
-              placeholder="your@email.com"
+              placeholder="you@example.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -554,7 +554,7 @@ export default function LandingPage({
         </a>
         <ul className="cl-nav-links">
           <li><a href="#how-it-works">How it works</a></li>
-          <li><a href="#features">Features</a></li>
+          <li><a href="#features">What you get</a></li>
         </ul>
         <a href="#get-started" className="cl-nav-cta">Continue with email →</a>
       </nav>
@@ -562,9 +562,9 @@ export default function LandingPage({
       {/* HERO */}
       <div className="cl-wrap">
         <div className="cl-hero">
-          <p className="cl-eyebrow">Career Copilot</p>
-          <h1 className="cl-hero-hed">Know your fit<br /><span>before you apply.</span></h1>
-          <p className="cl-hero-sub">Claro reads your resume and scores any job description against your actual background. A precise fit score, recruiter concern flag, and a clear action plan before you write a single word.</p>
+          <p className="cl-eyebrow">Job search support</p>
+          <h1 className="cl-hero-hed">See how your<br /><span>experience fits.</span></h1>
+          <p className="cl-hero-sub">Compare your résumé with a job description. See the relevant experience, the requirements that need a closer look, and what to highlight if you decide to apply.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
         </div>
       </div>
@@ -580,9 +580,9 @@ export default function LandingPage({
       <div className="cl-wrap">
         <hr className="cl-strip-divider" />
         <div className="cl-proof">
-          <div className="cl-proof-item">Precise scores, not encouragement</div>
-          <div className="cl-proof-item">Recruiter concern flag on every score</div>
-          <div className="cl-proof-item">Cover letter and outreach, auto-generated</div>
+          <div className="cl-proof-item">A match score with reasons</div>
+          <div className="cl-proof-item">Relevant experience and requirements to review</div>
+          <div className="cl-proof-item">Cover-letter drafts when you need them</div>
         </div>
         <hr className="cl-strip-divider" />
       </div>
@@ -594,18 +594,18 @@ export default function LandingPage({
           <div className="cl-how-grid">
             <div>
               <p className="cl-step-num">01</p>
-              <h3 className="cl-step-title">Upload your resume</h3>
-              <p className="cl-step-desc">Upload your resume once. Claro reads your background and uses it to personalize every score and brief you generate.</p>
+              <h3 className="cl-step-title">Add your résumé</h3>
+              <p className="cl-step-desc">Upload a PDF or DOCX file, or paste your résumé text. Claro uses it to build a profile of your experience.</p>
             </div>
             <div>
               <p className="cl-step-num">02</p>
-              <h3 className="cl-step-title">Score any job description</h3>
-              <p className="cl-step-desc">Paste a JD or drop in a URL. Get a 1–10 fit score across four dimensions, an apply or skip recommendation, and the specific recruiter concern most likely to sink your application.</p>
+              <h3 className="cl-step-title">Add a job description</h3>
+              <p className="cl-step-desc">Compare the role&apos;s requirements with your profile. See a match score, the reasons behind it, and details you may want to add.</p>
             </div>
             <div>
               <p className="cl-step-num">03</p>
-              <h3 className="cl-step-title">Get your application brief</h3>
-              <p className="cl-step-desc">Score a job and Claro instantly generates your brief: a bottom line on fit, a tailored cover letter, and outreach messages — all in one shot.</p>
+              <h3 className="cl-step-title">Prepare your application</h3>
+              <p className="cl-step-desc">Review the suggested talking points and draft a cover letter using your experience. Edit the draft before you use it.</p>
             </div>
           </div>
         </div>
@@ -618,52 +618,50 @@ export default function LandingPage({
 
           <div className="cl-feature-block">
             <div className="cl-ft">
-              <p className="cl-feature-kicker">Profile Analysis</p>
-              <h2 className="cl-feature-title">See how the market reads your background.</h2>
-              <p className="cl-feature-desc">Most experienced professionals apply broadly and get silence. Not because they&apos;re underqualified. Because their profile doesn&apos;t immediately answer the question every recruiter asks first: what should we hire this person for?</p>
+              <p className="cl-feature-kicker">Your profile</p>
+              <h2 className="cl-feature-title">Put your experience into focus.</h2>
+              <p className="cl-feature-desc">Review your strengths and role suggestions based on your résumé. Add details it doesn&apos;t capture so future comparisons have more to work with.</p>
               <ul className="cl-feature-list">
-                <li>Best-fit role clusters with Pursue / Stretch ratings</li>
-                <li>Core strengths framed for the roles you&apos;re targeting</li>
-                <li>Positioning risks so you know what to address before applying</li>
-                <li>Recommended LinkedIn headline, optimized for how recruiters search</li>
+                <li>Role suggestions with reasons</li>
+                <li>Strengths supported by your experience</li>
+                <li>Details to add or clarify</li>
+                <li>An optional LinkedIn headline draft</li>
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/profile-screenshot.png" alt="Claro Profile tab" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/profile-screenshot.png" alt="Claro Profile tab showing role suggestions and strengths" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
 
           <div className="cl-feature-block flip">
             <div className="cl-ft">
-              <p className="cl-feature-kicker">Job Fit Scoring</p>
-              <h2 className="cl-feature-title">Know if it&apos;s worth your time before you apply.</h2>
-              <p className="cl-feature-desc">A 1–10 fit score across four dimensions. A clear apply or skip recommendation. And the one recruiter concern most likely to flag your application, so you can address it before they ever see your resume.</p>
+              <p className="cl-feature-kicker">Your job match</p>
+              <h2 className="cl-feature-title">Understand the match before you decide.</h2>
+              <p className="cl-feature-desc">See how your profile compares with this role, including relevant experience and requirements that aren&apos;t yet supported. The assessment uses the information you provide.</p>
               <ul className="cl-feature-list">
-                <li>Functional, seniority, industry, and keyword fit, each scored separately</li>
-                <li>Recruiter concern flag: the specific objection you need to preempt</li>
-                <li>What you have vs. what&apos;s missing, dismissable and re-scoreable as you close gaps</li>
-                <li>Paste text or drop in a URL. Claro fetches the JD directly.</li>
+                <li>A 1–10 profile match score with an explanation</li>
+                <li>Relevant experience and requirements to review</li>
+                <li>A way to add experience or correct details</li>
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/jobfit-screenshot.png" alt="Claro Job Fit tab" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/jobfit-screenshot.png" alt="Claro job match score and requirements review" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
 
           <div className="cl-feature-block">
             <div className="cl-ft">
-              <p className="cl-feature-kicker">Your Brief</p>
-              <h2 className="cl-feature-title">Everything you need to apply, in one shot.</h2>
-              <p className="cl-feature-desc">Score a job and Claro immediately generates your complete application brief — no extra steps. It&apos;s waiting for you in My Jobs the moment scoring finishes.</p>
+              <p className="cl-feature-kicker">Your application brief</p>
+              <h2 className="cl-feature-title">Make your relevant experience easier to see.</h2>
+              <p className="cl-feature-desc">Use the brief to decide what to highlight. When you&apos;re ready, create a cover-letter draft based on your experience and the role.</p>
               <ul className="cl-feature-list">
-                <li>Bottom line: should you apply, and what&apos;s the honest case</li>
-                <li>Cover letter, written in your voice</li>
-                <li>Email and LinkedIn outreach, ready to send</li>
-                <li>Rebuild with a note whenever your thinking changes</li>
+                <li>Suggested experience to highlight</li>
+                <li>A cover-letter draft you can review and edit</li>
+                <li>An option to add details and update the brief</li>
               </ul>
             </div>
             <div className="cl-fv">
-              <Image src="/screenshots/brief-screenshot.png" alt="Claro Application Brief" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
+              <Image src="/screenshots/brief-screenshot.png" alt="Claro application brief showing experience to highlight" width={1920} height={1061} style={{width:'100%',height:'auto'}} />
             </div>
           </div>
         </div>
@@ -672,8 +670,8 @@ export default function LandingPage({
       {/* FINAL CTA */}
       <div className="cl-wrap" id="get-started">
         <div className="cl-final-cta">
-          <h2 className="cl-cta-hed">Apply to fewer jobs.<br />Land the right ones.</h2>
-          <p className="cl-cta-sub">Completely free. No resume builder, no job board, no generic advice. Just a clear read on where you fit and exactly what to do about it.</p>
+          <h2 className="cl-cta-hed">Take a closer look at<br />your next opportunity.</h2>
+          <p className="cl-cta-sub">Start with your résumé and a job description. Claro helps you compare them and prepare what to say next.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} style={{maxWidth: 520}} />
         </div>
         <footer className="cl-footer">

@@ -153,7 +153,7 @@ Submit the analysis using the tool. Field reference:
   - "Pursue": strong evidence for the core requirements; apply with confidence
   - "Consider": credible overlap but meaningful uncertainties or gaps to assess first
   - "Lower priority": significant confirmed mismatch to important requirements
-- recruiter_concern: The most likely concern a hiring team would raise — specific, not softened
+- recruiter_concern: The primary concern a hiring team might raise about this candidate, grounded in actual gaps or mismatches. Use "None identified" when the fit is strong and there is no genuine concern to flag — do not manufacture one.
 - evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry with: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (résumé clearly shows it), "not_demonstrated" (résumé is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess), requirement (the specific JD requirement this finding addresses, 5-15 words), resume_evidence (verbatim or close-paraphrase of the resume line that supports or contradicts this — omit if the résumé is silent)
 
 Rules:
@@ -165,7 +165,7 @@ Rules:
   - "domain": wrong industry or sector — market may not see the skills as transferable
   - "functional": wrong function or core skillset — not just a gap but a different job type
 - If overall_fit is below 7, mismatch_types should be non-empty — identify what's driving the gap
-- recruiter_concern: required, never null. A sharp, specific concern — not a softened generality
+- recruiter_concern: required. When there is a genuine concern, name it specifically. When the fit is strong with no clear gap, use "None identified" — do not invent a concern to fill the field.
 - Use "likely" and "appears to" when drawing inferences from the JD rather than stating facts
 - Scores below 5 are valid and sometimes correct
 
