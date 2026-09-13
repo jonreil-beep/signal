@@ -476,46 +476,76 @@ export default function BriefingPage() {
 
   async function handleRegenerate() {
     if (!job || !profileText || !job.jobDescription) return;
+    const prevFit = job.jobFitResult;
     const prevTailoring = job.tailoringResult;
     setIsRegenerating(true);
     setRegenerateError("");
     setRegenerateChanges(null);
     try {
-      const res = await fetch("/api/tailor", {
+      // Step 1: Full reassessment with any context the user provided
+      const scoreRes = await fetch("/api/score-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: job.jobDescription,
+          corrections: regenerateNote.trim()
+            ? [{ item: "candidate context", evidence: regenerateNote.trim() }]
+            : undefined,
+        }),
+      });
+      const scoreData = await scoreRes.json();
+      if (!scoreRes.ok) {
+        setRegenerateError(scoreData.error ?? "Reassessment failed. Please try again.");
+        return;
+      }
+      const newFit = scoreData as JobFitResult;
+      // Persist new score before calling /api/tailor (which reads it from DB)
+      updateJob({ jobFitResult: newFit });
+      await saveToDb({ job_fit_result: newFit, scored_at: new Date().toISOString() });
+
+      // Step 2: Regenerate brief using updated score
+      const tailorRes = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: job.jobDescription,
           jobId,
-          userNote: regenerateNote || undefined,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setRegenerateError(data.error ?? "Failed to regenerate. Please try again.");
-      } else {
-        const result = data as TailoringBriefResult;
-        updateJob({ tailoringResult: result, coverLetterResult: null, outreachResult: null });
-        await saveToDb({ tailoring_result: result, cover_letter_result: null, outreach_result: null });
-        setRegenerateNote("");
-        setShowAllLeads(false);
-        setExpandedLead(null);
-        // Surface what changed
-        const changes: string[] = [];
-        if (prevTailoring?.lead_strengths?.[0]?.strength !== result.lead_strengths?.[0]?.strength) {
-          changes.push("experience to highlight");
-        }
-        const prevConcern = prevTailoring?.recruiter_concern_to_preempt?.concern ?? "";
-        const newConcern = result.recruiter_concern_to_preempt?.concern ?? "";
-        if (prevConcern !== newConcern) changes.push("question to prepare for");
-        if ((prevTailoring?.outreach_angle ?? "") !== (result.outreach_angle ?? "")) {
-          changes.push("outreach angle");
-        }
-        setRegenerateChanges(changes.length > 0 ? changes : ["brief"]);
+      const tailorData = await tailorRes.json();
+      if (!tailorRes.ok) {
+        setRegenerateError(tailorData.error ?? "Assessment updated but brief refresh failed — reload to retry.");
+        return;
       }
+      const newTailoring = tailorData as TailoringBriefResult;
+      updateJob({ tailoringResult: newTailoring, coverLetterResult: null, outreachResult: null });
+      await saveToDb({ tailoring_result: newTailoring, cover_letter_result: null, outreach_result: null });
+
+      setRegenerateNote("");
+      setShowAllLeads(false);
+      setExpandedLead(null);
+
+      // Surface what changed — score delta, recommendation, resolved requirements, brief fields
+      const changes: string[] = [];
+      const scoreDelta = newFit.overall_fit - prevFit.overall_fit;
+      if (scoreDelta !== 0) {
+        changes.push(`score ${scoreDelta > 0 ? "+" : ""}${scoreDelta} (${prevFit.overall_fit} → ${newFit.overall_fit})`);
+      }
+      if (prevFit.recommendation !== newFit.recommendation) {
+        changes.push(`recommendation: ${newFit.recommendation}`);
+      }
+      const prevMissing = new Set(prevFit.whats_missing ?? []);
+      const newMissing = new Set(newFit.whats_missing ?? []);
+      const resolved = [...prevMissing].filter(x => !newMissing.has(x)).length;
+      if (resolved > 0) changes.push(`${resolved} requirement${resolved > 1 ? "s" : ""} addressed`);
+      if (prevTailoring?.lead_strengths?.[0]?.strength !== newTailoring.lead_strengths?.[0]?.strength) {
+        changes.push("experience to highlight");
+      }
+      setRegenerateChanges(changes.length > 0 ? changes : ["assessment updated"]);
     } catch {
       setRegenerateError("Network error. Check your connection and try again.");
     } finally {
@@ -1125,7 +1155,7 @@ export default function BriefingPage() {
                             )}
                             {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
                               <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug italic">
-                                <span className="not-italic text-[rgba(28,35,51,0.30)] mr-1">From résumé:</span>
+                                <span className="not-italic text-[rgba(28,35,51,0.30)] mr-1">From resume:</span>
                                 &ldquo;{ev.resume_evidence}&rdquo;
                               </p>
                             ) : ev.resume_evidence ? (
@@ -1156,7 +1186,7 @@ export default function BriefingPage() {
                 className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
                 style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
               >
-                Suggested résumé changes
+                Suggested resume changes
               </button>
               <button
                 onClick={scrollToAddContext}
@@ -1433,10 +1463,10 @@ export default function BriefingPage() {
                 </div>
               )}
 
-              {/* Suggested résumé changes */}
+              {/* Suggested resume changes */}
               <div ref={resumeUpdateRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-                  <SectionLabel>Suggested résumé changes</SectionLabel>
+                  <SectionLabel>Suggested resume changes</SectionLabel>
                   <button
                     onClick={handleGenerateResumeUpdates}
                     disabled={isGeneratingResumeUpdates}
@@ -1449,7 +1479,7 @@ export default function BriefingPage() {
                   </button>
                 </div>
                 {isGeneratingResumeUpdates && (
-                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Generating résumé suggestions…</p>
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Generating resume suggestions…</p>
                 )}
                 {resumeUpdateError && !isGeneratingResumeUpdates && (
                   <p className="font-sans text-[13px] text-[#8A7373]">{resumeUpdateError}</p>
@@ -1492,7 +1522,7 @@ export default function BriefingPage() {
                 )}
                 {!job.resumeUpdateResult && !isGeneratingResumeUpdates && !resumeUpdateError && (
                   <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
-                    Get specific, copy-paste résumé edits tailored to this job description.
+                    Get specific, copy-paste resume edits tailored to this job description.
                   </p>
                 )}
               </div>
@@ -1501,7 +1531,7 @@ export default function BriefingPage() {
               <div ref={updateBriefRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
                 <SectionLabel>Add experience or correct details</SectionLabel>
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
-                  A résumé doesn&apos;t always include every relevant project. Add experience or correct a detail for Claro to consider.
+                  A resume doesn&apos;t always include every relevant project. Add experience or correct a detail for Claro to consider.
                 </p>
                 <textarea
                   value={regenerateNote}

@@ -22,6 +22,7 @@ interface JobFitScorerProps {
   result: JobFitResult | null;
   hasPrepData: boolean;
   isProfileStale?: boolean;
+  isProfileParsing?: boolean;
   onJobScored: (jobDescription: string, result: JobFitResult) => void;
   onJobFitUpdated: (result: JobFitResult) => void;
   onReset: () => void;
@@ -85,7 +86,7 @@ function ScoreBar({ score, animate, delayMs }: { score: number; animate: boolean
   );
 }
 
-export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, onJobScored, onJobFitUpdated, onReset }: JobFitScorerProps) {
+export default function JobFitScorer({ profileText, jobDescription, initialJDText, result, hasPrepData, isProfileStale, isProfileParsing, onJobScored, onJobFitUpdated, onReset }: JobFitScorerProps) {
   const [mode, setMode] = useState<InputMode>("paste");
   const [jdText, setJdText] = useState<string>(initialJDText ?? "");
 
@@ -390,10 +391,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           )}
 
           {jdText.trim() && !isScoring && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
               <button
                 onClick={handleScore}
-                className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
+                disabled={!!isProfileParsing}
+                className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ height: 44 }}
               >
                 Score This Job
@@ -401,6 +403,9 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
               <button onClick={handleReset} className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors">
                 Clear
               </button>
+              {isProfileParsing && (
+                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.45)]">Reading your resume — score available after.</p>
+              )}
             </div>
           )}
 

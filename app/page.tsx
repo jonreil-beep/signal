@@ -91,6 +91,7 @@ export default function Home() {
   const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
   const [profileExpanded, setProfileExpanded] = useState<"none" | "view" | "update">("none");
   const [clusterResult, setClusterResult] = useState<RoleClusterResult | null>(null);
+  const [isProfileParsing, setIsProfileParsing] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string>("");
   const [currentHeadline, setCurrentHeadline] = useState<string>("");
@@ -941,10 +942,10 @@ export default function Home() {
                 <div className="mb-7">
                   <h2 className="font-sans text-[16px] font-medium text-[#1C2333]">Add your background</h2>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] mt-1">
-                    Upload your résumé or paste its text. Claro uses it to compare your experience with a job.
+                    Upload your resume or paste its text. Claro uses it to compare your experience with a job.
                   </p>
                 </div>
-                <ProfileUploader onProfileConfirmed={handleProfileConfirmed} />
+                <ProfileUploader onProfileConfirmed={handleProfileConfirmed} onParsingChange={setIsProfileParsing} />
               </>
             )}
 
@@ -1055,8 +1056,8 @@ export default function Home() {
                   <div className="mt-3 space-y-4">
                     {/* Resume uploader */}
                     <div className="bg-[#FAFAFA] p-5 border border-[rgba(28,35,51,0.08)] rounded-[10px]">
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] mb-4">Upload or paste a new résumé to replace the saved one.</p>
-                      <ProfileUploader onProfileConfirmed={(text, source, fileName) => {
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] mb-4">Upload or paste a new resume to replace the saved one.</p>
+                      <ProfileUploader onParsingChange={setIsProfileParsing} onProfileConfirmed={(text, source, fileName) => {
                         handleProfileConfirmed(text, source, fileName);
                         setProfileExpanded("none");
                       }} />
@@ -1128,7 +1129,7 @@ export default function Home() {
 
             {isAnalyzing && (
               <div className="mb-6">
-                <LoadingState message="Reading your résumé…" />
+                <LoadingState message="Reading your resume…" />
               </div>
             )}
 
@@ -1259,6 +1260,7 @@ export default function Home() {
                   result={jobFitResult}
                   hasPrepData={!!(tailoringResult || coverLetterResult || outreachResult || resumeUpdateResult || interviewPrepResult || followUpResult)}
                   isProfileStale={!!(profileUpdatedAt && activeJobId && (() => { const j = trackedJobs.find(j => j.id === activeJobId); return j && new Date(j.scoredAt) < profileUpdatedAt; })())}
+                  isProfileParsing={isProfileParsing}
                   onJobScored={handleJobScored}
                   onJobFitUpdated={handleJobFitUpdated}
                   onReset={handleJobFitReset}

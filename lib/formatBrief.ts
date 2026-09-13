@@ -57,9 +57,9 @@ export function formatBrief(
     lines.push("");
   }
 
-  // Résumé notes — de-emphasize
+  // Resume notes — de-emphasize
   if (tailoringResult.what_to_deemphasize.length > 0) {
-    lines.push("Résumé notes");
+    lines.push("Resume notes");
     tailoringResult.what_to_deemphasize.forEach((d) => {
       lines.push(`• De-emphasize ${d.item}: ${d.reason}`);
     });
