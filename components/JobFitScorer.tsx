@@ -629,7 +629,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                                   className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] hover:text-[#1C2333] transition-colors whitespace-nowrap"
                                   style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                                 >
-                                  {isExpanding ? "Cancel" : "I have this →"}
+                                  {isExpanding ? "Cancel" : "Add relevant experience"}
                                 </button>
                               )}
                               <button

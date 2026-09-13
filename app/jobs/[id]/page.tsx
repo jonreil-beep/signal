@@ -126,6 +126,16 @@ function Brandmark() {
   );
 }
 
+function verifyExcerpt(excerpt: string, source: string): boolean {
+  const normalize = (s: string) =>
+    s.toLowerCase()
+      .replace(/[‘’]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/\s+/g, " ")
+      .trim();
+  return normalize(source).includes(normalize(excerpt));
+}
+
 // ── page ──────────────────────────────────────────────────────────────────────
 
 export default function BriefingPage() {
@@ -145,12 +155,17 @@ export default function BriefingPage() {
   const [rescoreError, setRescoreError] = useState("");
 
   const [jobFitValidationError, setJobFitValidationError] = useState<string | null>(null);
+  const [recoveryJobDescription, setRecoveryJobDescription] = useState("");
+  const [isRecoveryRescoring, setIsRecoveryRescoring] = useState(false);
+  const [recoveryRescoreError, setRecoveryRescoreError] = useState("");
 
   // brief generation status
   type BriefStatus = "pending" | "generating" | "succeeded" | "failed";
   const [briefStatus, setBriefStatus] = useState<BriefStatus>("pending");
   const [briefError, setBriefError] = useState("");
   const briefRetryInFlight = useRef(false);
+  const [isRetrying, setIsRetrying] = useState(false);
+  const pollingElapsedRef = useRef(0);
 
   // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
@@ -222,6 +237,7 @@ export default function BriefingPage() {
       const fitValidation = validateJobFitResult(row.job_fit_result);
       if (!fitValidation.valid) {
         setJobFitValidationError(fitValidation.reason);
+        setRecoveryJobDescription(row.job_description as string ?? "");
         setLoading(false);
         return;
       }
@@ -251,16 +267,18 @@ export default function BriefingPage() {
   // ── poll until brief arrives (bounded: 90 s max) ──────────────────────────
 
   useEffect(() => {
-    if (briefStatus !== "pending" && briefStatus !== "generating") return;
+    if (briefStatus !== "pending" && briefStatus !== "generating") {
+      pollingElapsedRef.current = 0;
+      return;
+    }
     setBriefStatus("generating");
-    let elapsed = 0;
     const TIMEOUT_MS = 90_000;
     const interval = setInterval(async () => {
-      elapsed += 3000;
-      if (elapsed >= TIMEOUT_MS) {
+      pollingElapsedRef.current += 3000;
+      if (pollingElapsedRef.current >= TIMEOUT_MS) {
         clearInterval(interval);
         setBriefStatus("failed");
-        setBriefError("Brief generation timed out. Retry to try again.");
+        setBriefError("This is taking longer than expected. Try again.");
         return;
       }
       const supabase = createClient();
@@ -287,12 +305,26 @@ export default function BriefingPage() {
   async function handleRetryBrief() {
     if (briefRetryInFlight.current) return;
     briefRetryInFlight.current = true;
+    setIsRetrying(true);
     setBriefError("");
     setBriefStatus("generating");
     try {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || !job) { setBriefStatus("failed"); setBriefError("Session expired. Refresh the page."); return; }
+
+      // Check DB first — original request may have completed while user waited
+      const { data: existing } = await supabase
+        .from("tracked_jobs")
+        .select("tailoring_result")
+        .eq("id", jobId)
+        .single();
+      if (existing?.tailoring_result) {
+        setJob((prev) => prev ? { ...prev, tailoringResult: existing.tailoring_result as TailoringBriefResult } : prev);
+        setBriefStatus("succeeded");
+        return;
+      }
+
       const res = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -313,6 +345,7 @@ export default function BriefingPage() {
       setBriefError("Network error. Check your connection and try again.");
     } finally {
       briefRetryInFlight.current = false;
+      setIsRetrying(false);
     }
   }
 
@@ -521,6 +554,55 @@ export default function BriefingPage() {
     }
   }
 
+  async function handleRecoveryRescore() {
+    if (!recoveryJobDescription || !profileText) return;
+    setIsRecoveryRescoring(true);
+    setRecoveryRescoreError("");
+    try {
+      const res = await fetch("/api/score-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription: recoveryJobDescription }),
+      });
+      const data = await res.json() as JobFitResult & { error?: string };
+      if (!res.ok) {
+        setRecoveryRescoreError(data.error ?? "Re-scoring failed. Try again.");
+      } else {
+        const fitValidation = validateJobFitResult(data);
+        if (!fitValidation.valid) {
+          setRecoveryRescoreError("Re-score returned an unexpected format. Try again.");
+          return;
+        }
+        const supabase = createClient();
+        await supabase.from("tracked_jobs").update({ job_fit_result: data }).eq("id", jobId);
+        setJob({
+          id: jobId,
+          label: recoveryJobDescription.slice(0, 60),
+          jobDescription: recoveryJobDescription,
+          jobFitResult: fitValidation.result,
+          tailoringResult: null,
+          outreachResult: null,
+          coverLetterResult: null,
+          resumeUpdateResult: null,
+          interviewPrepResult: null,
+          followUpResult: null,
+          companyResearchResult: null,
+          deadline: null,
+          scoredAt: new Date(),
+          applicationStatus: "Tracking" as const,
+          notes: "",
+        });
+        setJobFitValidationError(null);
+        setBriefStatus("pending");
+        setRecoveryJobDescription("");
+      }
+    } catch {
+      setRecoveryRescoreError("Network error. Check your connection and try again.");
+    } finally {
+      setIsRecoveryRescoring(false);
+    }
+  }
+
   // ── render ────────────────────────────────────────────────────────────────
 
   if (loading) {
@@ -539,12 +621,28 @@ export default function BriefingPage() {
           <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] leading-relaxed mb-6">
             This score was saved in an older format and can&apos;t be displayed. Re-score the job to get a fresh analysis.
           </p>
-          <Link
-            href="/"
-            className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[8px] px-4 py-2 hover:opacity-90 transition-opacity btn-shadow-dark"
-          >
-            ← Back to jobs
-          </Link>
+          <div className="flex flex-wrap gap-3 items-center">
+            {recoveryJobDescription && profileText ? (
+              <button
+                onClick={() => void handleRecoveryRescore()}
+                disabled={isRecoveryRescoring}
+                className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[8px] px-4 py-2 hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity btn-shadow-dark"
+              >
+                {isRecoveryRescoring ? "Re-scoring…" : "Re-score this job"}
+              </button>
+            ) : recoveryJobDescription && !profileText ? (
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)]">Add your profile to re-score.</p>
+            ) : null}
+            <Link
+              href="/"
+              className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+            >
+              ← Back to jobs
+            </Link>
+          </div>
+          {recoveryRescoreError && (
+            <p className="font-sans text-[12px] text-[#8A7373] mt-3">{recoveryRescoreError}</p>
+          )}
         </div>
       </div>
     );
@@ -864,16 +962,21 @@ export default function BriefingPage() {
                                 JD requirement: {ev.requirement}
                               </p>
                             )}
-                            {ev.resume_evidence && (
+                            {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
                               <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug italic">
+                                <span className="not-italic text-[rgba(28,35,51,0.30)] mr-1">From résumé:</span>
                                 &ldquo;{ev.resume_evidence}&rdquo;
                               </p>
-                            )}
-                            {!ev.requirement && !ev.resume_evidence && (
+                            ) : ev.resume_evidence ? (
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug">
+                                <span className="text-[rgba(28,35,51,0.30)] mr-1">Model summary:</span>
+                                {ev.resume_evidence}
+                              </p>
+                            ) : !ev.requirement ? (
                               <p className="font-sans text-[11px] text-[rgba(28,35,51,0.25)] pl-11 leading-snug">
                                 Source unavailable
                               </p>
-                            )}
+                            ) : null}
                           </div>
                         );
                       })}
@@ -1018,10 +1121,11 @@ export default function BriefingPage() {
               {!!profileText && (
                 <button
                   onClick={() => void handleRetryBrief()}
-                  className="w-fit px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
+                  disabled={isRetrying}
+                  className="w-fit px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity btn-shadow-dark"
                   style={{ height: 40 }}
                 >
-                  Retry
+                  {isRetrying ? "Retrying…" : "Retry"}
                 </button>
               )}
             </div>
