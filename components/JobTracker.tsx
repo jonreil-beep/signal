@@ -386,8 +386,7 @@ function TableRow({
           />
           <div
             ref={menuRef}
-            className="glass-card"
-            style={{ position: "fixed", top: menuPos.top, left: menuPos.left, minWidth: 140, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)", zIndex: 999 }}
+            style={{ position: "fixed", top: menuPos.top, left: menuPos.left, minWidth: 140, borderRadius: 8, padding: "4px 0", background: "var(--bg, #F5F3EF)", border: "1px solid rgba(28,35,51,0.10)", boxShadow: "0 4px 16px rgba(15,25,35,0.12)", zIndex: 999 }}
           >
             <button
               onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
