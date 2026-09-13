@@ -6,10 +6,11 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { fetchWithSession } from "@/lib/fetchWithSession";
 import { formatBrief } from "@/lib/formatBrief";
+import { deriveBeforeYouApplyActions } from "@/lib/beforeYouApply";
 import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
   TrackedJob, JobFitResult, TailoringBriefResult,
-  OutreachResult, CoverLetterResult,
+  OutreachResult, CoverLetterResult, ResumeUpdateResult,
 } from "@/types";
 
 // ── normalizers / validators ──────────────────────────────────────────────────
@@ -181,8 +182,16 @@ export default function BriefingPage() {
   const [copied, setCopied] = useState(false);
   const [emailState, setEmailState] = useState<EmailState>("idle");
 
+  // resume suggestions
+  const [isGeneratingResumeUpdates, setIsGeneratingResumeUpdates] = useState(false);
+  const [resumeUpdateError, setResumeUpdateError] = useState("");
+
+  // what changed after brief regeneration
+  const [regenerateChanges, setRegenerateChanges] = useState<string[] | null>(null);
+
   // UI disclosure states
   const [scoreOpen, setScoreOpen] = useState(false);
+  const [jdOpen, setJdOpen] = useState(false);
   const [showAllHave, setShowAllHave] = useState(false);
   const [showAllMissing, setShowAllMissing] = useState(false);
   const [showAllLeads, setShowAllLeads] = useState(false);
@@ -193,6 +202,7 @@ export default function BriefingPage() {
   const updateBriefRef = useRef<HTMLDivElement>(null);
   const outreachRef = useRef<HTMLDivElement>(null);
   const coverLetterRef = useRef<HTMLDivElement>(null);
+  const resumeUpdateRef = useRef<HTMLDivElement>(null);
 
   // ── load ──────────────────────────────────────────────────────────────────
 
@@ -252,7 +262,7 @@ export default function BriefingPage() {
         tailoringResult,
         outreachResult: normalizeOutreachResult(row.outreach_result),
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
-        resumeUpdateResult: null,
+        resumeUpdateResult: row.resume_update_result as ResumeUpdateResult | null,
         interviewPrepResult: null,
         followUpResult: null,
         companyResearchResult: null,
@@ -466,8 +476,10 @@ export default function BriefingPage() {
 
   async function handleRegenerate() {
     if (!job || !profileText || !job.jobDescription) return;
+    const prevTailoring = job.tailoringResult;
     setIsRegenerating(true);
     setRegenerateError("");
+    setRegenerateChanges(null);
     try {
       const res = await fetch("/api/tailor", {
         method: "POST",
@@ -491,11 +503,54 @@ export default function BriefingPage() {
         setRegenerateNote("");
         setShowAllLeads(false);
         setExpandedLead(null);
+        // Surface what changed
+        const changes: string[] = [];
+        if (prevTailoring?.lead_strengths?.[0]?.strength !== result.lead_strengths?.[0]?.strength) {
+          changes.push("experience to highlight");
+        }
+        const prevConcern = prevTailoring?.recruiter_concern_to_preempt?.concern ?? "";
+        const newConcern = result.recruiter_concern_to_preempt?.concern ?? "";
+        if (prevConcern !== newConcern) changes.push("question to prepare for");
+        if ((prevTailoring?.outreach_angle ?? "") !== (result.outreach_angle ?? "")) {
+          changes.push("outreach angle");
+        }
+        setRegenerateChanges(changes.length > 0 ? changes : ["brief"]);
       }
     } catch {
       setRegenerateError("Network error. Check your connection and try again.");
     } finally {
       setIsRegenerating(false);
+    }
+  }
+
+  async function handleGenerateResumeUpdates() {
+    if (!job || !profileText) return;
+    setIsGeneratingResumeUpdates(true);
+    setResumeUpdateError("");
+    updateJob({ resumeUpdateResult: null });
+    try {
+      const res = await fetch("/api/suggest-resume-updates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: job.jobDescription,
+          writingSample: writingSample || undefined,
+          pivotTarget: pivotTarget || undefined,
+          jobId,
+        }),
+      });
+      const data = await res.json() as ResumeUpdateResult & { error?: string };
+      if (!res.ok) {
+        setResumeUpdateError(data.error ?? "Failed to generate. Please try again.");
+      } else {
+        updateJob({ resumeUpdateResult: data });
+        await saveToDb({ resume_update_result: data });
+      }
+    } catch {
+      setResumeUpdateError("Network error. Check your connection and try again.");
+    } finally {
+      setIsGeneratingResumeUpdates(false);
     }
   }
 
@@ -582,6 +637,13 @@ export default function BriefingPage() {
     coverLetterRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     if (!job?.coverLetterResult && !isGeneratingCL) {
       setTimeout(() => handleGenerateCoverLetter(), 500);
+    }
+  }
+
+  function scrollAndGenResumeUpdates() {
+    resumeUpdateRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!job?.resumeUpdateResult && !isGeneratingResumeUpdates) {
+      setTimeout(() => handleGenerateResumeUpdates(), 500);
     }
   }
 
@@ -730,42 +792,14 @@ export default function BriefingPage() {
     router.push("/");
   }
 
-  // Before you apply — up to 3 actionable items derived from the assessment
-  const tailoringConcernText = tailoringResult?.recruiter_concern_to_preempt?.concern;
-  const concernText: string | null =
-    (briefReady && tailoringConcernText && tailoringConcernText !== "None identified")
-      ? tailoringConcernText
-      : hasRecruiterConcern
-        ? (jobFitResult.recruiter_concern ?? null)
-        : null;
-  const beforeYouApplyActions: { text: string; cta?: string; onCtaClick?: () => void }[] = [];
-  if (concernText) {
-    beforeYouApplyActions.push({ text: `Prepare a response to: "${concernText}"` });
-  }
-  if (jobFitResult.recommendation !== "Pursue" && missingItems.length > 0) {
-    beforeYouApplyActions.push({
-      text: missingItems.length === 1
-        ? `Review this requirement before applying: ${missingItems[0]}`
-        : `Review ${missingItems.length} requirements before applying — they may come up in screening`,
-    });
-  }
-  if (jobFitResult.recommendation === "Lower priority" && (jobFitResult.mismatch_types?.length ?? 0) > 0) {
-    const mt = jobFitResult.mismatch_types?.[0] ?? "";
-    const label = mt === "title" ? "a title gap"
-      : mt === "comp" ? "a likely compensation difference"
-      : mt === "scope" ? "a scope mismatch"
-      : mt === "domain" ? "a domain gap"
-      : "a functional mismatch";
-    beforeYouApplyActions.push({ text: `This role shows ${label} — worth raising early with the recruiter` });
-  }
-  if (jobFitResult.recommendation === "Pursue" && briefReady && tailoringResult?.outreach_angle) {
-    beforeYouApplyActions.push({
-      text: "Reach out before applying — a referral can move your application ahead of the pile",
-      cta: "Draft outreach →",
-      onCtaClick: scrollAndGenOutreach,
-    });
-  }
-  const shownBeforeActions = beforeYouApplyActions.slice(0, 3);
+  // Before you apply — shared derivation keeps page and email advice in sync
+  const sharedBeforeActions = deriveBeforeYouApplyActions(jobFitResult, tailoringResult);
+  // Attach page-specific CTAs
+  const shownBeforeActions = sharedBeforeActions.map((a) =>
+    a.ctaLabel === "Draft outreach →"
+      ? { ...a, onCtaClick: scrollAndGenOutreach }
+      : a
+  );
 
   return (
     <div className="min-h-screen flex" style={{ background: APP_BG }}>
@@ -991,15 +1025,15 @@ export default function BriefingPage() {
                     <span className="font-sans text-[14px]" style={{ color: "rgba(28,35,51,0.30)", marginTop: 2, flexShrink: 0 }}>·</span>
                     <p className="font-sans text-[14px] text-[#1C2333] leading-snug">
                       {action.text}
-                      {action.cta && action.onCtaClick && (
+                      {"onCtaClick" in action && action.ctaLabel && (
                         <>
                           {" "}
                           <button
-                            onClick={action.onCtaClick}
+                            onClick={(action as { onCtaClick: () => void }).onCtaClick}
                             className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] underline transition-colors focus:outline-none"
                             style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                           >
-                            {action.cta}
+                            {action.ctaLabel}
                           </button>
                         </>
                       )}
@@ -1118,6 +1152,13 @@ export default function BriefingPage() {
           {briefReady && (
             <div className="flex flex-wrap gap-2" style={{ marginBottom: 28 }}>
               <button
+                onClick={scrollAndGenResumeUpdates}
+                className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
+                style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
+              >
+                Suggested résumé changes
+              </button>
+              <button
                 onClick={scrollToAddContext}
                 className="font-sans text-[13px] font-medium text-[#1C2333] hover:opacity-70 transition-opacity focus:outline-none"
                 style={{ height: 34, padding: "0 14px", border: "1px solid rgba(28,35,51,0.14)", borderRadius: 8, background: "rgba(28,35,51,0.03)", cursor: "pointer" }}
@@ -1140,6 +1181,37 @@ export default function BriefingPage() {
               >
                 Draft cover letter
               </button>
+              <button
+                onClick={() => setJdOpen(v => !v)}
+                className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
+                style={{ height: 34, padding: "0 14px", border: "none", borderRadius: 8, background: "none", cursor: "pointer" }}
+              >
+                {jdOpen ? "Hide job description" : "View job description"}
+              </button>
+            </div>
+          )}
+
+          {/* ─ Job description (collapsible) ─ */}
+          {jdOpen && (
+            <div style={{ marginBottom: 28 }}>
+              <div
+                className="overflow-y-auto px-6 py-5 rounded-[8px]"
+                style={{
+                  maxHeight: 400,
+                  background: "#FAFAFA",
+                  border: "1px solid rgba(28,35,51,0.08)",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(28,35,51,0.12) transparent",
+                }}
+              >
+                {(job.jobDescription ?? "").split(/\n\n+/).map((para, pi) => (
+                  <p key={pi} className="mb-3 last:mb-0 font-sans text-[13px] leading-[1.7] text-[rgba(28,35,51,0.65)]">
+                    {para.split(/\n/).map((line, li, arr) => (
+                      <span key={li}>{line}{li < arr.length - 1 && <br />}</span>
+                    ))}
+                  </p>
+                ))}
+              </div>
             </div>
           )}
 
@@ -1361,7 +1433,71 @@ export default function BriefingPage() {
                 </div>
               )}
 
-              {/* Update brief */}
+              {/* Suggested résumé changes */}
+              <div ref={resumeUpdateRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
+                  <SectionLabel>Suggested résumé changes</SectionLabel>
+                  <button
+                    onClick={handleGenerateResumeUpdates}
+                    disabled={isGeneratingResumeUpdates}
+                    className="flex items-center gap-1.5 font-sans text-[12px] font-medium hover:opacity-70 transition-opacity disabled:opacity-40 focus:outline-none"
+                    style={{ color: "rgba(28,35,51,0.50)", background: "none", border: "none", cursor: isGeneratingResumeUpdates ? "default" : "pointer", padding: 0 }}
+                  >
+                    {isGeneratingResumeUpdates
+                      ? <><Spinner /> Generating…</>
+                      : job.resumeUpdateResult ? "Regenerate" : "Generate"}
+                  </button>
+                </div>
+                {isGeneratingResumeUpdates && (
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Generating résumé suggestions…</p>
+                )}
+                {resumeUpdateError && !isGeneratingResumeUpdates && (
+                  <p className="font-sans text-[13px] text-[#8A7373]">{resumeUpdateError}</p>
+                )}
+                {job.resumeUpdateResult && !isGeneratingResumeUpdates && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    {job.resumeUpdateResult.summary_rewrite && (
+                      <div className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 8 }}>SUMMARY REWRITE</p>
+                        <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed">{job.resumeUpdateResult.summary_rewrite}</p>
+                      </div>
+                    )}
+                    {job.resumeUpdateResult.bullet_updates?.length > 0 && (
+                      <div className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>BULLET UPDATES</p>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          {job.resumeUpdateResult.bullet_updates.map((b, i) => (
+                            <div key={i}>
+                              <p className="font-sans text-[12px] text-[rgba(28,35,51,0.40)]" style={{ marginBottom: 3 }}>Before: {b.original}</p>
+                              <p className="font-sans text-[13px] text-[#1C2333] leading-snug">After: {b.suggested}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {job.resumeUpdateResult.keywords_to_weave_in?.length > 0 && (
+                      <div>
+                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 8, textTransform: "uppercase" }}>Keywords to work in</p>
+                        <div className="flex flex-wrap gap-2">
+                          {job.resumeUpdateResult.keywords_to_weave_in.map((k, i) => (
+                            <span key={i} className="font-sans text-[12px] px-2.5 py-1 text-[#1C2333]"
+                              style={{ background: "rgba(28,35,51,0.05)", borderRadius: 9999 }}>
+                              {k.keyword}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {!job.resumeUpdateResult && !isGeneratingResumeUpdates && !resumeUpdateError && (
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
+                    Get specific, copy-paste résumé edits tailored to this job description.
+                  </p>
+                )}
+              </div>
+
+              {/* Add experience or correct details */}
               <div ref={updateBriefRef} style={{ borderTop: "1px solid rgba(28,35,51,0.08)", paddingTop: 32 }}>
                 <SectionLabel>Add experience or correct details</SectionLabel>
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
@@ -1375,11 +1511,9 @@ export default function BriefingPage() {
                   rows={2}
                   className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
                 />
-                {regenerateNote.length > 4800 && (
-                  <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-right" style={{ marginTop: 2 }}>
-                    {regenerateNote.length}/5000
-                  </p>
-                )}
+                <p className="font-sans text-[11px] text-right" style={{ marginTop: 2, color: regenerateNote.length > 4800 ? "#8A7373" : "rgba(28,35,51,0.30)" }}>
+                  {regenerateNote.length}/5000
+                </p>
                 {regenerateError && (
                   <p className="font-sans text-[12px] text-[#8A7373]" style={{ marginTop: 4 }}>{regenerateError}</p>
                 )}
@@ -1391,6 +1525,11 @@ export default function BriefingPage() {
                 >
                   {isRegenerating ? <><Spinner /> Updating…</> : "Update assessment →"}
                 </button>
+                {!isRegenerating && regenerateChanges && (
+                  <p className="font-sans text-[12px] text-[rgba(28,35,51,0.50)]" style={{ marginTop: 6 }}>
+                    Updated: {regenerateChanges.join(", ")} ✓
+                  </p>
+                )}
               </div>
 
             </div>
