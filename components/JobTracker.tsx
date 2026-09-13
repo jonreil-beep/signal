@@ -45,9 +45,9 @@ function formatDeadlineDate(deadline: string): string {
 }
 
 function shortReason(summary: string): string {
-  // Show the full summary — the model already writes concise one-sentence verdicts.
-  // A "but…" cliffhanger is worse than a complete thought that wraps to two lines.
-  return summary.trim();
+  // First complete sentence — no "but…" cliff, no tall paragraph.
+  const match = summary.match(/^.+?[.!?](?:\s|$)/);
+  return (match ? match[0] : summary).trim();
 }
 
 function deadlineUrgency(deadline: string): { color: string; label: string } {
@@ -285,14 +285,6 @@ function TableRow({
           )}
           {/* Persistent row actions */}
           <div className="flex items-center gap-2 mt-1.5">
-            <button
-              onClick={() => toggleExpanded("jd")}
-              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: showJD ? "var(--fg)" : "rgba(28,35,51,0.45)" }}
-              className="hover:text-[var(--fg)] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333]"
-            >
-              {showJD ? "Hide job description" : "View job description"}
-            </button>
-            <span style={{ color: "rgba(28,35,51,0.20)", fontSize: 10 }}>·</span>
             {/* Overflow menu */}
             <div className="relative" ref={menuRef}>
               {confirmingRemove ? (

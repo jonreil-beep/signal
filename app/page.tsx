@@ -1055,7 +1055,7 @@ export default function Home() {
                   <div className="mt-3 space-y-4">
                     {/* Resume uploader */}
                     <div className="bg-[#FAFAFA] p-5 border border-[rgba(28,35,51,0.08)] rounded-[10px]">
-                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] mb-4">Upload or paste a new resume to replace the saved one.</p>
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] mb-4">Upload or paste a new résumé to replace the saved one.</p>
                       <ProfileUploader onProfileConfirmed={(text, source, fileName) => {
                         handleProfileConfirmed(text, source, fileName);
                         setProfileExpanded("none");

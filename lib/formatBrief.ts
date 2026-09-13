@@ -1,4 +1,5 @@
 import type { JobFitResult, TailoringBriefResult } from "@/types";
+import { deriveBeforeYouApplyActions } from "@/lib/beforeYouApply";
 
 /**
  * Serializes a job brief to plain text for email and clipboard.
@@ -21,12 +22,20 @@ export function formatBrief(
     lines.push("");
   }
 
+  // Before you apply — shared derivation so email advice matches page advice
+  const beforeActions = deriveBeforeYouApplyActions(jobFitResult, tailoringResult);
+  if (beforeActions.length > 0) {
+    lines.push("Before you apply");
+    beforeActions.forEach((a) => lines.push(`· ${a.text}`));
+    lines.push("");
+  }
+
   if (!tailoringResult) {
     lines.push("Brief not yet generated. Open the job page to build your brief.");
     return lines.join("\n");
   }
 
-  // Recruiter concern — only if real
+  // Recruiter concern — only if real (full concern with suggested response goes in brief body)
   const concern = tailoringResult.recruiter_concern_to_preempt;
   const hasConcern = !!concern?.concern && concern.concern !== "None identified";
   if (hasConcern) {
@@ -48,9 +57,9 @@ export function formatBrief(
     lines.push("");
   }
 
-  // Resume notes — de-emphasize
+  // Résumé notes — de-emphasize
   if (tailoringResult.what_to_deemphasize.length > 0) {
-    lines.push("Resume notes");
+    lines.push("Résumé notes");
     tailoringResult.what_to_deemphasize.forEach((d) => {
       lines.push(`• De-emphasize ${d.item}: ${d.reason}`);
     });
