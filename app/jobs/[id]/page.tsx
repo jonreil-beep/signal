@@ -1235,22 +1235,22 @@ export default function BriefingPage() {
                               <p className="font-sans text-[15px] text-[rgba(28,35,51,0.75)] leading-snug">{ev.text}</p>
                             </div>
                             {ev.requirement && (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] pl-11 leading-snug">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] pl-4 leading-snug">
                                 JD requirement: {ev.requirement}
                               </p>
                             )}
                             {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-11 leading-snug italic">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-4 leading-snug italic">
                                 <span className="not-italic text-[rgba(28,35,51,0.40)] mr-1">From resume:</span>
                                 &ldquo;{ev.resume_evidence}&rdquo;
                               </p>
                             ) : ev.resume_evidence ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-11 leading-snug">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-4 leading-snug">
                                 <span className="text-[rgba(28,35,51,0.40)] mr-1">Model summary:</span>
                                 {ev.resume_evidence}
                               </p>
                             ) : !ev.requirement ? (
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)] pl-4 leading-snug">
                                 Source unavailable
                               </p>
                             ) : null}
@@ -1300,7 +1300,7 @@ export default function BriefingPage() {
               <button
                 onClick={() => setJdOpen(v => !v)}
                 className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors focus:outline-none"
-                style={{ height: 34, padding: "0 14px", border: "none", borderRadius: 8, background: "none", cursor: "pointer" }}
+                style={{ padding: 0, border: "none", background: "none", cursor: "pointer" }}
               >
                 {jdOpen ? "Hide job description" : "View job description"}
               </button>

@@ -36,7 +36,7 @@ export function deriveBeforeYouApplyActions(
       text:
         missingItems.length === 1
           ? `Review this requirement before applying: ${missingItems[0]}`
-          : `Review ${missingItems.length} requirements before applying — they may come up in screening`,
+          : `Review ${missingItems.length} requirements before applying. They may come up in screening.`,
     });
   }
 
