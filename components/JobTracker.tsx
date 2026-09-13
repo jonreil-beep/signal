@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import type { TrackedJob } from "@/types";
 
@@ -376,8 +377,8 @@ function TableRow({
         </div>
       </div>
 
-      {/* ── Overflow menu (fixed to escape stacking contexts) ── */}
-      {menuOpen && menuPos && (
+      {/* ── Overflow menu — portalled to body to escape card-entrance stacking context ── */}
+      {menuOpen && menuPos && createPortal(
         <>
           <div
             style={{ position: "fixed", inset: 0, zIndex: 998 }}
@@ -401,7 +402,8 @@ function TableRow({
               Remove
             </button>
           </div>
-        </>
+        </>,
+        document.body
       )}
 
       {/* ── Expandable JD ── */}
