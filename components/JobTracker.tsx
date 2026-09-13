@@ -88,6 +88,8 @@ function TableRow({
   const [menuOpen, setMenuOpen] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => { if (removeTimerRef.current) clearTimeout(removeTimerRef.current); }, []);
@@ -110,6 +112,12 @@ function TableRow({
 
   function toggleExpanded(panel: "notes" | "jd" | "deadline") {
     setExpanded(prev => prev === panel ? "none" : panel);
+  }
+
+  function openMenu() {
+    const rect = menuBtnRef.current?.getBoundingClientRect();
+    if (rect) setMenuPos({ top: rect.bottom + 4, left: rect.left });
+    setMenuOpen(true);
   }
 
   const recStyle = RECOMMENDATION_STYLES[job.jobFitResult.recommendation] ??
@@ -193,34 +201,16 @@ function TableRow({
                 <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">No</button>
               </span>
             ) : (
-              <div className="relative">
+              <div>
                 <button
-                  onClick={() => setMenuOpen(v => !v)}
+                  ref={menuBtnRef}
+                  onClick={() => menuOpen ? setMenuOpen(false) : openMenu()}
                   aria-label="More actions"
                   style={{ fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 4px" }}
                   className="hover:text-[#1C2333] transition-colors focus:outline-none"
                 >
                   ···
                 </button>
-                {menuOpen && (
-                  <div
-                    className="absolute left-0 z-20 glass-card"
-                    style={{ top: "calc(100% + 4px)", minWidth: 130, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)" }}
-                  >
-                    <button
-                      onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
-                      className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-                    >
-                      Rename
-                    </button>
-                    <button
-                      onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
-                      className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -296,33 +286,14 @@ function TableRow({
                 </span>
               ) : (
                 <button
-                  onClick={() => setMenuOpen(v => !v)}
+                  ref={menuBtnRef}
+                  onClick={() => menuOpen ? setMenuOpen(false) : openMenu()}
                   aria-label="More actions"
                   style={{ fontFamily: "var(--font-geist-sans)", fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 2px" }}
                   className="hover:text-[#1C2333] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] rounded"
                 >
                   ···
                 </button>
-              )}
-              {menuOpen && !confirmingRemove && (
-                <div
-                  className="absolute left-0 z-20 glass-card"
-                  style={{ top: "calc(100% + 4px)", minWidth: 140, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)" }}
-                  onBlur={(e) => { if (!menuRef.current?.contains(e.relatedTarget as Node)) setMenuOpen(false); }}
-                >
-                  <button
-                    onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-                  >
-                    Rename
-                  </button>
-                  <button
-                    onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
-                  >
-                    Remove
-                  </button>
-                </div>
               )}
             </div>
           </div>
@@ -407,6 +378,34 @@ function TableRow({
           )}
         </div>
       </div>
+
+      {/* ── Overflow menu (fixed to escape stacking contexts) ── */}
+      {menuOpen && menuPos && (
+        <>
+          <div
+            style={{ position: "fixed", inset: 0, zIndex: 998 }}
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            ref={menuRef}
+            className="glass-card"
+            style={{ position: "fixed", top: menuPos.top, left: menuPos.left, minWidth: 140, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)", zIndex: 999 }}
+          >
+            <button
+              onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
+              className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+            >
+              Rename
+            </button>
+            <button
+              onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
+              className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+            >
+              Remove
+            </button>
+          </div>
+        </>
+      )}
 
       {/* ── Expandable JD ── */}
       {showJD && (
