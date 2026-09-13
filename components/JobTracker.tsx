@@ -44,10 +44,10 @@ function formatDeadlineDate(deadline: string): string {
   );
 }
 
-function shortReason(summary: string, maxWords = 15): string {
-  const words = summary.trim().split(/\s+/);
-  if (words.length <= maxWords) return summary;
-  return words.slice(0, maxWords).join(" ") + "…";
+function shortReason(summary: string): string {
+  // Show the full summary — the model already writes concise one-sentence verdicts.
+  // A "but…" cliffhanger is worse than a complete thought that wraps to two lines.
+  return summary.trim();
 }
 
 function deadlineUrgency(deadline: string): { color: string; label: string } {
@@ -85,7 +85,9 @@ function TableRow({
   const [removing, setRemoving] = useState(false);
   const [editingLabel, setEditingLabel] = useState(false);
   const [labelValue, setLabelValue] = useState(job.label);
+  const [menuOpen, setMenuOpen] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => () => { if (removeTimerRef.current) clearTimeout(removeTimerRef.current); }, []);
@@ -174,13 +176,54 @@ function TableRow({
           </div>
         </div>
         <div className="flex items-center justify-between gap-3">
-          <span
-            className="inline-flex items-center gap-1.5"
-            style={{ height: 24, padding: "0 10px", borderRadius: 9999, background: recStyle.bg, border: recStyle.border, fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, color: recStyle.color, whiteSpace: "nowrap" }}
-          >
-            <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
-            {job.jobFitResult.recommendation}
-          </span>
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-flex items-center gap-1.5"
+              style={{ height: 24, padding: "0 10px", borderRadius: 9999, background: recStyle.bg, border: recStyle.border, fontFamily: "var(--font-geist-sans)", fontSize: 12, fontWeight: 500, color: recStyle.color, whiteSpace: "nowrap" }}
+            >
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: recStyle.dotColor, flexShrink: 0, display: "inline-block" }} />
+              {job.jobFitResult.recommendation}
+            </span>
+            {/* Mobile overflow menu */}
+            {confirmingRemove ? (
+              <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.65)" }} className="flex items-center gap-1">
+                Remove?{" "}
+                <button onClick={handleConfirmRemove} style={{ color: "#8A7373" }} className="hover:underline focus:outline-none">Yes</button>
+                {" · "}
+                <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">No</button>
+              </span>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setMenuOpen(v => !v)}
+                  aria-label="More actions"
+                  style={{ fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 4px" }}
+                  className="hover:text-[#1C2333] transition-colors focus:outline-none"
+                >
+                  ···
+                </button>
+                {menuOpen && (
+                  <div
+                    className="absolute left-0 z-20 glass-card"
+                    style={{ top: "calc(100% + 4px)", minWidth: 130, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)" }}
+                  >
+                    <button
+                      onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
+                      className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+                    >
+                      Rename
+                    </button>
+                    <button
+                      onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
+                      className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           {isScoreStale ? (
             <button onClick={() => onSelectJob(job, "job-fit")} className="font-sans text-[13px] text-[#9B8E73] hover:text-[#1C2333] transition-colors">Re-score →</button>
           ) : (
@@ -240,54 +283,56 @@ function TableRow({
               )}
             </div>
           )}
-          {/* Hover-only actions */}
-          <div className="flex items-center gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* Persistent row actions */}
+          <div className="flex items-center gap-2 mt-1.5">
             <button
               onClick={() => toggleExpanded("jd")}
-              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: showJD ? "var(--fg)" : "var(--fg-3)" }}
-              className="hover:underline hover:text-[var(--fg)] transition-colors"
+              style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: showJD ? "var(--fg)" : "rgba(28,35,51,0.45)" }}
+              className="hover:text-[var(--fg)] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333]"
             >
-              {showJD ? "Hide JD" : "View JD"}
+              {showJD ? "Hide job description" : "View job description"}
             </button>
-            <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
-            {confirmingRemove ? (
-              <>
-                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}>Remove?</span>
+            <span style={{ color: "rgba(28,35,51,0.20)", fontSize: 10 }}>·</span>
+            {/* Overflow menu */}
+            <div className="relative" ref={menuRef}>
+              {confirmingRemove ? (
+                <span style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12, color: "rgba(28,35,51,0.65)" }} className="flex items-center gap-1.5">
+                  Remove?{" "}
+                  <button onClick={handleConfirmRemove} style={{ color: "#8A7373" }} className="hover:underline focus:outline-none">Yes</button>
+                  {" · "}
+                  <button onClick={() => setConfirmingRemove(false)} style={{ color: "rgba(28,35,51,0.45)" }} className="hover:underline focus:outline-none">Cancel</button>
+                </span>
+              ) : (
                 <button
-                  onClick={handleConfirmRemove}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "#8A7373" }}
-                  className="hover:underline transition-colors"
+                  onClick={() => setMenuOpen(v => !v)}
+                  aria-label="More actions"
+                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 2px" }}
+                  className="hover:text-[#1C2333] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] rounded"
                 >
-                  Yes
+                  ···
                 </button>
-                <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
-                <button
-                  onClick={() => setConfirmingRemove(false)}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
-                  className="hover:underline transition-colors"
+              )}
+              {menuOpen && !confirmingRemove && (
+                <div
+                  className="absolute left-0 z-20 glass-card"
+                  style={{ top: "calc(100% + 4px)", minWidth: 140, borderRadius: 8, padding: "4px 0", boxShadow: "0 4px 16px rgba(15,25,35,0.12)" }}
+                  onBlur={(e) => { if (!menuRef.current?.contains(e.relatedTarget as Node)) setMenuOpen(false); }}
                 >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => setEditingLabel(true)}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
-                  className="hover:underline hover:text-[var(--fg)] transition-colors"
-                >
-                  Rename
-                </button>
-                <span style={{ color: "var(--fg-4)", fontSize: 10 }}>·</span>
-                <button
-                  onClick={() => setConfirmingRemove(true)}
-                  style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, color: "var(--fg-3)" }}
-                  className="hover:underline transition-colors"
-                >
-                  Remove
-                </button>
-              </>
-            )}
+                  <button
+                    onClick={() => { setEditingLabel(true); setMenuOpen(false); }}
+                    className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#1C2333] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+                  >
+                    Rename
+                  </button>
+                  <button
+                    onClick={() => { setConfirmingRemove(true); setMenuOpen(false); }}
+                    className="w-full text-left px-3 py-2 font-sans text-[13px] text-[#8A7373] hover:bg-[rgba(28,35,51,0.04)] transition-colors focus:outline-none"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
