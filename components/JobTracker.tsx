@@ -88,7 +88,6 @@ function TableRow({
   const [menuOpen, setMenuOpen] = useState(false);
   const labelInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const menuBtnRef = useRef<HTMLButtonElement>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
   const removeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -114,9 +113,9 @@ function TableRow({
     setExpanded(prev => prev === panel ? "none" : panel);
   }
 
-  function openMenu() {
-    const rect = menuBtnRef.current?.getBoundingClientRect();
-    if (rect) setMenuPos({ top: rect.bottom + 4, left: rect.left });
+  function openMenu(e: React.MouseEvent<HTMLButtonElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMenuPos({ top: rect.bottom + 4, left: rect.left });
     setMenuOpen(true);
   }
 
@@ -203,8 +202,7 @@ function TableRow({
             ) : (
               <div>
                 <button
-                  ref={menuBtnRef}
-                  onClick={() => menuOpen ? setMenuOpen(false) : openMenu()}
+                  onClick={(e) => menuOpen ? setMenuOpen(false) : openMenu(e)}
                   aria-label="More actions"
                   style={{ fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 4px" }}
                   className="hover:text-[#1C2333] transition-colors focus:outline-none"
@@ -286,8 +284,7 @@ function TableRow({
                 </span>
               ) : (
                 <button
-                  ref={menuBtnRef}
-                  onClick={() => menuOpen ? setMenuOpen(false) : openMenu()}
+                  onClick={(e) => menuOpen ? setMenuOpen(false) : openMenu(e)}
                   aria-label="More actions"
                   style={{ fontFamily: "var(--font-geist-sans)", fontSize: 16, lineHeight: 1, color: "rgba(28,35,51,0.45)", background: "none", border: "none", cursor: "pointer", padding: "0 2px" }}
                   className="hover:text-[#1C2333] transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1C2333] rounded"
