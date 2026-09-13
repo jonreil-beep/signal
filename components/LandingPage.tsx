@@ -564,7 +564,7 @@ export default function LandingPage({
         <div className="cl-hero">
           <p className="cl-eyebrow">Job search support</p>
           <h1 className="cl-hero-hed">See how your<br /><span>experience fits.</span></h1>
-          <p className="cl-hero-sub">Compare your résumé with a job description. See the relevant experience, the requirements that need a closer look, and what to highlight if you decide to apply.</p>
+          <p className="cl-hero-sub">Compare your resume with a job description. See the relevant experience, the requirements that need a closer look, and what to highlight if you decide to apply.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
         </div>
       </div>
@@ -594,8 +594,8 @@ export default function LandingPage({
           <div className="cl-how-grid">
             <div>
               <p className="cl-step-num">01</p>
-              <h3 className="cl-step-title">Add your résumé</h3>
-              <p className="cl-step-desc">Upload a PDF or DOCX file, or paste your résumé text. Claro uses it to build a profile of your experience.</p>
+              <h3 className="cl-step-title">Add your resume</h3>
+              <p className="cl-step-desc">Upload a PDF or DOCX file, or paste your resume text. Claro uses it to build a profile of your experience.</p>
             </div>
             <div>
               <p className="cl-step-num">02</p>
@@ -620,7 +620,7 @@ export default function LandingPage({
             <div className="cl-ft">
               <p className="cl-feature-kicker">Your profile</p>
               <h2 className="cl-feature-title">Put your experience into focus.</h2>
-              <p className="cl-feature-desc">Review your strengths and role suggestions based on your résumé. Add details it doesn&apos;t capture so future comparisons have more to work with.</p>
+              <p className="cl-feature-desc">Review your strengths and role suggestions based on your resume. Add details it doesn&apos;t capture so future comparisons have more to work with.</p>
               <ul className="cl-feature-list">
                 <li>Role suggestions with reasons</li>
                 <li>Strengths supported by your experience</li>
@@ -671,7 +671,7 @@ export default function LandingPage({
       <div className="cl-wrap" id="get-started">
         <div className="cl-final-cta">
           <h2 className="cl-cta-hed">Take a closer look at<br />your next opportunity.</h2>
-          <p className="cl-cta-sub">Start with your résumé and a job description. Claro helps you compare them and prepare what to say next.</p>
+          <p className="cl-cta-sub">Start with your resume and a job description. Claro helps you compare them and prepare what to say next.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} style={{maxWidth: 520}} />
         </div>
         <footer className="cl-footer">

@@ -5,11 +5,12 @@ import LoadingState from "./LoadingState";
 
 interface ProfileUploaderProps {
   onProfileConfirmed: (text: string, source: "paste" | "file", fileName?: string) => void;
+  onParsingChange?: (isParsing: boolean) => void;
 }
 
 type InputMode = "upload" | "paste";
 
-export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderProps) {
+export default function ProfileUploader({ onProfileConfirmed, onParsingChange }: ProfileUploaderProps) {
   const [mode, setMode] = useState<InputMode>("upload");
   const [extractedText, setExtractedText] = useState<string>("");
   const [pastedText, setPastedText] = useState<string>("");
@@ -37,6 +38,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
     setExtractedText("");
     setFileName(file.name);
     setIsLoading(true);
+    onParsingChange?.(true);
     setConfirmed(false);
 
     try {
@@ -55,6 +57,7 @@ export default function ProfileUploader({ onProfileConfirmed }: ProfileUploaderP
       setFileName("");
     } finally {
       setIsLoading(false);
+      onParsingChange?.(false);
     }
   }
 

@@ -154,7 +154,7 @@ Submit the analysis using the tool. Field reference:
   - "Consider": credible overlap but meaningful uncertainties or gaps to assess first
   - "Lower priority": significant confirmed mismatch to important requirements
 - recruiter_concern: The primary concern a hiring team might raise about this candidate, grounded in actual gaps or mismatches. Use "None identified" when the fit is strong and there is no genuine concern to flag — do not manufacture one.
-- evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry with: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (résumé clearly shows it), "not_demonstrated" (résumé is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess), requirement (the specific JD requirement this finding addresses, 5-15 words), resume_evidence (verbatim or close-paraphrase of the resume line that supports or contradicts this — omit if the résumé is silent)
+- evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry with: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (resume clearly shows it), "not_demonstrated" (resume is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess), requirement (the specific JD requirement this finding addresses, 5-15 words), resume_evidence (verbatim or close-paraphrase of the resume line that supports or contradicts this — omit if the resume is silent)
 
 Rules:
 - Be decisive on the recommendation — don't hedge it
@@ -170,12 +170,12 @@ Rules:
 - Scores below 5 are valid and sometimes correct
 
 Evidence classification rules — apply before populating whats_missing and what_you_have:
-- whats_missing is ONLY for confirmed functional gaps: experience the candidate's background genuinely lacks. A functional gap means they have not done this type of work, not that the résumé doesn't use a particular phrase or industry label.
-- Industry-specific labeling is NOT a functional gap. If the JD requires "B2B SaaS brand experience" and the résumé contains brand experience at a company that is a B2B SaaS company (e.g. Salesforce, Toast, HubSpot, Workday, Zendesk, Rippling, Brex, Carta), this is an industry-translation consideration — put it in dimensions.industry_fit.reasoning, not whats_missing.
+- whats_missing is ONLY for confirmed functional gaps: experience the candidate's background genuinely lacks. A functional gap means they have not done this type of work, not that the resume doesn't use a particular phrase or industry label.
+- Industry-specific labeling is NOT a functional gap. If the JD requires "B2B SaaS brand experience" and the resume contains brand experience at a company that is a B2B SaaS company (e.g. Salesforce, Toast, HubSpot, Workday, Zendesk, Rippling, Brex, Carta), this is an industry-translation consideration — put it in dimensions.industry_fit.reasoning, not whats_missing.
 - Functional experience vs industry relevance are different things. Brand strategy, demand generation, product marketing, and similar functions can be demonstrated in one industry and applied to another. If the candidate has the functional skill, note the industry-translation question in the dimension — do not list it as a gap.
-- Do not flag the absence of a keyword when the underlying competency is present. "No 'B2B SaaS' in résumé text" is not evidence of a gap if the candidate has worked in B2B SaaS companies.
-- If the résumé is silent on something but the candidate's background makes it plausible, flag it as an uncertainty in recruiter_concern or summary — not whats_missing. Reserve whats_missing for things you are confident are absent from their actual background, not just absent from the document.
-- what_you_have items must be directly supported by the résumé text. Do not invent or infer accomplishments not present.
+- Do not flag the absence of a keyword when the underlying competency is present. "No 'B2B SaaS' in resume text" is not evidence of a gap if the candidate has worked in B2B SaaS companies.
+- If the resume is silent on something but the candidate's background makes it plausible, flag it as an uncertainty in recruiter_concern or summary — not whats_missing. Reserve whats_missing for things you are confident are absent from their actual background, not just absent from the document.
+- what_you_have items must be directly supported by the resume text. Do not invent or infer accomplishments not present.
 
 ${VOICE_RULES}`;
 }
