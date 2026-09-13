@@ -221,7 +221,7 @@ function TableRow({
               className="hover:opacity-80 transition-opacity glass-card inline-flex items-center"
               style={{ fontFamily: "var(--font-geist-sans)", fontSize: 13, fontWeight: 500, color: "var(--fg)", borderRadius: 7, textDecoration: "none", height: 32, padding: "0 12px" }}
             >
-              View match
+              View brief
             </Link>
           )}
         </div>
@@ -370,7 +370,7 @@ function TableRow({
                   boxShadow: "0 1px 3px rgba(15,25,35,0.07), 0 6px 20px rgba(15,25,35,0.10)",
                 }}
               >
-                View match
+                View brief
               </Link>
             </div>
           )}
