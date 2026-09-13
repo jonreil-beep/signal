@@ -730,6 +730,43 @@ export default function BriefingPage() {
     router.push("/");
   }
 
+  // Before you apply — up to 3 actionable items derived from the assessment
+  const tailoringConcernText = tailoringResult?.recruiter_concern_to_preempt?.concern;
+  const concernText: string | null =
+    (briefReady && tailoringConcernText && tailoringConcernText !== "None identified")
+      ? tailoringConcernText
+      : hasRecruiterConcern
+        ? (jobFitResult.recruiter_concern ?? null)
+        : null;
+  const beforeYouApplyActions: { text: string; cta?: string; onCtaClick?: () => void }[] = [];
+  if (concernText) {
+    beforeYouApplyActions.push({ text: `Prepare a response to: "${concernText}"` });
+  }
+  if (jobFitResult.recommendation !== "Pursue" && missingItems.length > 0) {
+    beforeYouApplyActions.push({
+      text: missingItems.length === 1
+        ? `Review this requirement before applying: ${missingItems[0]}`
+        : `Review ${missingItems.length} requirements before applying — they may come up in screening`,
+    });
+  }
+  if (jobFitResult.recommendation === "Lower priority" && (jobFitResult.mismatch_types?.length ?? 0) > 0) {
+    const mt = jobFitResult.mismatch_types?.[0] ?? "";
+    const label = mt === "title" ? "a title gap"
+      : mt === "comp" ? "a likely compensation difference"
+      : mt === "scope" ? "a scope mismatch"
+      : mt === "domain" ? "a domain gap"
+      : "a functional mismatch";
+    beforeYouApplyActions.push({ text: `This role shows ${label} — worth raising early with the recruiter` });
+  }
+  if (jobFitResult.recommendation === "Pursue" && briefReady && tailoringResult?.outreach_angle) {
+    beforeYouApplyActions.push({
+      text: "Reach out before applying — a referral can move your application ahead of the pile",
+      cta: "Draft outreach →",
+      onCtaClick: scrollAndGenOutreach,
+    });
+  }
+  const shownBeforeActions = beforeYouApplyActions.slice(0, 3);
+
   return (
     <div className="min-h-screen flex" style={{ background: APP_BG }}>
 
@@ -752,8 +789,8 @@ export default function BriefingPage() {
         {/* Nav */}
         <nav className="flex-1 px-3" style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {([
-            { id: "profile", label: "My Profile" },
             { id: "my-jobs", label: "My Jobs" },
+            { id: "profile", label: "My Profile" },
           ] as const).map(item => (
             <button
               key={item.id}
@@ -827,7 +864,10 @@ export default function BriefingPage() {
             className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 transition-opacity disabled:opacity-60 focus:outline-none"
             style={{ height: 30, padding: "0 12px", cursor: emailState === "sending" ? "default" : "pointer" }}
           >
-            {emailState === "sent" ? "Sent ✓" : emailState === "error" ? "Error" : "Email brief →"}
+            {emailState === "sending" ? "Sending…"
+              : emailState === "sent" ? `Sent to ${userEmail} ✓`
+              : emailState === "error" ? "Couldn't send"
+              : "Email me the brief"}
           </button>
         </div>
       </div>
@@ -867,9 +907,9 @@ export default function BriefingPage() {
               style={{ height: 32, padding: "0 14px", cursor: emailState === "sending" ? "default" : "pointer" }}
             >
               {emailState === "sending" ? "Sending…"
-                : emailState === "sent" ? "Sent ✓"
+                : emailState === "sent" ? `Sent to ${userEmail} ✓`
                 : emailState === "error" ? "Couldn't send"
-                : "Email brief →"}
+                : "Email me the brief"}
             </button>
           </div>
         </header>
@@ -938,6 +978,35 @@ export default function BriefingPage() {
                   {isRetrying ? "Retrying…" : "Retry"}
                 </button>
               )}
+            </div>
+          )}
+
+          {/* ─ Before you apply ─ */}
+          {shownBeforeActions.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <SectionLabel>Before you apply</SectionLabel>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 8, listStyle: "none", padding: 0, margin: 0 }}>
+                {shownBeforeActions.map((action, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="font-sans text-[14px]" style={{ color: "rgba(28,35,51,0.30)", marginTop: 2, flexShrink: 0 }}>·</span>
+                    <p className="font-sans text-[14px] text-[#1C2333] leading-snug">
+                      {action.text}
+                      {action.cta && action.onCtaClick && (
+                        <>
+                          {" "}
+                          <button
+                            onClick={action.onCtaClick}
+                            className="font-sans text-[13px] font-medium text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] underline transition-colors focus:outline-none"
+                            style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                          >
+                            {action.cta}
+                          </button>
+                        </>
+                      )}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 

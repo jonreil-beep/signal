@@ -1,9 +1,8 @@
 import type { JobFitResult, TailoringBriefResult } from "@/types";
 
 /**
- * Serializes a job brief to plain text.
- * Used by both the clipboard copy in ApplicationBrief.tsx and the
- * /api/send-brief email route — output is always identical.
+ * Serializes a job brief to plain text for email and clipboard.
+ * Mirrors the briefing page structure — same data, no independent reassessment.
  */
 export function formatBrief(
   label: string,
@@ -11,51 +10,73 @@ export function formatBrief(
   tailoringResult: TailoringBriefResult | null
 ): string {
   const title = jobFitResult.job_title || label;
+  const lines: string[] = [];
 
-  if (!tailoringResult) {
-    return `${title} — Application Brief\nNo tailoring brief generated yet.`;
+  lines.push(`${title}`);
+  lines.push(`${jobFitResult.overall_fit}/10 — ${jobFitResult.recommendation}`);
+  lines.push("");
+
+  if (jobFitResult.summary) {
+    lines.push(jobFitResult.summary);
+    lines.push("");
   }
 
-  const {
-    lead_strengths,
-    jd_language_to_mirror,
-    what_to_deemphasize,
-    recruiter_concern_to_preempt,
-    outreach_angle,
-  } = tailoringResult;
+  if (!tailoringResult) {
+    lines.push("Brief not yet generated. Open the job page to build your brief.");
+    return lines.join("\n");
+  }
 
-  const leadLines = lead_strengths
-    .map((s) => `• ${s.strength}: ${s.framing_language}`)
-    .join("\n");
+  // Recruiter concern — only if real
+  const concern = tailoringResult.recruiter_concern_to_preempt;
+  const hasConcern = !!concern?.concern && concern.concern !== "None identified";
+  if (hasConcern) {
+    lines.push("A question to prepare for");
+    lines.push(concern.concern);
+    if (concern.suggested_response) {
+      lines.push(`→ ${concern.suggested_response}`);
+    }
+    lines.push("");
+  }
 
-  const mirrorPhrases = jd_language_to_mirror.map((p) => p.phrase).join(", ");
+  // Experience to highlight
+  if (tailoringResult.lead_strengths.length > 0) {
+    lines.push("Experience to highlight");
+    tailoringResult.lead_strengths.forEach((s) => {
+      lines.push(`• ${s.strength}`);
+      if (s.framing_language) lines.push(`  ${s.framing_language}`);
+    });
+    lines.push("");
+  }
 
-  const actionItems: string[] = [];
-  lead_strengths.forEach((s) =>
-    actionItems.push(`Lead with ${s.strength} — ${s.framing_language}`)
-  );
-  actionItems.push(
-    `Address this directly: ${recruiter_concern_to_preempt.suggested_response}`
-  );
-  what_to_deemphasize.forEach((d) =>
-    actionItems.push(`De-emphasize ${d.item} — ${d.reason}`)
-  );
-  if (outreach_angle) actionItems.push(`Outreach angle: ${outreach_angle}`);
+  // Resume notes — de-emphasize
+  if (tailoringResult.what_to_deemphasize.length > 0) {
+    lines.push("Resume notes");
+    tailoringResult.what_to_deemphasize.forEach((d) => {
+      lines.push(`• De-emphasize ${d.item}: ${d.reason}`);
+    });
+    lines.push("");
+  }
 
-  const actionLines = actionItems.map((item, i) => `${i + 1}. ${item}`).join("\n");
+  // Outreach angle
+  if (tailoringResult.outreach_angle) {
+    lines.push("Outreach angle");
+    lines.push(tailoringResult.outreach_angle);
+    lines.push("");
+  }
 
-  return `${title} — Application Brief
-Scored: ${jobFitResult.overall_fit}/10 · ${jobFitResult.recommendation}
+  // What you have / what's missing
+  const have = jobFitResult.what_you_have ?? [];
+  const missing = jobFitResult.whats_missing ?? [];
+  if (have.length > 0) {
+    lines.push("Relevant experience");
+    have.forEach((item) => lines.push(`✓ ${item}`));
+    lines.push("");
+  }
+  if (missing.length > 0) {
+    lines.push("Requirements to review");
+    missing.forEach((item) => lines.push(`– ${item}`));
+    lines.push("");
+  }
 
-RECRUITER CONCERN
-${recruiter_concern_to_preempt.concern}
-
-LEAD WITH
-${leadLines}
-
-MIRROR THIS LANGUAGE
-${mirrorPhrases}
-
-YOUR ACTION PLAN
-${actionLines}`;
+  return lines.join("\n").trimEnd();
 }

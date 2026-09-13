@@ -325,7 +325,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                     : "text-[rgba(28,35,51,0.45)] hover:text-[#1C2333]"
                 }`}
               >
-                {m === "paste" ? "Paste JD" : "Fetch from URL"}
+                {m === "paste" ? "Paste job description" : "Load from URL"}
               </button>
             ))}
           </div>
@@ -357,7 +357,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   className="px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity btn-shadow-dark"
                   style={{ height: 44 }}
                 >
-                  Fetch
+                  Load
                 </button>
               </div>
               <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">
