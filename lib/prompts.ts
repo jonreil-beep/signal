@@ -121,11 +121,11 @@ ${VOICE_RULES}`;
 export function buildJobFitPrompt(
   resumeText: string,
   jobDescription: string,
-  dismissedItems?: string[]
+  corrections?: { item: string; evidence: string }[]
 ): string {
   const correctionBlock =
-    dismissedItems && dismissedItems.length > 0
-      ? `\nCandidate context: The candidate has indicated that the following items listed as missing are actually present in their background. Treat this as additional context when re-evaluating — re-examine the evidence and update overall_fit in any direction the full evidence supports. Do NOT enforce a score floor; the revised score may be higher, lower, or the same as before. Do NOT include these items in whats_missing unless you find they are genuinely absent after reconsidering. When writing what_you_have, address the candidate directly using "you" and "your":\n${dismissedItems.map((d) => `- ${d}`).join("\n")}\n`
+    corrections && corrections.length > 0
+      ? `\nCandidate corrections: The candidate has provided context on the following items that were listed as missing. Re-examine the evidence with this context and update overall_fit in any direction the full evidence supports. Do NOT enforce a score floor. Do NOT include a corrected item in whats_missing unless it remains genuinely absent after reconsidering.\n${corrections.map((c) => `- Regarding "${c.item}": ${c.evidence}`).join("\n")}\n`
       : "";
 
   return `You are a senior talent strategist with hiring-side experience. Score the fit between this candidate and job description accurately.
@@ -154,7 +154,7 @@ Submit the analysis using the tool. Field reference:
   - "Consider": credible overlap but meaningful uncertainties or gaps to assess first
   - "Lower priority": significant confirmed mismatch to important requirements
 - recruiter_concern: The most likely concern a hiring team would raise — specific, not softened
-- evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (résumé clearly shows it), "not_demonstrated" (résumé is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess)
+- evidence_items: Optional array of structured findings. For each material claim in what_you_have or whats_missing, add an entry with: text (verbatim or close paraphrase of the finding), type one of: "demonstrated" (résumé clearly shows it), "not_demonstrated" (résumé is silent but background may support it), "confirmed_gap" (clearly absent from their background), "needs_clarification" (requires follow-up to assess), requirement (the specific JD requirement this finding addresses, 5-15 words), resume_evidence (verbatim or close-paraphrase of the resume line that supports or contradicts this — omit if the résumé is silent)
 
 Rules:
 - Be decisive on the recommendation — don't hedge it

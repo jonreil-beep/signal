@@ -11,15 +11,39 @@ import type {
   OutreachResult, CoverLetterResult,
 } from "@/types";
 
-// ── normalizers ───────────────────────────────────────────────────────────────
+// ── normalizers / validators ──────────────────────────────────────────────────
 
-function normalizeJobFitResult(raw: unknown): JobFitResult {
-  const r = raw as Record<string, unknown>;
+type ValidateJobFitResult =
+  | { valid: true; result: JobFitResult }
+  | { valid: false; reason: string };
+
+function validateJobFitResult(raw: unknown): ValidateJobFitResult {
+  if (!raw || typeof raw !== "object") return { valid: false, reason: "Not an object" };
+  const r = { ...(raw as Record<string, unknown>) };
+
+  // Legacy field rename
   if (!r.what_you_have && r.what_she_has) {
     r.what_you_have = r.what_she_has;
     delete r.what_she_has;
   }
-  return r as unknown as JobFitResult;
+
+  const fit = typeof r.overall_fit === "number" ? r.overall_fit : Number(r.overall_fit);
+  if (!Number.isFinite(fit) || fit < 1 || fit > 10) return { valid: false, reason: "Invalid overall_fit" };
+  if (typeof r.summary !== "string" || !r.summary.trim()) return { valid: false, reason: "Missing summary" };
+  if (!Array.isArray(r.what_you_have)) return { valid: false, reason: "Missing what_you_have" };
+  if (!Array.isArray(r.whats_missing)) return { valid: false, reason: "Missing whats_missing" };
+  if (!r.recommendation) return { valid: false, reason: "Missing recommendation" };
+
+  const dims = r.dimensions as Record<string, unknown> | undefined;
+  if (!dims || typeof dims !== "object") return { valid: false, reason: "Missing dimensions" };
+  for (const key of ["functional_fit", "seniority_fit", "industry_fit", "keyword_overlap"] as const) {
+    const d = dims[key] as Record<string, unknown> | undefined;
+    if (!d || typeof d.score !== "number" || typeof d.reasoning !== "string") {
+      return { valid: false, reason: `Invalid dimension: ${key}` };
+    }
+  }
+
+  return { valid: true, result: r as unknown as JobFitResult };
 }
 
 function normalizeOutreachResult(raw: unknown): OutreachResult | null {
@@ -120,6 +144,14 @@ export default function BriefingPage() {
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState("");
 
+  const [jobFitValidationError, setJobFitValidationError] = useState<string | null>(null);
+
+  // brief generation status
+  type BriefStatus = "pending" | "generating" | "succeeded" | "failed";
+  const [briefStatus, setBriefStatus] = useState<BriefStatus>("pending");
+  const [briefError, setBriefError] = useState("");
+  const briefRetryInFlight = useRef(false);
+
   // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
   const [clError, setClError] = useState("");
@@ -186,12 +218,19 @@ export default function BriefingPage() {
         setIsVersionStale(true);
       }
 
+      const tailoringResult = row.tailoring_result as TailoringBriefResult | null;
+      const fitValidation = validateJobFitResult(row.job_fit_result);
+      if (!fitValidation.valid) {
+        setJobFitValidationError(fitValidation.reason);
+        setLoading(false);
+        return;
+      }
       setJob({
         id: row.id as string,
         label: row.label as string,
         jobDescription: row.job_description as string,
-        jobFitResult: normalizeJobFitResult(row.job_fit_result),
-        tailoringResult: row.tailoring_result as TailoringBriefResult | null,
+        jobFitResult: fitValidation.result,
+        tailoringResult,
         outreachResult: normalizeOutreachResult(row.outreach_result),
         coverLetterResult: row.cover_letter_result as CoverLetterResult | null,
         resumeUpdateResult: null,
@@ -203,16 +242,27 @@ export default function BriefingPage() {
         applicationStatus: "Tracking" as const,
         notes: (row.notes as string) ?? "",
       });
+      setBriefStatus(tailoringResult ? "succeeded" : "pending");
       setLoading(false);
     }
     load();
   }, [jobId, router]);
 
-  // ── poll until brief arrives ──────────────────────────────────────────────
+  // ── poll until brief arrives (bounded: 90 s max) ──────────────────────────
 
   useEffect(() => {
-    if (!job || job.tailoringResult) return;
+    if (briefStatus !== "pending" && briefStatus !== "generating") return;
+    setBriefStatus("generating");
+    let elapsed = 0;
+    const TIMEOUT_MS = 90_000;
     const interval = setInterval(async () => {
+      elapsed += 3000;
+      if (elapsed >= TIMEOUT_MS) {
+        clearInterval(interval);
+        setBriefStatus("failed");
+        setBriefError("Brief generation timed out. Retry to try again.");
+        return;
+      }
       const supabase = createClient();
       const { data: row } = await supabase
         .from("tracked_jobs")
@@ -226,11 +276,45 @@ export default function BriefingPage() {
           coverLetterResult: (row.cover_letter_result as CoverLetterResult | null) ?? prev.coverLetterResult,
           outreachResult: normalizeOutreachResult(row.outreach_result) ?? prev.outreachResult,
         } : prev);
+        setBriefStatus("succeeded");
         clearInterval(interval);
       }
     }, 3000);
     return () => clearInterval(interval);
-  }, [job, jobId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [briefStatus, jobId]);
+
+  async function handleRetryBrief() {
+    if (briefRetryInFlight.current) return;
+    briefRetryInFlight.current = true;
+    setBriefError("");
+    setBriefStatus("generating");
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || !job) { setBriefStatus("failed"); setBriefError("Session expired. Refresh the page."); return; }
+      const res = await fetch("/api/tailor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText: profileText, jobDescription: job.jobDescription, jobId }),
+      });
+      if (res.ok) {
+        const data = await res.json() as TailoringBriefResult;
+        await supabase.from("tracked_jobs").update({ tailoring_result: data }).eq("id", jobId);
+        setJob((prev) => prev ? { ...prev, tailoringResult: data } : prev);
+        setBriefStatus("succeeded");
+      } else {
+        setBriefStatus("failed");
+        const err = await res.json().catch(() => ({})) as { error?: string };
+        setBriefError(err.error ?? "Brief generation failed. Try again.");
+      }
+    } catch {
+      setBriefStatus("failed");
+      setBriefError("Network error. Check your connection and try again.");
+    } finally {
+      briefRetryInFlight.current = false;
+    }
+  }
 
   // ── mutations ─────────────────────────────────────────────────────────────
 
@@ -443,6 +527,25 @@ export default function BriefingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: APP_BG }}>
         <Spinner />
+      </div>
+    );
+  }
+
+  if (jobFitValidationError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: APP_BG }}>
+        <div className="glass-card" style={{ borderRadius: 14, padding: "40px 44px", maxWidth: 480 }}>
+          <p className="font-sans font-medium text-[#1C2333] text-[16px] mb-2">Analysis needs updating</p>
+          <p className="font-sans text-[14px] text-[rgba(28,35,51,0.55)] leading-relaxed mb-6">
+            This score was saved in an older format and can&apos;t be displayed. Re-score the job to get a fresh analysis.
+          </p>
+          <Link
+            href="/"
+            className="font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[8px] px-4 py-2 hover:opacity-90 transition-opacity btn-shadow-dark"
+          >
+            ← Back to jobs
+          </Link>
+        </div>
       </div>
     );
   }
@@ -724,6 +827,56 @@ export default function BriefingPage() {
                     ))}
                   </div>
                 )}
+
+                {jobFitResult.evidence_items && jobFitResult.evidence_items.length > 0 && (
+                  <div>
+                    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.35)", marginBottom: 10, textTransform: "uppercase" }}>
+                      Findings
+                    </p>
+                    <div className="space-y-3">
+                      {jobFitResult.evidence_items.map((ev, i) => {
+                        const typeColors: Record<string, string> = {
+                          demonstrated:        "#7A8B73",
+                          not_demonstrated:    "#9B8E73",
+                          confirmed_gap:       "#8A7373",
+                          needs_clarification: "#9B8E73",
+                        };
+                        const typeLabels: Record<string, string> = {
+                          demonstrated:        "Verified",
+                          not_demonstrated:    "Not shown",
+                          confirmed_gap:       "Gap",
+                          needs_clarification: "Needs follow-up",
+                        };
+                        const col = typeColors[ev.type] ?? "rgba(28,35,51,0.45)";
+                        return (
+                          <div key={i} className="space-y-1">
+                            <div className="flex items-start gap-2">
+                              <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none shrink-0 mt-0.5" style={{ color: col, background: `${col}18` }}>
+                                {typeLabels[ev.type] ?? ev.type}
+                              </span>
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{ev.text}</p>
+                            </div>
+                            {ev.requirement && (
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] pl-11 leading-snug">
+                                JD requirement: {ev.requirement}
+                              </p>
+                            )}
+                            {ev.resume_evidence && (
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug italic">
+                                &ldquo;{ev.resume_evidence}&rdquo;
+                              </p>
+                            )}
+                            {!ev.requirement && !ev.resume_evidence && (
+                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.25)] pl-11 leading-snug">
+                                Source unavailable
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -854,7 +1007,22 @@ export default function BriefingPage() {
 
           {/* ── APPLICATION BRIEF ─────────────────────────────────────────── */}
 
-          {!briefReady ? (
+          {briefStatus === "failed" ? (
+            <div className="flex flex-col gap-3">
+              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                {briefError || "Brief generation failed."}
+              </p>
+              {!!profileText && (
+                <button
+                  onClick={() => void handleRetryBrief()}
+                  className="w-fit px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 transition-opacity btn-shadow-dark"
+                  style={{ height: 40 }}
+                >
+                  Retry
+                </button>
+              )}
+            </div>
+          ) : !briefReady ? (
             <div className="flex items-center gap-3">
               <Spinner />
               <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>

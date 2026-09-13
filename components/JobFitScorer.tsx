@@ -141,7 +141,10 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   const [fetchError, setFetchError] = useState<string>("");
   const [isScoring, setIsScoring] = useState(false);
   const [scoreError, setScoreError] = useState<string>("");
-  const [dismissedItems, setDismissedItems] = useState<string[]>([]);
+  const [hiddenItems, setHiddenItems] = useState<string[]>([]);
+  const [corrections, setCorrections] = useState<{ item: string; evidence: string }[]>([]);
+  const [expandingCorrection, setExpandingCorrection] = useState<string | null>(null);
+  const [correctionDraft, setCorrectionDraft] = useState("");
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
 
@@ -197,17 +200,41 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     setUrlInput("");
     setFetchError("");
     setScoreError("");
-    setDismissedItems([]);
+    setHiddenItems([]);
+    setCorrections([]);
+    setExpandingCorrection(null);
+    setCorrectionDraft("");
     setRescoreError("");
     onReset();
   }
 
-  function handleDismissItem(item: string) {
-    setDismissedItems(prev => [...prev, item]);
+  function handleHideItem(item: string) {
+    setHiddenItems(prev => [...prev, item]);
+    if (expandingCorrection === item) setExpandingCorrection(null);
   }
 
-  function handleUndoItem(item: string) {
-    setDismissedItems(prev => prev.filter(i => i !== item));
+  function handleUnhideItem(item: string) {
+    setHiddenItems(prev => prev.filter(i => i !== item));
+  }
+
+  function handleStartCorrection(item: string) {
+    setExpandingCorrection(expandingCorrection === item ? null : item);
+    setCorrectionDraft(corrections.find(c => c.item === item)?.evidence ?? "");
+  }
+
+  function handleAddCorrection(item: string) {
+    const evidence = correctionDraft.trim();
+    if (!evidence) return;
+    setCorrections(prev => {
+      const filtered = prev.filter(c => c.item !== item);
+      return [...filtered, { item, evidence }];
+    });
+    setExpandingCorrection(null);
+    setCorrectionDraft("");
+  }
+
+  function handleRemoveCorrection(item: string) {
+    setCorrections(prev => prev.filter(c => c.item !== item));
   }
 
   function handleProfileRescore() {
@@ -238,9 +265,9 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     }
   }
 
-  async function triggerRescore(dismissed: string[]) {
+  async function triggerRescore(pendingCorrections: { item: string; evidence: string }[]) {
     const jd = jdText.trim() || jobDescription;
-    if (!jd || !profileText || dismissed.length === 0) return;
+    if (!jd || !profileText || pendingCorrections.length === 0) return;
     setIsRescoring(true);
     setRescoreError("");
     try {
@@ -250,14 +277,15 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: jd,
-          dismissedItems: dismissed,
+          corrections: pendingCorrections,
         }),
       });
       const data = await response.json() as JobFitResult & { error?: string };
       if (!response.ok) {
         setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
       } else {
-        setDismissedItems([]);
+        setCorrections([]);
+        setHiddenItems([]);
         onJobFitUpdated(data as JobFitResult);
       }
     } catch {
@@ -567,74 +595,126 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                 <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em", color: "rgba(28,35,51,0.45)" }}>
                   What&apos;s Missing
                 </p>
-                <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]">Tap × to remove</p>
               </div>
 
               {(() => {
-                const activeItems = result.whats_missing.filter(item => !dismissedItems.includes(item));
-                return activeItems.length === 0 && dismissedItems.length === 0 ? (
-                  <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] italic">All items dismissed.</p>
+                const activeItems = result.whats_missing.filter(item => !hiddenItems.includes(item));
+                return activeItems.length === 0 && hiddenItems.length === 0 ? (
+                  <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] italic">Nothing flagged as missing.</p>
                 ) : (
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {activeItems.map((item, i) => {
                       const evType = evidenceTypeForText(item, result);
                       const evStyle = evType ? EVIDENCE_LABELS[evType] : null;
+                      const existingCorrection = corrections.find(c => c.item === item);
+                      const isExpanding = expandingCorrection === item;
                       return (
-                      <li key={i} className="flex items-start justify-between gap-2 group">
-                        <div className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                          <span className="shrink-0" style={{ width: 6, height: 6, background: "#8A7373", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
-                          <span>
-                            {evStyle && (
-                              <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full mr-1.5 leading-none" style={{ color: evStyle.color, background: `${evStyle.color}18` }}>
-                                {evStyle.label}
+                        <li key={i} className="space-y-2">
+                          <div className="flex items-start justify-between gap-2 group">
+                            <div className="flex items-start gap-3 font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
+                              <span className="shrink-0" style={{ width: 6, height: 6, background: "#8A7373", borderRadius: 1, marginTop: 8, flexShrink: 0, display: "inline-block" }} />
+                              <span>
+                                {evStyle && (
+                                  <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full mr-1.5 leading-none" style={{ color: evStyle.color, background: `${evStyle.color}18` }}>
+                                    {evStyle.label}
+                                  </span>
+                                )}
+                                {item}
                               </span>
-                            )}
-                            {item}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleDismissItem(item)}
-                          title="Dismiss: I actually have this"
-                          className="shrink-0 mt-0.5 w-6 h-6 flex items-center justify-center text-[rgba(28,35,51,0.35)] hover:text-[#8A7373] transition-colors"
-                        >
-                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          </svg>
-                        </button>
-                      </li>
+                            </div>
+                            <div className="shrink-0 flex items-center gap-2 mt-0.5">
+                              {!existingCorrection && (
+                                <button
+                                  onClick={() => handleStartCorrection(item)}
+                                  className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] hover:text-[#1C2333] transition-colors whitespace-nowrap"
+                                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                                >
+                                  {isExpanding ? "Cancel" : "I have this →"}
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleHideItem(item)}
+                                title="Hide from view"
+                                className="w-5 h-5 flex items-center justify-center text-[rgba(28,35,51,0.25)] hover:text-[#8A7373] transition-colors"
+                                style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                              >
+                                <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Inline correction entry */}
+                          {isExpanding && !existingCorrection && (
+                            <div className="ml-5 space-y-2">
+                              <textarea
+                                autoFocus
+                                value={correctionDraft}
+                                onChange={e => setCorrectionDraft(e.target.value)}
+                                placeholder="Describe what you actually have (e.g. Led 3 AWS migrations at Acme)…"
+                                rows={2}
+                                className="w-full border border-[rgba(28,35,51,0.12)] rounded-[8px] p-2.5 font-sans text-[13px] text-[#1C2333] leading-relaxed bg-[#FAFAFA] focus:outline-none focus:border-[rgba(28,35,51,0.25)] resize-none placeholder:text-[rgba(28,35,51,0.30)]"
+                              />
+                              <button
+                                onClick={() => handleAddCorrection(item)}
+                                disabled={!correctionDraft.trim()}
+                                className="px-3 font-sans text-[12px] font-medium text-white bg-[#1C2333] rounded-[6px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                                style={{ height: 32 }}
+                              >
+                                Add correction
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Existing correction indicator */}
+                          {existingCorrection && (
+                            <div className="ml-5 flex items-start justify-between gap-3 px-3 py-2 rounded-[8px]" style={{ background: "rgba(122,139,115,0.08)" }}>
+                              <p className="font-sans text-[12px] text-[rgba(28,35,51,0.65)] leading-snug">{existingCorrection.evidence}</p>
+                              <button
+                                onClick={() => handleRemoveCorrection(item)}
+                                className="shrink-0 font-sans text-[11px] text-[rgba(28,35,51,0.35)] hover:text-[#8A7373] transition-colors whitespace-nowrap"
+                                style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          )}
+                        </li>
                       );
                     })}
                   </ul>
                 );
               })()}
 
-              {dismissedItems.length > 0 && (
+              {hiddenItems.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-1.5">
-                  {dismissedItems.map(item => (
+                  {hiddenItems.map(item => (
                     <div key={item} className="flex items-center justify-between gap-3">
-                      <span className="font-sans text-[13px] text-[rgba(28,35,51,0.35)] line-through leading-snug">{item}</span>
+                      <span className="font-sans text-[13px] text-[rgba(28,35,51,0.30)] line-through leading-snug">{item}</span>
                       <button
-                        onClick={() => handleUndoItem(item)}
-                        className="shrink-0 font-sans text-[12px] text-[rgba(28,35,51,0.45)] hover:text-[#1C2333] transition-colors"
+                        onClick={() => handleUnhideItem(item)}
+                        className="shrink-0 font-sans text-[11px] text-[rgba(28,35,51,0.40)] hover:text-[#1C2333] transition-colors"
+                        style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                       >
-                        Undo
+                        Show
                       </button>
                     </div>
                   ))}
                 </div>
               )}
 
-              {dismissedItems.length > 0 && (
+              {corrections.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)] space-y-2">
                   {isRescoring ? (
                     <p className="font-sans text-[14px] text-[rgba(28,35,51,0.45)] text-center py-1">Re-scoring…</p>
                   ) : (
                     <button
-                      onClick={() => { setRescoreError(""); void triggerRescore(dismissedItems); }}
+                      onClick={() => { setRescoreError(""); void triggerRescore(corrections); }}
                       className="w-full px-4 border border-[rgba(28,35,51,0.12)] text-[#1C2333] font-sans text-[13px] rounded-[8px] hover:bg-[rgba(28,35,51,0.04)] transition-colors"
                       style={{ height: 40 }}
                     >
-                      Re-score with {dismissedItems.length} item{dismissedItems.length !== 1 ? "s" : ""} removed →
+                      Re-score with {corrections.length} correction{corrections.length !== 1 ? "s" : ""} →
                     </button>
                   )}
                   {hasPrepData && !isRescoring && (

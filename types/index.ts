@@ -80,6 +80,8 @@ export type EvidenceType = "demonstrated" | "not_demonstrated" | "confirmed_gap"
 export interface EvidenceItem {
   text: string;
   type: EvidenceType;
+  requirement?: string;    // the JD requirement this finding addresses
+  resume_evidence?: string; // verbatim or close-paraphrase from the resume
 }
 
 export type StrengthMatchType = "Direct match" | "Strong inference" | "Reframe";

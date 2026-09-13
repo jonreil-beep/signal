@@ -13,7 +13,10 @@ function sanitizeEvidenceItems(raw: unknown): EvidenceItem[] | undefined {
   const items: EvidenceItem[] = [];
   for (const item of raw) {
     if (typeof item?.text === "string" && VALID_EVIDENCE_TYPES.has(item?.type)) {
-      items.push({ text: item.text, type: item.type as EvidenceType });
+      const entry: EvidenceItem = { text: item.text, type: item.type as EvidenceType };
+      if (typeof item.requirement === "string" && item.requirement.trim()) entry.requirement = item.requirement.trim();
+      if (typeof item.resume_evidence === "string" && item.resume_evidence.trim()) entry.resume_evidence = item.resume_evidence.trim();
+      items.push(entry);
     }
   }
   return items.length > 0 ? items : undefined;
@@ -40,10 +43,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const { resumeText, jobDescription, dismissedItems } = body as {
+    const { resumeText, jobDescription, corrections } = body as {
       resumeText?: string;
       jobDescription?: string;
-      dismissedItems?: string[];
+      corrections?: { item: string; evidence: string }[];
     };
 
     if (!resumeText || typeof resumeText !== "string" || resumeText.trim().length < 50) {
@@ -57,10 +60,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
+    const validCorrections = Array.isArray(corrections)
+      ? corrections.filter(c => typeof c.item === "string" && typeof c.evidence === "string" && c.evidence.trim().length > 0)
+      : undefined;
+
     const prompt = buildJobFitPrompt(
       resumeText.trim(),
       jobDescription.trim(),
-      Array.isArray(dismissedItems) ? dismissedItems : undefined
+      validCorrections && validCorrections.length > 0 ? validCorrections : undefined
     );
 
     const toolConfig = {
@@ -113,6 +120,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                   properties: {
                     text: { type: "string" },
                     type: { type: "string", enum: ["demonstrated", "not_demonstrated", "confirmed_gap", "needs_clarification"] },
+                    requirement: { type: "string" },
+                    resume_evidence: { type: "string" },
                   },
                   required: ["text", "type"],
                 },

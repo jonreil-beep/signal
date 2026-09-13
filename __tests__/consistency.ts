@@ -126,29 +126,30 @@ check("scoring prompt lists B2B SaaS companies as examples of industry context",
   assert(p.includes("Toast") || p.includes("HubSpot") || p.includes("Salesforce"), "SaaS company examples absent");
 });
 
-check("correction block uses 'Candidate context' framing (not 'corrections')", () => {
-  const p = buildJobFitPrompt(RESUME, JD, ["5 years SaaS experience"]);
-  assert(p.includes("Candidate context"), "Candidate context framing absent");
-  assert(p.includes("5 years SaaS experience"), "dismissed item text absent");
+check("correction block uses evidence-grounded framing (not bare dismissed items)", () => {
+  const p = buildJobFitPrompt(RESUME, JD, [{ item: "5 years SaaS experience", evidence: "Led HubSpot integrations at Acme for 6 years" }]);
+  assert(p.includes("Candidate corrections"), "Candidate corrections framing absent");
+  assert(p.includes("5 years SaaS experience"), "item text absent from correction block");
+  assert(p.includes("Led HubSpot integrations"), "evidence text absent from correction block");
 });
 
 check("correction block does NOT enforce a score floor", () => {
-  const p = buildJobFitPrompt(RESUME, JD, ["5 years SaaS experience"]);
+  const p = buildJobFitPrompt(RESUME, JD, [{ item: "5 years SaaS experience", evidence: "Led HubSpot integrations at Acme for 6 years" }]);
   assert(!p.includes("MUST be higher than or equal to"), "score floor constraint is present — should have been removed");
   assert(!p.includes("Removing gaps can only improve"), "monotonic-improvement claim is present — should have been removed");
 });
 
 check("correction block says score may go in any direction", () => {
-  const p = buildJobFitPrompt(RESUME, JD, ["5 years SaaS experience"]);
+  const p = buildJobFitPrompt(RESUME, JD, [{ item: "5 years SaaS experience", evidence: "Led HubSpot integrations at Acme for 6 years" }]);
   assert(
     p.includes("any direction") || p.includes("may be higher, lower, or the same"),
     "bidirectional score guidance absent from correction block"
   );
 });
 
-check("correction block absent when no dismissedItems", () => {
+check("correction block absent when no corrections", () => {
   const p = buildJobFitPrompt(RESUME, JD);
-  assert(!p.includes("Candidate context:"), "correction block present when none expected");
+  assert(!p.includes("Candidate corrections:"), "correction block present when none expected");
 });
 
 check("scoring prompt uses second person throughout voice rules", () => {
