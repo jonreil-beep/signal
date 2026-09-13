@@ -124,7 +124,7 @@ function TableRow({
       className="card-entrance"
       style={{
         animationDelay: `${Math.min(staggerIndex, 5) * 50}ms`,
-        overflow: "hidden",
+        overflow: removing ? "hidden" : "visible",
         maxHeight: removing ? 0 : 800,
         opacity: removing ? 0 : 1,
         transform: removing ? "translateY(-6px)" : "translateY(0)",
