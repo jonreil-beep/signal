@@ -10,7 +10,7 @@ import { deriveBeforeYouApplyActions } from "@/lib/beforeYouApply";
 import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
   TrackedJob, JobFitResult, TailoringBriefResult,
-  OutreachResult, CoverLetterResult, ResumeUpdateResult,
+  OutreachResult, CoverLetterResult, ResumeUpdateResult, CandidateNote,
 } from "@/types";
 
 // ── normalizers / validators ──────────────────────────────────────────────────
@@ -188,6 +188,10 @@ export default function BriefingPage() {
 
   // what changed after brief regeneration
   const [regenerateChanges, setRegenerateChanges] = useState<string[] | null>(null);
+  // true when score succeeded but subsequent brief generation failed
+  const [briefStaleAfterRescore, setBriefStaleAfterRescore] = useState(false);
+  // which generated drafts belong to a previous assessment
+  const [staleDrafts, setStaleDrafts] = useState<{ coverLetter: boolean; outreach: boolean; resumeSuggestions: boolean }>({ coverLetter: false, outreach: false, resumeSuggestions: false });
 
   // UI disclosure states
   const [scoreOpen, setScoreOpen] = useState(false);
@@ -270,6 +274,7 @@ export default function BriefingPage() {
         scoredAt: new Date(row.scored_at as string),
         applicationStatus: "Tracking" as const,
         notes: (row.notes as string) ?? "",
+        candidateContext: (row.candidate_context as CandidateNote[] | null) ?? [],
       });
       setBriefStatus(tailoringResult ? "succeeded" : "pending");
       setLoading(false);
@@ -433,6 +438,7 @@ export default function BriefingPage() {
         const result = data as CoverLetterResult;
         updateJob({ coverLetterResult: result });
         await saveToDb({ cover_letter_result: result });
+        setStaleDrafts(prev => ({ ...prev, coverLetter: false }));
       }
     } catch {
       setClError("Network error. Check your connection and try again.");
@@ -466,6 +472,7 @@ export default function BriefingPage() {
         const result = data as OutreachResult;
         updateJob({ outreachResult: result });
         await saveToDb({ outreach_result: result });
+        setStaleDrafts(prev => ({ ...prev, outreach: false }));
       }
     } catch {
       setOutreachError("Network error. Check your connection and try again.");
@@ -481,16 +488,27 @@ export default function BriefingPage() {
     setIsRegenerating(true);
     setRegenerateError("");
     setRegenerateChanges(null);
+    setBriefStaleAfterRescore(false);
+
+    // Accumulate: append new note to existing context (do not replace)
+    const newNote: CandidateNote | null = regenerateNote.trim()
+      ? { text: regenerateNote.trim(), addedAt: new Date().toISOString() }
+      : null;
+    const allContext: CandidateNote[] = [
+      ...(job.candidateContext ?? []),
+      ...(newNote ? [newNote] : []),
+    ];
+
     try {
-      // Step 1: Full reassessment with any context the user provided
+      // Step 1: Full reassessment — all accumulated context included as corrections
       const scoreRes = await fetch("/api/score-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: job.jobDescription,
-          corrections: regenerateNote.trim()
-            ? [{ item: "candidate context", evidence: regenerateNote.trim() }]
+          corrections: allContext.length > 0
+            ? allContext.map(n => ({ item: "candidate context", evidence: n.text }))
             : undefined,
         }),
       });
@@ -500,11 +518,19 @@ export default function BriefingPage() {
         return;
       }
       const newFit = scoreData as JobFitResult;
-      // Persist new score before calling /api/tailor (which reads it from DB)
-      updateJob({ jobFitResult: newFit });
-      await saveToDb({ job_fit_result: newFit, scored_at: new Date().toISOString() });
 
-      // Step 2: Regenerate brief using updated score
+      // Persist new score + accumulated context before calling /api/tailor
+      updateJob({ jobFitResult: newFit, candidateContext: allContext });
+      await saveToDb({
+        job_fit_result: newFit,
+        scored_at: new Date().toISOString(),
+        candidate_context: allContext,
+      });
+
+      // Step 2: Regenerate brief from updated score; pass context summary as userNote
+      const contextNote = allContext.length > 0
+        ? allContext.map(n => n.text).join("; ")
+        : undefined;
       const tailorRes = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -512,24 +538,34 @@ export default function BriefingPage() {
           resumeText: profileText,
           jobDescription: job.jobDescription,
           jobId,
+          userNote: contextNote,
           writingSample: writingSample || undefined,
           pivotTarget: pivotTarget || undefined,
         }),
       });
       const tailorData = await tailorRes.json();
       if (!tailorRes.ok) {
-        setRegenerateError(tailorData.error ?? "Assessment updated but brief refresh failed — reload to retry.");
+        // Score is saved; brief will be stale until retried — preserve all drafts
+        setBriefStaleAfterRescore(true);
+        setRegenerateError("Assessment updated. Brief couldn't refresh — use Retry below.");
         return;
       }
       const newTailoring = tailorData as TailoringBriefResult;
-      updateJob({ tailoringResult: newTailoring, coverLetterResult: null, outreachResult: null });
-      await saveToDb({ tailoring_result: newTailoring, cover_letter_result: null, outreach_result: null });
+
+      // Preserve drafts — mark stale instead of clearing
+      updateJob({ tailoringResult: newTailoring });
+      await saveToDb({ tailoring_result: newTailoring });
+      setStaleDrafts({
+        coverLetter: !!job.coverLetterResult,
+        outreach: !!job.outreachResult,
+        resumeSuggestions: !!job.resumeUpdateResult,
+      });
 
       setRegenerateNote("");
       setShowAllLeads(false);
       setExpandedLead(null);
 
-      // Surface what changed — score delta, recommendation, resolved requirements, brief fields
+      // Surface what changed
       const changes: string[] = [];
       const scoreDelta = newFit.overall_fit - prevFit.overall_fit;
       if (scoreDelta !== 0) {
@@ -538,14 +574,58 @@ export default function BriefingPage() {
       if (prevFit.recommendation !== newFit.recommendation) {
         changes.push(`recommendation: ${newFit.recommendation}`);
       }
-      const prevMissing = new Set(prevFit.whats_missing ?? []);
-      const newMissing = new Set(newFit.whats_missing ?? []);
-      const resolved = [...prevMissing].filter(x => !newMissing.has(x)).length;
+      const resolved = [...(prevFit.whats_missing ?? [])]
+        .filter(x => !(newFit.whats_missing ?? []).includes(x)).length;
       if (resolved > 0) changes.push(`${resolved} requirement${resolved > 1 ? "s" : ""} addressed`);
       if (prevTailoring?.lead_strengths?.[0]?.strength !== newTailoring.lead_strengths?.[0]?.strength) {
         changes.push("experience to highlight");
       }
       setRegenerateChanges(changes.length > 0 ? changes : ["assessment updated"]);
+    } catch {
+      setRegenerateError("Network error. Check your connection and try again.");
+    } finally {
+      setIsRegenerating(false);
+    }
+  }
+
+  async function handleRetryBriefAfterRescore() {
+    if (!job || !profileText) return;
+    setIsRegenerating(true);
+    setRegenerateError("");
+    const contextNote = job.candidateContext?.length > 0
+      ? job.candidateContext.map(n => n.text).join("; ")
+      : undefined;
+    try {
+      const tailorRes = await fetch("/api/tailor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resumeText: profileText,
+          jobDescription: job.jobDescription,
+          jobId,
+          userNote: contextNote,
+          writingSample: writingSample || undefined,
+          pivotTarget: pivotTarget || undefined,
+        }),
+      });
+      const tailorData = await tailorRes.json();
+      if (!tailorRes.ok) {
+        setRegenerateError(tailorData.error ?? "Brief refresh failed. Try again.");
+        return;
+      }
+      const newTailoring = tailorData as TailoringBriefResult;
+      updateJob({ tailoringResult: newTailoring });
+      await saveToDb({ tailoring_result: newTailoring });
+      setStaleDrafts({
+        coverLetter: !!job.coverLetterResult,
+        outreach: !!job.outreachResult,
+        resumeSuggestions: !!job.resumeUpdateResult,
+      });
+      setBriefStaleAfterRescore(false);
+      setRegenerateNote("");
+      setRegenerateChanges(["brief refreshed"]);
+      setShowAllLeads(false);
+      setExpandedLead(null);
     } catch {
       setRegenerateError("Network error. Check your connection and try again.");
     } finally {
@@ -576,6 +656,7 @@ export default function BriefingPage() {
       } else {
         updateJob({ resumeUpdateResult: data });
         await saveToDb({ resume_update_result: data });
+        setStaleDrafts(prev => ({ ...prev, resumeSuggestions: false }));
       }
     } catch {
       setResumeUpdateError("Network error. Check your connection and try again.");
@@ -623,12 +704,16 @@ export default function BriefingPage() {
     setIsRescoring(true);
     setRescoreError("");
     try {
+      const existingContext = job.candidateContext ?? [];
       const res = await fetch("/api/score-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resumeText: profileText,
           jobDescription: job.jobDescription,
+          corrections: existingContext.length > 0
+            ? existingContext.map(n => ({ item: "candidate context", evidence: n.text }))
+            : undefined,
         }),
       });
       const data = await res.json();
@@ -721,6 +806,7 @@ export default function BriefingPage() {
           scoredAt: new Date(),
           applicationStatus: "Tracking" as const,
           notes: "",
+          candidateContext: [],
         });
         setJobFitValidationError(null);
         setBriefStatus("pending");
@@ -994,7 +1080,7 @@ export default function BriefingPage() {
           </div>
 
           {/* ─ Score + recommendation ─ */}
-          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.35)", textTransform: "uppercase", marginBottom: 8 }}>
+          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", textTransform: "uppercase", marginBottom: 8 }}>
             Profile match
           </p>
           <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: 20 }}>
@@ -1100,7 +1186,7 @@ export default function BriefingPage() {
                       )}
                     </div>
                     <ScoreBar score={score} fill={dimFill(score)} />
-                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-relaxed" style={{ marginTop: 6 }}>
+                    <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)] leading-relaxed" style={{ marginTop: 6 }}>
                       {reasoning}
                     </p>
                   </div>
@@ -1122,7 +1208,7 @@ export default function BriefingPage() {
 
                 {jobFitResult.evidence_items && jobFitResult.evidence_items.length > 0 && (
                   <div>
-                    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.35)", marginBottom: 10, textTransform: "uppercase" }}>
+                    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.40)", marginBottom: 10, textTransform: "uppercase" }}>
                       Findings
                     </p>
                     <div className="space-y-3">
@@ -1146,25 +1232,25 @@ export default function BriefingPage() {
                               <span className="inline-block font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-full leading-none shrink-0 mt-0.5" style={{ color: col, background: `${col}18` }}>
                                 {typeLabels[ev.type] ?? ev.type}
                               </span>
-                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] leading-snug">{ev.text}</p>
+                              <p className="font-sans text-[15px] text-[rgba(28,35,51,0.75)] leading-snug">{ev.text}</p>
                             </div>
                             {ev.requirement && (
-                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] pl-11 leading-snug">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)] pl-11 leading-snug">
                                 JD requirement: {ev.requirement}
                               </p>
                             )}
                             {ev.resume_evidence && ev.type === "demonstrated" && verifyExcerpt(ev.resume_evidence, profileText) ? (
-                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug italic">
-                                <span className="not-italic text-[rgba(28,35,51,0.30)] mr-1">From resume:</span>
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-11 leading-snug italic">
+                                <span className="not-italic text-[rgba(28,35,51,0.40)] mr-1">From resume:</span>
                                 &ldquo;{ev.resume_evidence}&rdquo;
                               </p>
                             ) : ev.resume_evidence ? (
-                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug">
-                                <span className="text-[rgba(28,35,51,0.30)] mr-1">Model summary:</span>
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)] pl-11 leading-snug">
+                                <span className="text-[rgba(28,35,51,0.40)] mr-1">Model summary:</span>
                                 {ev.resume_evidence}
                               </p>
                             ) : !ev.requirement ? (
-                              <p className="font-sans text-[11px] text-[rgba(28,35,51,0.25)] pl-11 leading-snug">
+                              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)] pl-11 leading-snug">
                                 Source unavailable
                               </p>
                             ) : null}
@@ -1268,7 +1354,7 @@ export default function BriefingPage() {
           )}
 
           {/* Disclaimer */}
-          <p className="font-sans text-[12px] text-[rgba(28,35,51,0.35)]" style={{ marginBottom: 32 }}>
+          <p className="font-sans text-[13px] text-[rgba(28,35,51,0.40)]" style={{ marginBottom: 32 }}>
             This compares your profile with the job description. It doesn&apos;t predict whether you&apos;ll get an interview.
           </p>
 
@@ -1345,6 +1431,23 @@ export default function BriefingPage() {
           {briefReady && (
             <div style={{ display: "flex", flexDirection: "column", gap: 44 }}>
 
+              {/* Stale-brief notice after partial reassessment failure */}
+              {briefStaleAfterRescore && (
+                <div style={{ borderLeft: "2px solid #9B8E73", paddingLeft: 14, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                  <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)] leading-snug">
+                    Assessment updated. This brief reflects the earlier findings — retry to refresh it.
+                  </p>
+                  <button
+                    onClick={() => void handleRetryBriefAfterRescore()}
+                    disabled={isRegenerating}
+                    className="shrink-0 font-sans text-[13px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity focus:outline-none"
+                    style={{ height: 32, padding: "0 14px" }}
+                  >
+                    {isRegenerating ? "Retrying…" : "Retry brief →"}
+                  </button>
+                </div>
+              )}
+
               {/* Lead with — 3 cards, expandable detail, show all */}
               {leadStrengths.length > 0 && (
                 <div>
@@ -1418,10 +1521,17 @@ export default function BriefingPage() {
                 {isGeneratingCL && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Writing your cover letter…</p>}
                 {clError && !isGeneratingCL && <p className="font-sans text-[13px] text-[#8A7373]">{clError}</p>}
                 {coverLetterResult && !isGeneratingCL && (
-                  <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                    <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
-                      {coverLetterResult.cover_letter}
-                    </p>
+                  <div>
+                    {staleDrafts.coverLetter && (
+                      <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 8 }}>
+                        Based on the earlier assessment. Generate a new draft to reflect the updated findings.
+                      </p>
+                    )}
+                    <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                      <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">
+                        {coverLetterResult.cover_letter}
+                      </p>
+                    </div>
                   </div>
                 )}
                 {!coverLetterResult && !isGeneratingCL && !clError && (
@@ -1446,14 +1556,21 @@ export default function BriefingPage() {
                   {isGeneratingOutreach && <p className="font-sans text-[13px] text-[rgba(28,35,51,0.45)]">Drafting outreach messages…</p>}
                   {outreachError && !isGeneratingOutreach && <p className="font-sans text-[13px] text-[#8A7373]">{outreachError}</p>}
                   {outreachResult && !isGeneratingOutreach && (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                      <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>EMAIL</p>
-                        <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.email}</p>
-                      </div>
-                      <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
-                        <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>LINKEDIN</p>
-                        <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.linkedin_message}</p>
+                    <div>
+                      {staleDrafts.outreach && (
+                        <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 8 }}>
+                          Based on the earlier assessment. Regenerate to reflect the updated findings.
+                        </p>
+                      )}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>EMAIL</p>
+                          <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.email}</p>
+                        </div>
+                        <div className="glass-card" style={{ borderRadius: 10, padding: "20px 24px" }}>
+                          <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 10 }}>LINKEDIN</p>
+                          <p className="font-sans text-[14px] text-[#1C2333] leading-relaxed whitespace-pre-wrap">{outreachResult.linkedin_message}</p>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1485,6 +1602,12 @@ export default function BriefingPage() {
                   <p className="font-sans text-[13px] text-[#8A7373]">{resumeUpdateError}</p>
                 )}
                 {job.resumeUpdateResult && !isGeneratingResumeUpdates && (
+                  <div>
+                  {staleDrafts.resumeSuggestions && (
+                    <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 8 }}>
+                      Based on the earlier assessment. Regenerate to reflect the updated findings.
+                    </p>
+                  )}
                   <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                     {job.resumeUpdateResult.summary_rewrite && (
                       <div className="glass-card" style={{ borderRadius: 10, padding: "16px 20px" }}>
@@ -1519,6 +1642,7 @@ export default function BriefingPage() {
                       </div>
                     )}
                   </div>
+                  </div>
                 )}
                 {!job.resumeUpdateResult && !isGeneratingResumeUpdates && !resumeUpdateError && (
                   <p className="font-sans text-[13px] text-[rgba(28,35,51,0.35)]">
@@ -1533,6 +1657,14 @@ export default function BriefingPage() {
                 <p className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]" style={{ marginBottom: 10 }}>
                   A resume doesn&apos;t always include every relevant project. Add experience or correct a detail for Claro to consider.
                 </p>
+                {job.candidateContext && job.candidateContext.length > 0 && (
+                  <div style={{ marginBottom: 10, display: "flex", flexDirection: "column", gap: 4 }}>
+                    <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.06em", color: "rgba(28,35,51,0.40)", marginBottom: 4 }}>PREVIOUSLY SUBMITTED</p>
+                    {job.candidateContext.map((note, i) => (
+                      <p key={i} className="font-sans text-[13px] text-[rgba(28,35,51,0.55)] leading-snug">— {note.text}</p>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   value={regenerateNote}
                   onChange={(e) => setRegenerateNote(e.target.value)}

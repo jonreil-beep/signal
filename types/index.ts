@@ -201,6 +201,11 @@ export interface JobDiscoveryResult {
   search_summary: string;
 }
 
+export interface CandidateNote {
+  text: string;
+  addedAt: string; // ISO timestamp
+}
+
 export interface TrackedJob {
   id: string;
   label: string;
@@ -217,4 +222,5 @@ export interface TrackedJob {
   scoredAt: Date;
   applicationStatus: ApplicationStatus;
   notes: string;
+  candidateContext: CandidateNote[];
 }

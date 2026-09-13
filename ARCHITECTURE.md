@@ -113,6 +113,13 @@ alter table api_usage enable row level security;
 - notes
 - created_at
 
+### Pending migrations
+
+**candidate_context column** — stores accumulated user-provided context notes for each tracked job so future reassessments include all previously accepted corrections. Run once in Supabase SQL editor:
+```sql
+alter table tracked_jobs add column if not exists candidate_context jsonb;
+```
+
 ### Row Level Security
 All tables have RLS enabled. Users can only read/write their own rows.
 

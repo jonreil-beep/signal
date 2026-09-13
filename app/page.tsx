@@ -386,6 +386,7 @@ export default function Home() {
         scoredAt: new Date(row.scored_at as string),
         applicationStatus: (row.application_status as ApplicationStatus) ?? "Tracking",
         notes: (row.notes as string) ?? "",
+        candidateContext: (row.candidate_context as import("@/types").CandidateNote[] | null) ?? [],
       }));
       setTrackedJobs(jobs);
       setTrackedJobsLoading(false);
@@ -619,6 +620,7 @@ export default function Home() {
       scoredAt: new Date(),
       applicationStatus: "Tracking",
       notes: "",
+      candidateContext: [],
     };
     setIsNavigatingToJob(true);
     setTrackedJobs((prev) => [...prev, newJob]);
