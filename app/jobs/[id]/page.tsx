@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { fetchWithSession } from "@/lib/fetchWithSession";
 import { formatBrief } from "@/lib/formatBrief";
 import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
@@ -165,7 +166,9 @@ export default function BriefingPage() {
   const [briefError, setBriefError] = useState("");
   const briefRetryInFlight = useRef(false);
   const [isRetrying, setIsRetrying] = useState(false);
-  const pollingElapsedRef = useRef(0);
+  // Monotonically-increasing generation counter; stale async writes check this before mutating state
+  const activeGenId = useRef(0);
+  const hasTriggeredGeneration = useRef(false);
 
   // generation states
   const [isGeneratingCL, setIsGeneratingCL] = useState(false);
@@ -264,43 +267,71 @@ export default function BriefingPage() {
     load();
   }, [jobId, router]);
 
-  // ── poll until brief arrives (bounded: 90 s max) ──────────────────────────
+  // ── initial brief generation ───────────────────────────────────────────────
+  // The briefing page is responsible for triggering its own generation.
+  // Fires once when the job loads with no tailoring result; retry is handled separately.
 
   useEffect(() => {
-    if (briefStatus !== "pending" && briefStatus !== "generating") {
-      pollingElapsedRef.current = 0;
-      return;
-    }
+    if (!job || briefStatus !== "pending" || hasTriggeredGeneration.current) return;
+    hasTriggeredGeneration.current = true;
+    const genId = ++activeGenId.current;
     setBriefStatus("generating");
-    const TIMEOUT_MS = 90_000;
-    const interval = setInterval(async () => {
-      pollingElapsedRef.current += 3000;
-      if (pollingElapsedRef.current >= TIMEOUT_MS) {
-        clearInterval(interval);
+    const startMs = Date.now();
+    console.log("[brief-gen]", { stage: "start", jobId });
+    void (async () => {
+      try {
+        const supabase = createClient();
+        // Quick check: a previous session may have already written the result
+        const { data: existing } = await supabase
+          .from("tracked_jobs").select("tailoring_result").eq("id", jobId).single();
+        if (activeGenId.current !== genId) return;
+        if (existing?.tailoring_result) {
+          setJob((prev) => prev ? { ...prev, tailoringResult: existing.tailoring_result as TailoringBriefResult } : prev);
+          setBriefStatus("succeeded");
+          return;
+        }
+        const res = await fetchWithSession("/api/tailor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ resumeText: profileText, jobId }),
+        });
+        if (activeGenId.current !== genId) return;
+        if (res.ok) {
+          const data = await res.json() as TailoringBriefResult;
+          if (activeGenId.current !== genId) return;
+          await supabase.from("tracked_jobs").update({ tailoring_result: data }).eq("id", jobId);
+          if (activeGenId.current !== genId) return;
+          setJob((prev) => prev ? { ...prev, tailoringResult: data } : prev);
+          setBriefStatus("succeeded");
+          console.log("[brief-gen]", { stage: "done", durationMs: Date.now() - startMs });
+        } else {
+          const errData = await res.json().catch(() => ({})) as { error?: string };
+          if (activeGenId.current !== genId) return;
+          setBriefStatus("failed");
+          setBriefError(res.status === 401
+            ? "Session expired. Refresh the page."
+            : (errData.error ?? "Brief generation failed. Try again."));
+          console.log("[brief-gen]", { stage: "fail", status: res.status, durationMs: Date.now() - startMs });
+        }
+      } catch {
+        if (activeGenId.current !== genId) return;
         setBriefStatus("failed");
-        setBriefError("This is taking longer than expected. Try again.");
-        return;
+        setBriefError("Network error. Check your connection and try again.");
+        console.error("[brief-gen]", { stage: "error" });
       }
-      const supabase = createClient();
-      const { data: row } = await supabase
-        .from("tracked_jobs")
-        .select("tailoring_result, cover_letter_result, outreach_result")
-        .eq("id", jobId)
-        .single();
-      if (row?.tailoring_result) {
-        setJob((prev) => prev ? {
-          ...prev,
-          tailoringResult: row.tailoring_result as TailoringBriefResult,
-          coverLetterResult: (row.cover_letter_result as CoverLetterResult | null) ?? prev.coverLetterResult,
-          outreachResult: normalizeOutreachResult(row.outreach_result) ?? prev.outreachResult,
-        } : prev);
-        setBriefStatus("succeeded");
-        clearInterval(interval);
-      }
-    }, 3000);
-    return () => clearInterval(interval);
+    })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [briefStatus, jobId]);
+  }, [job?.id]);
+
+  // ── generation timeout ─────────────────────────────────────────────────────
+  useEffect(() => {
+    if (briefStatus !== "generating") return;
+    const timer = setTimeout(() => {
+      setBriefStatus((s) => s === "generating" ? "failed" : s);
+      setBriefError((e) => e || "This is taking longer than expected. Try again.");
+    }, 90_000);
+    return () => clearTimeout(timer);
+  }, [briefStatus]);
 
   async function handleRetryBrief() {
     if (briefRetryInFlight.current) return;
@@ -308,10 +339,9 @@ export default function BriefingPage() {
     setIsRetrying(true);
     setBriefError("");
     setBriefStatus("generating");
+    const genId = ++activeGenId.current;
     try {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session || !job) { setBriefStatus("failed"); setBriefError("Session expired. Refresh the page."); return; }
 
       // Check DB first — original request may have completed while user waited
       const { data: existing } = await supabase
@@ -319,28 +349,36 @@ export default function BriefingPage() {
         .select("tailoring_result")
         .eq("id", jobId)
         .single();
+      if (activeGenId.current !== genId) return;
       if (existing?.tailoring_result) {
         setJob((prev) => prev ? { ...prev, tailoringResult: existing.tailoring_result as TailoringBriefResult } : prev);
         setBriefStatus("succeeded");
         return;
       }
 
-      const res = await fetch("/api/tailor", {
+      const res = await fetchWithSession("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeText: profileText, jobDescription: job.jobDescription, jobId }),
+        body: JSON.stringify({ resumeText: profileText, jobId }),
       });
+      if (activeGenId.current !== genId) return;
       if (res.ok) {
         const data = await res.json() as TailoringBriefResult;
+        if (activeGenId.current !== genId) return;
         await supabase.from("tracked_jobs").update({ tailoring_result: data }).eq("id", jobId);
+        if (activeGenId.current !== genId) return;
         setJob((prev) => prev ? { ...prev, tailoringResult: data } : prev);
         setBriefStatus("succeeded");
       } else {
-        setBriefStatus("failed");
         const err = await res.json().catch(() => ({})) as { error?: string };
-        setBriefError(err.error ?? "Brief generation failed. Try again.");
+        if (activeGenId.current !== genId) return;
+        setBriefStatus("failed");
+        setBriefError(res.status === 401
+          ? "Session expired. Refresh the page."
+          : (err.error ?? "Brief generation failed. Try again."));
       }
     } catch {
+      if (activeGenId.current !== genId) return;
       setBriefStatus("failed");
       setBriefError("Network error. Check your connection and try again.");
     } finally {
@@ -874,14 +912,34 @@ export default function BriefingPage() {
 
           {/* ─ Decision summary (single source of truth) ─ */}
           <p className="font-sans text-[#1C2333]"
-            style={{ fontSize: briefReady ? 16 : 17, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 20 }}>
+            style={{ fontSize: 16, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 20 }}>
             {decisionSummary}
-            {!briefReady && (
-              <span className="inline-flex items-center gap-1.5 ml-2 text-[rgba(28,35,51,0.40)] text-[13px]" style={{ verticalAlign: "middle" }}>
-                <Spinner /> Building brief…
-              </span>
-            )}
           </p>
+
+          {/* ─ Brief status — single prominent area ─ */}
+          {briefStatus === "generating" && (
+            <div className="flex items-center gap-2" style={{ marginBottom: 20 }}>
+              <Spinner />
+              <span className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]">Building your brief…</span>
+            </div>
+          )}
+          {briefStatus === "failed" && (
+            <div className="flex items-center gap-3" style={{ marginBottom: 20, padding: "10px 14px", borderRadius: 8, background: "rgba(28,35,51,0.04)" }}>
+              <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)] flex-1">
+                {briefError || "Brief generation failed."}
+              </p>
+              {!!profileText && (
+                <button
+                  onClick={() => void handleRetryBrief()}
+                  disabled={isRetrying}
+                  className="shrink-0 font-sans text-[12px] font-medium text-white bg-[#1C2333] rounded-[7px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                  style={{ height: 30, padding: "0 12px" }}
+                >
+                  {isRetrying ? "Retrying…" : "Retry"}
+                </button>
+              )}
+            </div>
+          )}
 
           {/* ─ How this score was calculated (collapsible) ─ */}
           <div style={{ marginBottom: 28 }}>
@@ -1113,28 +1171,7 @@ export default function BriefingPage() {
 
           {/* ── APPLICATION BRIEF ─────────────────────────────────────────── */}
 
-          {briefStatus === "failed" ? (
-            <div className="flex flex-col gap-3">
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.65)]">
-                {briefError || "Brief generation failed."}
-              </p>
-              {!!profileText && (
-                <button
-                  onClick={() => void handleRetryBrief()}
-                  disabled={isRetrying}
-                  className="w-fit px-4 font-sans font-medium text-[13px] text-white bg-[#1C2333] rounded-[8px] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity btn-shadow-dark"
-                  style={{ height: 40 }}
-                >
-                  {isRetrying ? "Retrying…" : "Retry"}
-                </button>
-              )}
-            </div>
-          ) : !briefReady ? (
-            <div className="flex items-center gap-3">
-              <Spinner />
-              <p className="font-sans text-[14px] text-[rgba(28,35,51,0.50)]">Building your brief…</p>
-            </div>
-          ) : (
+          {briefReady && (
             <div style={{ display: "flex", flexDirection: "column", gap: 44 }}>
 
               {/* Lead with — 3 cards, expandable detail, show all */}
@@ -1265,10 +1302,15 @@ export default function BriefingPage() {
                   value={regenerateNote}
                   onChange={(e) => setRegenerateNote(e.target.value)}
                   placeholder="For example: I managed a team of six"
-                  maxLength={400}
+                  maxLength={5000}
                   rows={2}
                   className="w-full font-sans text-[13px] text-[#1C2333] bg-[rgba(28,35,51,0.03)] rounded-[8px] px-3 py-2.5 resize-none border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 placeholder:text-[rgba(28,35,51,0.35)] leading-relaxed"
                 />
+                {regenerateNote.length > 4800 && (
+                  <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-right" style={{ marginTop: 2 }}>
+                    {regenerateNote.length}/5000
+                  </p>
+                )}
                 {regenerateError && (
                   <p className="font-sans text-[12px] text-[#8A7373]" style={{ marginTop: 4 }}>{regenerateError}</p>
                 )}

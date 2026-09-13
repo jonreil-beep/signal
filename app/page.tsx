@@ -646,7 +646,6 @@ export default function Home() {
       });
     }
 
-    autoGenerateBrief(id, jd, result);
     router.push(`/jobs/${id}`);
   }
 

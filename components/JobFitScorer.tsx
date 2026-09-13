@@ -147,6 +147,7 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
   const [correctionDraft, setCorrectionDraft] = useState("");
   const [isRescoring, setIsRescoring] = useState(false);
   const [rescoreError, setRescoreError] = useState<string>("");
+  const [rescoreDiff, setRescoreDiff] = useState<{ scoreDelta: number; addressed: string[] } | null>(null);
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return;
@@ -270,6 +271,8 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
     if (!jd || !profileText || pendingCorrections.length === 0) return;
     setIsRescoring(true);
     setRescoreError("");
+    setRescoreDiff(null);
+    const oldResult = result;
     try {
       const response = await fetch("/api/score-job", {
         method: "POST",
@@ -284,9 +287,16 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
       if (!response.ok) {
         setRescoreError(data.error ?? "Re-scoring failed. Please try again.");
       } else {
+        const newResult = data as JobFitResult;
+        const scoreDelta = oldResult ? newResult.overall_fit - oldResult.overall_fit : 0;
+        const oldHaveSet = new Set(oldResult?.what_you_have ?? []);
+        const addressed = pendingCorrections
+          .map(c => c.item)
+          .filter(item => (newResult.what_you_have ?? []).includes(item) && !oldHaveSet.has(item));
+        setRescoreDiff({ scoreDelta, addressed });
         setCorrections([]);
         setHiddenItems([]);
-        onJobFitUpdated(data as JobFitResult);
+        onJobFitUpdated(newResult);
       }
     } catch {
       setRescoreError("Network error. Check your connection and try again.");
@@ -653,9 +663,15 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                                 value={correctionDraft}
                                 onChange={e => setCorrectionDraft(e.target.value)}
                                 placeholder="Describe what you actually have (e.g. Led 3 AWS migrations at Acme)…"
+                                maxLength={5000}
                                 rows={2}
                                 className="w-full border border-[rgba(28,35,51,0.12)] rounded-[8px] p-2.5 font-sans text-[13px] text-[#1C2333] leading-relaxed bg-[#FAFAFA] focus:outline-none focus:border-[rgba(28,35,51,0.25)] resize-none placeholder:text-[rgba(28,35,51,0.30)]"
                               />
+                              {correctionDraft.length > 4800 && (
+                                <p className="font-sans text-[11px] text-[rgba(28,35,51,0.35)] text-right">
+                                  {correctionDraft.length}/5000
+                                </p>
+                              )}
                               <button
                                 onClick={() => handleAddCorrection(item)}
                                 disabled={!correctionDraft.trim()}
@@ -722,6 +738,34 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
                   )}
                   {rescoreError && !isRescoring && (
                     <p className="font-sans text-[12px] text-[#8A7373] text-center">{rescoreError}</p>
+                  )}
+                </div>
+              )}
+
+              {rescoreDiff && !isRescoring && corrections.length === 0 && (
+                <div className="mt-4 pt-4 border-t border-[rgba(28,35,51,0.08)]">
+                  <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 11, letterSpacing: "0.07em", color: "rgba(28,35,51,0.35)", textTransform: "uppercase", marginBottom: 8 }}>
+                    What changed
+                  </p>
+                  <p className="font-sans text-[13px] text-[rgba(28,35,51,0.65)]">
+                    Score{" "}
+                    {rescoreDiff.scoreDelta > 0 ? (
+                      <span style={{ color: "#7A8B73", fontWeight: 500 }}>↑ +{rescoreDiff.scoreDelta}</span>
+                    ) : rescoreDiff.scoreDelta < 0 ? (
+                      <span style={{ color: "#8A7373", fontWeight: 500 }}>↓ {rescoreDiff.scoreDelta}</span>
+                    ) : (
+                      <span style={{ color: "rgba(28,35,51,0.45)" }}>unchanged</span>
+                    )}
+                  </p>
+                  {rescoreDiff.addressed.length > 0 && (
+                    <ul className="mt-2 space-y-1">
+                      {rescoreDiff.addressed.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 font-sans text-[13px] text-[rgba(28,35,51,0.65)]">
+                          <span style={{ color: "#7A8B73", flexShrink: 0 }}>✓</span>
+                          {item} moved to Relevant experience
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               )}
