@@ -851,6 +851,7 @@ export default function Home() {
         magicLinkError={magicLinkError}
         onSkip={() => {
           setShowLanding(false);
+          setTrackedJobsLoading(false);
           sessionStorage.setItem("signal-show-landing", "false");
         }}
       />
