@@ -409,7 +409,13 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
             </div>
           )}
 
-          {isScoring && <LoadingState message="Scoring job fit. This takes about 20 seconds..." />}
+          {isScoring && (
+            <LoadingState steps={[
+              "Reading the job requirements…",
+              "Mapping your experience to the role…",
+              "Weighing strengths and gaps…",
+            ]} />
+          )}
 
           {scoreError && !isScoring && (
             <div className="p-4 border-l-2 border-[#8A7373]">
