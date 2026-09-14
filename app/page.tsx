@@ -927,7 +927,7 @@ export default function Home() {
         {activeTab === "profile" && (
           <div>
             <div className="mb-10 pb-8 border-b border-[rgba(28,35,51,0.08)]">
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center justify-between gap-4">
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10, color: "rgba(28,35,51,0.45)" }}>
                     <svg width="9" height="11" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
