@@ -562,7 +562,7 @@ export default function LandingPage({
       {/* HERO */}
       <div className="cl-wrap">
         <div className="cl-hero">
-          <p className="cl-eyebrow">Job search support</p>
+          <p className="cl-eyebrow">Know where you stand</p>
           <h1 className="cl-hero-hed">See how your<br /><span>experience fits.</span></h1>
           <p className="cl-hero-sub">Compare your resume with a job description. See the relevant experience, the requirements that need a closer look, and what to highlight if you decide to apply.</p>
           <EmailForm email={email} setEmail={setEmail} onSendMagicLink={onSendMagicLink} sendingMagicLink={sendingMagicLink} magicLinkSent={magicLinkSent} magicLinkError={magicLinkError} onSkip={onSkip} />
