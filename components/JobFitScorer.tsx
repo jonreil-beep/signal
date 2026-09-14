@@ -412,8 +412,11 @@ export default function JobFitScorer({ profileText, jobDescription, initialJDTex
           {isScoring && (
             <LoadingState steps={[
               "Reading the job requirements…",
-              "Mapping your experience to the role…",
-              "Weighing strengths and gaps…",
+              "Identifying what they're actually looking for…",
+              "Parsing your resume for relevant experience…",
+              "Mapping your background to the role…",
+              "Checking for gaps in key requirements…",
+              "Calibrating the overall fit score…",
             ]} />
           )}
 

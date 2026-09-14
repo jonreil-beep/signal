@@ -1067,8 +1067,11 @@ export default function BriefingPage() {
             <div style={{ marginBottom: 20 }}>
               <LoadingState steps={[
                 "Identifying what to lead with…",
-                "Finding the right framing for your experience…",
-                "Shaping the application strategy…",
+                "Looking for your strongest signals…",
+                "Considering what a recruiter would notice…",
+                "Finding the right framing for your background…",
+                "Building the application angle…",
+                "Shaping the strategy…",
               ]} />
             </div>
           )}
