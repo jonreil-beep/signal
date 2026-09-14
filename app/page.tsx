@@ -1082,7 +1082,7 @@ export default function Home() {
                       <textarea
                         value={writingSample}
                         onChange={(e) => setWritingSample(e.target.value)}
-                        placeholder="Paste 2–3 sentences you've written professionally: an email, bio, or message that sounds like you. Claro uses this to match your voice in cover letters, outreach, and follow-ups."
+                        placeholder="Paste 2–3 sentences you've written professionally: an email, bio, or message that sounds like you. Claro uses this to match your voice in outreach messages and follow-ups."
                         rows={3}
                         className="w-full font-sans text-[14px] text-[#1C2333] bg-[#FAFAFA] rounded-[10px] px-3.5 py-3 border border-[rgba(28,35,51,0.08)] focus:border-[rgba(28,35,51,0.20)] focus:outline-none focus:ring-0 resize-none placeholder:text-[rgba(28,35,51,0.35)]"
                       />

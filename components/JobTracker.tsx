@@ -487,7 +487,7 @@ export default function JobTracker({
               className="font-sans text-[14px] leading-relaxed mb-5"
               style={{ color: hasProfile ? "rgba(28,35,51,0.55)" : "rgba(28,35,51,0.28)" }}
             >
-              Paste any job description. Get a fit score, bottom line, cover letter, and outreach — automatically.
+              Paste any job description. Get a fit score, bottom line, outreach drafts, and resume suggestions — automatically.
             </p>
             {hasProfile && (
               <button

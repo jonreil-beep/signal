@@ -53,7 +53,7 @@ export default function HowItWorksPage() {
               {
                 n: "03",
                 title: "Get your brief, automatically",
-                body: "Score a job and Claro instantly generates your application brief: a bottom line on fit, a tailored cover letter, and outreach messages — no extra steps.",
+                body: "Score a job and Claro instantly generates your application brief: a bottom line on fit, outreach drafts, and resume suggestions — no extra steps.",
               },
             ].map(({ n, title, body }) => (
               <div key={n} className="flex gap-8 pb-10 border-b border-[rgba(28,35,51,0.08)] last:border-0 last:pb-0">

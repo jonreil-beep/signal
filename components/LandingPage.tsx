@@ -582,7 +582,7 @@ export default function LandingPage({
         <div className="cl-proof">
           <div className="cl-proof-item">A match score with reasons</div>
           <div className="cl-proof-item">Relevant experience and requirements to review</div>
-          <div className="cl-proof-item">Cover-letter drafts when you need them</div>
+          <div className="cl-proof-item">Outreach drafts to get ahead of the pile</div>
         </div>
         <hr className="cl-strip-divider" />
       </div>
@@ -605,7 +605,7 @@ export default function LandingPage({
             <div>
               <p className="cl-step-num">03</p>
               <h3 className="cl-step-title">Prepare your application</h3>
-              <p className="cl-step-desc">Review the suggested talking points and draft a cover letter using your experience. Edit the draft before you use it.</p>
+              <p className="cl-step-desc">Review the suggested talking points and draft outreach based on your experience. Use what&apos;s relevant before you apply.</p>
             </div>
           </div>
         </div>
@@ -653,10 +653,11 @@ export default function LandingPage({
             <div className="cl-ft">
               <p className="cl-feature-kicker">Your application brief</p>
               <h2 className="cl-feature-title">Make your relevant experience easier to see.</h2>
-              <p className="cl-feature-desc">Use the brief to decide what to highlight. When you&apos;re ready, create a cover-letter draft based on your experience and the role.</p>
+              <p className="cl-feature-desc">Use the brief to decide what to highlight. Draft outreach based on your experience and the role, and get resume suggestions tailored to this job.</p>
               <ul className="cl-feature-list">
                 <li>Suggested experience to highlight</li>
-                <li>A cover-letter draft you can review and edit</li>
+                <li>Outreach drafts for email and LinkedIn</li>
+                <li>Resume suggestions tailored to the role</li>
                 <li>An option to add details and update the brief</li>
               </ul>
             </div>
