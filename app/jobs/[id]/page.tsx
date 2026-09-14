@@ -1057,8 +1057,8 @@ export default function BriefingPage() {
           </div>
 
           {/* ─ Decision summary (single source of truth) ─ */}
-          <p className="font-sans text-[#1C2333]"
-            style={{ fontSize: 16, lineHeight: 1.55, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 20 }}>
+          <p className="font-sans font-medium text-[#1C2333]"
+            style={{ fontSize: 20, lineHeight: 1.5, letterSpacing: "-0.01em", maxWidth: 660, marginBottom: 20 }}>
             {decisionSummary}
           </p>
 
