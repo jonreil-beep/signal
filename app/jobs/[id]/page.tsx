@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { fetchWithSession } from "@/lib/fetchWithSession";
 import { formatBrief } from "@/lib/formatBrief";
 import { deriveBeforeYouApplyActions } from "@/lib/beforeYouApply";
+import LoadingState from "@/components/LoadingState";
 import { CURRENT_PROMPT_VERSION } from "@/lib/prompts";
 import type {
   TrackedJob, JobFitResult, TailoringBriefResult,
@@ -1063,9 +1064,12 @@ export default function BriefingPage() {
 
           {/* ─ Brief status — single prominent area ─ */}
           {briefStatus === "generating" && (
-            <div className="flex items-center gap-2" style={{ marginBottom: 20 }}>
-              <Spinner />
-              <span className="font-sans text-[13px] text-[rgba(28,35,51,0.50)]">Building your brief…</span>
+            <div style={{ marginBottom: 20 }}>
+              <LoadingState steps={[
+                "Identifying what to lead with…",
+                "Finding the right framing for your experience…",
+                "Shaping the application strategy…",
+              ]} />
             </div>
           )}
           {briefStatus === "failed" && (
