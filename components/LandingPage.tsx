@@ -13,7 +13,7 @@ html { scroll-behavior: smooth; }
     radial-gradient(ellipse 38% 32% at 78% 90%, rgba(0, 190, 230, 0.02) 0%, transparent 55%),
     #1C2333;
   color: #fff;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.55;
   letter-spacing: -0.005em;
@@ -35,7 +35,7 @@ html { scroll-behavior: smooth; }
   border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .cl-nav-wordmark {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
   font-size: 17px;
   letter-spacing: -0.02em;
@@ -52,7 +52,7 @@ html { scroll-behavior: smooth; }
   list-style: none;
 }
 .cl-nav-links a {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 400;
   color: rgba(255,255,255,0.65);
@@ -61,7 +61,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-nav-links a:hover { color: #fff; }
 .cl-nav-cta {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.005em;
@@ -94,7 +94,7 @@ html { scroll-behavior: smooth; }
   align-items: center;
 }
 .cl-eyebrow {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -102,11 +102,11 @@ html { scroll-behavior: smooth; }
   margin-bottom: 28px;
 }
 .cl-hero-hed {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
   font-size: clamp(48px, 6.4vw, 88px);
   line-height: 0.98;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.015em;
   color: #fff;
   margin-bottom: 28px;
 }
@@ -147,7 +147,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-email-input {
   flex: 1;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.005em;
@@ -160,7 +160,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-email-input::placeholder { color: rgba(255,255,255,0.35); }
 .cl-email-submit {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.005em;
@@ -178,7 +178,7 @@ html { scroll-behavior: smooth; }
 .cl-email-submit:hover { opacity: 0.88; }
 .cl-email-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 .cl-guest-link {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -194,7 +194,7 @@ html { scroll-behavior: smooth; }
 }
 .cl-guest-link:hover { color: rgba(255,255,255,0.65); }
 .cl-magic-sent {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -202,13 +202,13 @@ html { scroll-behavior: smooth; }
   text-align: center;
 }
 .cl-magic-error {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   color: #8A7373;
   text-align: center;
 }
 .cl-privacy {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -249,7 +249,7 @@ html { scroll-behavior: smooth; }
   justify-content: center;
 }
 .cl-proof-item {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -264,7 +264,7 @@ html { scroll-behavior: smooth; }
 /* Sections */
 .cl-section { padding: 88px 0; }
 .cl-section-label {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -281,7 +281,7 @@ html { scroll-behavior: smooth; }
   padding-top: 40px;
 }
 .cl-step-num {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -289,7 +289,7 @@ html { scroll-behavior: smooth; }
   margin-bottom: 16px;
 }
 .cl-step-title {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
   font-size: 18px;
   line-height: 1.25;
@@ -319,7 +319,7 @@ html { scroll-behavior: smooth; }
 .cl-feature-block.flip .cl-ft { order: 2; }
 .cl-feature-block.flip .cl-fv { order: 1; }
 .cl-feature-kicker {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -327,7 +327,7 @@ html { scroll-behavior: smooth; }
   margin-bottom: 14px;
 }
 .cl-feature-title {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
   font-size: 28px;
   line-height: 1.12;
@@ -379,7 +379,7 @@ html { scroll-behavior: smooth; }
   align-items: center;
 }
 .cl-cta-hed {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-weight: 500;
   font-size: clamp(36px, 5vw, 56px);
   line-height: 1.0;
@@ -408,7 +408,7 @@ html { scroll-behavior: smooth; }
   align-items: center;
 }
 .cl-footer-note {
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.01em;

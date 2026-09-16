@@ -9,7 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Google Sans Flex", "var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["GT Super Text", "Georgia", "serif"],
         mono: ["ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {

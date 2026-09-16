@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className={GeistSans.className}>
+      <body>
         <GoogleAnalytics />
         {children}
         {/* <FeedbackButton /> */}

@@ -1030,7 +1030,7 @@ export default function BriefingPage() {
                 {jobFitResult.company}
               </p>
             )}
-            <h1 className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 28, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+            <h1 className="font-sans font-semibold text-[#1C2333]" style={{ fontSize: 28, letterSpacing: "-0.015em", lineHeight: 1.2 }}>
               {job.label}
             </h1>
           </div>

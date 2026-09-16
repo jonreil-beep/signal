@@ -933,7 +933,7 @@ export default function Home() {
                     <svg width="9" height="11" viewBox="0 0 12 14" fill="none" aria-hidden="true"><path d="M6 6.5a3 3 0 100-6 3 3 0 000 6zM1 13.5a5 5 0 0110 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Your Background</span>
                   </div>
-                  <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em", marginBottom: 8 }}>Profile</h1>
+                  <h1 className="font-sans font-semibold text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.02em", marginBottom: 8 }}>Profile</h1>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Your experience, strengths, and role suggestions in one place.</p>
                 </div>
                 {profileText && (
@@ -1240,7 +1240,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>Fit Score</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: 0, marginBottom: 8 }}>
-                    <h1 style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 36, color: "var(--fg)", letterSpacing: "-0.025em", lineHeight: 1, margin: 0 }}>Score a Job</h1>
+                    <h1 className="font-sans font-semibold" style={{ fontSize: 36, color: "var(--fg)", letterSpacing: "-0.02em", lineHeight: 1, margin: 0 }}>Score a Job</h1>
                   </div>
                   <p style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 400, fontSize: 15, color: "var(--fg-2)", marginTop: 8 }}>Paste a job description to see how your experience compares.</p>
                 </div>
@@ -1283,7 +1283,7 @@ export default function Home() {
                     <span style={{ fontFamily: "var(--font-geist-sans)", fontWeight: 500, fontSize: 12, letterSpacing: "0.01em" }}>My Jobs</span>
                   </div>
                   <div className="flex items-center gap-4 mb-2">
-                    <h1 className="font-sans font-medium text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.025em" }}>My Jobs</h1>
+                    <h1 className="font-sans font-semibold text-[36px] text-[#1C2333] leading-none" style={{ letterSpacing: "-0.02em" }}>My Jobs</h1>
                   </div>
                   <p className="font-sans text-[15px] text-[rgba(28,35,51,0.65)]">Review the jobs you&apos;ve added and how each matches your experience.</p>
                 </div>

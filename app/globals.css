@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "GT Super Text";
+  src: url("/fonts/GT-Super-Text-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Google Sans Flex";
+  src: url("/fonts/GoogleSansFlex-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  --font-geist-sans: "Google Sans Flex", GeistSans, "GeistSans Fallback";
   --dark:             #1C2333;
   --dark-alt:         #0F1923;
   --bg:               #FFFFFF;
@@ -40,10 +57,10 @@
     scroll-behavior: smooth;
   }
   body {
+    font-family: "Google Sans Flex", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
     font-size: 15px;
     line-height: 1.55;
     letter-spacing: -0.005em;
-    font-feature-settings: "ss01", "cv11";
     background: var(--bg);
     color: var(--fg-1);
     overflow-x: hidden;
@@ -64,6 +81,10 @@
     transition-duration: 150ms;
     transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
   }
+}
+
+.font-sans {
+  font-family: "Google Sans Flex", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 .tabular { font-variant-numeric: tabular-nums; }
