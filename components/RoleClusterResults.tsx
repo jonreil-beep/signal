@@ -146,7 +146,7 @@ export default function RoleClusterResults({ result, resumeText, onClusterUpdate
       <div>
         {/* Identity summary */}
         {identitySummary && (
-          <p className="font-sans font-medium text-[20px] text-[rgba(28,35,51,0.70)] leading-relaxed mb-8" style={{ letterSpacing: "-0.01em" }}>
+          <p className="font-serif text-[20px] text-[rgba(28,35,51,0.70)] leading-relaxed mb-8" style={{ fontWeight: 500, letterSpacing: "-0.01em" }}>
             {identitySummary}
           </p>
         )}
