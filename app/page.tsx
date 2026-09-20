@@ -1171,7 +1171,7 @@ export default function Home() {
                   </button>
                   {headlineOpen && (
                     <div className="mt-5">
-                      <p className="font-sans font-medium text-[#1C2333] leading-[1.2]" style={{ fontSize: 32, letterSpacing: "-0.025em", marginBottom: 14 }}>
+                      <p className="font-sans font-medium text-[#1C2333]" style={{ fontSize: 28, lineHeight: "34px", letterSpacing: "-0.025em", marginBottom: 14 }}>
                         {currentHeadline || clusterResult.recommended_headline}
                       </p>
                       {isGeneratingHeadline ? (
