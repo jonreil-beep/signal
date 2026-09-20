@@ -27,7 +27,7 @@ function buildIdentitySummary(result: RoleClusterResult): string {
 }
 
 function firstSentence(text: string): string {
-  const match = text.match(/^[^.!?]+[.!?]/);
+  const match = text.match(/^.+?[.!?](?=\s|$)/);
   return match ? match[0] : text;
 }
 
